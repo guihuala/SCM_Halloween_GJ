@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c1e57ecaf14b7d817871b1e23ec21d, type: 3}
+  m_Name: DialogueTable
+  m_EditorClassIdentifier: 
+  lines:
+  - dialogueId: template_dialogue_accept
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.accept.0
+    portraitResource:
+    standingResource:
+    expression: happy
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_decline
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.decline.0
+    portraitResource:
+    standingResource:
+    expression: sad
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_persuade
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.persuade.0
+    portraitResource:
+    standingResource:
+    expression: moved
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_reward
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.reward.0
+    portraitResource: 
+    standingResource: 
+    expression: normal
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_test_001
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.001.0
+    portraitResource: 
+    standingResource: 
+    expression: normal
+    style: 0
+    autoPlayDelay: 1.2
+    options:
+    - localizationKey: dialogue.village.oldman.001.option.accept
+      nextDialogueId: template_dialogue_accept
+      condition: '!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed'
+      effects: quest:necklace=accepted;add:favor.oldman=1
+    - localizationKey: dialogue.village.oldman.001.option.decline
+      nextDialogueId: template_dialogue_decline
+      condition: '!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed'
+      effects: add:favor.oldman=-1
+    - localizationKey: dialogue.village.oldman.001.option.reward
+      nextDialogueId: template_dialogue_reward
+      condition: '!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed'
+      effects: 
+    - localizationKey: dialogue.village.oldman.001.option.persuade
+      nextDialogueId: template_dialogue_persuade
+      condition: charm>=5;!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed
+      effects: add:favor.oldman=2
+    - localizationKey: dialogue.village.oldman.001.option.progress
+      nextDialogueId: template_dialogue_progress
+      condition: quest:necklace=accepted
+      effects:
+    - localizationKey: dialogue.village.oldman.001.option.find
+      nextDialogueId: template_dialogue_found
+      condition: quest:necklace=accepted
+      effects: item:necklace;quest:necklace=ready
+    - localizationKey: dialogue.village.oldman.001.option.turnin
+      nextDialogueId: template_dialogue_complete
+      condition: quest:necklace=ready;item:necklace
+      effects: quest:necklace=completed;removeItem:necklace;add:favor.oldman=3
+    - localizationKey: dialogue.village.oldman.001.option.completed
+      nextDialogueId: template_dialogue_completed
+      condition: quest:necklace=completed
+      effects:
+  - dialogueId: template_dialogue_test_001
+    lineIndex: 1
+    speakerName: 
+    localizationKey: dialogue.village.oldman.001.1
+    portraitResource:
+    standingResource:
+    expression: 
+    style: 1
+    autoPlayDelay: 1.4
+    options: []
+  - dialogueId: template_dialogue_test_001
+    lineIndex: 2
+    speakerName: "\u52C7\u8005"
+    localizationKey: dialogue.village.oldman.001.2
+    portraitResource:
+    standingResource:
+    expression: thinking
+    style: 2
+    autoPlayDelay: 1.6
+    options: []
+  - dialogueId: template_dialogue_test_001
+    lineIndex: 3
+    speakerName: 
+    localizationKey: dialogue.village.oldman.001.3
+    portraitResource:
+    standingResource:
+    expression: 
+    style: 3
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_progress
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.progress.0
+    portraitResource:
+    standingResource:
+    expression: normal
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_found
+    lineIndex: 0
+    speakerName: "\u52C7\u8005"
+    localizationKey: dialogue.village.oldman.found.0
+    portraitResource:
+    standingResource:
+    expression: normal
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_complete
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.complete.0
+    portraitResource:
+    standingResource:
+    expression: happy
+    style: 0
+    autoPlayDelay: 1.2
+    options: []
+  - dialogueId: template_dialogue_completed
+    lineIndex: 0
+    speakerName: "\u6751\u957F"
+    localizationKey: dialogue.village.oldman.completed.0
+    portraitResource:
+    standingResource:
+    expression: happy
+    style: 0
+    autoPlayDelay: 1.2
+    options: []

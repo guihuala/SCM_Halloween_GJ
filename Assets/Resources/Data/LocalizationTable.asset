@@ -1,0 +1,409 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30000000000000000000000000000004, type: 3}
+  m_Name: LocalizationTable
+  m_EditorClassIdentifier: 
+  languages:
+  - languageCode: zh-CN
+    entries:
+    - key: scene.main_menu
+      value: "\u4E3B\u83DC\u5355"
+    - key: scene.gameplay
+      value: "\u6E38\u620F\u573A\u666F"
+    - key: ui.new_game
+      value: "\u65B0\u6E38\u620F"
+    - key: ui.save
+      value: "\u5B58\u6863"
+    - key: ui.settings
+      value: "\u8BBE\u7F6E"
+    - key: ui.quit
+      value: "\u9000\u51FA"
+    - key: ui.language
+      value: "\u8BED\u8A00"
+    - key: ui.delete
+      value: "\u5220\u9664"
+    - key: ui.close
+      value: "\u5173\u95ED"
+    - key: pause.title
+      value: "\u6682\u505C"
+    - key: pause.subtitle
+      value: "\u6E38\u620F\u5DF2\u6682\u505C"
+    - key: pause.resume
+      value: "\u7EE7\u7EED"
+    - key: pause.main_menu
+      value: "\u4E3B\u83DC\u5355"
+    - key: settings.tab.audio
+      value: "\u97F3\u9891"
+    - key: settings.tab.video
+      value: "\u89C6\u9891"
+    - key: settings.tab.input
+      value: "\u8F93\u5165"
+    - key: settings.resolution
+      value: "\u5206\u8FA8\u7387"
+    - key: settings.fullscreen
+      value: "\u5168\u5C4F"
+    - key: settings.reset
+      value: "\u91CD\u7F6E"
+    - key: settings.back
+      value: "\u8FD4\u56DE"
+    - key: settings.data_cleared
+      value: "\u6570\u636E\u5DF2\u6E05\u7A7A"
+    - key: input.rebind_tip
+      value: "\u70B9\u51FB\u6309\u952E\u9879\uFF0C\u7136\u540E\u6309\u4E0B\u65B0\u6309\u952E\u3002"
+    - key: input.action.jump
+      value: "\u8DF3\u8DC3"
+    - key: input.action.attack
+      value: "\u653B\u51FB"
+    - key: input.action.interact
+      value: "\u4E92\u52A8"
+    - key: input.action.pause
+      value: "\u6682\u505C"
+    - key: input.action.confirm
+      value: "\u786E\u8BA4"
+    - key: input.action.cancel
+      value: "\u53D6\u6D88"
+    - key: input.press_key
+      value: "\u8BF7\u6309\u952E..."
+    - key: common.not_available
+      value: "\u4E0D\u53EF\u7528"
+    - key: common.none
+      value: "\u65E0"
+    - key: common.confirm
+      value: "\u786E\u8BA4"
+    - key: common.cancel
+      value: "\u53D6\u6D88"
+    - key: save.title
+      value: "\u5B58\u6863"
+    - key: save.title.new_game_select
+      value: "\u9009\u62E9\u65B0\u6E38\u620F\u5B58\u6863"
+    - key: save.new
+      value: "\u65B0\u5EFA"
+    - key: save.load
+      value: "\u8BFB\u53D6"
+    - key: save.empty
+      value: "\u7A7A"
+    - key: save.invalid
+      value: "\u65E0\u6548"
+    - key: save.slot
+      value: "\u5B58\u6863\u4F4D {0}"
+    - key: save.path
+      value: "\u8DEF\u5F84\uFF1A{0}"
+    - key: save.path_unavailable
+      value: "\u8DEF\u5F84\uFF1A\u4E0D\u53EF\u7528"
+    - key: save.selected_slot
+      value: "\u5DF2\u9009\u5B58\u6863\u4F4D\uFF1A{0}"
+    - key: save.selected_unavailable
+      value: "\u5DF2\u9009\uFF1A\u4E0D\u53EF\u7528"
+    - key: save.no_metadata
+      value: "\u65E0\u5143\u6570\u636E"
+    - key: save.no_data_in_slot
+      value: "\u8BE5\u5B58\u6863\u4F4D\u6CA1\u6709\u6570\u636E\u3002"
+    - key: save.invalid_slot_detail
+      value: "\u8BE5\u5B58\u6863\u6587\u4EF6\u5DF2\u635F\u574F\u6216\u672A\u901A\u8FC7\u9A8C\u8BC1\u3002\u8BFB\u53D6\u65F6\u4F1A\u521B\u5EFA\u65B0\u6570\u636E\u3002"
+    - key: save.state.exists
+      value: "\u5B58\u6863\u6587\u4EF6\u5B58\u5728"
+    - key: save.state.empty_slot
+      value: "\u7A7A\u5B58\u6863\u4F4D"
+    - key: save.state.invalid_slot
+      value: "\u5B58\u6863\u6587\u4EF6\u65E0\u6548"
+    - key: save.metadata
+      value: "\u540D\u79F0\uFF1A{0}\n\u573A\u666F\uFF1A{1}\n\u4FDD\u5B58\u65F6\u95F4\uFF1A{2}\n\u521B\u5EFA\u65F6\u95F4\uFF1A{3}\n\u6E38\u73A9\u65F6\u957F\uFF1A{4}"
+    - key: save.message.new_created
+      value: "\u5DF2\u521B\u5EFA\u65B0\u5B58\u6863\u6570\u636E\u3002"
+    - key: save.message.loaded
+      value: "\u5B58\u6863\u5DF2\u8BFB\u53D6\u3002"
+    - key: save.message.no_file_new_data
+      value: "\u672A\u627E\u5230\u5B58\u6863\u6587\u4EF6\uFF0C\u5DF2\u521B\u5EFA\u65B0\u6570\u636E\u3002"
+    - key: save.message.invalid_recovered
+      value: "\u5B58\u6863\u6587\u4EF6\u65E0\u6548\uFF0C\u5DF2\u521B\u5EFA\u65B0\u6570\u636E\u3002"
+    - key: save.message.completed
+      value: "\u5B58\u6863\u5DF2\u5B8C\u6210\u3002"
+    - key: save.message.failed
+      value: "\u5B58\u6863\u5931\u8D25\u3002"
+    - key: save.message.deleted
+      value: "\u5B58\u6863\u5DF2\u5220\u9664\u3002"
+    - key: save.message.delete_failed
+      value: "\u5220\u9664\u5931\u8D25\u3002"
+    - key: save.message.manager_missing
+      value: "\u573A\u666F\u4E2D\u672A\u627E\u5230 SaveManager\u3002"
+    - key: save.confirm.new_title
+      value: "\u5F00\u59CB\u65B0\u6E38\u620F"
+    - key: save.confirm.new_message
+      value: "\u5B58\u6863\u4F4D {0} \u5DF2\u6709\u6570\u636E\u3002\u8981\u8986\u76D6\u5E76\u5F00\u59CB\u65B0\u6E38\u620F\u5417\uFF1F"
+    - key: save.confirm.delete_title
+      value: "\u5220\u9664\u5B58\u6863"
+    - key: save.confirm.delete_message
+      value: "\u8981\u5220\u9664\u5B58\u6863\u4F4D {0} \u7684\u6570\u636E\u5417\uFF1F"
+    - key: dialogue.village.oldman.001.0
+      value: "\u4F60\u597D\uFF0C{playerName}\u3002\u4F60\u771F\u7684\u8981\u8FDB\u5165<color=red>\u7981\u5730</color>\u5417\uFF1F"
+    - key: dialogue.village.oldman.001.1
+      value: "\u98CE\u7A7F\u8FC7\u6751\u53E3\u7684\u6728\u724C\uFF0C\u65E7\u94C3\u53D1\u51FA\u8F7B\u8F7B\u7684\u54CD\u58F0\u3002"
+    - key: dialogue.village.oldman.001.2
+      value: "\u5982\u679C\u8FD9\u662F\u547D\u8FD0\u7ED9\u6211\u7684\u6D4B\u8BD5\uFF0C\u90A3\u6211\u81F3\u5C11\u8981\u786E\u8BA4\u5BF9\u8BDD\u7CFB\u7EDF\u80FD\u6B63\u5E38\u5DE5\u4F5C\u3002"
+    - key: dialogue.village.oldman.001.3
+      value: "\u7CFB\u7EDF\u63D0\u793A\uFF1A\u8FD9\u6BB5\u5BF9\u8BDD\u6765\u81EA
+        DialogueTable\uFF0C\u53EF\u901A\u8FC7 Excel \u5BFC\u5165\u5DE5\u5177\u5237\u65B0\u3002"
+    - key: dialogue.village.oldman.accept.0
+      value: "\u592A\u597D\u4E86\u3002\u8BF7\u53BB\u68EE\u6797\u8FB9\u7684\u5C0F\u5C4B\u627E\u56DE\u9879\u94FE\u3002"
+    - key: dialogue.village.oldman.decline.0
+      value: "\u6211\u660E\u767D\u4E86\u3002\u5982\u679C\u4F60\u6539\u53D8\u4E3B\u610F\uFF0C\u53EF\u4EE5\u518D\u6765\u627E\u6211\u3002"
+    - key: dialogue.village.oldman.reward.0
+      value: "\u6211\u4F1A\u7ED9\u4F60 50 \u679A\u91D1\u5E01\uFF0C\u8FD8\u6709\u6751\u91CC\u7684\u901A\u884C\u8BC1\u660E\u3002"
+    - key: dialogue.village.oldman.persuade.0
+      value: "\u4F60\u7684\u8BDD\u8BA9\u6211\u5B89\u5FC3\u3002\u597D\u5427\uFF0C\u6211\u4F1A\u5148\u4ED8\u4E00\u534A\u62A5\u916C\u3002"
+    - key: dialogue.village.oldman.progress.0
+      value: "\u9879\u94FE\u5E94\u8BE5\u8FD8\u5728\u68EE\u6797\u8FB9\u7684\u5C0F\u5C4B\u9644\u8FD1\u3002\u627E\u5230\u540E\u518D\u56DE\u6765\u627E\u6211\u5427\u3002"
+    - key: dialogue.village.oldman.found.0
+      value: "\u4F60\u5728\u5C0F\u5C4B\u65C1\u627E\u5230\u4E86\u90A3\u6761\u65E7\u9879\u94FE\u3002\u73B0\u5728\u53EF\u4EE5\u56DE\u53BB\u4EA4\u7ED9\u6751\u957F\u3002"
+    - key: dialogue.village.oldman.complete.0
+      value: "\u6CA1\u9519\uFF0C\u5C31\u662F\u8FD9\u6761\u9879\u94FE\u3002\u8C22\u8C22\u4F60\uFF0C\u8FD9\u4EFD\u4EBA\u60C5\u6211\u4F1A\u8BB0\u4F4F\u3002"
+    - key: dialogue.village.oldman.completed.0
+      value: "\u4F60\u5DF2\u7ECF\u5E2E\u6211\u627E\u56DE\u9879\u94FE\u4E86\u3002\u5982\u679C\u9700\u8981\u6751\u91CC\u5E2E\u5FD9\uFF0C\u5C3D\u7BA1\u5F00\u53E3\u3002"
+    - key: dialogue.village.oldman.001.option.accept
+      value: "\u5F53\u7136\u613F\u610F"
+    - key: dialogue.village.oldman.001.option.decline
+      value: "\u6211\u6CA1\u7A7A"
+    - key: dialogue.village.oldman.001.option.reward
+      value: "\u4F60\u5148\u544A\u8BC9\u6211\u62A5\u916C"
+    - key: dialogue.village.oldman.001.option.persuade
+      value: "[\u9B45\u529B 5] \u8BF4\u670D\u4ED6"
+    - key: dialogue.village.oldman.001.option.progress
+      value: "\u6211\u8FD8\u6CA1\u627E\u5230\u9879\u94FE"
+    - key: dialogue.village.oldman.001.option.find
+      value: "\u6A21\u62DF\uFF1A\u5728\u5C0F\u5C4B\u627E\u5230\u9879\u94FE"
+    - key: dialogue.village.oldman.001.option.turnin
+      value: "\u628A\u9879\u94FE\u4EA4\u7ED9\u6751\u957F"
+    - key: dialogue.village.oldman.001.option.completed
+      value: "\u8BE2\u95EE\u5B8C\u6210\u540E\u7684\u53CD\u5E94"
+    - key: dialogue.shopkeeper.001.0
+      value: "\u6B22\u8FCE\u5149\u4E34\u3002\u4ECA\u5929\u7684\u82F9\u679C\u53EA\u8981
+        <b>3</b> \u679A\u91D1\u5E01\u3002"
+    - key: dialogue.shopkeeper.001.1
+      value: "\u5982\u679C\u4F60\u5E26\u6765 {specialItem}\uFF0C\u6211\u53EF\u4EE5\u7ED9\u4F60\u7279\u522B\u6298\u6263\u3002"
+    - key: dialogue.tutorial.save.001.0
+      value: "\u7CFB\u7EDF\u63D0\u793A\uFF1A\u70B9\u51FB\u4FDD\u5B58\u6309\u94AE\u53EF\u4EE5\u5199\u5165\u5F53\u524D\u5B58\u6863\u69FD\u3002"
+    - key: dialogue.tutorial.save.001.1
+      value: "\u7CFB\u7EDF\u63D0\u793A\uFF1A\u8BFB\u53D6\u6309\u94AE\u4F1A\u4ECE\u5F53\u524D\u69FD\u4F4D\u6062\u590D\u6570\u636E\u3002"
+    - key: dialogue.tutorial.dialogue.001.0
+      value: "\u8FD9\u4E00\u6BB5\u7528\u4E8E\u6D4B\u8BD5\u81EA\u52A8\u64AD\u653E\u3001\u8DF3\u8FC7\u548C
+        Ctrl \u52A0\u901F\u663E\u793A\u3002"
+    - key: dialogue.tutorial.dialogue.001.1
+      value: "\u5BCC\u6587\u672C\u4E5F\u53EF\u4EE5\u9010\u5B57\u663E\u793A\uFF1A<color=#66ccff>\u84DD\u8272\u63D0\u793A</color>\u3001<b>\u52A0\u7C97\u63D0\u793A</b>\u3002"
+    - key: dialogue.template_dialogue_accept.1
+      value: 
+    - key: dialogue.new_dialogue_001.0
+      value: 
+  - languageCode: en-US
+    entries:
+    - key: scene.main_menu
+      value: Main Menu
+    - key: scene.gameplay
+      value: Gameplay
+    - key: ui.new_game
+      value: New Game
+    - key: ui.save
+      value: Save
+    - key: ui.settings
+      value: Settings
+    - key: ui.quit
+      value: Quit
+    - key: ui.language
+      value: Language
+    - key: ui.delete
+      value: Delete
+    - key: ui.close
+      value: Close
+    - key: pause.title
+      value: Pause
+    - key: pause.subtitle
+      value: Game Paused
+    - key: pause.resume
+      value: Resume
+    - key: pause.main_menu
+      value: Main Menu
+    - key: settings.tab.audio
+      value: Audio
+    - key: settings.tab.video
+      value: Video
+    - key: settings.tab.input
+      value: Input
+    - key: settings.resolution
+      value: Resolution
+    - key: settings.fullscreen
+      value: Fullscreen
+    - key: settings.reset
+      value: Reset
+    - key: settings.back
+      value: Back
+    - key: settings.data_cleared
+      value: Data cleared
+    - key: input.rebind_tip
+      value: Click a key field, then press the new key.
+    - key: input.action.jump
+      value: Jump
+    - key: input.action.attack
+      value: Attack
+    - key: input.action.interact
+      value: Interact
+    - key: input.action.pause
+      value: Pause
+    - key: input.action.confirm
+      value: Confirm
+    - key: input.action.cancel
+      value: Cancel
+    - key: input.press_key
+      value: Press key...
+    - key: common.not_available
+      value: N/A
+    - key: common.none
+      value: None
+    - key: common.confirm
+      value: Confirm
+    - key: common.cancel
+      value: Cancel
+    - key: save.title
+      value: Save Slots
+    - key: save.title.new_game_select
+      value: Select New Game Slot
+    - key: save.new
+      value: New
+    - key: save.load
+      value: Load
+    - key: save.empty
+      value: Empty
+    - key: save.invalid
+      value: Invalid
+    - key: save.slot
+      value: Slot {0}
+    - key: save.path
+      value: 'Path: {0}'
+    - key: save.path_unavailable
+      value: 'Path: unavailable'
+    - key: save.selected_slot
+      value: 'Selected Slot: {0}'
+    - key: save.selected_unavailable
+      value: 'Selected: unavailable'
+    - key: save.no_metadata
+      value: No metadata
+    - key: save.no_data_in_slot
+      value: No save data in this slot.
+    - key: save.invalid_slot_detail
+      value: This save file is corrupted or failed validation. Loading it will create
+        new data.
+    - key: save.state.exists
+      value: Save file exists
+    - key: save.state.empty_slot
+      value: Empty slot
+    - key: save.state.invalid_slot
+      value: Invalid save file
+    - key: save.metadata
+      value: 'Name: {0}
+
+        Scene: {1}
+
+        Saved: {2}
+
+        Created:
+        {3}
+
+        Play Time: {4}'
+    - key: save.message.new_created
+      value: New save data created.
+    - key: save.message.loaded
+      value: Save loaded.
+    - key: save.message.no_file_new_data
+      value: No save file found. New data created.
+    - key: save.message.invalid_recovered
+      value: Invalid save file. New data created.
+    - key: save.message.completed
+      value: Save completed.
+    - key: save.message.failed
+      value: Save failed.
+    - key: save.message.deleted
+      value: Save deleted.
+    - key: save.message.delete_failed
+      value: Delete failed.
+    - key: save.message.manager_missing
+      value: SaveManager is not in the scene.
+    - key: save.confirm.new_title
+      value: Start New Game
+    - key: save.confirm.new_message
+      value: Slot {0} already has data. Overwrite it and start a new game?
+    - key: save.confirm.delete_title
+      value: Delete Save
+    - key: save.confirm.delete_message
+      value: Delete the data in slot {0}?
+    - key: dialogue.village.oldman.001.0
+      value: Hello, {playerName}. Are you really going into the <color=red>forbidden
+        land</color>?
+    - key: dialogue.village.oldman.001.1
+      value: Wind passes the wooden sign at the village gate, and the old bell rings
+        softly.
+    - key: dialogue.village.oldman.001.2
+      value: If this is fate testing me, I should at least make sure the dialogue
+        system works.
+    - key: dialogue.village.oldman.001.3
+      value: 'System: This dialogue comes from DialogueTable and can be refreshed
+        by the Excel importer.'
+    - key: dialogue.village.oldman.accept.0
+      value: Wonderful. Please find the necklace near the cottage by the forest.
+    - key: dialogue.village.oldman.decline.0
+      value: I understand. Come back if you change your mind.
+    - key: dialogue.village.oldman.reward.0
+      value: I will give you 50 coins and a village pass.
+    - key: dialogue.village.oldman.persuade.0
+      value: Your words reassure me. Fine, I will pay half in advance.
+    - key: dialogue.village.oldman.progress.0
+      value: The necklace should still be near the cottage by the forest. Come back
+        once you find it.
+    - key: dialogue.village.oldman.found.0
+      value: You found the old necklace beside the cottage. Now you can bring it
+        back to the village elder.
+    - key: dialogue.village.oldman.complete.0
+      value: Yes, this is the necklace. Thank you. I will remember what you did for
+        us.
+    - key: dialogue.village.oldman.completed.0
+      value: You already brought the necklace back. If you need the village's help,
+        just ask.
+    - key: dialogue.village.oldman.001.option.accept
+      value: Of course.
+    - key: dialogue.village.oldman.001.option.decline
+      value: I do not have time.
+    - key: dialogue.village.oldman.001.option.reward
+      value: Tell me the reward first.
+    - key: dialogue.village.oldman.001.option.persuade
+      value: '[Charm 5] Persuade him'
+    - key: dialogue.village.oldman.001.option.progress
+      value: I have not found the necklace yet.
+    - key: dialogue.village.oldman.001.option.find
+      value: 'Simulate: find the necklace'
+    - key: dialogue.village.oldman.001.option.turnin
+      value: Give the necklace to the elder.
+    - key: dialogue.village.oldman.001.option.completed
+      value: Ask after completing the quest.
+    - key: dialogue.shopkeeper.001.0
+      value: Welcome. Apples are only <b>3</b> coins today.
+    - key: dialogue.shopkeeper.001.1
+      value: Bring me {specialItem}, and I can give you a special discount.
+    - key: dialogue.tutorial.save.001.0
+      value: 'System: Click Save to write the current save slot.'
+    - key: dialogue.tutorial.save.001.1
+      value: 'System: Click Load to restore data from the current slot.'
+    - key: dialogue.tutorial.dialogue.001.0
+      value: This line tests auto-play, skip, and Ctrl fast display.
+    - key: dialogue.tutorial.dialogue.001.1
+      value: 'Rich text also types correctly: <color=#66ccff>blue note</color>, <b>bold
+        note</b>.'
+    - key: dialogue.template_dialogue_accept.1
+      value: 
+    - key: dialogue.new_dialogue_001.0
+      value: 
