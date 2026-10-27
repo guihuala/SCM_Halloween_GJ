@@ -16,7 +16,7 @@ public class DialogueExcelImporterWindow : EditorWindow
         "dialogueId",
         "lineIndex",
         "speakerName",
-        "localizationKey",
+        "text",
         "portraitResource",
         "standingResource",
         "expression",
@@ -26,19 +26,19 @@ public class DialogueExcelImporterWindow : EditorWindow
 
     private readonly string[] _optionalHeaders =
     {
-        "option1LocalizationKey",
+        "option1Text",
         "option1NextDialogueId",
         "option1Condition",
         "option1Effects",
-        "option2LocalizationKey",
+        "option2Text",
         "option2NextDialogueId",
         "option2Condition",
         "option2Effects",
-        "option3LocalizationKey",
+        "option3Text",
         "option3NextDialogueId",
         "option3Condition",
         "option3Effects",
-        "option4LocalizationKey",
+        "option4Text",
         "option4NextDialogueId",
         "option4Condition",
         "option4Effects"
@@ -400,7 +400,7 @@ public class DialogueExcelImporterWindow : EditorWindow
             dialogueId = GetCell(row, headerMap, "dialogueId").Trim(),
             lineIndex = ParseInt(GetCell(row, headerMap, "lineIndex"), "lineIndex"),
             speakerName = GetCell(row, headerMap, "speakerName"),
-            localizationKey = GetCell(row, headerMap, "localizationKey"),
+            text = GetCell(row, headerMap, "text"),
             portraitResource = GetCell(row, headerMap, "portraitResource"),
             standingResource = GetCell(row, headerMap, "standingResource"),
             expression = GetCell(row, headerMap, "expression"),
@@ -420,9 +420,9 @@ public class DialogueExcelImporterWindow : EditorWindow
             throw new InvalidDataException("lineIndex 不能小于 0。");
         }
 
-        if (string.IsNullOrEmpty(dialogueRow.localizationKey))
+        if (string.IsNullOrEmpty(dialogueRow.text))
         {
-            throw new InvalidDataException("localizationKey 不能为空。");
+            throw new InvalidDataException("text 不能为空。");
         }
 
         return dialogueRow;
@@ -431,22 +431,26 @@ public class DialogueExcelImporterWindow : EditorWindow
     private List<DialogueTableOptionRow> CreateOptionRows(List<string> row, Dictionary<string, int> headerMap)
     {
         List<DialogueTableOptionRow> options = new List<DialogueTableOptionRow>();
-        AddOptionRow(options, row, headerMap, 1);
-        AddOptionRow(options, row, headerMap, 2);
-        AddOptionRow(options, row, headerMap, 3);
-        AddOptionRow(options, row, headerMap, 4);
+        var indices = new SortedSet<int>();
+        foreach (string header in headerMap.Keys)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(header, @"^option(\d+)(Text|NextDialogueId|Condition|Effects)$");
+            if (match.Success && int.TryParse(match.Groups[1].Value, out int index) && index > 0)
+                indices.Add(index);
+        }
+        foreach (int index in indices) AddOptionRow(options, row, headerMap, index);
         return options;
     }
 
     private void AddOptionRow(List<DialogueTableOptionRow> options, List<string> row, Dictionary<string, int> headerMap, int index)
     {
         string prefix = $"option{index}";
-        string localizationKey = GetOptionalCell(row, headerMap, $"{prefix}LocalizationKey");
+        string text = GetOptionalCell(row, headerMap, $"{prefix}Text");
         string nextDialogueId = GetOptionalCell(row, headerMap, $"{prefix}NextDialogueId");
         string condition = GetOptionalCell(row, headerMap, $"{prefix}Condition");
         string effects = GetOptionalCell(row, headerMap, $"{prefix}Effects");
 
-        if (string.IsNullOrEmpty(localizationKey) &&
+        if (string.IsNullOrEmpty(text) &&
             string.IsNullOrEmpty(nextDialogueId) &&
             string.IsNullOrEmpty(condition) &&
             string.IsNullOrEmpty(effects))
@@ -456,7 +460,7 @@ public class DialogueExcelImporterWindow : EditorWindow
 
         options.Add(new DialogueTableOptionRow
         {
-            localizationKey = localizationKey,
+            text = text,
             nextDialogueId = nextDialogueId,
             condition = condition,
             effects = effects

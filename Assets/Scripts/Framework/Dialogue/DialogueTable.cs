@@ -8,7 +8,7 @@ public class DialogueTableRow
     public string dialogueId;
     public int lineIndex;
     public string speakerName;
-    public string localizationKey;
+    [TextArea] public string text;
     public string portraitResource;
     public string standingResource;
     public string expression;
@@ -20,7 +20,7 @@ public class DialogueTableRow
 [Serializable]
 public class DialogueTableOptionRow
 {
-    public string localizationKey;
+    [TextArea] public string text;
     public string nextDialogueId;
     public string condition;
     public string effects;

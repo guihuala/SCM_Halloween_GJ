@@ -20,6 +20,10 @@ public class BasePanel : MonoBehaviour
     [SerializeField] protected Vector2 scaleFrom = new Vector2(0.8f, 0.8f); // 初始缩放值
     [SerializeField] protected float scaleDuration = 0.3f; // 缩放动画持续时间
 
+    private Sequence transition;
+
+    protected virtual void OnDestroy() => transition?.Kill();
+
     protected virtual void Awake()
     {
         // 获取 CanvasGroup 组件
@@ -33,6 +37,7 @@ public class BasePanel : MonoBehaviour
     public virtual void OpenPanel(string name)
     {
         panelName = name;
+        SetInteractable(true);
 
         // 激活面板
         gameObject.SetActive(true);
@@ -47,7 +52,8 @@ public class BasePanel : MonoBehaviour
         }
 
         // 使用 DOTween 播放渐显动画（不受时间缩放影响）
-        Sequence s = DOTween.Sequence();
+        transition?.Kill();
+        Sequence s = transition = DOTween.Sequence();
         s.SetUpdate(UpdateType.Normal, true); // 设置为不受时间缩放影响
         
         // 添加淡入动画
@@ -70,9 +76,11 @@ public class BasePanel : MonoBehaviour
     public virtual void ClosePanel()
     {
         hasRemoved = true;
+        SetInteractable(false);
 
         // 使用 DOTween 播放渐隐动画，并在动画完成后销毁对象（不受时间缩放影响）
-        Sequence s = DOTween.Sequence();
+        transition?.Kill();
+        Sequence s = transition = DOTween.Sequence();
         s.SetUpdate(UpdateType.Normal, true); // 设置为不受时间缩放影响
         
         // 添加淡出动画
@@ -104,6 +112,7 @@ public class BasePanel : MonoBehaviour
     public virtual void ClosePanelImmediate()
     {
         hasRemoved = true;
+        SetInteractable(false);
         if (gameObject != null)
         {
             Destroy(gameObject);

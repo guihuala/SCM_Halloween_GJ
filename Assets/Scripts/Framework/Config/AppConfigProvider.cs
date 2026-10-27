@@ -19,14 +19,4 @@ public static class AppConfigProvider
         }
     }
 
-    public static string DefaultLanguage
-    {
-        get
-        {
-            AppConfig config = Config;
-            return config != null && !string.IsNullOrEmpty(config.defaultLanguage)
-                ? config.defaultLanguage
-                : "zh-CN";
-        }
-    }
 }

@@ -1,92 +1,100 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-10)]
 public class GameManager : Singleton<GameManager>
 {
-    public enum GameState
+    public enum GameState { Playing, Paused, GameOver }
+    public GameState CurrentState { get; private set; }
+    private bool leavingScene;
+
+    private void Start() => StartGame();
+
+    private void Update()
     {
-        Playing, // 游戏进行中
-        Paused, // 游戏暂停
-        GameOver // 游戏结束
+        if (leavingScene || (SceneLoader.Instance != null && SceneLoader.Instance.IsLoading())) return;
+        if (UIManager.Instance != null && UIManager.Instance.IsPanelOpen("SettingPanel")) return;
+        bool pausePressed = InputManager.Instance != null
+            ? InputManager.Instance.GetActionDown(InputActionType.Pause)
+            : Input.GetKeyDown(KeyCode.Escape);
+        if (!pausePressed) return;
+        if (CurrentState == GameState.Playing) PauseGame();
+        else if (CurrentState == GameState.Paused) ResumeGame();
     }
 
-    private GameState currentState;
-
-    // 游戏开始时初始化状态
-    void Start()
+    public void SetGameState(GameState state)
     {
-    }
-
-    public void SetGameState(GameState newState)
-    {
-        currentState = newState;
-
-        switch (newState)
+        if (leavingScene) return;
+        CurrentState = state;
+        if (TimeManager.Instance != null)
         {
-            case GameState.Playing:
-                Time.timeScale = 1;
-                ClosePanelIfOpen("SettingPanel");
-                ClosePanelIfOpen("PausePanel");
-                ClosePanelIfOpen("GameResultPanel");
-                break;
-
-            case GameState.Paused:
-                Time.timeScale = 0;
-                UIManager.Instance.OpenPanel("PausePanel");
-                break;
-
-            case GameState.GameOver:
-                Time.timeScale = 0;
-                UIManager.Instance.OpenPanel("GameResultPanel");
-                break;
+            if (state == GameState.Playing) TimeManager.Instance.ResumeTime();
+            else TimeManager.Instance.PauseTime();
+        }
+        else Time.timeScale = state == GameState.Playing ? 1f : 0f;
+        if (InputManager.Instance != null)
+            InputManager.Instance.SetGameplayInputEnabled(state == GameState.Playing);
+        if (state == GameState.Playing)
+        {
+            ClosePanelIfOpen("SettingPanel");
+            ClosePanelIfOpen("PausePanel");
+            ClosePanelIfOpen("GameResultPanel");
+        }
+        else if (state == GameState.Paused)
+            UIManager.Instance.OpenPanel("PausePanel", null, UIPanelLayer.Popup);
+        else
+        {
+            var result = UIManager.Instance.OpenPanel("GameResultPanel", null, UIPanelLayer.Top) as GameResultPanel;
+            if (result != null) result.Configure(false);
         }
     }
 
-    #region 状态控制
-
-    // 游戏开始
-    public void StartGame()
-    {
-        SetGameState(GameState.Playing);
-    }
-
-    // 暂停游戏
+    public void StartGame() => SetGameState(GameState.Playing);
     public void PauseGame()
     {
-        if (currentState == GameState.Playing)
-        {
-            SetGameState(GameState.Paused);
-        }
+        if (CurrentState == GameState.Playing) SetGameState(GameState.Paused);
     }
-
-    // 恢复游戏
     public void ResumeGame()
     {
-        if (currentState == GameState.Paused)
-        {
-            SetGameState(GameState.Playing);
-        }
+        if (CurrentState == GameState.Paused) SetGameState(GameState.Playing);
     }
 
-    // 游戏结束
-    public void EndGame()
+    // Default EndGame remains compatible with existing callers.
+    public void EndGame() => FinishGame(false);
+    public void WinGame() => FinishGame(true);
+    public void LoseGame() => FinishGame(false);
+
+    private void FinishGame(bool won)
     {
+        if (leavingScene || CurrentState == GameState.GameOver) return;
+        ClosePanelIfOpen("SettingPanel");
+        ClosePanelIfOpen("PausePanel");
         SetGameState(GameState.GameOver);
+        var panel = UIManager.Instance.GetPanel("GameResultPanel") as GameResultPanel;
+        if (panel != null) panel.Configure(won);
     }
 
-    // 返回主菜单
+    public void RestartGame()
+    {
+        if (!PrepareSceneChange()) return;
+        SceneLoader.Instance.ReloadCurrentScene();
+    }
+
     public void ReturnToMainMenu()
     {
-        SetGameState(GameState.Playing);
+        if (!PrepareSceneChange()) return;
         SceneLoader.Instance.LoadScene(GameScene.MainMenu);
     }
 
-    private void ClosePanelIfOpen(string panelName)
+    private bool PrepareSceneChange()
     {
-        if (UIManager.Instance != null && UIManager.Instance.IsPanelOpen(panelName))
-        {
-            UIManager.Instance.ClosePanel(panelName);
-        }
+        if (leavingScene || SceneLoader.Instance == null || SceneLoader.Instance.IsLoading()) return false;
+        leavingScene = true;
+        return true;
     }
 
-    #endregion
+    private void ClosePanelIfOpen(string name)
+    {
+        if (UIManager.Instance != null && UIManager.Instance.IsPanelOpen(name))
+            UIManager.Instance.ClosePanel(name);
+    }
 }

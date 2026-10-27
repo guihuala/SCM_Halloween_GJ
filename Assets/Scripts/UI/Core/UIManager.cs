@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum UIPanelLayer
 {
@@ -42,7 +43,32 @@ public class UIManager : SingletonPersistent<UIManager>
     protected override void Awake()
     {
         base.Awake();
+        if (Instance != this) return;
         InitDicts();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (mode != LoadSceneMode.Single) return;
+        _uiRoot = null;
+        _panelDict.Clear();
+        _childPanelDict.Clear();
+        _parentPanelDict.Clear();
+    }
+
+    public void CloseAllPanelsImmediate()
+    {
+        foreach (var panel in new List<BasePanel>(_panelDict.Values))
+            if (panel != null) panel.ClosePanelImmediate();
+        _panelDict.Clear();
+        _childPanelDict.Clear();
+        _parentPanelDict.Clear();
     }
 
     // 初始化字典

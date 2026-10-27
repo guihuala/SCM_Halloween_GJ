@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: AppConfig
   m_EditorClassIdentifier: 
   projectName: 2D Template
-  defaultLanguage: zh-CN
-  languagePlayerPrefsKey: template.language
   initialScene: 0
   gameplayScene: 1

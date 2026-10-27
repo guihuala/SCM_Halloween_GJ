@@ -45,6 +45,7 @@ public class AudioManager : SingletonPersistent<AudioManager>
     protected override void Awake()
     {
         base.Awake();
+        if (Instance != this) return;
 
         // 创建BGM和SFX的AudioSource根节点
         _bgmSourcesRootGO = new GameObject("BGM_ROOT");
@@ -265,7 +266,7 @@ public class AudioManager : SingletonPersistent<AudioManager>
     /// <param name="stopSfxName">要停止的音效名称</param>
     public void StopSfx(string stopSfxName)
     {
-        AudioInfo audioInfo = bgmAudioInfoList.Find(x => x.audioName == stopSfxName);
+        AudioInfo audioInfo = sfxAudioInfoList.Find(x => x.audioName == stopSfxName);
 
         if (audioInfo == null)
         {
@@ -275,7 +276,7 @@ public class AudioManager : SingletonPersistent<AudioManager>
 
         audioInfo.audioSource.Stop();
 
-        bgmAudioInfoList.Remove(audioInfo);
+        sfxAudioInfoList.Remove(audioInfo);
 
         Destroy(audioInfo.audioSource.gameObject);
     }

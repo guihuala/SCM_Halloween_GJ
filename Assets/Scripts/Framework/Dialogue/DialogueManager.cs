@@ -138,7 +138,7 @@ public class DialogueManager : SingletonPersistent<DialogueManager>
         return new DialogueLine
         {
             speakerName = row.speakerName,
-            text = GetLocalizedText(row),
+            text = row.text,
             portraitOverride = LoadSprite(row.portraitResource),
             standingOverride = LoadSprite(row.standingResource),
             expression = row.expression,
@@ -146,11 +146,6 @@ public class DialogueManager : SingletonPersistent<DialogueManager>
             autoPlayDelay = row.autoPlayDelay,
             options = CreateOptions(row)
         };
-    }
-
-    private string GetLocalizedText(DialogueTableRow row)
-    {
-        return GetLocalizedText(row.localizationKey);
     }
 
     private Sprite LoadSprite(string resourcePath)
@@ -167,15 +162,14 @@ public class DialogueManager : SingletonPersistent<DialogueManager>
         foreach (DialogueTableOptionRow optionRow in row.options)
         {
             if (optionRow == null) continue;
-            AddOption(options, optionRow.localizationKey, optionRow.nextDialogueId, optionRow.condition, optionRow.effects);
+            AddOption(options, optionRow.text, optionRow.nextDialogueId, optionRow.condition, optionRow.effects);
         }
 
         return options;
     }
 
-    private void AddOption(List<DialogueOption> options, string localizationKey, string nextDialogueId, string condition, string effects)
+    private void AddOption(List<DialogueOption> options, string text, string nextDialogueId, string condition, string effects)
     {
-        string text = GetLocalizedText(localizationKey);
         if (string.IsNullOrEmpty(text)) return;
 
         options.Add(new DialogueOption
@@ -187,14 +181,4 @@ public class DialogueManager : SingletonPersistent<DialogueManager>
         });
     }
 
-    private string GetLocalizedText(string localizationKey)
-    {
-        if (string.IsNullOrEmpty(localizationKey))
-        {
-            return string.Empty;
-        }
-
-        string localizedText = LocalizationManager.Get(localizationKey);
-        return localizedText == localizationKey ? string.Empty : localizedText;
-    }
 }

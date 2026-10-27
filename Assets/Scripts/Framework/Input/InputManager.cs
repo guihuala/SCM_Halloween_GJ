@@ -90,27 +90,6 @@ public class InputManager : SingletonPersistent<InputManager>
         return keys;
     }
 
-    public void SetKeys(InputActionType action, IEnumerable<KeyCode> keys)
-    {
-        if (!actionKeys.TryGetValue(action, out var targetKeys))
-        {
-            targetKeys = new List<KeyCode>();
-            actionKeys[action] = targetKeys;
-        }
-
-        targetKeys.Clear();
-
-        if (keys == null) return;
-
-        foreach (var key in keys)
-        {
-            if (!targetKeys.Contains(key))
-            {
-                targetKeys.Add(key);
-            }
-        }
-    }
-
     public void SetInputEnabled(bool enabled)
     {
         inputEnabled = enabled;
@@ -129,12 +108,12 @@ public class InputManager : SingletonPersistent<InputManager>
     public void RebuildKeyMap()
     {
         actionKeys.Clear();
-        actionKeys[InputActionType.Jump] = jumpKeys;
-        actionKeys[InputActionType.Attack] = attackKeys;
-        actionKeys[InputActionType.Interact] = interactKeys;
-        actionKeys[InputActionType.Pause] = pauseKeys;
-        actionKeys[InputActionType.Confirm] = confirmKeys;
-        actionKeys[InputActionType.Cancel] = cancelKeys;
+        actionKeys[InputActionType.Jump] = new List<KeyCode>(jumpKeys);
+        actionKeys[InputActionType.Attack] = new List<KeyCode>(attackKeys);
+        actionKeys[InputActionType.Interact] = new List<KeyCode>(interactKeys);
+        actionKeys[InputActionType.Pause] = new List<KeyCode>(pauseKeys);
+        actionKeys[InputActionType.Confirm] = new List<KeyCode>(confirmKeys);
+        actionKeys[InputActionType.Cancel] = new List<KeyCode>(cancelKeys);
     }
 
     private bool CanReadAction(InputActionType action)
@@ -143,6 +122,7 @@ public class InputManager : SingletonPersistent<InputManager>
 
         switch (action)
         {
+            case InputActionType.Pause:
             case InputActionType.Confirm:
             case InputActionType.Cancel:
                 return uiInputEnabled;

@@ -13,7 +13,7 @@
 - 普通对话、旁白、内心独白、系统提示四种样式
 - 按对话 ID 播放
 - 通过配置表导入对话数据
-- 使用项目统一本地化 key
+- 对白和选项直接填写正文
 - Unity 富文本
 - `{变量}` 文本替换
 - 分支选项、条件显示、选项效果
@@ -27,10 +27,10 @@
 - 节点可以拖拽，坐标保存到 Editor-only 的 `Assets/Editor/Config/DialogueEditorLayout.asset`
 - 支持框选/多选移动、鼠标滚轮缩放、中键或右键拖动画布平移、一键整理布局、回到选中节点
 - 右键节点画布可以新增对话节点，或删除当前选中的对话组
-- 校验面板会检查重复行号、缺失本地化 key、断开的跳转目标，以及条件/效果格式；有问题的节点会变成黄色或红色
+- 校验面板会检查重复行号、空文本、断开的跳转目标，以及条件/效果格式；有问题的节点会变成黄色或红色
 - 工具栏可以导出当前 `DialogueTable` 为 Excel，并显示最近导入、导出、编辑器修改时间
-- 可以切换到列表视图；节点或列表中选中对话组后，在下方/右侧编辑台词行、文本 key、对应本地化文本、表现和分支选项
-- 保存内容会写回 `DialogueTable.asset` 和 `LocalizationTable.asset`
+- 可以切换到列表视图；节点或列表中选中对话组后，在下方/右侧编辑台词行、正文、表现和分支选项
+- 保存内容会写回 `DialogueTable.asset`
 
 对话表推荐使用独立导入窗口，避免和普通游戏数据混在一起：
 
@@ -66,18 +66,18 @@ Tutorial
 Excel 表头需要和 `DialogueTableRow` 字段名一致：
 
 ```text
-dialogueId,lineIndex,speakerName,localizationKey,portraitResource,standingResource,expression,style,autoPlayDelay
+dialogueId,lineIndex,speakerName,text,portraitResource,standingResource,expression,style,autoPlayDelay
 ```
 
 在 `DialogueTable` 资源中，分支选项保存为 `options` 列表，方便在 Inspector 中折叠和扩展。
 
-Excel 示例表为了方便横向填写，仍然提供 4 组选项列；导入时会自动转换成 `options` 列表：
+Excel 默认提供 4 组选项列，导出时根据实际选项数量扩展；导入器按 option 编号识别全部选项，并转换成 `options` 列表：
 
 ```text
-option1LocalizationKey,option1NextDialogueId,option1Condition,option1Effects
-option2LocalizationKey,option2NextDialogueId,option2Condition,option2Effects
-option3LocalizationKey,option3NextDialogueId,option3Condition,option3Effects
-option4LocalizationKey,option4NextDialogueId,option4Condition,option4Effects
+option1Text,option1NextDialogueId,option1Condition,option1Effects
+option2Text,option2NextDialogueId,option2Condition,option2Effects
+option3Text,option3NextDialogueId,option3Condition,option3Effects
+option4Text,option4NextDialogueId,option4Condition,option4Effects
 ```
 
 如果选项填写了 `optionXNextDialogueId`，点击后会跳到对应对话 ID。没有填写时，会继续播放当前对话组的下一句。
@@ -116,7 +116,7 @@ npc_village_oldman_001
 
 `portraitResource` 和 `standingResource` 是 `Resources` 下的 Sprite 路径，例如 `Characters/OldMan/portrait_normal`。
 
-`localizationKey` 和 `optionXLocalizationKey` 都直接读取现有 `LocalizationTable`，语言切换完全跟随 `LocalizationManager.CurrentLanguage`。对话表只负责流程、角色、表现和分支，不再保存各语言正文。
+`text` 和 `optionXText` 直接保存正文，无需语言表或文本 key。现有示例已迁移为中文。
 
 当前运行时入口使用导入后的 ScriptableObject。CSV、JSON、Ink、Yarn Spinner 可以后续接入为“编辑器导入源”或“运行时数据源”，最终仍转换成同一份 `DialogueTable` 或 `DialogueSequence`，UI 层不需要改。
 

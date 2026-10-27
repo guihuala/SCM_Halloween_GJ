@@ -27,6 +27,7 @@ public class ParticleManager : SingletonPersistent<ParticleManager>
     protected override void Awake()
     {
         base.Awake();
+        if (Instance != this) return;
 
         _particleRootGO = new GameObject("PARTICLE_ROOT");
         _particleRootGO.transform.SetParent(transform);

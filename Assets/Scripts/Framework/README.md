@@ -1,3 +1,25 @@
+# Game Jam 基础流程（当前版本）
+
+Unity 2022.3.62f3。打开 `Assets/Scenes/MainMenu.unity`，点击新游戏直接进入 `GamePlay`；也可直接运行 GamePlay。
+
+- 暂停：HUD 按钮或 Escape；暂停菜单支持继续、重开、设置和返回主菜单。
+- 设置：仅保留背景音乐、音效音量及返回；Escape 返回。输入键位在 InputManager Inspector 配置。
+- 胜利：玩法脚本调用 `GameManager.Instance.WinGame()`。
+- 失败：调用 `GameManager.Instance.LoseGame()`；原 `EndGame()` 等同失败结算。
+- 结算面板提供重开与返回主菜单。重复结算不会生成多个面板。
+- 重开：`GameManager.Instance.RestartGame()`，重新加载当前场景。每局玩法数据应由场景对象持有，在新场景中初始化；持久化业务状态需自行重置。
+- 存档、对话及导表仍是可选工具；默认菜单不提供存档入口，GamePlay 不再包含测试内容。现有存档不会因开始或重开被删除。
+- 没有内置胜负条件：在实际玩法达到成功/失败条件时调用上述接口。
+- TimeManager 为可选慢动作工具；暂停状态由 GameManager 统一协调，不再逐帧覆盖时间。
+
+## 验证
+
+`Assets/Editor/GameFlowSmokeTest.cs` 提供批处理入口 `GameFlowSmokeTest.Run`（启动 Unity 时传 `-executeMethod GameFlowSmokeTest.Run`，不要加 `-quit`）。它运行真实场景，验证开始、暂停、设置、恢复、胜负结算、连续重开、返回菜单、单例数量、慢动作恢复和音效停止隔离；不操作玩家存档。
+
+界面固定中文，本地化模块已移除；对话正文直接填写在 DialogueTable 的 text 字段。
+
+以下为保留模块的参考说明；默认场景以本节流程为准。
+
 # Unity Core Framework 使用说明文档
 
 ## 1\. 简介
@@ -11,7 +33,6 @@
 * **GameManager**: 游戏流程状态机。
 * **SceneLoader**: 带有过渡动画的异步场景加载器。
 * **Config**: 模板级配置读取。
-* **Localization**: 轻量级文本本地化。
 * **SceneFlow**: 场景枚举与真实场景名的配置映射。
 * **TimeManager**: 时间流速控制。
 
@@ -184,7 +205,7 @@ TimeManager.Instance.SetTimeFactor(0.1f);
 TimeManager.Instance.SetTimeFactor(1f);
 ```
 
-*(注：请确保 TimeManager 中的 Update 逻辑已修复为 `Time.timeScale = TimeFactor`)*
+时间倍率只在状态改变时应用，不需要 Update 逐帧写入。
 
 -----
 

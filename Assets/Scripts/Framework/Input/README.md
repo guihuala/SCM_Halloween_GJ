@@ -28,11 +28,9 @@ InputManager.Instance.SetGameplayInputEnabled(false);
 InputManager.Instance.SetUIInputEnabled(true);
 ```
 
-## 修改键位
+## 默认键位
 
-```csharp
-InputManager.Instance.SetKeys(InputActionType.Interact, new[] { KeyCode.E });
-```
+在管理器预制体的 InputManager Inspector 配置。Game Jam 版本不提供玩家改键界面或键位存储。
 
 ## 设计说明
 

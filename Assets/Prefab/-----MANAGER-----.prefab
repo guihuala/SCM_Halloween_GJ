@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1301348935869836599}
   - component: {fileID: 1301348935869840000}
   - component: {fileID: 1301348935869840100}
+  - component: {fileID: 1301348935869840200}
   m_Layer: 0
   m_Name: -----MANAGER-----
   m_TagString: Untagged
@@ -84,8 +85,8 @@ MonoBehaviour:
   loadingCanvas: {fileID: 7509096049014771781}
   progressBar: {fileID: 7620542058217064460}
   progressText: {fileID: 6647691013981921286}
-  fadeDuration: 0.5
-  minLoadingTime: 1.5
+  fadeDuration: 0.2
+  minLoadingTime: 0
 --- !u!114 &1301348935869840000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,3 +546,15 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1301348935869840200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033116973648035728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6456fca7068e4a7a8fee04e61a784c3, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:

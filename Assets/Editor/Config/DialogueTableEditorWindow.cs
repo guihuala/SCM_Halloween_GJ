@@ -7,7 +7,6 @@ using UnityEngine;
 public class DialogueTableEditorWindow : EditorWindow
 {
     private const string DefaultDialogueTablePath = "Assets/Resources/ConfigTables/DialogueTable.asset";
-    private const string DefaultLocalizationTablePath = "Assets/Resources/Data/LocalizationTable.asset";
     private const string DefaultLayoutPath = "Assets/Editor/Config/DialogueEditorLayout.asset";
     private const float NodeWidth = 260f;
     private const float NodeHeight = 132f;
@@ -15,7 +14,6 @@ public class DialogueTableEditorWindow : EditorWindow
     private const float CanvasHeight = 1400f;
 
     private DialogueTable _dialogueTable;
-    private LocalizationTable _localizationTable;
     private DialogueEditorLayout _layout;
     private Vector2 _groupScroll;
     private Vector2 _lineScroll;
@@ -77,11 +75,10 @@ public class DialogueTableEditorWindow : EditorWindow
     {
         EditorGUILayout.BeginVertical("box");
         EditorGUILayout.LabelField("对话编辑器", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("用于直观编辑 DialogueTable。对白正文仍然保存到 LocalizationTable，对话表只保存流程和 key。", MessageType.Info);
+        EditorGUILayout.HelpBox("用于直观编辑 DialogueTable。对白和选项正文直接保存在对话表中。", MessageType.Info);
 
         EditorGUI.BeginChangeCheck();
         _dialogueTable = (DialogueTable)EditorGUILayout.ObjectField("DialogueTable", _dialogueTable, typeof(DialogueTable), false);
-        _localizationTable = (LocalizationTable)EditorGUILayout.ObjectField("LocalizationTable", _localizationTable, typeof(LocalizationTable), false);
         _layout = (DialogueEditorLayout)EditorGUILayout.ObjectField("节点布局", _layout, typeof(DialogueEditorLayout), false);
         if (EditorGUI.EndChangeCheck())
         {
@@ -298,7 +295,7 @@ public class DialogueTableEditorWindow : EditorWindow
             GUI.Label(headerRect, dialogueId, EditorStyles.boldLabel);
 
             DialogueTableRow firstRow = GetFirstRow(dialogueId);
-            string preview = firstRow != null ? GetLocalizedPreview(firstRow.localizationKey) : string.Empty;
+            string preview = firstRow != null ? Truncate(firstRow.text, 18) : string.Empty;
             GUI.Label(new Rect(viewRect.x + 8, viewRect.y + 34, viewRect.width - 16, 38), preview, EditorStyles.wordWrappedMiniLabel);
             GUI.Label(new Rect(viewRect.x + 8, viewRect.y + 78, viewRect.width - 16, 18), $"台词：{CountLines(dialogueId)}    分支：{CountOptions(dialogueId)}", EditorStyles.miniLabel);
 
@@ -586,7 +583,7 @@ public class DialogueTableEditorWindow : EditorWindow
         for (int i = 0; i < rows.Count; i++)
         {
             DialogueTableRow row = rows[i];
-            string textPreview = GetLocalizedPreview(row.localizationKey);
+            string textPreview = Truncate(row.text, 18);
             string label = $"{row.lineIndex}. {SafeText(row.speakerName)} {textPreview}";
             GUIStyle style = i == _selectedLineIndex ? EditorStyles.toolbarButton : GUI.skin.button;
             if (GUILayout.Button(label, style, GUILayout.Height(34)))
@@ -617,8 +614,8 @@ public class DialogueTableEditorWindow : EditorWindow
         row.dialogueId = EditorGUILayout.TextField("对话 ID", row.dialogueId);
         row.lineIndex = EditorGUILayout.IntField("行号", row.lineIndex);
         row.speakerName = EditorGUILayout.TextField("角色名", row.speakerName);
-        row.localizationKey = EditorGUILayout.TextField("文本 Key", row.localizationKey);
-        DrawLocalizationEditor(row.localizationKey);
+        EditorGUILayout.LabelField("对白正文");
+        row.text = EditorGUILayout.TextArea(row.text, GUILayout.MinHeight(60));
 
         EditorGUILayout.Space(8);
         EditorGUILayout.LabelField("表现", EditorStyles.boldLabel);
@@ -639,33 +636,6 @@ public class DialogueTableEditorWindow : EditorWindow
 
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
-    }
-
-    private void DrawLocalizationEditor(string localizationKey)
-    {
-        EditorGUILayout.Space(8);
-        EditorGUILayout.LabelField("本地化文本", EditorStyles.boldLabel);
-
-        if (_localizationTable == null)
-        {
-            EditorGUILayout.HelpBox("未选择 LocalizationTable，只能编辑 key，不能直接编辑文本。", MessageType.Warning);
-            return;
-        }
-
-        if (string.IsNullOrEmpty(localizationKey))
-        {
-            EditorGUILayout.HelpBox("填写文本 Key 后可在这里编辑各语言文本。", MessageType.Info);
-            return;
-        }
-
-        foreach (LocalizationLanguage language in _localizationTable.languages)
-        {
-            if (language == null) continue;
-            LocalizationEntry entry = GetOrCreateLocalizationEntry(language, localizationKey);
-            EditorGUILayout.LabelField(language.languageCode, EditorStyles.miniBoldLabel);
-            entry.value = EditorGUILayout.TextArea(entry.value, GUILayout.MinHeight(46));
-            EditorGUILayout.Space(4);
-        }
     }
 
     private void DrawOptions(DialogueTableRow row)
@@ -721,8 +691,7 @@ public class DialogueTableEditorWindow : EditorWindow
             }
             EditorGUILayout.EndHorizontal();
 
-            option.localizationKey = EditorGUILayout.TextField("选项文本 Key", option.localizationKey);
-            DrawLocalizationEditor(option.localizationKey);
+            option.text = EditorGUILayout.TextField("选项文本", option.text);
             option.nextDialogueId = EditorGUILayout.TextField("跳转对话 ID", option.nextDialogueId);
             option.condition = EditorGUILayout.TextField("显示条件", option.condition);
             option.effects = EditorGUILayout.TextField("执行效果", option.effects);
@@ -733,7 +702,6 @@ public class DialogueTableEditorWindow : EditorWindow
     private void LoadDefaultAssets()
     {
         _dialogueTable = AssetDatabase.LoadAssetAtPath<DialogueTable>(DefaultDialogueTablePath);
-        _localizationTable = AssetDatabase.LoadAssetAtPath<LocalizationTable>(DefaultLocalizationTablePath);
         _layout = AssetDatabase.LoadAssetAtPath<DialogueEditorLayout>(DefaultLayoutPath);
         if (_layout == null)
         {
@@ -777,7 +745,7 @@ public class DialogueTableEditorWindow : EditorWindow
         {
             dialogueId = _newDialogueId,
             lineIndex = 0,
-            localizationKey = $"dialogue.{_newDialogueId}.0"
+            text = "新对白"
         });
 
         _selectedDialogueId = _newDialogueId;
@@ -803,7 +771,7 @@ public class DialogueTableEditorWindow : EditorWindow
         {
             dialogueId = _selectedDialogueId,
             lineIndex = nextIndex,
-            localizationKey = $"dialogue.{_selectedDialogueId}.{nextIndex}"
+            text = "新对白"
         });
 
         SortLines(_selectedDialogueId);
@@ -817,7 +785,7 @@ public class DialogueTableEditorWindow : EditorWindow
         DialogueTableRow row = GetSelectedRow();
         if (row == null) return;
 
-        if (!EditorUtility.DisplayDialog("删除台词行", "确定删除当前台词行吗？本地化文本不会自动删除。", "删除", "取消"))
+        if (!EditorUtility.DisplayDialog("删除台词行", "确定删除当前台词行吗？相关正文将一并删除。", "删除", "取消"))
         {
             return;
         }
@@ -833,7 +801,7 @@ public class DialogueTableEditorWindow : EditorWindow
     {
         if (_dialogueTable == null || string.IsNullOrEmpty(_selectedDialogueId)) return;
 
-        if (!EditorUtility.DisplayDialog("删除对话组", $"确定删除对话组 {_selectedDialogueId} 的所有台词行吗？本地化文本不会自动删除。", "删除", "取消"))
+        if (!EditorUtility.DisplayDialog("删除对话组", $"确定删除对话组 {_selectedDialogueId} 的所有台词行吗？相关正文将一并删除。", "删除", "取消"))
         {
             return;
         }
@@ -984,7 +952,7 @@ public class DialogueTableEditorWindow : EditorWindow
                 AddIssue(DialogueValidationSeverity.Error, row.dialogueId, row.lineIndex, $"lineIndex 不能小于 0：{row.dialogueId}");
             }
 
-            ValidateLocalizationKey(row.dialogueId, row.lineIndex, row.localizationKey, "台词文本 key");
+            ValidateText(row.dialogueId, row.lineIndex, row.text, "台词文本");
             ValidateOptions(row, dialogueIds);
         }
 
@@ -1006,7 +974,7 @@ public class DialogueTableEditorWindow : EditorWindow
             }
 
             string optionLabel = $"{row.dialogueId} / line {row.lineIndex} / 选项 {i + 1}";
-            ValidateLocalizationKey(row.dialogueId, row.lineIndex, option.localizationKey, $"{optionLabel} 文本 key");
+            ValidateText(row.dialogueId, row.lineIndex, option.text, $"{optionLabel} 文本");
             ValidateConditionSyntax(row.dialogueId, row.lineIndex, option.condition, optionLabel);
             ValidateEffectsSyntax(row.dialogueId, row.lineIndex, option.effects, optionLabel);
         }
@@ -1029,28 +997,10 @@ public class DialogueTableEditorWindow : EditorWindow
         }
     }
 
-    private void ValidateLocalizationKey(string dialogueId, int lineIndex, string key, string label)
+    private void ValidateText(string dialogueId, int lineIndex, string text, string label)
     {
-        if (string.IsNullOrEmpty(key))
-        {
+        if (string.IsNullOrWhiteSpace(text))
             AddIssue(DialogueValidationSeverity.Error, dialogueId, lineIndex, $"{label} 为空。");
-            return;
-        }
-
-        if (_localizationTable == null || _localizationTable.languages == null)
-        {
-            AddIssue(DialogueValidationSeverity.Warning, dialogueId, lineIndex, $"未选择 LocalizationTable，无法校验 {key}。");
-            return;
-        }
-
-        foreach (LocalizationLanguage language in _localizationTable.languages)
-        {
-            if (language == null) continue;
-            if (!HasLocalizationEntry(language, key))
-            {
-                AddIssue(DialogueValidationSeverity.Warning, dialogueId, lineIndex, $"{label} 在 {language.languageCode} 中缺少文本：{key}");
-            }
-        }
     }
 
     private void ValidateConditionSyntax(string dialogueId, int lineIndex, string condition, string label)
@@ -1108,21 +1058,6 @@ public class DialogueTableEditorWindow : EditorWindow
     private bool ContainsNumberOperator(string value)
     {
         return value.Contains(">=") || value.Contains("<=") || value.Contains("==") || value.Contains("!=") || value.Contains(">") || value.Contains("<");
-    }
-
-    private bool HasLocalizationEntry(LocalizationLanguage language, string key)
-    {
-        if (language.entries == null) return false;
-
-        foreach (LocalizationEntry entry in language.entries)
-        {
-            if (entry != null && entry.key == key && !string.IsNullOrEmpty(entry.value))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void AddIssue(DialogueValidationSeverity severity, string dialogueId, int lineIndex, string message)
@@ -1401,46 +1336,6 @@ public class DialogueTableEditorWindow : EditorWindow
         _selectedDialogueId = dialogueId;
     }
 
-    private LocalizationEntry GetOrCreateLocalizationEntry(LocalizationLanguage language, string key)
-    {
-        if (language.entries == null)
-        {
-            language.entries = new List<LocalizationEntry>();
-        }
-
-        foreach (LocalizationEntry entry in language.entries)
-        {
-            if (entry != null && entry.key == key)
-            {
-                return entry;
-            }
-        }
-
-        LocalizationEntry newEntry = new LocalizationEntry { key = key, value = string.Empty };
-        language.entries.Add(newEntry);
-        MarkDirty();
-        return newEntry;
-    }
-
-    private string GetLocalizedPreview(string key)
-    {
-        if (_localizationTable == null || string.IsNullOrEmpty(key)) return key;
-
-        foreach (LocalizationLanguage language in _localizationTable.languages)
-        {
-            if (language == null || language.languageCode != "zh-CN") continue;
-            foreach (LocalizationEntry entry in language.entries)
-            {
-                if (entry != null && entry.key == key)
-                {
-                    return Truncate(entry.value, 18);
-                }
-            }
-        }
-
-        return key;
-    }
-
     private void SaveAssets()
     {
         MarkDirty();
@@ -1484,7 +1379,6 @@ public class DialogueTableEditorWindow : EditorWindow
     private void MarkDirty()
     {
         if (_dialogueTable != null) EditorUtility.SetDirty(_dialogueTable);
-        if (_localizationTable != null) EditorUtility.SetDirty(_localizationTable);
         if (_layout != null) EditorUtility.SetDirty(_layout);
     }
 

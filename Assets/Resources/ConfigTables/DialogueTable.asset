@@ -16,7 +16,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_accept
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.accept.0
+    text: "太好了。请去森林边的小屋找回项链。"
     portraitResource:
     standingResource:
     expression: happy
@@ -26,7 +26,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_decline
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.decline.0
+    text: "我明白了。如果你改变主意，可以再来找我。"
     portraitResource:
     standingResource:
     expression: sad
@@ -36,7 +36,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_persuade
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.persuade.0
+    text: "你的话让我安心。好吧，我会先付一半报酬。"
     portraitResource:
     standingResource:
     expression: moved
@@ -46,7 +46,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_reward
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.reward.0
+    text: "我会给你 50 枚金币，还有村里的通行证明。"
     portraitResource: 
     standingResource: 
     expression: normal
@@ -56,49 +56,49 @@ MonoBehaviour:
   - dialogueId: template_dialogue_test_001
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.001.0
+    text: "你好，{playerName}。你真的要进入<color=red>禁地</color>吗？"
     portraitResource: 
     standingResource: 
     expression: normal
     style: 0
     autoPlayDelay: 1.2
     options:
-    - localizationKey: dialogue.village.oldman.001.option.accept
+    - text: "当然愿意"
       nextDialogueId: template_dialogue_accept
       condition: '!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed'
       effects: quest:necklace=accepted;add:favor.oldman=1
-    - localizationKey: dialogue.village.oldman.001.option.decline
+    - text: "我没空"
       nextDialogueId: template_dialogue_decline
       condition: '!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed'
       effects: add:favor.oldman=-1
-    - localizationKey: dialogue.village.oldman.001.option.reward
+    - text: "你先告诉我报酬"
       nextDialogueId: template_dialogue_reward
       condition: '!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed'
       effects: 
-    - localizationKey: dialogue.village.oldman.001.option.persuade
+    - text: "[魅力 5] 说服他"
       nextDialogueId: template_dialogue_persuade
       condition: charm>=5;!quest:necklace=accepted;!quest:necklace=ready;!quest:necklace=completed
       effects: add:favor.oldman=2
-    - localizationKey: dialogue.village.oldman.001.option.progress
+    - text: "我还没找到项链"
       nextDialogueId: template_dialogue_progress
       condition: quest:necklace=accepted
       effects:
-    - localizationKey: dialogue.village.oldman.001.option.find
+    - text: "模拟：在小屋找到项链"
       nextDialogueId: template_dialogue_found
       condition: quest:necklace=accepted
       effects: item:necklace;quest:necklace=ready
-    - localizationKey: dialogue.village.oldman.001.option.turnin
+    - text: "把项链交给村长"
       nextDialogueId: template_dialogue_complete
       condition: quest:necklace=ready;item:necklace
       effects: quest:necklace=completed;removeItem:necklace;add:favor.oldman=3
-    - localizationKey: dialogue.village.oldman.001.option.completed
+    - text: "询问完成后的反应"
       nextDialogueId: template_dialogue_completed
       condition: quest:necklace=completed
       effects:
   - dialogueId: template_dialogue_test_001
     lineIndex: 1
     speakerName: 
-    localizationKey: dialogue.village.oldman.001.1
+    text: "风穿过村口的木牌，旧铃发出轻轻的响声。"
     portraitResource:
     standingResource:
     expression: 
@@ -108,7 +108,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_test_001
     lineIndex: 2
     speakerName: "\u52C7\u8005"
-    localizationKey: dialogue.village.oldman.001.2
+    text: "如果这是命运给我的测试，那我至少要确认对话系统能正常工作。"
     portraitResource:
     standingResource:
     expression: thinking
@@ -118,7 +118,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_test_001
     lineIndex: 3
     speakerName: 
-    localizationKey: dialogue.village.oldman.001.3
+    text: "系统提示：这段对话来自 DialogueTable，可通过 Excel 导入工具刷新。"
     portraitResource:
     standingResource:
     expression: 
@@ -128,7 +128,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_progress
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.progress.0
+    text: "项链应该还在森林边的小屋附近。找到后再回来找我吧。"
     portraitResource:
     standingResource:
     expression: normal
@@ -138,7 +138,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_found
     lineIndex: 0
     speakerName: "\u52C7\u8005"
-    localizationKey: dialogue.village.oldman.found.0
+    text: "你在小屋旁找到了那条旧项链。现在可以回去交给村长。"
     portraitResource:
     standingResource:
     expression: normal
@@ -148,7 +148,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_complete
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.complete.0
+    text: "没错，就是这条项链。谢谢你，这份人情我会记住。"
     portraitResource:
     standingResource:
     expression: happy
@@ -158,7 +158,7 @@ MonoBehaviour:
   - dialogueId: template_dialogue_completed
     lineIndex: 0
     speakerName: "\u6751\u957F"
-    localizationKey: dialogue.village.oldman.completed.0
+    text: "你已经帮我找回项链了。如果需要村里帮忙，尽管开口。"
     portraitResource:
     standingResource:
     expression: happy

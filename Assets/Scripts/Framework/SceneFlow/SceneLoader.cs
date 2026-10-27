@@ -17,7 +17,7 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
     [SerializeField] private Image progressBar;
     [SerializeField] private Text progressText;
     [SerializeField] private float fadeDuration = 0.5f;
-    [SerializeField] private float minLoadingTime = 1.5f;
+    [SerializeField] private float minLoadingTime = 0f;
 
     private AsyncOperation loadingOperation;
     private bool isLoading = false;
@@ -25,6 +25,7 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
     protected override void Awake()
     {
         base.Awake();
+        if (Instance != this) return;
         DontDestroyOnLoad(gameObject);
         
         // 初始化加载界面
@@ -60,7 +61,10 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
     private IEnumerator LoadSceneRoutine(string sceneName, Action onComplete)
     {
         isLoading = true;
-        float startTime = Time.time;
+        if (DialogueManager.Instance != null) DialogueManager.Instance.Stop();
+        if (UIManager.Instance != null) UIManager.Instance.CloseAllPanelsImmediate();
+        if (InputManager.Instance != null) InputManager.Instance.SetGameplayInputEnabled(false);
+        float startTime = Time.realtimeSinceStartup;
 
         // 淡入加载界面
         yield return StartCoroutine(FadeLoadingScreen(0f, 1f));
@@ -77,8 +81,9 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
 
             // 确保最小加载时间，然后激活场景
             if (loadingOperation.progress >= 0.9f && 
-                Time.time - startTime >= minLoadingTime)
+                Time.realtimeSinceStartup - startTime >= minLoadingTime)
             {
+                Time.timeScale = 1f;
                 loadingOperation.allowSceneActivation = true;
             }
 
@@ -92,6 +97,7 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
         yield return StartCoroutine(FadeLoadingScreen(1f, 0f));
 
         isLoading = false;
+        if (InputManager.Instance != null) InputManager.Instance.SetGameplayInputEnabled(true);
         onComplete?.Invoke();
     }
 
@@ -104,7 +110,7 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
 
         while (elapsedTime < fadeDuration)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             loadingCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);
             yield return null;
         }

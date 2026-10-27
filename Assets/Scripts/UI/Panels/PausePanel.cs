@@ -8,9 +8,16 @@ public class PausePanel : BasePanel
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button mainMenuButton;
 
+    [SerializeField] private Button restartButton;
+
     private void Start()
     {
-        if (resumeButton != null) resumeButton.onClick.AddListener(OnResumeClicked);
+        if (restartButton != null) restartButton.onClick.AddListener(() => GameManager.Instance.RestartGame());
+        if (resumeButton != null)
+        {
+            resumeButton.onClick.AddListener(OnResumeClicked);
+            resumeButton.Select();
+        }
         if (settingsButton != null) settingsButton.onClick.AddListener(OnSettingsClicked);
         if (mainMenuButton != null) mainMenuButton.onClick.AddListener(OnMainMenuClicked);
     }

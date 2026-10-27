@@ -13,25 +13,25 @@ public static class DialogueExcelUtility
         "dialogueId",
         "lineIndex",
         "speakerName",
-        "localizationKey",
+        "text",
         "portraitResource",
         "standingResource",
         "expression",
         "style",
         "autoPlayDelay",
-        "option1LocalizationKey",
+        "option1Text",
         "option1NextDialogueId",
         "option1Condition",
         "option1Effects",
-        "option2LocalizationKey",
+        "option2Text",
         "option2NextDialogueId",
         "option2Condition",
         "option2Effects",
-        "option3LocalizationKey",
+        "option3Text",
         "option3NextDialogueId",
         "option3Condition",
         "option3Effects",
-        "option4LocalizationKey",
+        "option4Text",
         "option4NextDialogueId",
         "option4Condition",
         "option4Effects"
@@ -70,10 +70,18 @@ public static class DialogueExcelUtility
 
     private static List<List<string>> BuildRows(DialogueTable table)
     {
-        List<List<string>> rows = new List<List<string>>
+        int optionCount = 4;
+        foreach (var line in table.lines)
+            optionCount = Math.Max(optionCount, line?.options?.Count ?? 0);
+        var headers = new List<string>(Headers);
+        for (int i = 5; i <= optionCount; i++)
         {
-            new List<string>(Headers)
-        };
+            headers.Add($"option{i}Text");
+            headers.Add($"option{i}NextDialogueId");
+            headers.Add($"option{i}Condition");
+            headers.Add($"option{i}Effects");
+        }
+        List<List<string>> rows = new List<List<string>> { headers };
 
         List<DialogueTableRow> lines = new List<DialogueTableRow>();
         if (table.lines != null)
@@ -100,7 +108,7 @@ public static class DialogueExcelUtility
                 row.dialogueId,
                 row.lineIndex.ToString(CultureInfo.InvariantCulture),
                 row.speakerName,
-                row.localizationKey,
+                row.text,
                 row.portraitResource,
                 row.standingResource,
                 row.expression,
@@ -108,10 +116,10 @@ public static class DialogueExcelUtility
                 row.autoPlayDelay.ToString(CultureInfo.InvariantCulture)
             };
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < optionCount; i++)
             {
                 DialogueTableOptionRow option = row.options != null && i < row.options.Count ? row.options[i] : null;
-                cells.Add(option != null ? option.localizationKey : string.Empty);
+                cells.Add(option != null ? option.text : string.Empty);
                 cells.Add(option != null ? option.nextDialogueId : string.Empty);
                 cells.Add(option != null ? option.condition : string.Empty);
                 cells.Add(option != null ? option.effects : string.Empty);
