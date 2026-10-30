@@ -1,128 +1,142 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
-/// UI面板的基类
+/// UI面板的基类：先显示遮罩背景，再显示卡片内容。
 /// </summary>
 [RequireComponent(typeof(CanvasGroup))]
 public class BasePanel : MonoBehaviour
 {
-    protected bool hasRemoved = false; // 标记面板是否已被移除
-    protected string panelName; // 面板名称
-    protected CanvasGroup canvasGroup; // 用于管理透明度和交互
-    
+    protected bool hasRemoved = false;
+    protected string panelName;
+    protected CanvasGroup canvasGroup;
+
     [Header("动画设置")]
-    [SerializeField] protected float fadeInDuration = 0.5f; // 淡入持续时间
-    [SerializeField] protected float fadeOutDuration = 0.5f; // 淡出持续时间
-    [SerializeField] protected Ease fadeInEase = Ease.OutQuad; // 淡入缓动类型
-    [SerializeField] protected Ease fadeOutEase = Ease.InQuad; // 淡出缓动类型
-    [SerializeField] protected bool scaleAnimation = true; // 是否启用缩放动画
-    [SerializeField] protected Vector2 scaleFrom = new Vector2(0.8f, 0.8f); // 初始缩放值
-    [SerializeField] protected float scaleDuration = 0.3f; // 缩放动画持续时间
+    [SerializeField, Min(0f)] protected float backgroundFadeDuration = 0.15f;
+    [SerializeField] protected float fadeInDuration = 0.5f;
+    [SerializeField] protected float fadeOutDuration = 0.5f;
+    [SerializeField] protected Ease fadeInEase = Ease.OutQuad;
+    [SerializeField] protected Ease fadeOutEase = Ease.InQuad;
+    [SerializeField] protected bool scaleAnimation = true;
+    [SerializeField] protected Vector2 scaleFrom = new Vector2(0.8f, 0.8f);
+    [SerializeField] protected float scaleDuration = 0.3f;
 
     private Sequence transition;
+    private Graphic background;
+    private float backgroundAlpha;
+    private readonly List<CardState> cards = new List<CardState>();
+
+    private class CardState
+    {
+        public Transform transform;
+        public CanvasGroup group;
+        public float alpha;
+        public Vector3 scale;
+    }
 
     protected virtual void OnDestroy() => transition?.Kill();
 
     protected virtual void Awake()
     {
-        // 获取 CanvasGroup 组件
         canvasGroup = GetComponent<CanvasGroup>();
+        background = GetComponent<Graphic>();
+        if (background != null) backgroundAlpha = background.color.a;
+
+        // Keep the hierarchy and serialized button references intact. Existing
+        // panels use a root Image as the backdrop and direct children as content.
+        foreach (Transform child in transform)
+        {
+            var group = child.GetComponent<CanvasGroup>();
+            if (group == null) group = child.gameObject.AddComponent<CanvasGroup>();
+            cards.Add(new CardState
+            {
+                transform = child,
+                group = group,
+                alpha = group.alpha,
+                scale = child.localScale
+            });
+        }
     }
 
-    /// <summary>
-    /// 打开面板
-    /// </summary>
-    /// <param name="name">面板名称</param>
     public virtual void OpenPanel(string name)
     {
-        panelName = name;
-        SetInteractable(true);
-
-        // 激活面板
-        gameObject.SetActive(true);
-
-        // 初始化面板的透明度为 0
-        canvasGroup.alpha = 0;
-        
-        // 如果启用缩放动画，设置初始缩放值
-        if (scaleAnimation)
-        {
-            transform.localScale = scaleFrom;
-        }
-
-        // 使用 DOTween 播放渐显动画（不受时间缩放影响）
         transition?.Kill();
-        Sequence s = transition = DOTween.Sequence();
-        s.SetUpdate(UpdateType.Normal, true); // 设置为不受时间缩放影响
-        
-        // 添加淡入动画
-        s.Append(canvasGroup.DOFade(1, fadeInDuration)
-            .SetEase(fadeInEase)
-            .SetUpdate(UpdateType.Normal, true));
-            
-        // 如果启用缩放动画，添加缩放动画
-        if (scaleAnimation)
+        panelName = name;
+        hasRemoved = false;
+        gameObject.SetActive(true);
+        canvasGroup.alpha = 1f;
+        SetInteractable(false);
+        // The backdrop blocks clicks immediately, including while it is fading in.
+        canvasGroup.blocksRaycasts = true;
+
+        if (background != null)
         {
-            s.Join(transform.DOScale(Vector3.one, scaleDuration)
-                .SetEase(fadeInEase)
-                .SetUpdate(UpdateType.Normal, true));
+            Color color = background.color;
+            color.a = 0f;
+            background.color = color;
         }
+        foreach (var card in cards)
+        {
+            if (card.transform == null) continue;
+            card.group.alpha = 0f;
+            card.transform.localScale = scaleAnimation ? GetFromScale(card.scale) : card.scale;
+        }
+
+        Sequence s = transition = DOTween.Sequence().SetUpdate(true).SetTarget(this);
+        float contentStart = background != null ? Mathf.Max(0f, backgroundFadeDuration) : 0f;
+        if (background != null)
+            s.Insert(0f, background.DOFade(backgroundAlpha, contentStart).SetEase(fadeInEase));
+
+        foreach (var card in cards)
+        {
+            if (card.transform == null) continue;
+            s.Insert(contentStart, card.group.DOFade(card.alpha, Mathf.Max(0f, fadeInDuration)).SetEase(fadeInEase));
+            if (scaleAnimation)
+                s.Insert(contentStart, card.transform.DOScale(card.scale, Mathf.Max(0f, scaleDuration)).SetEase(fadeInEase));
+        }
+        s.OnComplete(() =>
+        {
+            if (!hasRemoved) SetInteractable(true);
+        });
     }
 
-    /// <summary>
-    /// 关闭面板
-    /// </summary>
     public virtual void ClosePanel()
     {
         hasRemoved = true;
         SetInteractable(false);
-
-        // 使用 DOTween 播放渐隐动画，并在动画完成后销毁对象（不受时间缩放影响）
         transition?.Kill();
-        Sequence s = transition = DOTween.Sequence();
-        s.SetUpdate(UpdateType.Normal, true); // 设置为不受时间缩放影响
-        
-        // 添加淡出动画
-        s.Append(canvasGroup.DOFade(0, fadeOutDuration)
-            .SetEase(fadeOutEase)
-            .SetUpdate(UpdateType.Normal, true));
-            
-        // 如果启用缩放动画，添加缩放动画
+        Sequence s = transition = DOTween.Sequence().SetUpdate(true).SetTarget(this);
+        s.Append(canvasGroup.DOFade(0f, Mathf.Max(0f, fadeOutDuration)).SetEase(fadeOutEase));
         if (scaleAnimation)
         {
-            s.Join(transform.DOScale(scaleFrom, Mathf.Min(fadeOutDuration, scaleDuration))
-                .SetEase(fadeOutEase)
-                .SetUpdate(UpdateType.Normal, true));
+            foreach (var card in cards)
+            {
+                if (card.transform == null) continue;
+                s.Join(card.transform.DOScale(GetFromScale(card.scale), Mathf.Max(0f, Mathf.Min(fadeOutDuration, scaleDuration)))
+                    .SetEase(fadeOutEase));
+            }
         }
-        
-        // 动画完成后销毁对象
         s.OnComplete(() =>
         {
-            if (gameObject != null)
-            {
-                Destroy(gameObject);
-            }
+            if (gameObject != null) Destroy(gameObject);
         });
     }
-    
-    /// <summary>
-    /// 立即关闭面板（无动画）
-    /// </summary>
+
     public virtual void ClosePanelImmediate()
     {
         hasRemoved = true;
+        transition?.Kill();
         SetInteractable(false);
-        if (gameObject != null)
-        {
-            Destroy(gameObject);
-        }
+        if (gameObject != null) Destroy(gameObject);
     }
-    
-    /// <summary>
-    /// 设置面板交互状态
-    /// </summary>
-    /// <param name="interactable">是否可交互</param>
+
+    private Vector3 GetFromScale(Vector3 target)
+    {
+        return Vector3.Scale(target, new Vector3(scaleFrom.x, scaleFrom.y, 1f));
+    }
+
     public virtual void SetInteractable(bool interactable)
     {
         if (canvasGroup != null)
