@@ -39,7 +39,7 @@ namespace NightCourier
             selected=prototype.Run.HasJourney?prototype.Run.PlannedDestination:-1;
             base.Bind(prototype);
         }
-        private void Select(int node){selected=node;Refresh();}
+        private void Select(int node){selected=node;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();}
         protected override void Refresh()
         {
             objectiveText.text=Run.HasJourney?"Waypoint stop - Destination: "+Run.Stops[Run.PlannedDestination].Name:Run.ObjectiveText;
@@ -71,7 +71,7 @@ namespace NightCourier
                 if(show){var parent=p.State==ParcelState.Loaded?loadedContent:waitingContent;if(rows[i].transform.parent!=parent)rows[i].transform.SetParent(parent,false);rows[i].Refresh();if(p.State==ParcelState.Waiting)waiting++;}
             }
             float top=parked||repair?182:126;waitingSection.gameObject.SetActive(waiting>0);waitingSection.anchoredPosition=new Vector2(756,-top);
-            float loadedTop=top+(waiting>0?160:0);loadedSection.anchoredPosition=new Vector2(756,-loadedTop);loadedScroll.sizeDelta=new Vector2(520,Mathf.Max(120,620-loadedTop-38));
+            float loadedTop=top+(waiting>0?180:0);loadedSection.anchoredPosition=new Vector2(756,-loadedTop);loadedScroll.sizeDelta=new Vector2(520,Mathf.Max(120,620-loadedTop-38));
             costGroup.SetActive(route.Count>0);
             if(selected<0){destinationText.text="Choose a destination";riskText.text="";departButton.interactable=false;departHint.message="Choose a destination first";return;}
             destinationText.text=Run.Stops[selected].Name;

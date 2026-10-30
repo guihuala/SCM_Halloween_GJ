@@ -7,6 +7,7 @@ namespace NightCourier
     {
         public static NightCourierPrototype Current { get; private set; }
         public CourierRun Run { get; private set; }
+        public CourierTutorial Tutorial { get; private set; } = new CourierTutorial();
         public bool InCar { get; private set; } = true;
         public Vector2 GhostPosition { get; private set; } = new Vector2(395, 330);
         [SerializeField] private Font uiFont;
@@ -67,6 +68,7 @@ namespace NightCourier
         public void ShowPlanner(string name)
         {
             if (!Active || Run.State != ShiftState.Docked) return;
+            Tutorial.Observe(Run); Tutorial.OpenMap();
             ClosePlanner(); dialogue = new string[0]; dialogueIndex = 0;
             // The former cargo and vehicle windows now share the single map/trunk panel.
             if (name == "CourierCargoPanel" || name == "CourierVehiclePanel") name = "CourierRoutePanel";
@@ -95,17 +97,20 @@ namespace NightCourier
         public bool DepartTo(int destination)
         {
             if(!Run.StartJourney(destination))return false;
+            Tutorial.Observe(Run); Tutorial.Leave();
             InCar=true;ClosePlanner();return true;
         }
         public bool Depart(Road road)
         {
             if (!InCar) ToggleCar();
             if (!Run.Depart(road)) return false;
+            Tutorial.Observe(Run); Tutorial.Leave();
             ClosePlanner();
             return true;
         }
         public void ResolveEncounter(bool safe)
         {
+            if(Run.State==ShiftState.Encounter) Tutorial.ResolveEvent();
             Run.ResolveEncounter(safe);
             CloseForced();
         }

@@ -9,6 +9,7 @@ namespace NightCourier
         [Header("Shared Panel References")]
         public Button closeButton;
         protected NightCourierPrototype owner;
+        private CourierTutorialView tutorialView;
         protected CourierRun Run { get { return owner.Run; } }
         protected override void Awake()
         {
@@ -21,8 +22,10 @@ namespace NightCourier
             if (owner.UIFont != null)
                 foreach (var text in GetComponentsInChildren<Text>(true)) text.font = owner.UIFont;
             Refresh();
+            tutorialView=GetComponentInChildren<CourierTutorialView>(true);
+            if(tutorialView!=null)tutorialView.Bind(owner,this);
         }
-        protected virtual void Update() { if (owner != null) Refresh(); }
+        protected virtual void Update() { if (owner != null) { Refresh(); if(tutorialView!=null)tutorialView.Refresh(); } }
         protected abstract void Refresh();
         protected static void Caption(Button button, string text) { button.GetComponentInChildren<Text>().text = text; }
         public override void OpenPanel(string name)

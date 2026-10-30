@@ -11,6 +11,7 @@ namespace NightCourier
         public CourierIconHint actionHint,timeHint;
         public Button actionButton;
         private Parcel parcel;
+        public Parcel Item {get{return parcel;}}
         private NightCourierPrototype owner;
         private GameObject dragVisual;
         public void Bind(NightCourierPrototype prototype,Parcel item)
@@ -30,8 +31,9 @@ namespace NightCourier
             timeGroup.SetActive(parcel.TimeLimit>0&&!parcel.Damaged);
             // Plain parcels need no reserved tag row.
             bool hasTags=parcel.Critical||parcel.Damaged||parcel.Fragile||parcel.Heavy||parcel.Dry||parcel.TimeLimit>0;
-            var layout=GetComponent<LayoutElement>();float height=hasTags?118:84;
+            var layout=GetComponent<LayoutElement>();float height=hasTags?132:92;
             if(layout.preferredHeight!=height){layout.preferredHeight=height;layout.minHeight=height;}
+            ((RectTransform)actionButton.transform).anchoredPosition=new Vector2(-64,-(height-56)/2);
             float remaining=parcel.Deadline>0?parcel.Deadline-run.Elapsed:parcel.TimeLimit;
             timeText.text=Mathf.CeilToInt(Mathf.Max(0,remaining)).ToString();timeHint.message=parcel.Deadline>0?"Time left: "+timeText.text+" min":"Deliver within "+timeText.text+" min of loading";
             actionButton.gameObject.SetActive(!loaded||!parcel.Critical);actionButton.interactable=loaded?!parcel.Critical:run.CanLoad(parcel);

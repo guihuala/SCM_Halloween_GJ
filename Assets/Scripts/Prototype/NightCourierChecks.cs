@@ -26,6 +26,21 @@ namespace NightCourier
             Travel(r,4);Require(r.TruthRevealed&&r.UnlockedVehicles[2],"DJ reveal did not unlock pickup");Require(r.Possess(2),"Pickup possession failed");
             Travel(r,5,true,lateFinal?31:0);Require(r.State==(lateFinal?ShiftState.EndingB:ShiftState.EndingA),"Final deadline / ending mismatch");return r;
         }
+        private static void CheckTutorial()
+        {
+            var run=new CourierRun();var guide=new CourierTutorial();
+            Require(guide.Step(run,true)==0&&guide.Step(run,false)==1,"Opening guidance does not follow dialogue");
+            guide.OpenMap();Require(guide.Step(run,false)==2,"Map did not advance to cargo guidance");
+            run.LoadParcel(run.Parcels[3]);Require(guide.Step(run,false)==3,"Loading cargo did not advance guidance");
+            guide.ChooseRoute();Require(guide.Step(run,false)==4,"Selecting route did not advance guidance");
+            run.StartJourney(1);guide.Leave();run.Tick(10000);
+            Require(guide.Step(run,false)==5,"Encounter guidance missing");
+            run.ResolveEncounter(true);guide.ResolveEvent();Require(guide.Step(run,false)==5,"Guide moved backwards after event");run.Tick(10000);
+            Require(guide.Step(run,true)==6&&!guide.Finished,"Arrival guidance missing");guide.OpenMap();Require(guide.Finished,"Guide did not finish after first stop");
+            guide=new CourierTutorial();guide.Dismiss();guide.OpenMap();guide.Observe(new CourierRun());Require(guide.Finished,"Skipped guide reappeared");
+            run=new CourierRun();guide=new CourierTutorial();Require(run.StartJourney(4),"Guide blocked free destination choice");guide.Leave();
+            Require(guide.Step(run,false)==4&&run.Parcels[3].State==ParcelState.Waiting,"Guide forced optional cargo loading");
+        }
         private static void CheckJourneys()
         {
             var r=new CourierRun();
@@ -55,7 +70,7 @@ namespace NightCourier
         }
         public static string RunAll()
         {
-            assertions=0;CheckJourneys();var delayed=PerfectRoute(true);Require(delayed.FinalLegLate&&delayed.State==ShiftState.EndingB,"Final storm timeout blocked or incorrectly produced ending A");
+            assertions=0;CheckTutorial();CheckJourneys();var delayed=PerfectRoute(true);Require(delayed.FinalLegLate&&delayed.State==ShiftState.EndingB,"Final storm timeout blocked or incorrectly produced ending A");
             var r=PerfectRoute();
             Require(r.Stops.Length==6&&r.Parcels.Count==7&&r.Events.Length==10,"Content counts differ from 2.0");
             Require(r.Delivered==7,"Seven parcels were not delivered");
