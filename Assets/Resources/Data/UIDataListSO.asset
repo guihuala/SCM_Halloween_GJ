@@ -25,3 +25,15 @@ MonoBehaviour:
     uiPath: Panel/DialoguePanel
   - uiName: GameResultPanel
     uiPath: Panel/GameResultPanel
+  - uiName: CourierHudPanel
+    uiPath: Panel/Courier/CourierHudPanel
+  - uiName: CourierCargoPanel
+    uiPath: Panel/Courier/CourierCargoPanel
+  - uiName: CourierRoutePanel
+    uiPath: Panel/Courier/CourierRoutePanel
+  - uiName: CourierVehiclePanel
+    uiPath: Panel/Courier/CourierVehiclePanel
+  - uiName: CourierEventPanel
+    uiPath: Panel/Courier/CourierEventPanel
+  - uiName: CourierResultPanel
+    uiPath: Panel/Courier/CourierResultPanel

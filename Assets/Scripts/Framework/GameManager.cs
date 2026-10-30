@@ -17,6 +17,8 @@ public class GameManager : Singleton<GameManager>
             ? InputManager.Instance.GetActionDown(InputActionType.Pause)
             : Input.GetKeyDown(KeyCode.Escape);
         if (!pausePressed) return;
+        if (CurrentState == GameState.Playing && NightCourier.NightCourierPrototype.Current != null &&
+            NightCourier.NightCourierPrototype.Current.ClosePlanner()) return;
         if (CurrentState == GameState.Playing) PauseGame();
         else if (CurrentState == GameState.Paused) ResumeGame();
     }

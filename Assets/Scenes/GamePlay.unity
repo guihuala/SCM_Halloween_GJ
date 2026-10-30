@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 677476665}
   - component: {fileID: 677476664}
   - component: {fileID: 677476666}
+  - component: {fileID: 677476667}
   m_Layer: 0
   m_Name: -----GameCore-----
   m_TagString: Untagged
@@ -789,3 +790,15 @@ SceneRoots:
   - {fileID: 1553587175}
   - {fileID: 652770274}
   - {fileID: 677476665}
+--- !u!114 &677476667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 677476663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1766d86a77d44b4fa4190b30e718b10d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
