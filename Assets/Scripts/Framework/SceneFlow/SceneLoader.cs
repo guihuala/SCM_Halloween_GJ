@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System.Collections;
 using System;
 
@@ -13,28 +12,13 @@ public enum GameScene
 public class SceneLoader : SingletonPersistent<SceneLoader>
 {
     [Header("加载界面设置")]
-    [SerializeField] private CanvasGroup loadingCanvas;
-    [SerializeField] private Image progressBar;
-    [SerializeField] private Text progressText;
+    [SerializeField] private LoadingScreen loadingScreenPrefab;
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float minLoadingTime = 0f;
 
     private AsyncOperation loadingOperation;
     private bool isLoading = false;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        if (Instance != this) return;
-        DontDestroyOnLoad(gameObject);
-        
-        // 初始化加载界面
-        if (loadingCanvas != null)
-        {
-            loadingCanvas.alpha = 0f;
-            loadingCanvas.gameObject.SetActive(false);
-        }
-    }
+    private LoadingScreen loadingScreen;
 
     /// <summary>
     /// 加载指定枚举场景
@@ -61,6 +45,13 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
     private IEnumerator LoadSceneRoutine(string sceneName, Action onComplete)
     {
         isLoading = true;
+        if (loadingScreenPrefab != null)
+        {
+            // Only create the overlay during transitions, under the persistent manager.
+            loadingScreen = Instantiate(loadingScreenPrefab, transform, false);
+            loadingScreen.SetAlpha(0f);
+            loadingScreen.SetProgress(0f);
+        }
         if (DialogueManager.Instance != null) DialogueManager.Instance.Stop();
         if (UIManager.Instance != null) UIManager.Instance.CloseAllPanelsImmediate();
         if (InputManager.Instance != null) InputManager.Instance.SetGameplayInputEnabled(false);
@@ -96,6 +87,12 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
         // 淡出加载界面
         yield return StartCoroutine(FadeLoadingScreen(1f, 0f));
 
+        if (loadingScreen != null)
+        {
+            Destroy(loadingScreen.gameObject);
+            loadingScreen = null;
+        }
+
         isLoading = false;
         if (InputManager.Instance != null) InputManager.Instance.SetGameplayInputEnabled(true);
         onComplete?.Invoke();
@@ -103,34 +100,24 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
 
     private IEnumerator FadeLoadingScreen(float startAlpha, float targetAlpha)
     {
-        if (loadingCanvas == null) yield break;
+        if (loadingScreen == null) yield break;
 
-        loadingCanvas.gameObject.SetActive(true);
+        loadingScreen.SetAlpha(startAlpha);
         float elapsedTime = 0f;
 
         while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.unscaledDeltaTime;
-            loadingCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);
+            loadingScreen.SetAlpha(Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration));
             yield return null;
         }
 
-        loadingCanvas.alpha = targetAlpha;
-
-        // 如果完全淡出，则禁用游戏对象
-        if (targetAlpha == 0f)
-        {
-            loadingCanvas.gameObject.SetActive(false);
-        }
+        loadingScreen.SetAlpha(targetAlpha);
     }
 
     private void UpdateProgressUI(float progress)
     {
-        if (progressBar != null)
-            progressBar.fillAmount = progress;
-        
-        if (progressText != null)
-            progressText.text = $"{(progress * 100):0}%";
+        if (loadingScreen != null) loadingScreen.SetProgress(progress);
     }
 
     /// <summary>

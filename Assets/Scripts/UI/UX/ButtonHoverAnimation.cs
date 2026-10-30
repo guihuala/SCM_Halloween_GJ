@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -69,15 +67,19 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
     private Color originalColor;
     
     private Image buttonImage;
-    private Sequence hoverSequence;
-    private Sequence clickSequence;
 
-    private void Start()
+    private bool initialized;
+
+    private void Awake()
     {
+        var rect = transform as RectTransform;
+        if (rect != null) ButtonAnimationLayoutSlot.Wrap(rect);
+
+        // Capture only after separating the animation from any parent layout.
         // 保存原始状态
         originalScale = transform.localScale;
         originalPosition = transform.localPosition;
-        originalRotation = transform.rotation;
+        originalRotation = transform.localRotation;
         
         // 获取UI组件
         buttonImage = GetComponent<Image>();
@@ -86,6 +88,7 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
         {
             originalColor = buttonImage.color;
         }
+        initialized = true;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -162,6 +165,7 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
     public void OnPointerUp(PointerEventData eventData)
     {
         if (!enableClickAnimation) return;
+        KillAllTweens();
         PlayResetAnimation();
     }
 
@@ -181,7 +185,7 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
 
     private void PlayRotationAnimation(float angle)
     {
-        transform.DORotate(new Vector3(0, 0, angle), animationDuration)
+        transform.DOLocalRotateQuaternion(originalRotation * Quaternion.Euler(0, 0, angle), animationDuration)
                  .SetEase(easeType);
     }
 
@@ -196,34 +200,18 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
 
     private void PlayCombinedHoverAnimation()
     {
-        hoverSequence = DOTween.Sequence();
-        
-        hoverSequence.Join(transform.DOScale(originalScale * hoverScale, animationDuration));
-        hoverSequence.Join(transform.DOLocalMove(originalPosition + (Vector3)hoverMoveOffset, animationDuration));
-        hoverSequence.Join(transform.DORotate(new Vector3(0, 0, hoverRotation), animationDuration));
-        
-        if (buttonImage != null)
-        {
-            hoverSequence.Join(buttonImage.DOColor(hoverColor, animationDuration));
-        }
-        
-        hoverSequence.SetEase(easeType);
+        PlayScaleAnimation(hoverScale);
+        PlayMoveAnimation(hoverMoveOffset);
+        PlayRotationAnimation(hoverRotation);
+        PlayColorAnimation(hoverColor);
     }
 
     private void PlayCombinedClickAnimation()
     {
-        clickSequence = DOTween.Sequence();
-        
-        clickSequence.Join(transform.DOScale(originalScale * clickScale, animationDuration));
-        clickSequence.Join(transform.DOLocalMove(originalPosition + (Vector3)clickMoveOffset, animationDuration));
-        clickSequence.Join(transform.DORotate(new Vector3(0, 0, clickRotation), animationDuration));
-        
-        if (buttonImage != null)
-        {
-            clickSequence.Join(buttonImage.DOColor(clickColor, animationDuration));
-        }
-        
-        clickSequence.SetEase(easeType);
+        PlayScaleAnimation(clickScale);
+        PlayMoveAnimation(clickMoveOffset);
+        PlayRotationAnimation(clickRotation);
+        PlayColorAnimation(clickColor);
     }
 
     private void PlayResetAnimation()
@@ -234,7 +222,7 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
         transform.DOLocalMove(originalPosition, animationDuration)
                  .SetEase(easeType);
         
-        transform.DORotate(originalRotation.eulerAngles, animationDuration)
+        transform.DOLocalRotateQuaternion(originalRotation, animationDuration)
                  .SetEase(easeType);
         
         if (buttonImage != null)
@@ -250,9 +238,7 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
         transform.DOKill();
         
         if (buttonImage != null) buttonImage.DOKill();
-        
-        if (hoverSequence != null) hoverSequence.Kill();
-        if (clickSequence != null) clickSequence.Kill();
+
     }
 
     private void OnDestroy()
@@ -262,11 +248,25 @@ public class ButtonHoverAnimation : MonoBehaviour, IPointerEnterHandler, IPointe
 
     private void OnDisable()
     {
+        KillAllTweens();
+        if (!initialized) return;
         // 当按钮被禁用时重置状态
         transform.localScale = originalScale;
         transform.localPosition = originalPosition;
-        transform.rotation = originalRotation;
+        transform.localRotation = originalRotation;
         
         if (buttonImage != null) buttonImage.color = originalColor;
+        MarkLayoutDirty();
+    }
+
+    private void OnEnable()
+    {
+        MarkLayoutDirty();
+    }
+
+    private void MarkLayoutDirty()
+    {
+        var parent = transform.parent as RectTransform;
+        if (parent != null) LayoutRebuilder.MarkLayoutForRebuild(parent);
     }
 }
