@@ -10,21 +10,32 @@ namespace NightCourier
         protected override void Awake()
         {
             base.Awake();
-            possessButton.onClick.AddListener(() => feedbackText.text = owner.PossessParkedVehicle() ? "附身成功！货物已随你转移。" : "无法附身：请检查载重与重货要求。");
-            repairButton.onClick.AddListener(() => { if (Run.Repair()) feedbackText.text = "维修完成，消耗12分钟。"; });
+            possessButton.onClick.AddListener(() => feedbackText.text = owner.PossessParkedVehicle() ? "已附身" : "载重不符");
+            repairButton.onClick.AddListener(() => { if (Run.Repair()) feedbackText.text = "已修复"; });
         }
         protected override void Refresh()
         {
-            currentText.text = "当前载具 · " + Run.Car.Name;
-            currentStatsText.text = "载重容量  " + Run.Car.Capacity + " 格\n当前耐久  " + Mathf.CeilToInt(Run.Durability) + " / " + Run.Car.MaxDurability + "\n\n" + Run.Car.Ability;
+            currentText.text = Run.Car.Name;
+            currentStatsText.text = Stats(Run.VehicleIndex);
             int v = Run.Stops[Run.Node].Vehicle;
             bool available = v >= 0 && v != Run.VehicleIndex;
-            parkedText.text = available ? "路边发现 · " + Run.Vehicles[v].Name : "本站没有其他可附身载具";
-            parkedStatsText.text = available ? "载重容量  " + Run.Vehicles[v].Capacity + " 格\n当前耐久  " + Mathf.CeilToInt(Run.Durabilities[v]) + " / " + Run.Vehicles[v].MaxDurability + "\n\n" + Run.Vehicles[v].Ability : "废车场有旧皮卡。\n南山墓园有重型货车。\n\n附身会转移货物，保留各车的耐久。";
+            parkedText.text = available ? Run.Vehicles[v].Name : "无可附身车辆";
+            parkedStatsText.text = available ? Stats(v) : "";
+            possessButton.gameObject.SetActive(available);
             possessButton.interactable = available && Run.Load <= Run.Vehicles[v].Capacity + 2;
-            Caption(possessButton, available ? "附身" + Run.Vehicles[v].Name : "暂无可附身车辆");
-            repairButton.interactable = Run.Stops[Run.Node].Repair && Run.Durability < Run.Car.MaxDurability;
-            repairText.text = Run.Stops[Run.Node].Repair ? "本站提供免费维修，耗时12分钟。" : "此站没有维修服务。废车场与加油站可修车。";
+            Caption(possessButton, "附身");
+            bool repair = Run.Stops[Run.Node].Repair;
+            repairButton.gameObject.SetActive(repair);
+            repairButton.interactable = repair && Run.Durability < Run.Car.MaxDurability;
+            repairText.gameObject.SetActive(!repair);
+            repairText.text = "废车场、加油站可维修";
+            feedbackText.gameObject.SetActive(!string.IsNullOrEmpty(feedbackText.text));
+        }
+        private string Stats(int index)
+        {
+            var car = Run.Vehicles[index];
+            return "容量 " + car.Capacity + "格 · 耐久 " + Mathf.CeilToInt(Run.Durabilities[index]) + "/" + car.MaxDurability +
+                "\n\n" + new[] { "不能拉重货", "可拉重货", "碎石路保护易碎件" }[index];
         }
     }
 }

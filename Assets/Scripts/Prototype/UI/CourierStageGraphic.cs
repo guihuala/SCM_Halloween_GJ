@@ -42,7 +42,12 @@ namespace NightCourier
             Car(395,352+(driving?Mathf.Sin(time*12)*2:0),Owner!=null?Owner.Run.VehicleIndex:0,1,mint);
             if(Owner!=null && !Owner.InCar && !driving) Ghost(Owner.GhostPosition.x,Owner.GhostPosition.y+Mathf.Sin(time*3)*5,1,mint);
         }
-        private Vector2 Point(float x,float y) { return new Vector2(rectTransform.rect.xMin+x/1440*rectTransform.rect.width,rectTransform.rect.yMax-y/440*rectTransform.rect.height); }
+        private Vector2 Point(float x,float y)
+        {
+            var rect=rectTransform.rect;
+            float scale=Mathf.Min(rect.width/1440,rect.height/440);
+            return new Vector2(rect.xMin+(rect.width-1440*scale)/2+x*scale,rect.yMax-(rect.height-440*scale)/2-y*scale);
+        }
         private void Rect(float x,float y,float w,float h,Color c)
         {
             int n=mesh.currentVertCount;

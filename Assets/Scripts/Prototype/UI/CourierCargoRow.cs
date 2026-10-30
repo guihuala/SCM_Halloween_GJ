@@ -19,13 +19,15 @@ namespace NightCourier
         {
             var run = owner.Run;
             nameText.text = parcel.Name;
-            destinationText.text = "送往 " + run.Stops[parcel.Destination].Name + "   ·   重量 " + parcel.Weight + " 格   ·   酬金 ¥" + parcel.Reward;
-            string tags = parcel.Damaged ? "已破损，到站后将被拒收" : parcel.Tags.Length > 0 ? parcel.Tags : "普通快递 · 无特殊要求";
-            if (parcel.Deadline > 0 && !parcel.Damaged) tags += "  剩余 " + NightCourierPrototype.Minutes(parcel.Deadline - run.Elapsed);
-            requirementsText.text = tags;
+            destinationText.text = "→ " + run.Stops[parcel.Destination].Name + " · " + parcel.Weight + "格";
+            string tags = parcel.Damaged ? "已破损" : (parcel.Fragile ? "易碎  " : "") + (parcel.Heavy ? "重货  " : "");
+            if (parcel.Deadline > 0 && !parcel.Damaged) tags += "限时 " + NightCourierPrototype.Minutes(parcel.Deadline - run.Elapsed);
+            requirementsText.text = tags.Trim();
+            requirementsText.gameObject.SetActive(tags.Length > 0);
             bool loaded = parcel.State == ParcelState.Loaded;
             actionButton.interactable = loaded ? run.State == ShiftState.Docked && parcel.Origin == run.Node : run.CanLoad(parcel);
-            actionLabel.text = loaded ? (parcel.Origin == run.Node ? "卸回站点" : "运送中") : parcel.Heavy && run.VehicleIndex == 0 ? "需要皮卡" : !run.CanLoad(parcel) ? "容量不足" : "装上车";
+            actionButton.gameObject.SetActive(!loaded || parcel.Origin == run.Node);
+            actionLabel.text = loaded ? (parcel.Origin == run.Node ? "卸下" : "运送中") : parcel.Heavy && run.VehicleIndex == 0 ? "需皮卡" : !run.CanLoad(parcel) ? "放不下" : "装车";
         }
     }
 }

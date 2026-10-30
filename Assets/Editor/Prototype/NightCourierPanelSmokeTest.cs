@@ -53,7 +53,8 @@ public static class NightCourierPanelSmokeTest
             {
                 case 0:
                     Require(!owner.HasPlanner,"Startup cluttered by modal");
-                    Require(hud.instructionText.text.Contains("接货"),"No next step guidance");
+                    Require(hud.cargoButton.gameObject.activeSelf && hud.routeButton.gameObject.activeSelf,"Essential dock actions missing");
+                    Require(!hud.vehicleButton.gameObject.activeSelf,"Unavailable vehicle action should be hidden");
                     Shot("hud");break;
                 case 1: hud.cargoButton.onClick.Invoke();break;
                 case 2:

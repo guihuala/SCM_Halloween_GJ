@@ -9,7 +9,7 @@ namespace NightCourier
         public Button[] stopButtons;
         public Text[] stopLabels;
         public CourierRouteGraphic mapGraphic;
-        public Text locationText, destinationText, costText, riskText, tipText;
+        public Text locationText, destinationText, costText, riskText;
         public Button departButton, cargoButton;
         private Road selected;
         protected override void Awake()
@@ -27,28 +27,26 @@ namespace NightCourier
         }
         protected override void Refresh()
         {
-            locationText.text = "你在 " + Run.Stops[Run.Node].Name + " · 只可前往相邻站点";
+            locationText.text = "路线 · " + Run.Stops[Run.Node].Name;
             for (int i = 0; i < stopButtons.Length; i++)
             {
                 bool current = i == Run.Node;
                 bool reachable = Run.Roads.Any(r => r.Connects(Run.Node) && r.Other(Run.Node) == i);
                 stopButtons[i].interactable = reachable;
-                stopLabels[i].text = Run.Stops[i].Name + (current ? "\n当前位置" : selected != null && selected.Other(Run.Node) == i ? "\n已选择" : reachable ? "\n点击选择" : "\n尚不可直达");
+                stopLabels[i].text = Run.Stops[i].Name + (current ? "\n当前" : selected != null && selected.Other(Run.Node) == i ? "\n已选" : "");
             }
             departButton.interactable = selected != null;
             if (selected == null)
             {
-                destinationText.text = "先选一个相邻站点";
-                costText.text = "点击左侧亮起的站点，\n这里会显示耗时和耐久代价。";
-                riskText.text = "实线是平稳公路，虚线是碎石路。";
-                tipText.text = Run.Node == 0 ? "首次建议：先装上「余温尚存的信」，送到霓虹餐厅。" : "先在货舱查看收件站，再规划下一段路线。";
+                destinationText.text = "选择目的地";
+                costText.text = "";
+                riskText.text = "";
             }
             else
             {
                 destinationText.text = "前往 " + Run.Stops[selected.Other(Run.Node)].Name;
-                costText.text = "预计耗时   " + NightCourierPrototype.Minutes(Run.TimeCost(selected)) + "\n耐久消耗   " + Mathf.CeilToInt(Run.WearCost(selected)) + " 点\n当前载重   " + Run.Load + " / " + Run.Car.Capacity + " 格";
-                riskText.text = selected.Gravel ? (Run.VehicleIndex == 2 ? "碎石路 · 货车减震可保护易碎件" : "碎石路 · 易碎件会被颠坏！") : "平稳公路 · 不会因路况损坏易碎件";
-                tipText.text = Run.Overloaded ? "当前满载：此预估已计入减速和额外损耗。" : "途中可能有事件，请预留时间与耐久。";
+                costText.text = "耗时 " + NightCourierPrototype.Minutes(Run.TimeCost(selected)) + "\n损耗 " + Mathf.CeilToInt(Run.WearCost(selected)) + " 耐久";
+                riskText.text = selected.Gravel ? (Run.VehicleIndex == 2 ? "碎石路 · 减震保护" : "碎石路 · 易碎件会破损") : "平稳公路";
             }
         }
     }

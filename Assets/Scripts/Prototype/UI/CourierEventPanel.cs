@@ -14,7 +14,7 @@ namespace NightCourier
         protected override void Refresh()
         {
             titleText.text = Run.EncounterTitle;
-            descriptionText.text = Run.EncounterDescription + "\n\n选择期间不消耗时间。";
+            descriptionText.text = Run.EncounterDescription;
             Caption(safeButton, Run.SafeChoice); Caption(riskButton, Run.RiskChoice);
         }
     }

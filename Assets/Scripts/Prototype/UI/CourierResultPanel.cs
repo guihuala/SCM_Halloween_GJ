@@ -13,7 +13,7 @@ namespace NightCourier
         protected override void Refresh()
         {
             titleText.text = Run.State == ShiftState.Won ? "夜班完成！" : "这班未能完成";
-            summaryText.text = "成功送达  " + Run.Delivered + " / 4 件\n本班收入  ¥" + Run.Earnings + "\n已用时间  " + NightCourierPrototype.Minutes(Run.Elapsed) + "\n\n" + Run.Journal[0];
+            summaryText.text = "送达 " + Run.Delivered + " / 4 件\n收入 ¥" + Run.Earnings + "\n用时 " + NightCourierPrototype.Minutes(Run.Elapsed) + (Run.State == ShiftState.Lost ? "\n" + Run.Journal[0] : "");
         }
     }
 }
