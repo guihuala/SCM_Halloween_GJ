@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30000000000000000000000000000001, type: 3}
   m_Name: AppConfig
   m_EditorClassIdentifier: 
-  projectName: 2D Template
+  projectName: SCM_GJ
   initialScene: 0
   gameplayScene: 1

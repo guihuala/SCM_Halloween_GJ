@@ -21,7 +21,9 @@ public class ButtonAnimationLayoutSlot : MonoBehaviour, ILayoutElement, ILayoutI
     public static void Wrap(RectTransform button)
     {
         var group = button.parent == null ? null : button.parent.GetComponent<LayoutGroup>();
-        if (group == null || !group.isActiveAndEnabled) return;
+        // During scene startup, a parent's LayoutGroup may not have received
+        // OnEnable yet. Its enabled state must not decide whether we reserve a slot.
+        if (group == null) return;
         foreach (var ignorer in button.GetComponents<ILayoutIgnorer>())
             if ((!(ignorer is Behaviour behaviour) || behaviour.isActiveAndEnabled) && ignorer.ignoreLayout) return;
 

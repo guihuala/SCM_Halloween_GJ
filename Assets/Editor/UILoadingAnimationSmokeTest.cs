@@ -34,20 +34,48 @@ public static class UILoadingAnimationSmokeTest
         var manager = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/-----MANAGER-----.prefab");
         Require(manager.GetComponentInChildren<Canvas>(true) == null, "Manager still embeds the loading canvas");
         var loader = new SerializedObject(manager.GetComponent<SceneLoader>());
-        var prefab = loader.FindProperty("loadingScreenPrefab").objectReferenceValue as LoadingScreen;
-        Require(prefab != null, "Loading prefab reference missing");
+        var path = loader.FindProperty("loadingScreenResourcePath").stringValue;
+        Require(path == "Panel/LoadingScreen", "Loading resource path incorrect");
+        var prefab = Resources.Load<GameObject>(path)?.GetComponent<LoadingScreen>();
+        Require(prefab != null, "Loading resource prefab missing");
         var screen = UnityEngine.Object.Instantiate(prefab);
         screen.SetAlpha(0f);
         screen.SetProgress(0f);
         var group = screen.GetComponentInChildren<CanvasGroup>();
         Require(group.alpha == 0f && !group.blocksRaycasts, "Hidden overlay intercepts input");
         screen.SetAlpha(1f);
-        screen.SetProgress(0.5f);
+        screen.SetProgress(0.5f, true);
         Require(group.alpha == 1f && group.blocksRaycasts, "Visible overlay does not block input");
         Require(screen.GetComponentInChildren<Text>().text == "50%", "Progress text incorrect");
         var data = new SerializedObject(screen);
-        var bar = data.FindProperty("progressBar").objectReferenceValue as Image;
-        Require(bar.type == Image.Type.Filled && Mathf.Approximately(bar.fillAmount, 0.5f), "Progress fill incorrect");
+        var mask = data.FindProperty("progressMask").objectReferenceValue as RectMask2D;
+        Require(mask != null, "Progress mask missing");
+        var bar = mask.GetComponentInChildren<Image>();
+        Require(bar.type == Image.Type.Sliced && bar.sprite != null && bar.sprite.border.sqrMagnitude > 0f,
+            "Progress image lost nine-slice settings");
+        var rootRect = (RectTransform)screen.transform;
+        rootRect.localScale = Vector3.one;
+        rootRect.sizeDelta = new Vector2(1920, 1080);
+        var imageRect = bar.rectTransform;
+        var imageScale = imageRect.localScale;
+        var imageSize = imageRect.sizeDelta;
+        foreach (float value in new[] { -1f, 0f, 0.01f, 0.5f, 1f, 2f })
+        {
+            screen.SetProgress(value, true);
+            float expected = Mathf.Clamp01(value);
+            Require(Mathf.Approximately(mask.padding.z, mask.canvasRect.width * (1f - expected)),
+                "Incorrect horizontal reveal at " + value);
+            Require(imageRect.sizeDelta == imageSize && imageRect.localScale == imageScale && bar.type == Image.Type.Sliced,
+                "Progress animation changed image geometry or slicing");
+        }
+        mask.transform.parent.localScale = new Vector3(0.65f, 1.5f, 1f);
+        rootRect.sizeDelta = new Vector2(2560, 1440);
+        screen.SetProgress(0.5f, true);
+        Require(mask.canvasRect.width > 0f && Mathf.Approximately(mask.padding.z, mask.canvasRect.width * 0.5f),
+            "Resize or non-uniform parent scaling broke clipping");
+        screen.SetProgress(0f, true);
+        screen.SetProgress(1f);
+        Require(!screen.IsProgressComplete, "Progress animation skipped interpolation");
         UnityEngine.Object.DestroyImmediate(screen.gameObject);
     }
 

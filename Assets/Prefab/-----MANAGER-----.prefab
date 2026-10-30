@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd32de33389864f868f83afd19e2945c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingScreenPrefab: {fileID: 9100000000000000000, guid: 570335e40adc4cb484eae4e5b9504b00, type: 3}
+  loadingScreenResourcePath: Panel/LoadingScreen
   fadeDuration: 0.2
   minLoadingTime: 0
 --- !u!114 &1301348935869840000

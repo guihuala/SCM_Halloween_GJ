@@ -12,7 +12,7 @@ public enum GameScene
 public class SceneLoader : SingletonPersistent<SceneLoader>
 {
     [Header("加载界面设置")]
-    [SerializeField] private LoadingScreen loadingScreenPrefab;
+    [SerializeField] private string loadingScreenResourcePath = "Panel/LoadingScreen";
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float minLoadingTime = 0f;
 
@@ -45,6 +45,8 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
     private IEnumerator LoadSceneRoutine(string sceneName, Action onComplete)
     {
         isLoading = true;
+        var prefab = Resources.Load<GameObject>(loadingScreenResourcePath);
+        var loadingScreenPrefab = prefab != null ? prefab.GetComponent<LoadingScreen>() : null;
         if (loadingScreenPrefab != null)
         {
             // Only create the overlay during transitions, under the persistent manager.
@@ -83,6 +85,12 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
 
         // 等待一帧确保场景完全加载
         yield return null;
+
+        if (loadingScreen != null)
+        {
+            loadingScreen.SetProgress(1f);
+            while (!loadingScreen.IsProgressComplete) yield return null;
+        }
 
         // 淡出加载界面
         yield return StartCoroutine(FadeLoadingScreen(1f, 0f));
