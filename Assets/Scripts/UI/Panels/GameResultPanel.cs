@@ -16,7 +16,7 @@ public class GameResultPanel : BasePanel
 
     public void Configure(bool won)
     {
-        titleText.text = won ? "挑战成功" : "游戏结束";
+        titleText.text = won ? "Delivery Complete" : "Shift Over";
         restartButton.Select();
     }
 }

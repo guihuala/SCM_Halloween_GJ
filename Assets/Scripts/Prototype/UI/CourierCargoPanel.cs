@@ -28,9 +28,9 @@ namespace NightCourier
         }
         protected override void Refresh()
         {
-            capacityText.text = "载重 " + Run.Load + " / " + Run.Car.Capacity + " 格";
+            capacityText.text = "Load " + Run.Load + " / " + Run.Car.Capacity + " slots";
             adviceText.gameObject.SetActive(Run.Overloaded);
-            adviceText.text = "满载：速度降低，损耗增加";
+            adviceText.text = "Full load: slower travel, increased wear";
             int waiting = 0, loaded = 0;
             for (int i = 0; i < rows.Count; i++)
             {
@@ -43,7 +43,7 @@ namespace NightCourier
                 rows[i].Refresh(); if (onboard) loaded++; else waiting++;
             }
             waitingEmptyText.gameObject.SetActive(waiting == 0); loadedEmptyText.gameObject.SetActive(loaded == 0);
-            Caption(continueButton, loaded > 0 ? "选路线" : "空车出发");
+            Caption(continueButton, loaded > 0 ? "Plan Route" : "Depart Empty");
         }
     }
 }

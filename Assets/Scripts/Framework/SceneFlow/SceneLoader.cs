@@ -54,7 +54,6 @@ public class SceneLoader : SingletonPersistent<SceneLoader>
             loadingScreen.SetAlpha(0f);
             loadingScreen.SetProgress(0f);
         }
-        if (DialogueManager.Instance != null) DialogueManager.Instance.Stop();
         if (UIManager.Instance != null) UIManager.Instance.CloseAllPanelsImmediate();
         if (InputManager.Instance != null) InputManager.Instance.SetGameplayInputEnabled(false);
         float startTime = Time.realtimeSinceStartup;

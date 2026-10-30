@@ -71,11 +71,10 @@ public class SaveData
     public int coin;
     public int currentLevel;
     public List<string> unlockedLevels = new List<string>();
-    public DialogueSaveData dialogue = new DialogueSaveData();
 }
 ```
 
-`dialogue` 保存模板内置的轻量对话运行状态，包括 flags、items、quests 和 numbers。`SaveManager` 在保存前捕获 `DialogueRuntimeState`，读取存档后恢复它，新游戏会清空旧状态。
+模板对话模块已移除，存档管理器不再捕获其运行状态。夜航原型的派送与剧情进度目前由场景对象管理，尚未接入存档。
 
 后续可继续扩展：
 
@@ -266,7 +265,7 @@ if (InputManager.Instance.GetActionDown(InputActionType.Pause))
 * 键位重绑定
 * 手柄支持
 * 输入锁定，例如过场动画、UI 打开时禁用角色输入
-* 输入上下文，例如 Gameplay / UI / Dialogue
+* 输入上下文，例如 Gameplay / UI
 * 输入缓冲，例如提前按跳跃
 * Coyote Time 辅助，例如离地后短时间仍允许跳跃
 

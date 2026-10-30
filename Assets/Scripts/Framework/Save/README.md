@@ -49,13 +49,9 @@ data.currentLevel = 2;
 SaveManager.Instance.SaveGame();
 ```
 
-## 对话运行状态
+## 当前原型
 
-`SaveManager.SaveGame()` 会自动把 `DialogueRuntimeState` 中的对话标记、临时物品、任务状态和数字变量写入 `SaveData.dialogue`。
-
-`SaveManager.LoadGame()` 会恢复这些对话状态，`NewGame()`、读取失败、删除当前槽位或没有可读存档时会清空它们，避免上一局留下的分支状态影响新游戏。
-
-Game Jam 默认场景已移除存档与对话测试面板。需要存档时，可自行添加入口并调用上述 API。
+Game Jam 默认场景不提供存档入口；夜航原型的派送和剧情状态由场景内的 `CourierRun` 管理，当前没有接入持久存档。旧模板的对话状态保存逻辑已移除。需要存档时，可自行添加入口并调用上述 API。
 
 ## 监听事件
 
@@ -70,6 +66,6 @@ void OnSaveCompleted(SaveData data)
 
 ## 扩展建议
 
-`SaveData` 是模板数据结构，可以按项目需要增加字段。为了保持模板低耦合，除内置的轻量对话运行状态外，建议业务系统自己决定何时读取和写入数据。
+`SaveData` 是模板数据结构，可以按项目需要增加字段。为了保持模板低耦合，业务系统应自行决定何时读取和写入数据。
 
 设置项、音量、分辨率、输入绑定等更适合继续使用 `PlayerPrefs` 或平台设置存储，不建议混入游戏进度存档。

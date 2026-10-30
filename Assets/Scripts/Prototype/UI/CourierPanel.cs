@@ -6,7 +6,7 @@ namespace NightCourier
 {
     public abstract class CourierPanel : BasePanel
     {
-        [Header("面板通用引用")]
+        [Header("Shared Panel References")]
         public Button closeButton;
         protected NightCourierPrototype owner;
         protected CourierRun Run { get { return owner.Run; } }

@@ -3,19 +3,16 @@ namespace NightCourier
 {
     public sealed class CourierEventPanel : CourierPanel
     {
-        public Text titleText, descriptionText;
-        public Button safeButton, riskButton;
-        protected override void Awake()
-        {
-            base.Awake();
-            safeButton.onClick.AddListener(() => owner.ResolveEncounter(true));
-            riskButton.onClick.AddListener(() => owner.ResolveEncounter(false));
-        }
+        public Text titleText,descriptionText,safeCostText,riskCostText;
+        public Button safeButton,riskButton;
+        public CourierIconGraphic fragileRisk,dryRisk;
+        protected override void Awake(){base.Awake();safeButton.onClick.AddListener(()=>owner.ResolveEncounter(true));riskButton.onClick.AddListener(()=>owner.ResolveEncounter(false));}
         protected override void Refresh()
         {
-            titleText.text = Run.EncounterTitle;
-            descriptionText.text = Run.EncounterDescription;
-            Caption(safeButton, Run.SafeChoice); Caption(riskButton, Run.RiskChoice);
+            var e=Run.Events[Run.EncounterIndex];titleText.text=e.Title;descriptionText.text=e.Description;
+            Caption(safeButton,e.Safe.Split('·')[0].Trim());Caption(riskButton,e.Risky.Split('·')[0].Trim());
+            safeCostText.text="+"+e.SafeMinutes+" min";riskCostText.text="-"+e.RiskDamage;
+            fragileRisk.gameObject.SetActive(e.BreakFragile);dryRisk.gameObject.SetActive(e.WetDry);
         }
     }
 }

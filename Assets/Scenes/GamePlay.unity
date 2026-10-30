@@ -802,3 +802,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1766d86a77d44b4fa4190b30e718b10d, type: 3}
   m_Name:
   m_EditorClassIdentifier:
+  uiFont: {fileID: 12800000, guid: 6a36df9b006614beb91e4f2029bf4f51, type: 3}

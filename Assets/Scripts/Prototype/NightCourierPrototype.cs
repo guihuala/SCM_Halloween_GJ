@@ -10,20 +10,44 @@ namespace NightCourier
         public bool InCar { get; private set; } = true;
         public Vector2 GhostPosition { get; private set; } = new Vector2(395, 330);
         [SerializeField] private Font uiFont;
-        public Font UIFont { get { return uiFont != null ? uiFont : fallbackFont; } }
+        [SerializeField] private AudioClip radioMusic;
+        public Font UIFont { get { return uiFont; } }
         public bool HasPlanner { get { return planner != null; } }
-        private Font fallbackFont;
         private CourierPanel planner, forcedPanel;
         private CourierHudPanel hud;
         private ShiftState lastState;
         private float visualTime;
+        private string[] dialogue = new string[0];
+        private int dialogueIndex;
+        public bool ConversationActive { get { return dialogueIndex < dialogue.Length; } }
+        public string Subtitle
+        {
+            get
+            {
+                if (Run.State == ShiftState.Docked) return ConversationActive ? dialogue[dialogueIndex] : Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Waypoint stop - Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue  -  Tab: Reroute]":Run.ObjectiveText + "  [E: Talk / Exit  -  Tab: Map]");
+                if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
+                if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.ActiveRoad.Other(Run.Node)].Name+(Run.HasJourney&&Run.ActiveRoad.Other(Run.Node)!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.ActiveRoad.Other(Run.Node)].Name:"");
+                return "";
+            }
+        }
+        public void BeginConversation()
+        {
+            if (Run.State != ShiftState.Docked || HasPlanner || !Active) return;
+            dialogue = Run.TalkToNpc(); dialogueIndex = 0;
+        }
+        public void AdvanceDialogue()
+        {
+            if (ConversationActive) dialogueIndex++;
+            else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active&&!HasPlanner)DepartTo(Run.PlannedDestination);
+        }
         public float VisualTime { get { return visualTime; } }
         public bool Active { get { return GameManager.Instance == null || GameManager.Instance.CurrentState == GameManager.GameState.Playing; } }
         private void Awake()
         {
             Current = this;
             Run = new CourierRun();
-            if (uiFont == null) fallbackFont = Font.CreateDynamicFontFromOSFont(new[] { "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Arial" }, 24);
+            CourierContentOverrides.Apply(Run);
+            if (uiFont == null) Debug.LogError("Assign the project font to NightCourierPrototype.");
         }
         private void Start()
         {
@@ -31,6 +55,8 @@ namespace NightCourier
             if (previousHud != null && previousHud.pauseButton != null) previousHud.pauseButton.gameObject.SetActive(false);
             hud = Open<CourierHudPanel>("CourierHudPanel", UIPanelLayer.Bottom);
             lastState = Run.State;
+            BeginConversation();
+            gameObject.AddComponent<CourierSoundscape>().Initialize(this, radioMusic);
         }
         private T Open<T>(string name, UIPanelLayer layer) where T : CourierPanel
         {
@@ -41,7 +67,9 @@ namespace NightCourier
         public void ShowPlanner(string name)
         {
             if (!Active || Run.State != ShiftState.Docked) return;
-            ClosePlanner();
+            ClosePlanner(); dialogue = new string[0]; dialogueIndex = 0;
+            // The former cargo and vehicle windows now share the single map/trunk panel.
+            if (name == "CourierCargoPanel" || name == "CourierVehiclePanel") name = "CourierRoutePanel";
             planner = Open<CourierPanel>(name, UIPanelLayer.Popup);
         }
         public bool ClosePlanner()
@@ -63,6 +91,11 @@ namespace NightCourier
             if (vehicle < 0 || !Run.Possess(vehicle)) return false;
             InCar = true;
             return true;
+        }
+        public bool DepartTo(int destination)
+        {
+            if(!Run.StartJourney(destination))return false;
+            InCar=true;ClosePlanner();return true;
         }
         public bool Depart(Road road)
         {
@@ -86,8 +119,10 @@ namespace NightCourier
         {
             ClosePlanner(); CloseForced();
             Run = new CourierRun(System.Environment.TickCount);
+            CourierContentOverrides.Apply(Run);
             InCar = true; GhostPosition = new Vector2(395, 330); lastState = Run.State;
             if (hud != null) hud.Bind(this);
+            BeginConversation();
         }
         private void Update()
         {
@@ -96,29 +131,32 @@ namespace NightCourier
             Run.Tick(Time.deltaTime);
             if (Run.State != lastState)
             {
-                if (Run.State == ShiftState.Docked) { InCar = true; GhostPosition = new Vector2(395, 330); }
+                if (Run.State == ShiftState.Docked) { InCar = true; GhostPosition = new Vector2(395, 330); BeginConversation(); }
                 if (Run.State == ShiftState.Encounter)
                 { ClosePlanner(); forcedPanel = Open<CourierEventPanel>("CourierEventPanel", UIPanelLayer.Popup); }
-                if (Run.State == ShiftState.Won || Run.State == ShiftState.Lost)
+                if (Run.Finished)
                 { ClosePlanner(); CloseForced(); forcedPanel = Open<CourierResultPanel>("CourierResultPanel", UIPanelLayer.Popup); }
                 lastState = Run.State;
             }
-            if (Run.State != ShiftState.Docked || HasPlanner) return;
-            if (Input.GetKeyDown(KeyCode.M)) { ShowPlanner("CourierRoutePanel"); return; }
-            if (Input.GetKeyDown(KeyCode.Tab)) ToggleCar();
-            if (InCar) return;
+            if (Run.State != ShiftState.Docked) return;
+            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.M))
+            { if (!ClosePlanner()) ShowPlanner("CourierRoutePanel"); return; }
+            if (HasPlanner) return;
+            if (ConversationActive) { if (Input.GetKeyDown(KeyCode.E)) AdvanceDialogue(); return; }
+            if (InCar)
+            { if (Input.GetKeyDown(KeyCode.E)) {if(Run.HasJourney)AdvanceDialogue();else ToggleCar();} return; }
             GhostPosition = new Vector2(Mathf.Clamp(GhostPosition.x + Input.GetAxisRaw("Horizontal") * Time.deltaTime * 320, 180, 1230),
                 Mathf.Clamp(GhostPosition.y - Input.GetAxisRaw("Vertical") * Time.deltaTime * 150, 270, 370));
             if (!Input.GetKeyDown(KeyCode.E)) return;
-            if (Mathf.Abs(GhostPosition.x - 790) < 115) ShowPlanner("CourierCargoPanel");
-            else if (Mathf.Abs(GhostPosition.x - 1080) < 110 && Run.Stops[Run.Node].Vehicle >= 0) ShowPlanner("CourierVehiclePanel");
-            else if (Mathf.Abs(GhostPosition.x - 395) < 130) ToggleCar();
+            if (Mathf.Abs(GhostPosition.x - 790) < 115) BeginConversation();
+            else if (Mathf.Abs(GhostPosition.x - 1080) < 110 && Run.Stops[Run.Node].Vehicle >= 0)
+            { if (!PossessParkedVehicle()) ShowPlanner("CourierRoutePanel"); }
+            else if (Mathf.Abs(GhostPosition.x - 395) < 130) ShowPlanner("CourierRoutePanel");
         }
         private void OnDestroy()
         {
             if (Current == this) Current = null;
-            if (fallbackFont != null) Destroy(fallbackFont);
         }
-        public static string Minutes(float value) { return Mathf.CeilToInt(Mathf.Max(0, value)) + " 分钟"; }
+        public static string Minutes(float value) { return Mathf.CeilToInt(Mathf.Max(0, value)) + " min"; }
     }
 }

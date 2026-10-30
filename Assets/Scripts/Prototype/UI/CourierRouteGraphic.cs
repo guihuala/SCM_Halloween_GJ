@@ -7,16 +7,17 @@ namespace NightCourier
     public sealed class CourierRouteGraphic : MaskableGraphic
     {
         public NightCourierPrototype Owner;
-        public Road Selected;
+        public System.Collections.Generic.List<Road> SelectedRoute=new System.Collections.Generic.List<Road>();
         private static readonly CourierRun Preview = new CourierRun();
-        public static Vector2 NodePoint(Stop stop) { return new Vector2(65 + stop.X * 690, 70 + stop.Y * 470); }
+        public static Vector2 NodePoint(Stop stop) { return new Vector2(50 + stop.X * 550, 35 + stop.Y * 340); }
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();var run=Owner!=null?Owner.Run:Preview;
             foreach(var road in run.Roads)
             {
                 var a=NodePoint(run.Stops[road.A]);var b=NodePoint(run.Stops[road.B]);
-                Color c=road==Selected?new Color(1,.66f,.34f):road.Connects(run.Node)?new Color(.38f,.7f,.6f):new Color(.18f,.25f,.3f);
+                var direction=(b-a).normalized;a+=direction*23;b-=direction*23;
+                Color c=SelectedRoute.Contains(road)?new Color(1,.66f,.34f):road.Connects(run.Node)?new Color(.38f,.7f,.6f):new Color(.18f,.25f,.3f);
                 if(road.Gravel) for(int i=0;i<20;i+=2) Segment(vh,Vector2.Lerp(a,b,i/20f),Vector2.Lerp(a,b,(i+1)/20f),c);
                 else Segment(vh,a,b,c);
             }

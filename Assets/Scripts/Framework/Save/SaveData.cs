@@ -15,7 +15,6 @@ public class SaveData
     public int coin;
     public int currentLevel;
     public List<string> unlockedLevels = new List<string>();
-    public DialogueSaveData dialogue = new DialogueSaveData();
 
     public SaveData()
     {
@@ -23,29 +22,6 @@ public class SaveData
         lastSaveTime = createdTime;
         slotName = "New Save";
     }
-}
-
-[Serializable]
-public class DialogueSaveData
-{
-    public List<string> flags = new List<string>();
-    public List<string> items = new List<string>();
-    public List<DialogueQuestSaveData> quests = new List<DialogueQuestSaveData>();
-    public List<DialogueNumberSaveData> numbers = new List<DialogueNumberSaveData>();
-}
-
-[Serializable]
-public class DialogueQuestSaveData
-{
-    public string questId;
-    public string state;
-}
-
-[Serializable]
-public class DialogueNumberSaveData
-{
-    public string key;
-    public float value;
 }
 
 [Serializable]

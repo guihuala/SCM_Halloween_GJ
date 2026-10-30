@@ -1,0 +1,11 @@
+﻿id,title,description,safe_action,risk_action,safe_minutes,risk_damage,fragile_damage,water_damage
+0,Trick-or-Treaters,"Children gather in the headlights, demanding candy.",Share your candy,Brake and swerve,4,7,1,0
+1,Strangers in the Fog,"Dark elves peer through the fog, trying to read your license plate.",Dim the lights and wait,Push through the fog,6,12,0,0
+2,Waves on the River,The ferry rocks. Waves threaten to soak the trunk.,Secure the tarp,Ride through the waves,5,8,0,1
+3,Falling Rocks,"Rocks tumble down the slope, blocking the shortcut.",Pick a careful path,Drive over the rocks,5,14,1,0
+4,Werewolf Roadblock,A werewolf family has closed the road for their Halloween celebrations.,Stop and ask for a way through,Break through the fence,4,10,0,0
+5,The Bear's Honey Cart,"A little bear's cart, laden with honey, blocks the lane.",Help push the cart aside,Squeeze past the guardrail,5,6,0,0
+6,A Vampire Hitchhiker,He asks: Could you take me a little farther before sunrise?,Give him a ride,Swerve away,4,8,1,0
+7,The Zombie's Old Map,A zombie newcomer holds an old map upside down.,Mark the way for him,Take the muddy shoulder,3,9,0,1
+8,A Witch's Crosswind,A passing broomstick's wake pushes your vehicle toward the shoulder.,Pull over and wait,Accelerate into the wind,5,13,0,0
+9,Old Headlights in the Storm,Lightning reveals last night's tire tracks. You recognize the skid marks.,Hold the vehicle steady,Race after the headlights,6,18,1,0

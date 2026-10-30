@@ -73,8 +73,8 @@ public class SavePanel : BasePanel
         if (meta.hasData)
         {
             ShowConfirm(
-                "开始新游戏",
-                string.Format("存档位 {0} 已有数据。要覆盖并开始新游戏吗？", _selectedSlotIndex + 1),
+                "New Game",
+                string.Format("Slot {0} has a save. Overwrite it and start a new game?", _selectedSlotIndex + 1),
                 StartNewGameInSelectedSlot);
             return;
         }
@@ -89,7 +89,7 @@ public class SavePanel : BasePanel
         SaveSlotMeta meta = SaveManager.Instance.GetSlotMeta(_selectedSlotIndex);
         bool loaded = SaveManager.Instance.LoadGame(_selectedSlotIndex);
         string message = loaded
-            ? "存档已读取。"
+            ? "Save loaded."
             : GetLoadRecoveryMessage(meta);
         RefreshStatus(message);
     }
@@ -99,7 +99,7 @@ public class SavePanel : BasePanel
         if (!HasSaveManager()) return;
 
         bool saved = SaveManager.Instance.SaveGame(_selectedSlotIndex);
-        RefreshStatus(saved ? "存档已完成。" : "存档失败。");
+        RefreshStatus(saved ? "Game saved." : "Save failed.");
     }
 
     private void OnDeleteClicked()
@@ -109,20 +109,20 @@ public class SavePanel : BasePanel
         SaveSlotMeta meta = SaveManager.Instance.GetSlotMeta(_selectedSlotIndex);
         if (!meta.hasData)
         {
-            RefreshStatus("未找到存档文件，已创建新数据。");
+            RefreshStatus("No save found. New data created.");
             return;
         }
 
         ShowConfirm(
-            "删除存档",
-            string.Format("要删除存档位 {0} 的数据吗？", _selectedSlotIndex + 1),
+            "Delete Save",
+            string.Format("Delete the save in slot {0}?", _selectedSlotIndex + 1),
             DeleteSelectedSlot);
     }
 
     private void DeleteSelectedSlot()
     {
         bool deleted = SaveManager.Instance.DeleteSave(_selectedSlotIndex);
-        RefreshStatus(deleted ? "存档已删除。" : "删除失败。");
+        RefreshStatus(deleted ? "Save deleted." : "Delete failed.");
     }
 
     private void OnCloseClicked()
@@ -134,7 +134,7 @@ public class SavePanel : BasePanel
     {
         if (SaveManager.Instance != null) return true;
 
-        RefreshStatus("场景中未找到 SaveManager。");
+        RefreshStatus("Save manager is unavailable.");
         return false;
     }
 
@@ -168,15 +168,15 @@ public class SavePanel : BasePanel
         if (titleText != null)
         {
             titleText.text = _mode == SavePanelMode.NewGameSelection
-                ? "选择新游戏存档"
-                : "存档";
+                ? "Choose a Save Slot"
+                : "Save Game";
         }
 
         if (SaveManager.Instance == null)
         {
-            SetText(statusText, message ?? "场景中未找到 SaveManager。");
-            SetText(selectedSlotText, "已选：不可用");
-            SetText(metadataText, "无元数据");
+            SetText(statusText, message ?? "Save manager is unavailable.");
+            SetText(selectedSlotText, "Selection unavailable");
+            SetText(metadataText, "No metadata");
             return;
         }
 
@@ -186,18 +186,18 @@ public class SavePanel : BasePanel
         SaveSlotMeta meta = SaveManager.Instance.GetSlotMeta(_selectedSlotIndex);
         string saveState = GetSlotStateText(meta);
         string detail = meta.hasData && meta.isValid
-            ? string.Format("名称：{0}\n场景：{1}\n保存时间：{2}\n创建时间：{3}\n游玩时长：{4}",
+            ? string.Format("Name: {0}\nScene: {1}\nSaved: {2}\nCreated: {3}\nPlay time: {4}",
                 meta.slotName,
                 SafeText(meta.sceneName),
                 SafeText(meta.lastSaveTime),
                 SafeText(meta.createdTime),
                 FormatPlayTime(meta.playTimeSeconds))
             : meta.hasData
-                ? "该存档文件已损坏或未通过验证。读取时会创建新数据。"
-            : "该存档位没有数据。";
+                ? "This save is invalid. Loading will create new data."
+            : "This slot is empty.";
 
         SetText(statusText, string.IsNullOrEmpty(message) ? saveState : $"{message}\n{saveState}");
-        SetText(selectedSlotText, string.Format("已选存档位：{0}", _selectedSlotIndex + 1));
+        SetText(selectedSlotText, string.Format("Selected slot: {0}", _selectedSlotIndex + 1));
         SetText(metadataText, detail);
     }
 
@@ -208,7 +208,7 @@ public class SavePanel : BasePanel
         for (int i = 0; i < slotButtons.Length; i++)
         {
             SaveSlotMeta meta = SaveManager.Instance.GetSlotMeta(i);
-            SetText(GetText(slotTitleTexts, i), string.Format("存档位 {0}", i + 1));
+            SetText(GetText(slotTitleTexts, i), string.Format("Slot {0}", i + 1));
             SetText(GetText(slotMetaTexts, i), GetSlotListMetaText(meta));
 
             if (slotButtons[i] != null)
@@ -258,7 +258,7 @@ public class SavePanel : BasePanel
             return;
         }
 
-        RefreshStatus("已创建新存档数据。");
+        RefreshStatus("New save data created.");
     }
 
     private void ShowConfirm(string title, string message, Action onConfirm)
@@ -277,34 +277,34 @@ public class SavePanel : BasePanel
     {
         if (meta != null && meta.hasData && !meta.isValid)
         {
-            return "存档文件无效，已创建新数据。";
+            return "Invalid save. New data created.";
         }
 
-        return "未找到存档文件，已创建新数据。";
+        return "No save found. New data created.";
     }
 
     private string GetSlotStateText(SaveSlotMeta meta)
     {
         if (meta == null || !meta.hasData)
         {
-            return "空存档位";
+            return "Empty Slot";
         }
 
         return meta.isValid
-            ? "存档文件存在"
-            : "存档文件无效";
+            ? "Save exists"
+            : "Invalid save";
     }
 
     private string GetSlotListMetaText(SaveSlotMeta meta)
     {
         if (meta == null || !meta.hasData)
         {
-            return "空";
+            return "Empty";
         }
 
         return meta.isValid
             ? $"{SafeText(meta.lastSaveTime)}  {SafeText(meta.sceneName)}"
-            : "无效";
+            : "Invalid";
     }
 
     private string SafeText(string content)

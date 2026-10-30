@@ -30,8 +30,8 @@ public class ConfirmPanel : BasePanel
 
         SetText(titleText, title);
         SetText(messageText, message);
-        SetText(confirmText, string.IsNullOrEmpty(confirmLabel) ? "确认" : confirmLabel);
-        SetText(cancelText, string.IsNullOrEmpty(cancelLabel) ? "取消" : cancelLabel);
+        SetText(confirmText, string.IsNullOrEmpty(confirmLabel) ? "Confirm" : confirmLabel);
+        SetText(cancelText, string.IsNullOrEmpty(cancelLabel) ? "Cancel" : cancelLabel);
     }
 
     private void OnConfirmClicked()

@@ -7,15 +7,6 @@
 - Excel：`Assets/Config/GameData/ExampleItems.xlsx`
 - SO：`Assets/Resources/ConfigTables/ExampleItemTable.asset`
 - 示例数据结构：`Assets/Scripts/GameData/ExampleItemTable.cs`
-- 对话表 SO：`Assets/Resources/ConfigTables/DialogueTable.asset`
-- 对话表结构：`Assets/Scripts/Framework/Dialogue/DialogueTable.cs`
-
-对话表有单独导入窗口：
-
-- `Tools/Template/Dialogue/Import Dialogue Excel`
-
-这样普通游戏数据表和剧情/对话配置可以分开维护。通用导表工具仍能导入 `DialogueTable`，但推荐使用对话专用窗口，因为它会额外校验 `dialogueId + lineIndex`，并支持多工作表合并。
-
 要让一个 SO 类型出现在自动创建下拉里，需要给 SO 类添加 `[ConfigTableAsset]`：
 
 ```csharp
@@ -53,4 +44,4 @@ public class ExampleItemTable : ScriptableObject
 - `bool`
 - `enum`
 
-当前可处理线性对话表，例如 `DialogueTable`。对话树、嵌套数组、复杂条件表达式、Ink/Yarn Spinner 等特殊结构建议以后做专门导入器，最后再转换为运行时使用的 `DialogueSequence` 或 `DialogueTable`。
+当前用于平面数据行，例如物品参数。嵌套数组和复杂剧情结构不属于此通用导表工具的处理范围。夜航原型的对白由 `CourierRun.TalkToNpc()` 提供。

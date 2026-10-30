@@ -12,7 +12,7 @@ public static class PanelTransitionSmokeTest
         try
         {
             DOTween.Init();
-            foreach (string name in new[] { "PausePanel", "SettingPanel", "ConfirmPanel", "GameResultPanel", "DialoguePanel" })
+            foreach (string name in new[] { "PausePanel", "SettingPanel", "ConfirmPanel", "GameResultPanel" })
                 Verify(name);
             Debug.Log("PANEL_TRANSITION PASS: backdrop before cards, full-screen root, preserved opacity/scale, input gating, interrupted close");
             EditorApplication.Exit(0);

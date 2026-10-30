@@ -8,7 +8,7 @@ Unity 2022.3.62f3。打开 `Assets/Scenes/MainMenu.unity`，点击新游戏直�
 - 失败：调用 `GameManager.Instance.LoseGame()`；原 `EndGame()` 等同失败结算。
 - 结算面板提供重开与返回主菜单。重复结算不会生成多个面板。
 - 重开：`GameManager.Instance.RestartGame()`，重新加载当前场景。每局玩法数据应由场景对象持有，在新场景中初始化；持久化业务状态需自行重置。
-- 存档、对话及导表仍是可选工具；默认菜单不提供存档入口，GamePlay 不再包含测试内容。现有存档不会因开始或重开被删除。
+- 存档及通用导表仍是可选工具；默认菜单不提供存档入口，GamePlay 不再包含测试内容。现有存档不会因开始或重开被删除。
 - 没有内置胜负条件：在实际玩法达到成功/失败条件时调用上述接口。
 - TimeManager 为可选慢动作工具；暂停状态由 GameManager 统一协调，不再逐帧覆盖时间。
 
@@ -16,7 +16,7 @@ Unity 2022.3.62f3。打开 `Assets/Scenes/MainMenu.unity`，点击新游戏直�
 
 `Assets/Editor/GameFlowSmokeTest.cs` 提供批处理入口 `GameFlowSmokeTest.Run`（启动 Unity 时传 `-executeMethod GameFlowSmokeTest.Run`，不要加 `-quit`）。它运行真实场景，验证开始、暂停、设置、恢复、胜负结算、连续重开、返回菜单、单例数量、慢动作恢复和音效停止隔离；不操作玩家存档。
 
-界面固定中文，本地化模块已移除；对话正文直接填写在 DialogueTable 的 text 字段。
+游戏界面固定英文，使用项目内 Barlow Condensed Light 字体，本地化和模板对话模块已移除；夜航对白由 `CourierRun.TalkToNpc()` 提供，并在电影字幕中展示。
 
 以下为保留模块的参考说明；默认场景以本节流程为准。
 

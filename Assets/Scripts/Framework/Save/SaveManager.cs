@@ -47,7 +47,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
 
     public SaveData NewGame(int slotIndex)
     {
-        DialogueRuntimeState.Reset();
         CurrentData = CreateNewSaveData();
         SetCurrentSlot(slotIndex);
         ApplyMetadata(CurrentData, slotIndex);
@@ -67,7 +66,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
         {
             CurrentData = CreateNewSaveData();
             ApplyMetadata(CurrentData, slotIndex);
-            DialogueRuntimeState.Reset();
             return false;
         }
 
@@ -80,7 +78,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
             {
                 CurrentData = CreateNewSaveData();
                 ApplyMetadata(CurrentData, slotIndex);
-                DialogueRuntimeState.Reset();
                 return false;
             }
 
@@ -90,13 +87,11 @@ public class SaveManager : SingletonPersistent<SaveManager>
                 Debug.LogWarning($"Save validation failed for slot {slotIndex + 1}:\n{SaveValidation.FormatIssues(issues)}");
                 CurrentData = CreateNewSaveData();
                 ApplyMetadata(CurrentData, slotIndex);
-                DialogueRuntimeState.Reset();
                 return false;
             }
 
             LogValidationWarnings(issues, slotIndex);
             ApplyMetadata(CurrentData, slotIndex, false);
-            RestoreRuntimeState(CurrentData);
             SaveLoaded?.Invoke(CurrentData);
             return true;
         }
@@ -105,7 +100,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
             Debug.LogWarning($"Load save failed: {exception.Message}");
             CurrentData = CreateNewSaveData();
             ApplyMetadata(CurrentData, slotIndex);
-            DialogueRuntimeState.Reset();
             SaveFailed?.Invoke(exception);
             return false;
         }
@@ -127,7 +121,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
 
         try
         {
-            CaptureRuntimeState(CurrentData);
             ApplyMetadata(CurrentData, slotIndex);
             List<SaveValidationIssue> issues = SaveValidation.Validate(CurrentData, slotIndex);
             if (SaveValidation.HasErrors(issues))
@@ -179,7 +172,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
             {
                 CurrentData = CreateNewSaveData();
                 ApplyMetadata(CurrentData, slotIndex);
-                DialogueRuntimeState.Reset();
             }
 
             SaveDeleted?.Invoke(slotIndex);
@@ -207,7 +199,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
     {
         CurrentData = data ?? CreateNewSaveData();
         ApplyMetadata(CurrentData, currentSlotIndex, false);
-        RestoreRuntimeState(CurrentData);
     }
 
     public void SetCurrentSlot(int slotIndex)
@@ -285,17 +276,6 @@ public class SaveManager : SingletonPersistent<SaveManager>
     private SaveData CreateNewSaveData()
     {
         return new SaveData();
-    }
-
-    private void CaptureRuntimeState(SaveData data)
-    {
-        if (data == null) return;
-        data.dialogue = DialogueRuntimeState.Capture();
-    }
-
-    private void RestoreRuntimeState(SaveData data)
-    {
-        DialogueRuntimeState.Restore(data != null ? data.dialogue : null);
     }
 
     private void ApplyMetadata(SaveData data, int slotIndex, bool refreshSaveTime = true)

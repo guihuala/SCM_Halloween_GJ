@@ -24,43 +24,25 @@ public static class GameFlowSmokeTest
 
     public static void Run()
     {
-        VerifyDialogueContent();
+        VerifyLegacyDialogueRemoved();
         SessionState.SetBool(Active, true);
         EditorSceneManager.OpenScene("Assets/Scenes/MainMenu.unity");
+        EditorApplication.ExecuteMenuItem("Window/General/Game");
+        Application.runInBackground = true;
         EditorApplication.isPlaying = true;
     }
 
-    // One-time migration entry point: export the migrated text-bearing asset through
-    // the project's own Excel exporter, then run the normal regression suite.
-    public static void MigrateDialogueSourceAndRun()
+    private static void VerifyLegacyDialogueRemoved()
     {
-        var table = AssetDatabase.LoadAssetAtPath<DialogueTable>("Assets/Resources/ConfigTables/DialogueTable.asset");
-        DialogueExcelUtility.ExportXlsx(table, "Assets/Config/Dialogue/DialogueTable.xlsx");
-        AssetDatabase.Refresh();
-        Run();
-    }
-
-    private static void VerifyDialogueContent()
-    {
-        var table = AssetDatabase.LoadAssetAtPath<DialogueTable>("Assets/Resources/ConfigTables/DialogueTable.asset");
-        var sheet = ExcelTableReader.ReadFirstSheet("Assets/Config/Dialogue/DialogueTable.xlsx");
-        int textColumn = sheet.Rows[0].IndexOf("text");
-        Require(textColumn >= 0 && !sheet.Rows[0].Contains("localizationKey"), "Dialogue source schema not migrated");
-        Require(sheet.Rows.Count == table.lines.Count + 1, "Dialogue source rows lost");
-        foreach (var line in table.lines)
-        {
-            Require(!string.IsNullOrWhiteSpace(line.text), "Empty dialogue text");
-            var source = sheet.Rows.Find(row => row[0] == line.dialogueId && row[1] == line.lineIndex.ToString());
-            Require(source != null && source[textColumn] == line.text, "Dialogue source text mismatch");
-            for (int option = 0; option < line.options.Count; option++)
-            {
-                int col = sheet.Rows[0].IndexOf($"option{option + 1}Text");
-                Require(col >= 0 && source[col] == line.options[option].text, "Dialogue option text lost");
-                Require(source[col + 1] == (line.options[option].nextDialogueId ?? ""), "Dialogue target lost");
-                Require(source[col + 2] == (line.options[option].condition ?? ""), "Dialogue condition lost");
-                Require(source[col + 3] == (line.options[option].effects ?? ""), "Dialogue effects lost");
-            }
-        }
+        Require(Resources.Load<GameObject>("Panel/DialoguePanel")==null,"Legacy dialogue panel still ships");
+        Require(AssetDatabase.LoadMainAssetAtPath("Assets/Resources/ConfigTables/DialogueTable.asset")==null,"Legacy dialogue table still ships");
+        var registry=Resources.Load<UIDatas>("Data/UIDataListSO");
+        Require(!registry.uiDataList.Exists(x=>x.uiName=="DialoguePanel"),"Stale dialogue panel registration");
+        var manager=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/-----MANAGER-----.prefab");
+        foreach(var component in manager.GetComponentsInChildren<MonoBehaviour>(true))Require(component!=null,"Manager contains missing script after cleanup");
+        // Old JSON can still load its unrelated fields; no player save files are touched.
+        var oldSave=JsonUtility.FromJson<SaveData>("{\"version\":1,\"coin\":23,\"dialogue\":{\"flags\":[\"legacy\"]}}");
+        Require(oldSave.coin==23&&!JsonUtility.ToJson(oldSave).Contains("dialogue"),"Legacy save field cleanup affected core save data");
     }
 
     private static void Require(bool condition, string message)
@@ -95,11 +77,18 @@ public static class GameFlowSmokeTest
         if (SceneLoader.Instance == null || SceneLoader.Instance.IsLoading()) return;
         try
         {
+            var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
+            foreach(var text in UnityEngine.Object.FindObjectsOfType<Text>(true))
+            {
+                Require(text.font==font,"Project font missing on "+text.name);
+                Require(!System.Text.RegularExpressions.Regex.IsMatch(text.text,@"[\u3400-\u9fff]"),"Non-English UI text on "+text.name);
+            }
             var game = GameManager.Instance;
             switch (step)
             {
                 case 0:
                     Require(UnityEngine.Object.FindObjectOfType<TitleUIController>() != null, "Menu missing");
+                    if (Capture("main-menu")) return;
                     Require(InputManager.Instance != null, "Input manager missing");
                     UnityEngine.Object.FindObjectOfType<TitleUIController>().OnNewGameButtonClicked();
                     break;
@@ -132,7 +121,7 @@ public static class GameFlowSmokeTest
                     break;
                 case 5:
                     Require(Time.timeScale == 0 && game.CurrentState == GameManager.GameState.GameOver, "Win did not stop game");
-                    Require(UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>().text == "挑战成功", "Win title incorrect");
+                    Require(UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>().text == "Delivery Complete", "Win title incorrect");
                     if (Capture("result")) return;
                     previousGame = game.GetInstanceID();
                     Click("GameResultPanel", "RestartButton");
@@ -143,7 +132,7 @@ public static class GameFlowSmokeTest
                     game.LoseGame();
                     break;
                 case 7:
-                    Require(UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>().text == "游戏结束", "Lose title incorrect");
+                    Require(UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>().text == "Shift Over", "Lose title incorrect");
                     Click("GameResultPanel", "MainMenuButton");
                     break;
                 case 8:
