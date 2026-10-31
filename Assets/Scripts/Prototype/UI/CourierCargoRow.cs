@@ -65,34 +65,49 @@ namespace NightCourier
         public void Refresh()
         {
             var run=owner.Run;bool loaded=parcel.State==ParcelState.Loaded;
-            timeText.rectTransform.sizeDelta=new Vector2(96,38);
-            ((RectTransform)timeGroup.transform).sizeDelta=new Vector2(144,32);
-            nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=1;nameText.alignment=TextAnchor.UpperLeft;
-            destinationText.resizeTextForBestFit=false;destinationText.fontSize=26;destinationText.lineSpacing=1;destinationText.alignment=TextAnchor.UpperLeft;
+            timeText.rectTransform.sizeDelta=new Vector2(108,48);
+            ((RectTransform)timeGroup.transform).sizeDelta=new Vector2(132,48);
+            nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=1.08f;nameText.alignment=TextAnchor.UpperLeft;
+            destinationText.resizeTextForBestFit=false;destinationText.fontSize=26;destinationText.lineSpacing=1.12f;destinationText.alignment=TextAnchor.UpperLeft;
             nameText.text=string.Join(" + ",run.Batch(parcel).Select(p=>p.Name));
-            destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name+"\n"+(parcel.Damaged?"DAMAGED":parcel.HeatSensitive?"Keep cool · H":parcel.Dry?"Keep dry · W":parcel.Fragile?"Fragile · Q":"No special requirements");weightText.gameObject.SetActive(false);
+            destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name;weightText.gameObject.SetActive(false);
             var oldWeight=transform.Find("WeightIcon");if(oldWeight!=null)oldWeight.gameObject.SetActive(false);
-            storyIcon.gameObject.SetActive(parcel.Critical);damagedIcon.gameObject.SetActive(parcel.Damaged);
-            fragileIcon.gameObject.SetActive(parcel.Fragile&&!parcel.Damaged);heavyIcon.gameObject.SetActive(false);dryIcon.gameObject.SetActive(parcel.Dry&&!parcel.Damaged);
+            var batch=run.Batch(parcel).ToArray();
+            storyIcon.gameObject.SetActive(parcel.Critical);damagedIcon.gameObject.SetActive(batch.Any(p=>p.Damaged));
+            fragileIcon.gameObject.SetActive(batch.Any(p=>p.Fragile)&&!batch.Any(p=>p.Damaged));heavyIcon.gameObject.SetActive(false);dryIcon.gameObject.SetActive(batch.Any(p=>p.Dry)&&!batch.Any(p=>p.Damaged));
             timeGroup.SetActive(true);
+            var tagsRoot=(RectTransform)timeGroup.transform.parent;
+            var heat=CourierSymbolUI.Icon(tagsRoot,"HeatSymbol",CourierIconKind.Heat,0,0,28,CourierColors.Night,"Keep cool · heatproof vehicle H");heat.gameObject.SetActive(batch.Any(p=>p.HeatSensitive)&&!batch.Any(p=>p.Damaged));heat.transform.SetSiblingIndex(0);
+            CourierSymbolUI.Hint(cargoArtwork.transform,CourierInformation.Order(run,parcel));cargoArtwork.raycastTarget=true;
+            CourierSymbolUI.Hint(nameText.transform,CourierInformation.Order(run,parcel));nameText.raycastTarget=true;
+            CourierSymbolUI.Hint(damagedIcon.transform,"Damaged · delivery failed, but still accepted. Damage cannot be repaired.");
             RefreshArtwork();
             float width=((RectTransform)transform).rect.width;
-            float textWidth=Mathf.Max(100,width-208);
+            float textWidth=Mathf.Max(100,width-232);
             nameText.rectTransform.sizeDelta=new Vector2(textWidth,1000);
             float nameHeight=Mathf.Max(36,nameText.preferredHeight);
-            nameText.rectTransform.anchoredPosition=new Vector2(112,-8);
+            nameText.rectTransform.anchoredPosition=new Vector2(128,-16);
             nameText.rectTransform.sizeDelta=new Vector2(textWidth,nameHeight);
             destinationText.rectTransform.sizeDelta=new Vector2(textWidth,1000);
             float destinationHeight=Mathf.Max(32,destinationText.preferredHeight);
-            destinationText.rectTransform.anchoredPosition=new Vector2(112,-(12+nameHeight));
+            destinationText.rectTransform.anchoredPosition=new Vector2(128,-(28+nameHeight));
             destinationText.rectTransform.sizeDelta=new Vector2(textWidth,destinationHeight);
             var tags=timeGroup.transform.parent as RectTransform;
-            tags.anchoredPosition=new Vector2(112,-(16+nameHeight+destinationHeight));
-            tags.sizeDelta=new Vector2(Mathf.Max(180,width-128),32);
-            float height=Mathf.Max(144,56+nameHeight+destinationHeight);
+            tags.anchoredPosition=new Vector2(128,-(40+nameHeight+destinationHeight));
+            tags.sizeDelta=new Vector2(Mathf.Max(180,width-144),48);
+            float height=Mathf.Max(184,108+nameHeight+destinationHeight);
             var layout=GetComponent<LayoutElement>();
             if(layout.preferredHeight!=height){layout.preferredHeight=height;layout.minHeight=height;}
             ((RectTransform)actionButton.transform).anchoredPosition=new Vector2(-64,-(height-56)/2);
+            var tagLayout=tags.GetComponent<HorizontalLayoutGroup>();
+            if(tagLayout!=null){tagLayout.childAlignment=TextAnchor.MiddleLeft;tagLayout.spacing=16;}
+            timeText.rectTransform.anchoredPosition=new Vector2(44,0);
+            timeText.fontSize=26;timeText.alignment=TextAnchor.MiddleLeft;
+            foreach(var icon in tags.GetComponentsInChildren<CourierIconGraphic>(true))
+            {
+                var rect=icon.rectTransform;rect.sizeDelta=Vector2.one*28;
+                rect.anchoredPosition=new Vector2(rect.anchoredPosition.x,-10);
+            }
             int target=run.TargetTurns(parcel);
             timeText.text=(loaded?run.OrderTurns:0)+"/"+target;
             timeHint.message="Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, rated Delivery failed.";

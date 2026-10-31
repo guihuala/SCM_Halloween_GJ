@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d210bf522bea4b8fa308311e0efbd23b, type: 3}
   m_Name: MapArtwork
   m_EditorClassIdentifier:
-  terrain: {fileID: 21300000, guid: db9443ce540a4adf9ce141009acd5f62, type: 3}
+  terrain: {fileID: 21300000, guid: ecf6b3e2327943c68fd4538b30c2bb16, type: 3}
   terrainTint: {r: 1, g: 1, b: 1, a: 1}
-  terrainEdgeFeather: 0.16
+  terrainEdgeFeather: 0
   routeArtwork: {fileID: 21300000, guid: 5f52c5db6dce4588906882cb14aa775e, type: 3}
   landmarkHeightFraction: 0.28
   maximumLandmarkSize: 160

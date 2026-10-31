@@ -21,8 +21,8 @@ public static class CourierPrefabBuilder
     public static void Build()
     {
         Directory.CreateDirectory(Folder); Directory.CreateDirectory("Assets/Prefab/UI"); AssetDatabase.Refresh();
-        font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
-        if(font==null)throw new System.InvalidOperationException("Project font is missing: Barlow Condensed Light");
+        font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
+        if(font==null)throw new System.InvalidOperationException("Project font is missing: Nunito SemiBold");
         ExportContentTables(); BuildRow(); BuildTutorial(); BuildHud(); BuildRoute(); BuildEvent(); BuildResult();
         var registry = AssetDatabase.LoadAssetAtPath<UIDatas>("Assets/Resources/Data/UIDataListSO.asset");
         registry.uiDataList.RemoveAll(x=>x.uiName=="CourierCargoPanel"||x.uiName=="CourierVehiclePanel");
@@ -46,7 +46,7 @@ public static class CourierPrefabBuilder
     [MenuItem("Tools/Night Courier/Add Travel Controls (preserve layouts)")]
     public static void InstallTravelControls()
     {
-        font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
+        font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
         foreach(var name in new[]{"CourierHudPanel","CourierRoutePanel","CourierEventPanel"})
         {
             string path=Folder+"/"+name+".prefab";var root=PrefabUtility.LoadPrefabContents(path);

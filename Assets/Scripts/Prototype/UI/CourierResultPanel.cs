@@ -27,7 +27,7 @@ namespace NightCourier
             if(displayedRun==Run&&displayedCount==Run.Results.Count)return;
             displayedRun=Run;displayedCount=Run.Results.Count;
             titleText.text="Deliveries complete";
-            summaryText.text=Run.CompletedBatches+" orders delivered  ·  "+Run.Results.Count(r=>!r.Late&&!r.Damaged)+" on time & intact";
+            summaryText.text=Run.Results.Count(r=>!r.Late&&!r.Damaged)+"/"+Run.BatchCount;
             foreach(Transform child in orderCards){child.gameObject.SetActive(false);Destroy(child.gameObject);}
             for(int i=0;i<Run.Results.Count;i++)BuildCard(Run.Results[i],i);
             orderCards.sizeDelta=new Vector2(contentWidth,Mathf.Max(orderHistory.viewport.rect.height,Mathf.Ceil(Run.Results.Count/2f)*180));
@@ -67,9 +67,12 @@ namespace NightCourier
             characters=Resources.Load<CourierCharacterCatalog>("NightVoyage/Characters");
             paper=Resources.Load<Sprite>("NightVoyage/HUD/Panel");
             var window=(RectTransform)summaryText.transform.parent;window.sizeDelta=new Vector2(1280,800);
-            Place(titleText.rectTransform,32,28,1216,60);titleText.fontSize=44;titleText.alignment=TextAnchor.UpperLeft;
-            Place(summaryText.rectTransform,32,94,1216,36);summaryText.fontSize=26;summaryText.resizeTextForBestFit=false;
+            Place(titleText.rectTransform,32,20,1216,76);titleText.fontSize=44;titleText.alignment=TextAnchor.UpperLeft;
+            Place(summaryText.rectTransform,88,100,240,44);summaryText.fontSize=26;summaryText.resizeTextForBestFit=false;
             summaryText.alignment=TextAnchor.UpperLeft;
+            titleText.enabled=false;
+            CourierSymbolUI.Icon(window,"CompletionSymbol",CourierIconKind.Delivered,32,24,64,CourierColors.Night,"All deliveries complete");
+            CourierSymbolUI.Icon(window,"SuccessSymbol",CourierIconKind.Check,32,100,40,CourierColors.Night,"On time and intact / total orders");
             var viewport=Rect("OrderHistory",window,32,156,1216,536);
             var background=viewport.gameObject.AddComponent<Image>();background.color=CourierColors.Paper;background.raycastTarget=true;
             viewport.gameObject.AddComponent<RectMask2D>();
@@ -85,16 +88,17 @@ namespace NightCourier
             handleImage.sprite=scrollbarSprite;handleImage.type=UnityEngine.UI.Image.Type.Sliced;
             handleImage.color=Color.Lerp(CourierColors.Mint,CourierColors.Night,.18f);
             scrollbar.handleRect=handle;scrollbar.targetGraphic=handleImage;orderHistory.verticalScrollbar=scrollbar;
-            PrepareButton(restartButton,"Another shift",792);
-            PrepareButton(menuButton,"Back home",1028);
+            PrepareButton(restartButton,"Another shift",1072);
+            PrepareButton(menuButton,"Back home",1168);
         }
         private void PrepareButton(Button button,string caption,float x)
         {
-            Place((RectTransform)button.transform,x,712,220,64);
+            Place((RectTransform)button.transform,x,712,80,64);
             var icon=button.GetComponentInChildren<CourierIconGraphic>(true);
             if(icon!=null)Place(icon.rectTransform,16,12,40,40);
             var image=button.targetGraphic as Image;if(image!=null)image.color=button==restartButton?CourierColors.Mint:Color.Lerp(CourierColors.Paper,CourierColors.Muted,.28f);
             var label=Label("ActionLabel",button.transform,caption,64,12,144,40,26);label.alignment=TextAnchor.MiddleLeft;
+            CourierSymbolUI.Button(button,button==restartButton?CourierIconKind.Restart:CourierIconKind.Home,caption);
         }
         private void BuildCard(DeliveryResult result,int index)
         {
@@ -117,11 +121,11 @@ namespace NightCourier
             var recipient=characters!=null?characters.ForStop(result.Destination):null;
             var portrait=characters!=null?characters.PortraitFor(recipient):null;
             if(portrait!=null)Image("RecipientPortrait",card,portrait,width-76,16,56,64,Color.white);
-            Label("RecipientName",card,"For "+(recipient!=null?recipient.displayName:Run.Stops[result.Destination].Name),128,80,width-148,32,23);
+            Label("RecipientName",card,(recipient!=null?recipient.displayName:Run.Stops[result.Destination].Name),128,80,width-148,32,23);
             Icon("OutcomeIcon",card,success?CourierIconKind.Check:CourierIconKind.Warning,128,124,24,Color.Lerp(CourierColors.Night,accent,.25f));
             var status=Label("Outcome",card,success?"On time & intact":result.Late&&result.Damaged?"Late + damaged":result.Damaged?"Damaged":"Late delivery",160,120,240,32,23);
-            status.alignment=TextAnchor.MiddleLeft;
-            var turns=Label("Turns",card,result.Turns+" / "+result.TargetTurns+" turns",width-170,120,150,32,23);
+            status.alignment=TextAnchor.MiddleLeft;status.enabled=false;
+            var turns=Label("Turns",card,result.Turns+"/"+result.TargetTurns,width-170,120,150,32,23);
             turns.alignment=TextAnchor.MiddleRight;
             // Keep detailed damage attribution available without turning the album into a log.
             var hint=card.gameObject.AddComponent<CourierIconHint>();hint.message=result.Cargo+"\n"+Run.Stops[result.Origin].Name+" > "+Run.Stops[result.Destination].Name+"\n"+result.OutcomeDetail;

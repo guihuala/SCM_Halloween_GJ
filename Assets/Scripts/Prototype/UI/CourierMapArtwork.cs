@@ -23,7 +23,7 @@ namespace NightCourier
         private bool originalBaseRoads,originalBaseNodes;
         private Material terrainBlendMaterial,originalTerrainMaterial;
         private static readonly int EdgeFadeId=Shader.PropertyToID("_EdgeFade");
-        private static readonly int ImageRectId=Shader.PropertyToID("_ImageRect");
+        private static readonly int SpriteUVRectId=Shader.PropertyToID("_SpriteUVRect");
         private static readonly CourierRun Preview=new CourierRun();
 
         public void Apply(CourierRoutePanel panel,Stop[] stops=null)
@@ -89,11 +89,22 @@ namespace NightCourier
                 landmarkHitAreas[i].raycastTarget=true;
                 EnsureNodeHit(button,new Vector2(point.x,-point.y)-button.anchoredPosition);
                 var label=panel.stopLabels[i];var lr=label.rectTransform;
-                float labelHeight=36;
+                float labelHeight=52;
                 float labelTop=Mathf.Clamp(point.y+12,4,Mathf.Max(4,map.rect.height-labelHeight-4));
-                lr.anchoredPosition=new Vector2(point.x-100-button.anchoredPosition.x,-labelTop-button.anchoredPosition.y);
-                lr.sizeDelta=new Vector2(200,labelHeight);label.alignment=TextAnchor.UpperCenter;label.fontSize=28;label.raycastTarget=true;
-                panel.stopCounts[i].rectTransform.sizeDelta=new Vector2(90,36);
+                lr.anchoredPosition=new Vector2(point.x-112-button.anchoredPosition.x,-labelTop-button.anchoredPosition.y);
+                lr.sizeDelta=new Vector2(224,labelHeight);label.alignment=TextAnchor.UpperCenter;label.fontSize=28;label.raycastTarget=true;
+                var counts=panel.stopCounts[i].rectTransform;
+                counts.anchorMin=counts.anchorMax=counts.pivot=new Vector2(0,1);
+                counts.anchoredPosition=new Vector2(point.x-112-button.anchoredPosition.x,-labelTop-labelHeight-4-button.anchoredPosition.y);
+                counts.sizeDelta=new Vector2(224,40);panel.stopCounts[i].alignment=TextAnchor.UpperCenter;
+                if(labelTop+labelHeight+44>map.rect.height)
+                {
+                    counts.anchoredPosition=new Vector2(point.x+116-button.anchoredPosition.x,-labelTop-8-button.anchoredPosition.y);
+                    counts.sizeDelta=new Vector2(140,40);panel.stopCounts[i].alignment=TextAnchor.UpperLeft;
+                }
+                float badgeX=counts.anchoredPosition.x+(panel.stopCounts[i].alignment==TextAnchor.UpperLeft?-36:72);
+                var badge=CourierSymbolUI.Icon(button,"OrderBadgeSymbol",CourierIconKind.Box,badgeX,-counts.anchoredPosition.y+4,28,CourierColors.Muted);
+                badge.gameObject.SetActive(!string.IsNullOrWhiteSpace(panel.stopCounts[i].text));
             }
             RefreshStreetLabels(panel,map.rect.size);
             RefreshStations(panel,map.rect.size);
@@ -196,13 +207,13 @@ namespace NightCourier
             {
                 var button=stationButtons[i];int target=6+i;
                 var point=CourierRouteGraphic.NodePoint(run.Stops[target],size);var rect=(RectTransform)button.transform;
-                rect.anchorMin=rect.anchorMax=new Vector2(0,1);rect.pivot=new Vector2(.5f,.5f);rect.anchoredPosition=new Vector2(point.x+(i==2?126:-126),-point.y);rect.sizeDelta=new Vector2(180,68);
+                rect.anchorMin=rect.anchorMax=new Vector2(0,1);rect.pivot=new Vector2(.5f,.5f);rect.anchoredPosition=new Vector2(point.x+(i==2?80:-80),-point.y);rect.sizeDelta=new Vector2(72,72);
                 // Keep the larger facility control clear of character landmarks and their labels.
-                var preferred=new Vector2(point.x+(i==2?126:-126),point.y);
-                var candidates=new[]{preferred,new Vector2(point.x+126,point.y),new Vector2(point.x-126,point.y-84),new Vector2(point.x+126,point.y+84),new Vector2(point.x,point.y+84)};
+                var preferred=new Vector2(point.x+(i==2?80:-80),point.y);
+                var candidates=new[]{preferred,new Vector2(point.x+80,point.y),new Vector2(point.x-80,point.y-88),new Vector2(point.x+80,point.y+88),new Vector2(point.x,point.y+88)};
                 foreach(var center in candidates)
                 {
-                    var bounds=new Rect(center.x-90,center.y-34,180,68);
+                    var bounds=new Rect(center.x-36,center.y-36,72,72);
                     if(bounds.xMin<0||bounds.yMin<0||bounds.xMax>size.x||bounds.yMax>size.y)continue;
                     bool overlaps=false;
                     foreach(var graphic in panel.stopLabels.Cast<Graphic>().Concat(panel.stopCounts.Cast<Graphic>()).Concat(landmarkImages.Cast<Graphic>()))
@@ -217,11 +228,14 @@ namespace NightCourier
                 EnsureNodeHit(rect,new Vector2(point.x,-point.y)-rect.anchoredPosition);
                 button.interactable=usable;
                 string title=i==0?"H · Heat shield":i==1?"W · Waterproof":"Q · Suspension";
-                button.GetComponentInChildren<Text>().text=title+"\n"+"Exchange · +1 turn";
+                var stationLabel=button.GetComponentInChildren<Text>();
+                stationLabel.text=title+"\n"+"Swap · +1 turn";
+                CourierSymbolUI.Button(button,i==0?CourierIconKind.Heat:i==1?CourierIconKind.Dry:CourierIconKind.Fragile,CourierInformation.Station(run,target));
+                stationLabel.rectTransform.offsetMin=new Vector2(12,8);stationLabel.rectTransform.offsetMax=new Vector2(-12,-8);
                 var colors=button.colors;colors.normalColor=run.HasProtection(target)?CourierColors.Mint:Color.white;colors.highlightedColor=CourierColors.Hover;button.colors=colors;
             }
             var sr=protectionStatus.rectTransform;sr.anchorMin=sr.anchorMax=sr.pivot=new Vector2(0,1);sr.anchoredPosition=new Vector2(24,-8);sr.sizeDelta=new Vector2(760,38);
-            protectionStatus.text="Protection   "+run.ProtectionSummary;
+            protectionStatus.enabled=false;
         }
         private void EnsureLayers(CourierRoutePanel panel)
         {
@@ -300,9 +314,16 @@ namespace NightCourier
                 terrainBlendMaterial=new Material(source){name="Map Edge Blend (Instance)",hideFlags=HideFlags.DontSave};
                 terrainImage.material=terrainBlendMaterial;
             }
-            var rect=terrainImage.rectTransform.rect;
             terrainBlendMaterial.SetFloat(EdgeFadeId,catalog!=null?catalog.terrainEdgeFeather:.16f);
-            terrainBlendMaterial.SetVector(ImageRectId,new Vector4(rect.xMin,rect.yMin,rect.width,rect.height));
+            var uv=terrainImage.sprite!=null?UnityEngine.Sprites.DataUtility.GetOuterUV(terrainImage.sprite):new Vector4(0,0,1,1);
+            terrainBlendMaterial.SetVector(SpriteUVRectId,uv);
+            // A stencil Mask may cache a rendering copy of the image material.
+            var rendered=terrainImage.materialForRendering;
+            if(rendered!=null&&rendered!=terrainBlendMaterial)
+            {
+                rendered.SetFloat(EdgeFadeId,catalog!=null?catalog.terrainEdgeFeather:.16f);
+                rendered.SetVector(SpriteUVRectId,uv);
+            }
         }
         private void OnDisable()
         {

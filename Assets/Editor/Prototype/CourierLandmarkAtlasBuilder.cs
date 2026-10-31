@@ -11,14 +11,13 @@ public static class CourierLandmarkAtlasBuilder
 {
     public const string SheetPath="Assets/Art/Sprite/MapPlaceholder/Landmarks/landmarks_atlas.png";
     private const string PrefabPath="Assets/Resources/Panel/Courier/CourierRoutePanel.prefab";
-    private static readonly string[] Sources={"00_abandoned_subway","01_forest_campsite","02_mead_cellar","03_radio_tower","04_museum_ruins","05_settlement_bar"};
     private static string SpriteName(int id)=>"landmark_"+id.ToString("00");
 
     [MenuItem("Tools/Night Courier/Configure Landmark Atlas")]
     public static void Install()
     {
-        // Never regenerate an artist-edited sheet. Individual PNGs seed the very first import only.
-        if(!File.Exists(SheetPath))CreateInitialSheet();
+        // The artist's atlas is the source of truth; never regenerate discarded placeholder art.
+        if(!File.Exists(SheetPath))throw new FileNotFoundException("Import or restore the landmark atlas before configuring its slices.",SheetPath);
         AssetDatabase.ImportAsset(SheetPath,ImportAssetOptions.ForceSynchronousImport);
         var importer=(TextureImporter)AssetImporter.GetAtPath(SheetPath);
         importer.textureType=TextureImporterType.Sprite;importer.spriteImportMode=SpriteImportMode.Multiple;
@@ -61,26 +60,6 @@ public static class CourierLandmarkAtlasBuilder
         finally{PrefabUtility.UnloadPrefabContents(root);}
         AssetDatabase.SaveAssets();
         Debug.Log("LANDMARK_ATLAS configured: "+SheetPath+"; top row 0,1,2 / bottom row 3,4,5. Existing PNG pixels and stable sprite IDs preserved.");
-    }
-    private static void CreateInitialSheet()
-    {
-        var sheet=new Texture2D(768,512,TextureFormat.RGBA32,false);
-        try
-        {
-            for(int id=0;id<6;id++)
-            {
-                var source=new Texture2D(2,2,TextureFormat.RGBA32,false);
-                try
-                {
-                    source.LoadImage(File.ReadAllBytes("Assets/Art/Sprite/MapPlaceholder/Landmarks/Textures/"+Sources[id]+".png"));
-                    if(source.width!=256||source.height!=256)throw new Exception("Initial source must be 256x256: "+Sources[id]);
-                    sheet.SetPixels(id%3*256,(1-id/3)*256,256,256,source.GetPixels());
-                }
-                finally{UnityEngine.Object.DestroyImmediate(source);}
-            }
-            sheet.Apply();File.WriteAllBytes(SheetPath,sheet.EncodeToPNG());
-        }
-        finally{UnityEngine.Object.DestroyImmediate(sheet);}
     }
     private static void Require(bool condition,string message){if(!condition)throw new Exception(message);}
     private static string SpriteKey(Sprite sprite)

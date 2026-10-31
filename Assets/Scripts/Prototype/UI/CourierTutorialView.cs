@@ -23,11 +23,10 @@ namespace NightCourier
         {
             float rootWidth=((RectTransform)transform).rect.width;
             float width=Mathf.Min(1440,(rootWidth<100?1920:rootWidth)-64);
-            strip.anchoredPosition=new Vector2(0,-192);strip.sizeDelta=new Vector2(width,152);
-            heading.rectTransform.anchoredPosition=new Vector2(24,-12);heading.rectTransform.sizeDelta=new Vector2(width-200,42);heading.fontSize=30;
-            instruction.rectTransform.anchoredPosition=new Vector2(24,-60);instruction.rectTransform.sizeDelta=new Vector2(width-200,80);instruction.fontSize=28;
-            ((RectTransform)skipButton.transform).anchoredPosition=new Vector2(width-144,-42);((RectTransform)skipButton.transform).sizeDelta=new Vector2(120,68);
-            skipButton.GetComponentInChildren<Text>(true).fontSize=28;
+            strip.anchoredPosition=new Vector2(0,-192);strip.sizeDelta=new Vector2(width,204);
+            heading.rectTransform.anchoredPosition=new Vector2(24,-12);heading.rectTransform.sizeDelta=new Vector2(width-216,52);heading.fontSize=30;
+            instruction.rectTransform.anchoredPosition=new Vector2(24,-76);instruction.rectTransform.sizeDelta=new Vector2(width-216,112);instruction.fontSize=28;
+            LayoutSkip(width);
             var background=strip.GetComponent<Image>();
             if(background!=null)background.color=CourierColors.Alpha(Color.Lerp(CourierColors.Paper,CourierColors.Mint,.10f),1);
             heading.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.18f);
@@ -35,6 +34,15 @@ namespace NightCourier
             foreach(var label in new[]{heading,instruction})foreach(var outline in label.GetComponents<Outline>())outline.enabled=false;
             var buttonImage=skipButton.targetGraphic as Image;if(buttonImage!=null)buttonImage.color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.55f);
             var buttonText=skipButton.GetComponentInChildren<Text>(true);if(buttonText!=null)buttonText.color=CourierColors.Night;
+        }
+        private void LayoutSkip(float width)
+        {
+            var label=skipButton.GetComponentInChildren<Text>(true);
+            var rect=(RectTransform)skipButton.transform;
+            rect.anchorMin=rect.anchorMax=rect.pivot=new Vector2(0,1);
+            rect.anchoredPosition=new Vector2(width-(label!=null?144:88),-64);
+            rect.sizeDelta=label!=null?new Vector2(120,68):new Vector2(64,64);
+            if(label!=null)label.fontSize=28;
         }
         public void Refresh()
         {
@@ -48,15 +56,14 @@ namespace NightCourier
             if (!visible) return;
             strip.anchoredPosition = new Vector2(0,-192);
             float width=Mathf.Min(1440,((RectTransform)transform).rect.width-64);
-            strip.sizeDelta=new Vector2(width,152);
-            heading.rectTransform.anchoredPosition=new Vector2(24,-12);heading.rectTransform.sizeDelta=new Vector2(width-200,42);heading.fontSize=30;
-            instruction.rectTransform.anchoredPosition=new Vector2(24,-60);instruction.rectTransform.sizeDelta=new Vector2(width-200,80);instruction.fontSize=28;
-            ((RectTransform)skipButton.transform).anchoredPosition=new Vector2(width-144,-42);
-            ((RectTransform)skipButton.transform).sizeDelta=new Vector2(120,68);
-            skipButton.GetComponentInChildren<Text>().fontSize=28;
+            strip.sizeDelta=new Vector2(width,204);
+            heading.rectTransform.anchoredPosition=new Vector2(24,-12);heading.rectTransform.sizeDelta=new Vector2(width-216,52);heading.fontSize=30;
+            instruction.rectTransform.anchoredPosition=new Vector2(24,-76);instruction.rectTransform.sizeDelta=new Vector2(width-216,112);instruction.fontSize=28;
+            LayoutSkip(width);
             var mapPage=UIManager.Instance.GetPanel("CourierRoutePanel") as CourierRoutePanel;
-            if(step>=3&&step<=5&&(mapPage==null||!mapPage.CargoOpen))strip.anchoredPosition=new Vector2(0,-Mathf.Max(192,((RectTransform)transform).rect.height-168));
-            skipButton.GetComponentInChildren<Text>().text = step == 6 ? "Done" : "Skip";
+            if(step>=3&&step<=5&&(mapPage==null||!mapPage.CargoOpen))strip.anchoredPosition=new Vector2(0,-Mathf.Max(192,((RectTransform)transform).rect.height-220));
+            var skipLabel=skipButton.GetComponentInChildren<Text>(true);
+            if(skipLabel!=null)skipLabel.text = step == 6 ? "Done" : "Skip";
             string title, body; RectTransform first = null, second = null;
             var ui=UIManager.Instance;
             var hud=ui.GetPanel("CourierHudPanel") as CourierHudPanel;
@@ -112,7 +119,19 @@ namespace NightCourier
             { body = "Choose a stop on the map and manage your cargo on the right. You can explore freely or skip this guide."; first = null; }
             heading.text = "FIRST SHIFT  " + Mathf.Max(1,step) + "/6  -  " + title;
             instruction.text = body;
+            CompactGuide(step,title,body);
             Focus(0, first); Focus(1, second);
+        }
+        private void CompactGuide(int step,string title,string body)
+        {
+            strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.zero;
+            strip.anchoredPosition=new Vector2(32,24);strip.sizeDelta=new Vector2(264,80);
+            instruction.enabled=false;heading.enabled=true;heading.text=Mathf.Max(1,step)+"/6";
+            heading.rectTransform.anchoredPosition=new Vector2(80,-16);heading.rectTransform.sizeDelta=new Vector2(88,48);heading.alignment=TextAnchor.MiddleCenter;
+            var kind=step==0?CourierIconKind.Talk:step<=2?CourierIconKind.Box:step==3?CourierIconKind.Route:step==5?CourierIconKind.Warning:step==6?CourierIconKind.Check:CourierIconKind.Arrow;
+            CourierSymbolUI.Icon(strip,"GuideSymbol",kind,16,16,48,CourierColors.Night,title+"\n"+body);
+            var close=(RectTransform)skipButton.transform;close.anchoredPosition=new Vector2(184,-8);close.sizeDelta=Vector2.one*64;
+            CourierSymbolUI.Button(skipButton,CourierIconKind.Close,step==6?"Finish guide":"Dismiss guide");
         }
         private void Focus(int index, RectTransform target)
         {

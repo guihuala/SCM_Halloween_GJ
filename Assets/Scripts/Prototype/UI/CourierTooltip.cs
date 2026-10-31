@@ -40,6 +40,13 @@ namespace NightCourier
             label.rectTransform.sizeDelta=new Vector2(width-padding*2,0);
             width=Mathf.Min(width,Mathf.Max(140,label.preferredWidth+padding*2));
             label.rectTransform.sizeDelta=new Vector2(width-padding*2,0);
+            // Long rule and cargo descriptions must remain readable without clipping or shrinking.
+            float maximumWidth=Mathf.Min(900,Mathf.Max(80,parent.rect.width-48));
+            while(label.preferredHeight+padding*2>parent.rect.height-64&&width<maximumWidth)
+            {
+                width=Mathf.Min(maximumWidth,width+160);
+                label.rectTransform.sizeDelta=new Vector2(width-padding*2,0);
+            }
             float height=Mathf.Min(parent.rect.height-24,Mathf.Max(52,label.preferredHeight+padding*2));
             bubble.sizeDelta=new Vector2(width,height);
             label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;

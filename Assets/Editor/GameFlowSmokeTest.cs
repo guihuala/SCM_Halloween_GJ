@@ -87,7 +87,7 @@ public static class GameFlowSmokeTest
         if (menuMotion != null && menuMotion.IsExiting) return;
         try
         {
-            var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
+            var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
             foreach(var text in UnityEngine.Object.FindObjectsOfType<Text>(true))
             {
                 Require(text.font==font,"Project font missing on "+text.name);

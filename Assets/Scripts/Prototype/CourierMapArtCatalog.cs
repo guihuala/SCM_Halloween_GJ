@@ -24,6 +24,8 @@ namespace NightCourier
         public Sprite terrain;
         [Tooltip("White preserves the original artwork colors.")]
         public Color terrainTint=Color.white;
+        [Tooltip("Width of the soft terrain edge as a fraction of the image. Zero keeps a hard edge; roads and landmarks are unaffected.")]
+        [Range(0f,.3f)] public float terrainEdgeFeather=.16f;
         [Header("Hand-drawn routes (same full canvas as the background)")]
         [Tooltip("Optional transparent PNG containing base roads and node dots. Selected/hover routes, events and the traveler remain dynamic. Clear this field to restore procedural base roads.")]
         public Sprite routeArtwork;

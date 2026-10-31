@@ -45,7 +45,7 @@ public static class NightCourierPanelSmokeTest
     private static CourierCargoRow Row(string name){return Planner.GetComponentsInChildren<CourierCargoRow>().First(r=>r.nameText.text==name);}
     private static void VerifyEnglishPresentation()
     {
-        var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
+        var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
         foreach(var text in UnityEngine.Object.FindObjectsOfType<Text>(true))
         {
             Require(text.font==font,"Project font missing on "+text.name);

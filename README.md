@@ -55,11 +55,11 @@
 
 地图按“背景图片 → 手绘基础路线 → 动态高亮/事件标记 → 地点建筑 → 移动标记”分层。背景不拦截点击；选路、路径高亮、事件标记、行进效果仍由实时路网生成。
 
-1. 在 Unity 选择 `Assets/Resources/NightVoyage/MapArtwork.asset`，把新背景拖入 **Terrain**；**Terrain Tint** 保持白色即可保留原画颜色。当前使用的占位底图是 `Assets/Art/Sprite/MapPlaceholder/terrain.png`。
+1. 在 Unity 选择 `Assets/Resources/NightVoyage/MapArtwork.asset`，把新背景拖入 **Terrain**；**Terrain Tint** 保持白色即可保留原画颜色。当前使用的底图是 `Assets/Art/Sprite/MapPlaceholder/terrain_integrated.png`，透明的不规则边缘直接融合到界面底色。
 2. 新背景按 **1200×820** 绘制，推荐导出 **2400×1640 PNG**（相同比例的整数倍也可以）。图片导入类型设为 **Sprite (2D and UI)**、Sprite Mode 设为 **Single**、Mesh Type 设为 **Full Rect**。保持整张画布，不要裁掉四周空白。旧占位图比例不同，会铺到统一画布；正式替换图请按上述比例制作。
 3. 使用 `Tools > Night Courier > Export Map Art Guide` 导出 `ArtPreviews/MapArtGuide/map-route-guide.svg` 和节点坐标 CSV。SVG 为透明参考层，包含实际道路弯曲、平行路段及节点；坐标从左上角计算。绘制时对齐参考，导出背景前隐藏参考层。
 4. 背景只画地形、河流、树林、装饰。道路、节点圆点、地点建筑、幽灵与游戏文字已有独立层，避免重复画入底图。建筑仍在 **Landmarks** 中分别替换。
-5. **Terrain Edge Feather** 控制四周融入界面背景的宽度，当前0.16；设为0恢复硬边。羽化由UI Shader作用于底图，原PNG、路线、地标和点击区域保持独立。
+5. **Terrain Edge Feather** 控制四周融入界面背景的宽度，当前为0，使用图片自身绘制的透明收边；提高数值可额外叠加Shader羽化。羽化由UI Shader作用于底图，原PNG、路线、地标和点击区域保持独立。
 6. 覆盖原 PNG 时保留 `.meta`；使用不同文件名时重新拖入 **Terrain**。重新打开地图即可看到替换。切换窗口比例时，背景和路线会等比缩放、居中对齐，空余区域留边。清空 **Terrain** 会回退到程序区域色块，路线继续可用。
 
 更换美术不会改变路网位置；若想移动道路或节点，需要同步修改 `CourierStreetMap.cs` 并重新导出参考图。
@@ -73,7 +73,7 @@
 - 清空 **Route Artwork** 时自动恢复程序道路与圆点。**Terrain** 仍独立控制背景图。
 - 修改画笔造型和线条颜色可以直接换图；移动路口或改变连通关系，需要同步修改 `CourierStreetMap.cs`。
 
-当前已应用与主菜单手绘风格统一的新底图及六地标图集。替换前的图片、导入设置与地图配置备份在 `ArtPreviews/MapArtBeforeGenerated/`；实际游戏效果在 `ArtPreviews/GeneratedMap/`。
+当前地图使用 `terrain_integrated.png` 底图、你更新的 `landmarks_atlas.png` 地标图集和 `routes_handdrawn.png` 手绘路线。已清理被替换的旧AI地图资源、占位地标单图及旧生成预览和备份。
 
 ## 修改地标图集
 
@@ -83,7 +83,7 @@
 - 从左到右：上排为地点 ID **0、1、2**，下排为 **3、4、5**；切片名固定为 `landmark_00`～`landmark_05`。ID 对应 `MapArtwork.asset > Landmarks > Stop Id`，不依赖列表排序。
 - 保留透明底和整张画布，每个地标画在自己的格子里；当前底部落脚点在格子横向50%、距底部约11%处（`MapArtwork.asset` 的 Anchor）；绘制新图时保持同一落脚位置。格子边缘保留透明留白，避免相邻图片串色。不要把标号、网格线或地点文字画入 PNG。
 - 如需改变整张图集分辨率，保持3×2的正方形格子，再执行 `Tools > Night Courier > Configure Landmark Atlas`，重新按3×2切片；名称和绑定保持不变。默认画布尺寸下，仅改画面像素不需要运行菜单。
-- 图集配置工具只在 PNG 不存在时从旧单图初始化，已有图集不会被重新生成覆盖。旧 `Landmarks/Textures/` 单图保留作初始备份，修改它们不再影响地图显示。
+- 图集配置工具只切片和绑定当前PNG，不生成或覆盖图片；PNG缺失时会提示补回资源。
 - 地标位置和大小仍在 `MapArtwork.asset` 的 **Anchor / Offset / Scale** 调整。图集仅改变图片组织方式，地图道路、节点位置和点击逻辑保持原样。
 
 ## 音画资源
@@ -110,3 +110,11 @@
 Orders 使用右侧竖栏，待领取与已装载上下排列；Talk / Continue 固定在地图上方。地点标牌使用场所名称（SUBWAY / FOREST / MEAD / TOWER / MUSEUM / BAR）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用常规无衬线字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
 
 事件保留每个合资格路口 35% 的概率，每单最多一次，空载不触发；不同路口的机会累计，因此经过 2 个合资格路口至少遇到一次的概率为 57.75%。每次新开局与重开使用新的随机种子。验收入口：`Tools > Night Courier > Checks > Usability and Depot Start`。
+
+## 界面字体
+
+界面统一使用 Nunito SemiBold（600），来自 Google Fonts 官方 Nunito 项目，圆润字形适配手绘氛围，常规宽度方便阅读长对话、订单及数字。字体位于 `Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf`，由官方可变字体固定为 600 字重；预制体、场景、运行时提示框与 UI 生成工具均已绑定。OFL 1.1 授权副本位于 `Assets/Art/Fonts/Nunito-OFL.txt` 及 `Assets/StreamingAssets/Nunito-OFL.txt`，后者随构建发布。来源：https://github.com/google/fonts/tree/main/ofl/nunito 。
+
+## 图标界面
+
+常驻界面仅保留剧情、地点名、订单名和关键数字。订单开关、关闭、对话、继续、路线模式、换车、快进、事件确认与结算操作使用现有手绘图标；详情与快捷键通过悬停或键盘焦点提示查看。火焰／雨伞／高脚杯分别表示怕热、防水、易碎保护，订单数字旁的时钟表示当前／目标回合。教学改为左下角步骤图标与进度，悬停查看当前说明，关闭图标结束指引。

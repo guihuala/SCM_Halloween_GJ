@@ -38,7 +38,8 @@ namespace NightCourier
             illustration.color=Color.white;
             illustration.gameObject.SetActive(illustration.sprite!=null);
             Caption(safeButton,e.Safe.Split('·')[0].Trim());riskButton.gameObject.SetActive(false);
-            Place((RectTransform)safeButton.transform,32,500,936,68);
+            Place((RectTransform)safeButton.transform,856,492,112,76);
+            CourierSymbolUI.Button(safeButton,CourierIconKind.Check,Run.SafeChoice);
             var buttonImage=safeButton.targetGraphic as Image;if(buttonImage!=null)buttonImage.color=CourierColors.Mint;
             var label=safeButton.GetComponentInChildren<Text>();label.color=CourierColors.Night;label.rectTransform.sizeDelta=new Vector2(880,label.rectTransform.sizeDelta.y);
             var hint=safeButton.GetComponent<CourierIconHint>();if(hint!=null)hint.message=Run.SafeChoice;

@@ -44,7 +44,7 @@ public static class LoadingScreenArtInstaller
     [MenuItem("Tools/Night Courier/Install Loading Screen Artwork")]
     public static void Install()
     {
-        font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
+        font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
         var root = PrefabUtility.LoadPrefabContents(Path);
         try
         {

@@ -39,9 +39,10 @@ namespace NightCourier
             }
             if(skipRideButton!=null)
             {
-                ((RectTransform)skipRideButton.transform).sizeDelta=new Vector2(280,72);
+                ((RectTransform)skipRideButton.transform).sizeDelta=new Vector2(80,72);
                 var label=skipRideButton.GetComponentInChildren<Text>(true);
                 if(label!=null){label.fontSize=30;label.rectTransform.sizeDelta=new Vector2(256,72);}
+                CourierSymbolUI.Button(skipRideButton,CourierIconKind.FastForward,"Skip travel animation · F");
             }
         }
         public void ApplyReadingColors()
@@ -70,14 +71,19 @@ namespace NightCourier
             if(portraitFrame!=null){if(show)portraitFrame.color=goolie?CourierColors.Mint:character.accent;}
             if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
-            if(bar!=null){bar.anchoredPosition=new Vector2(-20,-740);bar.sizeDelta=new Vector2(1840,260);}
-            subtitleText.rectTransform.anchoredPosition=new Vector2(show?416:48,-808);
-            subtitleText.rectTransform.sizeDelta=new Vector2(show?1224:1580,176);
-            subtitleText.fontSize=36;
+            subtitleText.fontSize=36;subtitleText.lineSpacing=1.08f;
+            subtitleText.rectTransform.sizeDelta=new Vector2(show?1224:1580,1000);
+            subtitleText.text=owner.Subtitle;
+            float bodyHeight=Mathf.Max(152,subtitleText.preferredHeight+16);
+            float extra=Mathf.Max(0,bodyHeight-152);
+            if(bar!=null){bar.anchoredPosition=new Vector2(-20,-740+extra);bar.sizeDelta=new Vector2(1840,260+extra);}
+            subtitleText.rectTransform.anchoredPosition=new Vector2(show?416:48,-824+extra);
+            subtitleText.rectTransform.sizeDelta=new Vector2(show?1224:1580,bodyHeight);
+            subtitleText.fontSize=36;subtitleText.lineSpacing=1.08f;subtitleText.alignment=TextAnchor.UpperLeft;
             var advanceRect=(RectTransform)advanceButton.transform;
             advanceRect.anchoredPosition=new Vector2(advanceRect.anchoredPosition.x,-840);advanceRect.sizeDelta=Vector2.one*96;
             var advanceIcon=advanceButton.GetComponentInChildren<CourierIconGraphic>(true);if(advanceIcon!=null)advanceIcon.rectTransform.sizeDelta=Vector2.one*60;
-            if(speakerName!=null){speakerName.rectTransform.anchoredPosition=new Vector2(show?416:48,-752);speakerName.rectTransform.sizeDelta=new Vector2(show?1224:1580,48);speakerName.fontSize=36;}
+            if(speakerName!=null){speakerName.rectTransform.anchoredPosition=new Vector2(show?416:48,-752+extra);speakerName.rectTransform.sizeDelta=new Vector2(show?1224:1580,60);speakerName.fontSize=36;}
             var slide = new Vector2(0, -48);
             if(bar!=null)Show(bar.gameObject,talking,slide);
             Show(subtitleText.gameObject,talking,slide);
@@ -121,11 +127,11 @@ namespace NightCourier
             if(skipRideButton!=null)
             {
                 var skipRect=(RectTransform)skipRideButton.transform;
-                skipRect.position=root.TransformPoint(new Vector3(root.rect.xMax-740,root.rect.yMax-112,0));
+                skipRect.position=root.TransformPoint(new Vector3(root.rect.xMax-464,root.rect.yMax-112,0));
                 Show(skipRideButton.gameObject,driving&&owner.Active,new Vector2(0,32));
             }
             if(pauseButton!=null)Show(pauseButton.gameObject,owner.Active&&!Run.Finished&&!owner.HasPlanner&&Run.State!=ShiftState.Encounter,new Vector2(0,32));
-            timeText.text=Run.ActiveOrder==null?"No active order":"Order "+Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder)+" turns";
+            timeText.text=Run.ActiveOrder==null?"—":Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder);
             // A new journey starts at its own progress rather than draining the previous bar.
             if(!progressReady||!travelling||progressLeg!=Run.PlannedDestination||progressRoad!=Run.ActiveRoad||reducedMotion)
                 progressFill.fillAmount=Run.DisplayProgress;
