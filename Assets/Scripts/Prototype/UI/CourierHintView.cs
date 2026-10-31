@@ -9,7 +9,7 @@ namespace NightCourier
         public void ApplyReadingStyle()
         {
             var image=GetComponent<UnityEngine.UI.Image>();if(image!=null)image.color=CourierColors.Paper;
-            if(label!=null){label.color=CourierColors.Night;label.fontSize=Mathf.Max(26,label.fontSize);}
+            if(label!=null){label.color=CourierColors.Night;label.font=Resources.Load<Font>("NightVoyage/Fonts/Nunito-SemiBold");label.fontSize=Mathf.Max(28,label.fontSize);}
             maxWidth=Mathf.Max(520,maxWidth);padding=Mathf.Max(20,padding);
         }
         public Text label;

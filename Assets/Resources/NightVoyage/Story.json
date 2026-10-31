@@ -482,6 +482,29 @@
           "sourceChinese": "我相信Vampire大姐姐肯定可以完美解决的。"
         }
       ]
+    },
+    {
+      "id": "halloween_epilogue",
+      "node": -1,
+      "trigger": "ending",
+      "parcels": [],
+      "lines": [
+        {
+          "speaker": "Narrator",
+          "text": "The human parade has finally come to an end—now, the real holiday for monsters begins.",
+          "sourceChinese": "人类的巡游终于落幕，接下来，就是属于鬼怪们的节日了。"
+        },
+        {
+          "speaker": "Narrator",
+          "text": "With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, we are together.",
+          "sourceChinese": "琴声响起，蜜酒斟满，虽然苍松谷的大家以后可能会分道扬镳，但至少在此刻，我们依然团聚在一起。"
+        },
+        {
+          "speaker": "Narrator",
+          "text": "<i>As for tomorrow, tomorrow is another night.</i>",
+          "sourceChinese": "至于明天，明天又是新的一天了。"
+        }
+      ]
     }
   ],
   "characterBackgrounds": [

@@ -21,6 +21,9 @@ namespace NightCourier
         private bool capturedColors;
         private bool originalDrawRegions;
         private bool originalBaseRoads,originalBaseNodes;
+        private Material terrainBlendMaterial,originalTerrainMaterial;
+        private static readonly int EdgeFadeId=Shader.PropertyToID("_EdgeFade");
+        private static readonly int ImageRectId=Shader.PropertyToID("_ImageRect");
         private static readonly CourierRun Preview=new CourierRun();
 
         public void Apply(CourierRoutePanel panel,Stop[] stops=null)
@@ -39,6 +42,7 @@ namespace NightCourier
             // Fit the *map canvas*, not the sprite's aspect, so pixels and graph coordinates
             // share exactly the same letterboxing at every window size.
             FitMapImage(terrainImage,map.rect.size);
+            ConfigureTerrainEdge();
             routeImage.sprite=catalog!=null?catalog.routeArtwork:null;
             routeImage.color=Color.white;
             bool hasRouteArtwork=routeImage.sprite!=null;
@@ -70,7 +74,9 @@ namespace NightCourier
                 buttonColors.normalColor=buttonColors.highlightedColor=buttonColors.selectedColor=buttonColors.pressedColor=buttonColors.disabledColor=Color.clear;
                 panel.stopButtons[i].colors=buttonColors;
                 var background=panel.stopButtons[i].targetGraphic;
-                if(background!=null)background.canvasRenderer.SetAlpha(0);
+                if(background!=null){background.canvasRenderer.SetAlpha(0);background.raycastTarget=false;}
+                foreach(var graphic in panel.stopButtons[i].GetComponentsInChildren<Graphic>())
+                    graphic.raycastTarget=false;
                 var feedback=panel.stopButtons[i].GetComponent<CourierButtonFeedback>();
                 if(feedback!=null)feedback.feedbackTarget=rt;
                 // The legacy button rectangle is an input region, not the landmark's visual bounds.
@@ -80,11 +86,13 @@ namespace NightCourier
                 var button=(RectTransform)panel.stopButtons[i].transform;
                 var hit=landmarkHitAreas[i].rectTransform;hit.anchorMin=hit.anchorMax=new Vector2(0,1);hit.pivot=rt.pivot;hit.sizeDelta=rt.sizeDelta;
                 hit.anchoredPosition=rt.anchoredPosition-button.anchoredPosition;
+                landmarkHitAreas[i].raycastTarget=true;
+                EnsureNodeHit(button,new Vector2(point.x,-point.y)-button.anchoredPosition);
                 var label=panel.stopLabels[i];var lr=label.rectTransform;
                 float labelHeight=36;
                 float labelTop=Mathf.Clamp(point.y+12,4,Mathf.Max(4,map.rect.height-labelHeight-4));
                 lr.anchoredPosition=new Vector2(point.x-100-button.anchoredPosition.x,-labelTop-button.anchoredPosition.y);
-                lr.sizeDelta=new Vector2(200,labelHeight);label.alignment=TextAnchor.UpperCenter;label.fontSize=map.rect.height<400?20:24;
+                lr.sizeDelta=new Vector2(200,labelHeight);label.alignment=TextAnchor.UpperCenter;label.fontSize=28;label.raycastTarget=true;
                 panel.stopCounts[i].rectTransform.sizeDelta=new Vector2(90,36);
             }
             RefreshStreetLabels(panel,map.rect.size);
@@ -129,7 +137,7 @@ namespace NightCourier
                     var rect=CreateRect(landmarkLayer,"StreetLabel_"+CourierStreetMap.Nodes[i].Id);
                     var label=GetOrAdd<Text>(rect.gameObject);label.font=panel.stopLabels[0].font;
                     label.alignment=TextAnchor.MiddleCenter;label.raycastTarget=false;
-                    label.color=CourierColors.Muted;label.fontSize=18;
+                    label.color=CourierColors.Muted;label.fontSize=24;
                     var outline=GetOrAdd<Outline>(rect.gameObject);outline.effectColor=CourierColors.Night;outline.effectDistance=new Vector2(1,-1);
                     if(CourierStreetMap.Nodes[i].StopId>=9)
                     {
@@ -152,7 +160,8 @@ namespace NightCourier
                 var nodeButton=label.GetComponent<Button>();
                 if(nodeButton!=null)nodeButton.interactable=primary.Owner!=null&&primary.Owner.Active&&!primary.Owner.ConversationActive&&run.State==ShiftState.Docked;
                 label.text=name;var rect=label.rectTransform;rect.anchorMin=rect.anchorMax=new Vector2(0,1);rect.pivot=new Vector2(.5f,1);
-                var p=CourierRouteGraphic.MapPoint(node.Point,size);rect.anchoredPosition=new Vector2(p.x,-p.y-7);rect.sizeDelta=new Vector2(name.Length>3?100:48,40);
+                var p=CourierRouteGraphic.MapPoint(node.Point,size);rect.anchoredPosition=new Vector2(p.x,-p.y-7);rect.sizeDelta=new Vector2(name.Length>3?144:64,44);
+                EnsureNodeHit(rect,new Vector2(0,7));
             }
         }
         public RectTransform NodeTarget(int id)
@@ -205,6 +214,7 @@ namespace NightCourier
                     }
                     if(!overlaps){rect.anchoredPosition=new Vector2(center.x,-center.y);break;}
                 }
+                EnsureNodeHit(rect,new Vector2(point.x,-point.y)-rect.anchoredPosition);
                 button.interactable=usable;
                 string title=i==0?"H · Heat shield":i==1?"W · Waterproof":"Q · Suspension";
                 button.GetComponentInChildren<Text>().text=title+"\n"+"Exchange · +1 turn";
@@ -248,6 +258,17 @@ namespace NightCourier
                 landmarkHitAreas[i].color=new Color(1,1,1,.001f);landmarkHitAreas[i].raycastTarget=true;landmarkHitAreas[i].transform.SetAsFirstSibling();
             }
         }
+        // A separate transparent surface covers the drawn circle as well as the label/building.
+        // Pointer events bubble to the same Button and hover handler for both surfaces.
+        private static void EnsureNodeHit(RectTransform parent,Vector2 position)
+        {
+            var hit=EnsureImage(parent,"NodeHitArea");var rect=hit.rectTransform;
+            rect.anchorMin=rect.anchorMax=rect.pivot=new Vector2(.5f,1);
+            // Landmark and station parents use top-left / center anchors respectively.
+            rect.anchorMin=rect.anchorMax=parent.pivot;
+            rect.pivot=Vector2.one*.5f;rect.anchoredPosition=position;rect.sizeDelta=Vector2.one*56;
+            hit.color=new Color(1,1,1,.001f);hit.raycastTarget=true;
+        }
         private static T GetOrAdd<T>(GameObject obj) where T:Component
         {var component=obj.GetComponent<T>();return component!=null?component:obj.AddComponent<T>();}
         private static RectTransform CreateRect(Transform parent,string name)
@@ -269,8 +290,28 @@ namespace NightCourier
             rect.anchoredPosition=Vector2.zero;rect.sizeDelta=CourierRouteGraphic.MapBounds(size).size;
             image.preserveAspect=false;
         }
+        private void ConfigureTerrainEdge()
+        {
+            if(terrainBlendMaterial==null)
+            {
+                var source=Resources.Load<Material>("NightVoyage/MapEdgeBlend");
+                if(source==null)return;
+                originalTerrainMaterial=terrainImage.material;
+                terrainBlendMaterial=new Material(source){name="Map Edge Blend (Instance)",hideFlags=HideFlags.DontSave};
+                terrainImage.material=terrainBlendMaterial;
+            }
+            var rect=terrainImage.rectTransform.rect;
+            terrainBlendMaterial.SetFloat(EdgeFadeId,catalog!=null?catalog.terrainEdgeFeather:.16f);
+            terrainBlendMaterial.SetVector(ImageRectId,new Vector4(rect.xMin,rect.yMin,rect.width,rect.height));
+        }
         private void OnDisable()
         {
+            if(terrainBlendMaterial!=null)
+            {
+                if(terrainImage!=null&&terrainImage.material==terrainBlendMaterial)terrainImage.material=originalTerrainMaterial;
+                if(Application.isPlaying)Destroy(terrainBlendMaterial);else DestroyImmediate(terrainBlendMaterial);
+                terrainBlendMaterial=null;
+            }
             if(primary!=null)
             {primary.drawTravel=true;if(capturedColors){primary.idleRoadColor=originalIdle;primary.adjacentRoadColor=originalAdjacent;primary.selectedRoadColor=originalSelected;primary.drawRegions=originalDrawRegions;primary.drawBaseRoads=originalBaseRoads;primary.drawBaseNodes=originalBaseNodes;}primary.SetVerticesDirty();}
             if(terrainImage!=null)terrainImage.gameObject.SetActive(false);

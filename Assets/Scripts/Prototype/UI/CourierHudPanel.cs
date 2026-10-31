@@ -61,12 +61,13 @@ namespace NightCourier
             if(characterCatalog==null)characterCatalog=Resources.Load<CourierCharacterCatalog>("NightVoyage/Characters");
             bool talking=owner.ConversationActive&&(Run.State==ShiftState.Docked||Run.Finished);
             var character=talking&&characterCatalog!=null?characterCatalog.ForStop(CourierStory.SpeakerStop(owner.DialogueSpeaker)):null;
-            bool show=character!=null&&speakerPortrait!=null&&speakerName!=null;
+            bool goolie=talking&&owner.DialogueSpeaker=="Goolie";
+            bool show=(character!=null||goolie)&&speakerPortrait!=null&&speakerName!=null;
             if(speakerPortrait!=null)
             {
-                if(show){speakerPortrait.sprite=characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
+                if(show){speakerPortrait.sprite=goolie?Resources.Load<Sprite>("NightVoyage/VehicleIcons/Ghost_"):characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
             }
-            if(portraitFrame!=null){if(show)portraitFrame.color=character.accent;}
+            if(portraitFrame!=null){if(show)portraitFrame.color=goolie?CourierColors.Mint:character.accent;}
             if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
             if(bar!=null){bar.anchoredPosition=new Vector2(-20,-740);bar.sizeDelta=new Vector2(1840,260);}

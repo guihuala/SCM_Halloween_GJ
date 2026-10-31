@@ -51,9 +51,10 @@ namespace NightCourier
             target.GetWorldCorners(corners);
             Vector3 lower=parent.InverseTransformPoint(corners[0]),upper=parent.InverseTransformPoint(corners[2]);
             float width=bubble.sizeDelta.x,height=bubble.sizeDelta.y;
-            // Prefer beside the control; flip sides at the edge and stay in the panel.
-            float x=upper.x+12;if(x+width>parent.rect.xMax-12)x=lower.x-width-12;
-            float y=upper.y;
+            // Keep adjacent values readable: place outside the entire control row.
+            float x=(lower.x+upper.x-width)*.5f;
+            float y=upper.y+height+20;
+            if(y>parent.rect.yMax-12)y=lower.y-20;
             bubble.anchorMin=bubble.anchorMax=parent.pivot;bubble.pivot=new Vector2(0,1);
             bubble.anchoredPosition=new Vector2(Mathf.Clamp(x,parent.rect.xMin+12,parent.rect.xMax-width-12),Mathf.Clamp(y,parent.rect.yMin+height+12,parent.rect.yMax-12));
         }

@@ -38,7 +38,10 @@ namespace NightCourier
         }
         private bool Ready(CourierStoryScene scene, CourierRun run)
         {
-            if (scene.node != run.Node || played.Contains(scene.id)) return false;
+            if (played.Contains(scene.id)) return false;
+            // The shared epilogue follows the final receipt at whichever stop completes the shift.
+            if (scene.trigger == "ending") return run.Finished;
+            if (scene.node != run.Node) return false;
             if (scene.trigger == "intro") return true;
             if (scene.parcels == null || scene.parcels.Length == 0) return false;
             if (scene.trigger == "receive")
@@ -50,7 +53,7 @@ namespace NightCourier
         {
             // The letter is its own scene; delivery reactions precede outgoing parcels.
             var available = Data.scenes.Where(scene => Ready(scene, run))
-                .OrderBy(scene => scene.trigger == "intro" ? 0 : scene.trigger == "receive" ? 1 : 2).ToArray();
+                .OrderBy(scene => scene.trigger == "intro" ? 0 : scene.trigger == "receive" ? 1 : scene.trigger == "ending" ? 3 : 2).ToArray();
             if (available.Length == 0) return new[] { run.Stops[run.Node].Voice };
             var selected = available[0].trigger == "intro" ? available.Take(1) : available;
             var lines = new List<string>();

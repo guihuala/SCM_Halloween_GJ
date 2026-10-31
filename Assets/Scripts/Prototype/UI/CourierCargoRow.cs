@@ -68,7 +68,7 @@ namespace NightCourier
             timeText.rectTransform.sizeDelta=new Vector2(96,38);
             ((RectTransform)timeGroup.transform).sizeDelta=new Vector2(144,32);
             nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=1;nameText.alignment=TextAnchor.UpperLeft;
-            destinationText.resizeTextForBestFit=false;destinationText.fontSize=23;destinationText.lineSpacing=1;destinationText.alignment=TextAnchor.UpperLeft;
+            destinationText.resizeTextForBestFit=false;destinationText.fontSize=26;destinationText.lineSpacing=1;destinationText.alignment=TextAnchor.UpperLeft;
             nameText.text=string.Join(" + ",run.Batch(parcel).Select(p=>p.Name));
             destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name+"\n"+(parcel.Damaged?"DAMAGED":parcel.HeatSensitive?"Keep cool · H":parcel.Dry?"Keep dry · W":parcel.Fragile?"Fragile · Q":"No special requirements");weightText.gameObject.SetActive(false);
             var oldWeight=transform.Find("WeightIcon");if(oldWeight!=null)oldWeight.gameObject.SetActive(false);

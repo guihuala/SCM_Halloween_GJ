@@ -65,40 +65,40 @@ namespace NightCourier
             switch (step)
             {
                 case 0:
-                    title = "Meet the drow";
-                    body = "Press E or the dialogue arrow to continue. The drow has a party theme tape to send.";
+                    title = "Welcome, Goolie";
+                    body = "Continue with E. Choose your own delivery order from the map.";
                     if (hud != null) first = (RectTransform)hud.advanceButton.transform;
                     break;
                 case 1:
-                    title = "Open your map";
-                    body = "Your map is always open. Press Tab or click Cargo to manage parcels. Planning does not use time.";
+                    title = "Start at the Parcel Depot";
+                    body = "Open Orders [Tab], choose any sender, then click their map stop and the green departure arrow. Empty travel has no order timer.";
                     break;
                 case 2:
-                    title = "Load your first delivery";
-                    body = "Load Party Theme Tape from Pick Up: click its box arrow, or drag the card into On Board. One batch at a time; all items with the same sender and recipient travel together.";
+                    title = "Choose your first order";
+                    body = "Visit any sender shown in Orders. At their stop, accept a batch with the box arrow or drag it into On Board. Choose any order; carry one batch at a time.";
                     if (planner != null)
                     {
-                        var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item == run.Parcels[0]);
-                        if(!planner.CargoOpen){first=planner.cargoToggleButton.transform as RectTransform;body="Open Cargo with Tab or the top button. Then load the Party Theme Tape from Pick Up.";}
+                        var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item.Origin == run.Node && r.Item.State == ParcelState.Waiting);
+                        if(!planner.CargoOpen){first=planner.cargoToggleButton.transform as RectTransform;body="Open Orders [Tab] to compare senders and destinations. Travel to any sender to accept their order.";}
                         else if (row != null) first = (RectTransform)row.actionButton.transform;
                     }
                     break;
                 case 3:
                     title = "Choose a destination";
-                    body = "Take the tape to Abandoned TV Tower. Orange lines show the route. Safe routes avoid cargo damage; switch to Fastest to compare.";
-                    if (planner != null) first = planner.stopLabels[3].rectTransform;
+                    body = "Deliver to "+(run.ActiveOrder!=null?run.Stops[run.ActiveOrder.Destination].Name:"your recipient")+". Orange lines show the route. Compare Safe and Fastest before departing.";
+                    if (planner != null) first = planner.stopLabels[run.ActiveOrder!=null?run.ActiveOrder.Destination:0].rectTransform;
                     break;
                 case 4:
                     title = guide.Departed ? "On the road" : "Ready to depart";
-                    body = guide.Departed ? (run.State==ShiftState.Docked ? "This is a waypoint, not your delivery stop. Press E or Continue to follow the route to Abandoned TV Tower. You can also change direction here." : "Moving uses whole order turns and vehicle turns. Press F to skip to the next event or stop; choices remain yours.")
+                    body = guide.Departed ? (run.State==ShiftState.Docked ? "This is a waypoint, not your delivery stop. Press E or Continue to follow the route to your chosen recipient. You can also change direction here." : "Moving uses whole order turns and vehicle turns. Press F to skip to the next event or stop; choices remain yours.")
                         : "Check the turn costs, then press the green arrow. Exhausted vehicles switch to ghost transport.";
                     if (!guide.Departed && planner != null) first = (RectTransform)planner.departButton.transform;
                     else if (run.State==ShiftState.Docked&&planner!=null) first=planner.nodePromptButton.transform as RectTransform;
                     break;
                 case 5:
                     title = run.State == ShiftState.Encounter ? "A road event" : "Almost there";
-                    body = run.State == ShiftState.Encounter ? "Events make you wait one turn or fall back one node. Read the outcome, then confirm to continue."
-                        : "Continue toward Abandoned TV Tower with E at each waypoint. Delivery happens automatically at the recipient.";
+                    body = run.State == ShiftState.Encounter ? "Marked junctions roll a "+Mathf.RoundToInt(run.EventProbability*100)+"% chance while carrying cargo. At most one event per order: wait +1 turn or fall back one node. Confirm to continue."
+                        : "Press E at each waypoint to continue toward your recipient. Delivery happens automatically.";
                     if (encounter != null) { first = (RectTransform)encounter.safeButton.transform; }
                     break;
                 default:

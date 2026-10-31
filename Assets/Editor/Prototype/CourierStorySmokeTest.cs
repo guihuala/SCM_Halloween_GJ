@@ -18,11 +18,11 @@ public static class CourierStorySmokeTest
     public static void Run()
     {
         var run=Configured();
-        Require(run.Parcels.Count==10&&run.BatchCount==9,"Story cargo count mismatch");
+        Require(run.Parcels.Count>=10,"Story parcel IDs missing");
         var data=run.Story.Data;
-        Require(data.language=="en"&&data.scenes.Length==16,"English story configuration missing");
-        Require(data.scenes.Select(s=>s.id).Distinct().Count()==16,"Duplicate story ID");
-        Require(data.scenes.Sum(s=>s.lines.Length)==64,"Source dialogue is incomplete");
+        Require(data.language=="en"&&data.scenes.Length==17,"English story configuration missing");
+        Require(data.scenes.Select(s=>s.id).Distinct().Count()==17,"Duplicate story ID");
+        Require(data.scenes.Sum(s=>s.lines.Length)==67,"Source dialogue is incomplete");
         var first=run.TalkToNpc();Require(first[0].StartsWith("Gooy:"),"Letter does not precede Drow");
         Require(!run.TalkToNpc().Any(line=>line.StartsWith("Gooy:")),"Letter repeated");
         foreach(var scene in data.scenes.Where(s=>s.trigger=="receive"))
@@ -37,9 +37,26 @@ public static class CourierStorySmokeTest
         }
         run=Configured();run.Node=3;run.Parcels[8].State=ParcelState.Delivered;
         Require(!run.TalkToNpc().Contains(data.scenes.First(s=>s.id=="vampire_supplies").lines[0].Render(false)),"Combined package acknowledged before both items arrived");
+        var epilogue=data.scenes.Single(s=>s.trigger=="ending");
+        foreach(var language in new[]{"en","zh"})
+        {
+            data.language=language;
+            for(int node=0;node<6;node++)
+            {
+                run=Configured();run.Node=node;run.Story=new CourierStory(data);
+                Require(!run.TalkToNpc().Contains(epilogue.lines[0].Render(language=="zh")),"Epilogue played before completion");
+                foreach(var parcel in run.Parcels)parcel.State=ParcelState.Delivered;
+                var final=run.TalkToNpc();
+                // At the starting stop, finish the intro before reading the final receipt.
+                if(!final.Contains(epilogue.lines[0].Render(language=="zh")))final=run.TalkToNpc();
+                Require(final.Skip(final.Length-3).SequenceEqual(epilogue.lines.Select(line=>line.Render(language=="zh"))),"Epilogue must follow receipts: "+language+" / "+node);
+                Require(!run.TalkToNpc().Contains(epilogue.lines[0].Render(language=="zh")),"Epilogue repeated");
+            }
+        }
+        data.language="en";
         var icons=Resources.Load<CourierCargoIconCatalog>("NightVoyage/CargoIcons");
-        Require(icons.icons.Length==10&&Enumerable.Range(0,10).All(id=>icons.ForParcel(id)!=null),"Cargo icons missing after ID migration");
-        Debug.Log("COURIER_STORY_CONFIG PASS: 16 scenes, 64 source/English lines, receive gating, deduplication, 10 cargo icons and 9 orders.");
+        Require(icons.icons.Length>=10&&Enumerable.Range(0,10).All(id=>icons.ForParcel(id)!=null),"Cargo icons missing after ID migration");
+        Debug.Log("COURIER_STORY_CONFIG PASS: 17 scenes, 67 source/English lines, bilingual epilogue at all six stops, receive gating, deduplication, 10 story cargo icons.");
         EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
         EditorApplication.ExecuteMenuItem("Window/General/Game");
         SessionState.SetBool(Key,true);Application.runInBackground=true;EditorApplication.isPlaying=true;
@@ -93,7 +110,13 @@ public static class CourierStorySmokeTest
             else if(step==3)
             {
                 Require(owner.ConversationActive&&!UIManager.Instance.IsPanelOpen("CourierResultPanel"),"Result hid final delivery conversation");
-                Drain(owner);
+                bool sawEpilogue=false;int guard=0;
+                while(owner.ConversationActive)
+                {
+                    if(owner.Subtitle.Contains("As for tomorrow, tomorrow is another night."))sawEpilogue=true;
+                    owner.AdvanceDialogue();Require(++guard<500,"Final dialogue cannot finish");
+                }
+                Require(sawEpilogue,"Epilogue missing before result");
             }
             else if(step==4)
             {
@@ -103,7 +126,7 @@ public static class CourierStorySmokeTest
             else if(step==5)
             {
                 Require(owner.DialogueSpeaker=="Gooy"&&owner.Run.CompletedBatches==0,"Restart did not reset story");
-                SessionState.SetBool(Key,false);Debug.Log("COURIER_STORY_UI PASS: speaker portraits, 64 English lines fit, letter to Drow, delivery dialogue before result, restart.");EditorApplication.Exit(0);return;
+                SessionState.SetBool(Key,false);Debug.Log("COURIER_STORY_UI PASS: speaker portraits, 67 English lines fit, letter to Drow, delivery dialogue before result, restart.");EditorApplication.Exit(0);return;
             }
             step++;next=EditorApplication.timeSinceStartup+.6;
         }

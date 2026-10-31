@@ -65,9 +65,10 @@ namespace NightCourier
         private void Awake()
         {
             Current = this;
-            Run = new CourierRun();
+            Run = new CourierRun(System.Environment.TickCount) { Node = CourierStreetMap.Node("S").StopId };
             CourierContentOverrides.Apply(Run);
-            if (uiFont == null) Debug.LogError("Assign the project font to NightCourierPrototype.");
+            // Use a regular-weight sans serif for small HUD and order text.
+            uiFont = Resources.Load<Font>("NightVoyage/Fonts/Nunito-SemiBold");
         }
         private void Start()
         {
@@ -155,7 +156,7 @@ namespace NightCourier
         public void RestartShift()
         {
             ClosePlanner(); CloseForced();
-            Run = new CourierRun(System.Environment.TickCount);
+            Run = new CourierRun(System.Environment.TickCount) { Node = CourierStreetMap.Node("S").StopId };
             CourierContentOverrides.Apply(Run);
             Tutorial = new CourierTutorial();
             if(tutorialPanel!=null)tutorialPanel.Bind(this);

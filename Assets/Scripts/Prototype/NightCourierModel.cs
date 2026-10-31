@@ -83,10 +83,10 @@ namespace NightCourier
         private void EmitAudio(string cue){if(!string.IsNullOrEmpty(cue))AudioCues.Enqueue(cue);}
 
         public readonly Stop[] Stops={
-            new Stop("Abandoned Subway","DROW","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
-            new Stop("Abandoned Campsite","WOLF","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
+            new Stop("Abandoned Subway","SUBWAY","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
+            new Stop("Fog Forest","FOREST","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
             new Stop("Mead Cellar","MEAD","Little Werebear: The cellar feels warm again... I hope I can sleep this winter.",0.31f,0.8f,1,true),
-            new Stop("Abandoned TV Tower","FM","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
+            new Stop("Abandoned TV Tower","TOWER","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
             new Stop("Museum Ruins","MUSEUM","Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69f,0.2f,-1,true),
             new Stop("Settlement Bar","BAR","Witch: One thing at a time, darling. I have the list.",0.94f,0.5f,-1,true),
             new Stop("Heat Shield Station","H","",0,0),
@@ -171,6 +171,8 @@ namespace NightCourier
             Stops=Stops.Concat(CourierStreetMap.Nodes.Where(n=>n.StopId>=9).OrderBy(n=>n.StopId)
                 .Select(n=>new Stop(n.Id,"JUNCTION","",n.Point.X/1200,n.Point.Y/820))).ToArray();
             foreach(var n in CourierStreetMap.Nodes){Stops[n.StopId].X=n.Point.X/1200;Stops[n.StopId].Y=n.Point.Y/820;}
+            Stops[CourierStreetMap.Node("S").StopId].Name="Parcel Depot";
+            Stops[CourierStreetMap.Node("S").StopId].Sign="DEPOT";
             foreach(var stop in Stops){stop.Vehicle=-1;stop.Repair=false;}
             Stops[6].Vehicle=0;Stops[7].Vehicle=1;Stops[8].Vehicle=2;
             int[] limits={4,3,4,5,4,4,4,4,4,4};
@@ -199,7 +201,7 @@ namespace NightCourier
                 if(cargo!=null)return "Deliver "+cargo.Name+" to "+Stops[cargo.Destination].Name+".";
                 var waiting=Parcels.FirstOrDefault(p=>p.State==ParcelState.Waiting&&p.Origin==Node)
                     ??Parcels.FirstOrDefault(p=>p.State==ParcelState.Waiting);
-                if(waiting!=null)return "Collect "+waiting.Name+" at "+Stops[waiting.Origin].Name+". Keep the Silence Pact.";
+                if(waiting!=null)return waiting.Origin==Node?"Orders available here. Open Orders [Tab] to choose a batch.":"Choose any order in Orders [Tab], then visit its sender.";
                 return "Speak to the locals. The Halloween party is almost ready.";
             }
         }

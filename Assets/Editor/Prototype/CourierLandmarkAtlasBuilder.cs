@@ -117,5 +117,5 @@ public static class CourierLandmarkAtlasBuilder
         try{Install();Verify();EditorApplication.Exit(0);}
         catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}
     }
-    public static void InstallAndPlayCheck(){Install();Verify();CourierMapPageSmokeTest.Run();}
+    public static void InstallAndPlayCheck(){Install();Verify();CourierMapBackgroundSmokeTest.RunAndPlayCheck();}
 }

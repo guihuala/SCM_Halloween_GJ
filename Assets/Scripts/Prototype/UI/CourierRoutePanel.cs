@@ -81,12 +81,13 @@ namespace NightCourier
                 var group=cargoDrawer.GetComponent<CanvasGroup>();
                 if(group==null)group=cargoDrawer.gameObject.AddComponent<CanvasGroup>();
                 group.interactable=open;group.blocksRaycasts=open;
-                if(open)cargoDrawer.gameObject.SetActive(true);
+                if(open){cargoDrawer.gameObject.SetActive(true);cargoDrawer.SetAsLastSibling();}
             }
         }
         private void LateUpdate()
         {
             if(hasRemoved||cargoDrawer==null)return;
+            drawerMotion.RestoreLayout();
             drawerMotion.Present(cargoDrawer.gameObject,CargoOpen,new Vector2(0,-48),reducedPanelMotion);
         }
         public void ToggleCargoDrawer(){if(owner!=null&&owner.Active&&!owner.ConversationActive)SetCargoOpen(!CargoOpen);}
@@ -124,6 +125,15 @@ namespace NightCourier
             if(page==null)return;
             page.anchorMin=Vector2.zero;page.anchorMax=Vector2.one;page.offsetMin=page.offsetMax=Vector2.zero;
             if(map==null)map=mapGraphic.transform.parent as RectTransform;
+            if(nodePromptButton!=null&&nodePromptButton.transform.parent!=page)nodePromptButton.transform.SetParent(page,false);
+            if(objectiveText==null)
+            {
+                var go=new GameObject("ObjectiveText",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));
+                go.transform.SetParent(page,false);objectiveText=go.GetComponent<Text>();
+                objectiveText.font=vehicleText.font;objectiveText.fontSize=30;
+                objectiveText.color=CourierColors.Paper;objectiveText.alignment=TextAnchor.MiddleLeft;objectiveText.raycastTarget=false;
+            }
+            if(cargoHeading!=null)cargoHeading.text="ORDERS";
             Vector2 size=page.rect.size;
             if(size.x<100||size.y<100)size=new Vector2(1920,1080);
             sidebarX=32;
@@ -157,18 +167,19 @@ namespace NightCourier
                 if(objectiveText!=null)objectiveText.fontSize=30;
                 if(cargoDrawer!=null)
                 {
-                    float height=Mathf.Min(360,contentBottom-244),column=(size.x-136)*.5f;
-                    Place(cargoDrawer,32,contentBottom-height,size.x-64,height);
-                    if(cargoHeading!=null)Place(cargoHeading.rectTransform,24,12,size.x-320,36);
-                    if(cargoCloseButton!=null)Place((RectTransform)cargoCloseButton.transform,size.x-280,12,192,48);
-                    Place(waitingSection,24,64,column,height-80);
-                    Place(loadedSection,48+column,64,column,height-80);
+                    float height=Mathf.Max(360,contentBottom-184),drawerWidth=Mathf.Min(820,size.x-64),column=drawerWidth-48;
+                    float waitingHeight=(height-104)*.62f,loadedHeight=height-104-waitingHeight;
+                    Place(cargoDrawer,size.x-drawerWidth-32,184,drawerWidth,height);
+                    if(cargoHeading!=null)Place(cargoHeading.rectTransform,24,12,drawerWidth-256,40);
+                    if(cargoCloseButton!=null)Place((RectTransform)cargoCloseButton.transform,drawerWidth-216,12,192,48);
+                    Place(waitingSection,24,72,column,waitingHeight);
+                    Place(loadedSection,24,88+waitingHeight,column,loadedHeight);
                     var waitingScroll=waitingContent.parent.parent as RectTransform;
-                    Place(waitingScroll,0,38,column,height-118);
-                    Place(loadedScroll,0,38,column,height-118);
+                    Place(waitingScroll,0,44,column,waitingHeight-44);
+                    Place(loadedScroll,0,44,column,loadedHeight-44);
                     foreach(var section in new[]{waitingSection,loadedSection})
                     {
-                        var title=section.GetComponentInChildren<Text>(true);if(title!=null)title.rectTransform.sizeDelta=new Vector2(column,30);
+                        var title=section.GetComponentInChildren<Text>(true);if(title!=null){title.rectTransform.sizeDelta=new Vector2(column,40);title.fontSize=28;}
                     }
                     if(waitingEmptyText!=null)Place(waitingEmptyText.rectTransform,0,54,column,48);
                     if(loadedEmptyText!=null)Place(loadedEmptyText.rectTransform,0,54,column,48);
@@ -228,7 +239,7 @@ namespace NightCourier
             if(left+width>map.rect.width-12)left=lo.x-map.rect.xMin-width-16;
             float top=map.rect.yMax-hi.y;
             Place(destinationTooltip,Mathf.Clamp(left,12,map.rect.width-width-12),Mathf.Clamp(top,12,Mathf.Max(12,map.rect.height-height-12)),width,height);
-            Place(destinationText.rectTransform,16,12,width-128,72);destinationText.fontSize=30;
+            Place(destinationText.rectTransform,16,12,width-128,72);destinationText.fontSize=32;
             Place((RectTransform)departButton.transform,width-96,16,80,80);ResizeIconButton(departButton,80);
             Place((RectTransform)costGroup.transform,16,100,width-32,48);
             Place((RectTransform)routeModeButton.transform,16,156,width-32,48);
@@ -286,38 +297,10 @@ namespace NightCourier
                 :Run.State==ShiftState.Pushing?"Pushing to this stop":"Heading to this stop";
             nodePromptButton.interactable=docked&&owner.Active;
             nodePromptText.fontSize=30;
-            float width=docked&&Run.HasJourney?420:280,height=docked&&Run.HasJourney?80:64;
-            if(node>=6)
-            {
-                if(!docked||!Run.HasJourney){nodePromptButton.gameObject.SetActive(false);return;}
-                Place((RectTransform)nodePromptButton.transform,24,map.rect.height-96,420,80);
-                return;
-            }
-            stopLabels[node].rectTransform.GetWorldCorners(dialogueCorners);
-            var lower=map.InverseTransformPoint(dialogueCorners[0]);var upper=map.InverseTransformPoint(dialogueCorners[2]);
-            var point=CourierRouteGraphic.NodePoint(Run.Stops[node],map.rect.size);
-            float labelTop=map.rect.yMax-upper.y,labelBottom=map.rect.yMax-lower.y;
-            float top=labelBottom<point.y?labelTop-height-8:labelBottom+8;
-            var placement=new Rect(Mathf.Clamp(point.x-width*.5f,0,map.rect.width-width),Mathf.Clamp(top,0,map.rect.height-height),width,height);
-            for(int candidate=0;candidate<4;candidate++)
-            {
-                Rect option;
-                if(candidate==0)option=new Rect(point.x-width*.5f,top,width,height);
-                else if(candidate==1)option=new Rect(point.x-126-width,labelTop+(labelBottom-labelTop-height)*.5f,width,height);
-                else if(candidate==2)option=new Rect(point.x+126,labelTop+(labelBottom-labelTop-height)*.5f,width,height);
-                else option=new Rect(point.x-width*.5f,labelTop-height-8,width,height);
-                if(option.xMin<0||option.yMin<0||option.xMax>map.rect.width||option.yMax>map.rect.height)continue;
-                bool overlaps=false;
-                foreach(var label in stopLabels)
-                {
-                    label.rectTransform.GetWorldCorners(dialogueCorners);
-                    var lo=map.InverseTransformPoint(dialogueCorners[0]);var hi=map.InverseTransformPoint(dialogueCorners[2]);
-                    var labelBounds=Rect.MinMaxRect(lo.x-map.rect.xMin,map.rect.yMax-hi.y,hi.x-map.rect.xMin,map.rect.yMax-lo.y);
-                    if(option.Overlaps(labelBounds)){overlaps=true;break;}
-                }
-                if(!overlaps){placement=option;break;}
-            }
-            Place((RectTransform)nodePromptButton.transform,placement.x,placement.y,width,height);
+            if(node>=6&&(!docked||!Run.HasJourney)){nodePromptButton.gameObject.SetActive(false);return;}
+            nodePromptText.text=docked?(Run.HasJourney?"Continue route  [E]":"Talk  [E]"):"Travelling";
+            Place((RectTransform)nodePromptButton.transform,pageSize.x-360,104,328,64);
+
         }
         protected override void Awake()
         {
@@ -414,7 +397,7 @@ namespace NightCourier
             bool controls=parked||repair;
             if(objectiveText!=null)
             {
-                float left=controls?600:32,right=docked?pageSize.x-32:pageSize.x-800;
+                float left=controls?600:32,right=docked?pageSize.x-392:pageSize.x-800;
                 Place(objectiveText.rectTransform,left,108,Mathf.Max(300,right-left),56);
             }
             RefreshDestinationTooltip();

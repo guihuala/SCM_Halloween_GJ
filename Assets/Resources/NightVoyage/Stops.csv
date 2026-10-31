@@ -1,7 +1,7 @@
 id,name,sign,voice,x,y,vehicle,repair
-0,Abandoned Subway,DROW,Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.,0.325,0.1219512,-1,0
-1,Abandoned Campsite,WOLF,"Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.15,0.4512195,-1,0
+0,Abandoned Subway,SUBWAY,Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.,0.325,0.1219512,-1,0
+1,Fog Forest,FOREST,"Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.15,0.4512195,-1,0
 2,Mead Cellar,MEAD,Little Werebear: The cellar feels warm again... I hope I can sleep this winter.,0.35,0.9146341,-1,0
-3,Abandoned TV Tower,FM,"Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6666667,0.1280488,-1,0
+3,Abandoned TV Tower,TOWER,"Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6666667,0.1280488,-1,0
 4,Museum Ruins,MUSEUM,"Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.8083333,0.8414634,-1,0
 5,Settlement Bar,BAR,"Witch: One thing at a time, darling. I have the list.",0.875,0.4390244,-1,0
