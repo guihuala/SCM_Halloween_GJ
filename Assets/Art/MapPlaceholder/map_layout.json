@@ -1,0 +1,158 @@
+{
+  "reference_canvas": {
+    "width": 2070,
+    "height": 1200,
+    "origin": "top-left",
+    "x_right": true,
+    "y_down": true
+  },
+  "node_formula": "x=(50+Stops.x*550)/690*width; y=(35+Stops.y*340)/400*height",
+  "landmark_source": {
+    "width": 256,
+    "height": 256,
+    "anchor_top_left_px": [
+      128,
+      216
+    ],
+    "unity_pivot": [
+      0.5,
+      0.15625
+    ]
+  },
+  "nodes": [
+    {
+      "id": 0,
+      "name": "Abandoned Subway",
+      "label_cn": "废弃地铁站",
+      "pixel_anchor": [
+        265.5,
+        615.0
+      ],
+      "normalized_anchor": [
+        0.1282608695652174,
+        0.5125
+      ],
+      "landmark": "Landmarks/Textures/00_abandoned_subway.png"
+    },
+    {
+      "id": 1,
+      "name": "Forest Campsite",
+      "label_cn": "前房车露营基地",
+      "pixel_anchor": [
+        661.5,
+        309.0
+      ],
+      "normalized_anchor": [
+        0.31956521739130433,
+        0.2575
+      ],
+      "landmark": "Landmarks/Textures/01_forest_campsite.png"
+    },
+    {
+      "id": 2,
+      "name": "Mead Cellar",
+      "label_cn": "蜂蜜酒地窖",
+      "pixel_anchor": [
+        661.5,
+        921.0
+      ],
+      "normalized_anchor": [
+        0.31956521739130433,
+        0.7675
+      ],
+      "landmark": "Landmarks/Textures/02_mead_cellar.png"
+    },
+    {
+      "id": 3,
+      "name": "Abandoned Radio Tower",
+      "label_cn": "废弃广播塔",
+      "pixel_anchor": [
+        1140.0,
+        870.0
+      ],
+      "normalized_anchor": [
+        0.5507246376811594,
+        0.725
+      ],
+      "landmark": "Landmarks/Textures/03_radio_tower.png"
+    },
+    {
+      "id": 4,
+      "name": "Museum Ruins",
+      "label_cn": "博物馆废墟",
+      "pixel_anchor": [
+        1288.5,
+        309.0
+      ],
+      "normalized_anchor": [
+        0.622463768115942,
+        0.2575
+      ],
+      "landmark": "Landmarks/Textures/04_museum_ruins.png"
+    },
+    {
+      "id": 5,
+      "name": "Settlement Bar",
+      "label_cn": "人类聚居地酒吧",
+      "pixel_anchor": [
+        1701.0,
+        615.0
+      ],
+      "normalized_anchor": [
+        0.8217391304347826,
+        0.5125
+      ],
+      "landmark": "Landmarks/Textures/05_settlement_bar.png"
+    }
+  ],
+  "roads": [
+    {
+      "id": 0,
+      "from": 0,
+      "to": 1,
+      "kind": "asphalt"
+    },
+    {
+      "id": 1,
+      "from": 0,
+      "to": 2,
+      "kind": "gravel"
+    },
+    {
+      "id": 2,
+      "from": 1,
+      "to": 2,
+      "kind": "asphalt"
+    },
+    {
+      "id": 3,
+      "from": 1,
+      "to": 3,
+      "kind": "river"
+    },
+    {
+      "id": 4,
+      "from": 2,
+      "to": 3,
+      "kind": "fog"
+    },
+    {
+      "id": 5,
+      "from": 1,
+      "to": 4,
+      "kind": "asphalt"
+    },
+    {
+      "id": 6,
+      "from": 3,
+      "to": 4,
+      "kind": "gravel"
+    },
+    {
+      "id": 7,
+      "from": 4,
+      "to": 5,
+      "kind": "storm"
+    }
+  ]
+}
