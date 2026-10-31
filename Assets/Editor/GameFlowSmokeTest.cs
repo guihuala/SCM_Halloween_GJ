@@ -59,6 +59,14 @@ public static class GameFlowSmokeTest
         throw new Exception("Missing button: " + button);
     }
 
+    private static void VerifyResultTitleVisible()
+    {
+        Canvas.ForceUpdateCanvases();
+        var title = UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>();
+        Require(title.cachedTextGenerator.vertexCount > 4, "Result title generated no visible text");
+        Require(title.preferredHeight <= title.rectTransform.rect.height, "Result title is clipped");
+    }
+
     private static readonly System.Collections.Generic.HashSet<int> captured = new System.Collections.Generic.HashSet<int>();
     private static bool Capture(string name)
     {
@@ -122,6 +130,7 @@ public static class GameFlowSmokeTest
                 case 5:
                     Require(Time.timeScale == 0 && game.CurrentState == GameManager.GameState.GameOver, "Win did not stop game");
                     Require(UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>().text == "Delivery Complete", "Win title incorrect");
+                    VerifyResultTitleVisible();
                     if (Capture("result")) return;
                     previousGame = game.GetInstanceID();
                     Click("GameResultPanel", "RestartButton");
@@ -133,6 +142,7 @@ public static class GameFlowSmokeTest
                     break;
                 case 7:
                     Require(UIManager.Instance.GetPanel("GameResultPanel").GetComponentInChildren<Text>().text == "Shift Over", "Lose title incorrect");
+                    VerifyResultTitleVisible();
                     Click("GameResultPanel", "MainMenuButton");
                     break;
                 case 8:
