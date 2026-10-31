@@ -26,8 +26,8 @@ public static class CourierCargoArtInstaller
             }
         }
         var catalog=Resources.Load<CourierCargoIconCatalog>("NightVoyage/CargoIcons");
-        if(catalog==null||catalog.icons.Length!=12||catalog.icons.Select(i=>i.parcelId).Distinct().Count()!=12)throw new Exception("Cargo artwork catalog must contain 12 unique parcel IDs");
-        for(int id=0;id<12;id++)if(catalog.ForParcel(id)==null)throw new Exception("Missing cargo sprite "+id);
+        if(catalog==null||catalog.icons.Length!=10||catalog.icons.Select(i=>i.parcelId).Distinct().Count()!=10)throw new Exception("Cargo artwork catalog must contain 10 unique parcel IDs");
+        for(int id=0;id<10;id++)if(catalog.ForParcel(id)==null)throw new Exception("Missing cargo sprite "+id);
         const string prefabPath="Assets/Prefab/UI/CourierCargoRow.prefab";
         var root=PrefabUtility.LoadPrefabContents(prefabPath);
         try
@@ -40,7 +40,7 @@ public static class CourierCargoArtInstaller
             PrefabUtility.SaveAsPrefabAsset(root,prefabPath);
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
-        AssetDatabase.SaveAssets();Debug.Log("COURIER_CARGO_ART installed 12 SVG-derived sprites; existing page layouts preserved.");
+        AssetDatabase.SaveAssets();Debug.Log("COURIER_CARGO_ART installed 10 cargo sprites; existing page layouts preserved.");
     }
     public static void InstallAndCheck(){Install();CourierCargoArtSmokeTest.Run();}
 }
@@ -95,21 +95,21 @@ public static class CourierCargoArtSmokeTest
                 case 2:
                     CheckRows(page,owner.Run);GameManager.Instance.ResumeGame();owner.Run.UseGhost();CourierChecks.Go(owner.Run,5);
                     while(owner.ConversationActive)owner.AdvanceDialogue();
-                    var batch=page.GetComponentsInChildren<CourierCargoRow>().First(r=>r.Item==owner.Run.Parcels[9]);
+                    var batch=page.GetComponentsInChildren<CourierCargoRow>().First(r=>r.Item==owner.Run.Parcels[8]);
                     batch.actionButton.onClick.Invoke();break;
                 case 3:
                     CheckRows(page,owner.Run);
-                    var loaded=page.GetComponentsInChildren<CourierCargoRow>().First(r=>r.Item==owner.Run.Parcels[9]);
+                    var loaded=page.GetComponentsInChildren<CourierCargoRow>().First(r=>r.Item==owner.Run.Parcels[8]);
                     Require(loaded.transform.parent==page.loadedContent&&loaded.secondaryArtwork.gameObject.activeSelf,"Batch artwork missing second item");
                     Require(loaded.secondaryArtwork.sprite==loaded.iconCatalog.ForParcel(10)&&!loaded.secondaryArtwork.raycastTarget,"Blood icon mapping or raycast wrong");
-                    Require(owner.Run.Parcels[9].State==ParcelState.Loaded&&owner.Run.Parcels[10].State==ParcelState.Loaded,"Artwork changed batch acceptance");
+                    Require(owner.Run.Parcels[8].State==ParcelState.Loaded&&owner.Run.Parcels[9].State==ParcelState.Loaded,"Artwork changed batch acceptance");
                     ScreenCapture.CaptureScreenshot("/tmp/courier-cargo-icons-batch.png");break;
                 case 4:
                     CourierChecks.Go(owner.Run,3);Require(owner.Run.CompletedBatches==1,"Batch delivery failed after artwork integration");
                     owner.RestartShift();break;
                 case 5:
                     page.SetCargoOpen(true);CheckRows(page,owner.Run);Require(owner.Run.CompletedBatches==0,"Restart failed");
-                    SessionState.SetBool(Key,false);Debug.Log("COURIER_CARGO_ART PASS: 12 sprites, 11 batch cards, both icons in combined batch, drag image, text layout, pause, delivery and restart.");EditorApplication.Exit(0);return;
+                    SessionState.SetBool(Key,false);Debug.Log("COURIER_CARGO_ART PASS: 10 sprites, 9 batch cards, both icons in combined batch, drag image, text layout, pause, delivery and restart.");EditorApplication.Exit(0);return;
             }
             Debug.Log("COURIER_CARGO_ART step "+step+" passed");step++;next=EditorApplication.timeSinceStartup+.8;
         }

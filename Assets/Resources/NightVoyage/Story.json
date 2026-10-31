@@ -1,0 +1,514 @@
+{
+  "language": "en",
+  "worldBackgroundChinese": "缄默法则：黑暗生物约定不向人类透露黑暗社会。黑暗生物寿命长，但可活动时间短，经常沉睡，因此黑暗社会活跃度较低。",
+  "scenes": [
+    {
+      "id": "gooy_letter",
+      "node": 0,
+      "trigger": "intro",
+      "parcels": [],
+      "lines": [
+        {
+          "speaker": "Gooy",
+          "text": "Dear Goolie, the hot springs in Cangsong Valley have been erupting more often. This old ghost cannot take the heat. I am off to the snowy mountains for a rest.",
+          "sourceChinese": "亲爱的Goolie：苍松谷最近的热泉喷发越来越频繁啦，我这个老幽灵有点受不住了，得去雪山上休息一段时间。"
+        },
+        {
+          "speaker": "Gooy",
+          "text": "Halloween is in your hands this year. You can do it, little ghost!",
+          "sourceChinese": "这次的万圣节就交给你吧，加油吧小幽灵！"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "But I only arrived at the Cangsong Valley post station a week ago! What am I going to do?",
+          "sourceChinese": "可是我才刚刚到苍松谷快递站一周诶，这可怎么办？"
+        },
+        {
+          "speaker": "Narrator",
+          "text": "The new courier ghost looks down at their postal cap and sighs.",
+          "sourceChinese": "新人快递幽灵看了看自己的邮差帽，不由得叹气。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "I have never experienced Halloween. The senior couriers say it is a huge event for the dark society.",
+          "sourceChinese": "我从来没有经历过万圣节，前辈都说这是暗影社会的大事件。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "It is the one night humans can see us, but we still have to obey the Rule of Silence: never reveal the dark society to humans. That sounds hard!",
+          "sourceChinese": "这是人类唯一能看到我们的机会，还得遵守缄默法则，不被人类发现，这可真难！"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "There seem to be more humans out tonight, too. Even children in short sleeves and plastic capes are running around... Well, off I go!",
+          "sourceChinese": "而且今晚镇上晃荡的人类好像格外多，连穿短袖套塑料披风的小孩都在街上跑……不管了，先出发吧！"
+        }
+      ]
+    },
+    {
+      "id": "drow_rosin",
+      "node": 0,
+      "trigger": "receive",
+      "parcels": [
+        1
+      ],
+      "lines": [
+        {
+          "speaker": "Drow",
+          "text": "[Tilts her head toward Goolie and whispers.] ...Thank you.",
+          "sourceChinese": "（歪头看向Goolie，小声）……谢谢。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "You are welcome! But why is water dripping through this mountain tunnel? There are puddles under the railway sleepers!",
+          "sourceChinese": "不客气！不过这穿山隧道里怎么滴答滴答的，连铁轨枕木底下都积水啦？"
+        },
+        {
+          "speaker": "Drow",
+          "text": "[Brushes a fingertip over her damp violin bow and lowers her red eyes.] ...The rock walls have been seeping lately. The strings are slippery. A little rosin... will help.",
+          "sourceChinese": "（用指尖轻轻蹭了蹭有些发潮的琴弓，垂下红眼睛低声说）……最近岩壁总在渗水，弦有点滑。擦了松香……就好了。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "I see. And thank you for choosing Ghost Post! We hope to deliver for you again. Goodbye!",
+          "sourceChinese": "原来是这样，也谢谢你对幽灵快递的支持，希望以后继续选择我们，再见！"
+        }
+      ]
+    },
+    {
+      "id": "drow_tape",
+      "node": 0,
+      "trigger": "send",
+      "parcels": [
+        0
+      ],
+      "lines": [
+        {
+          "speaker": "Drow",
+          "text": "[Silently holds out a recording tape.]",
+          "sourceChinese": "（不说话，只是递过录音带。）"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Of course! This is the tape for Ms. Vampire, right? Gooy said your new song will be at tomorrow's party. I cannot wait to hear it!",
+          "sourceChinese": "好的好的，这是Vampire姐姐需要的录音带吧。听店长说，明天的party会有你的新歌，我太好奇了。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Thank you for all you do for the dark society of Cangsong Valley!",
+          "sourceChinese": "谢谢你为苍松谷暗夜社会作出的贡献！"
+        },
+        {
+          "speaker": "Drow",
+          "text": "[Her pointed ears twitch ever so slightly. She smiles.]",
+          "sourceChinese": "（耳朵尖微微动了一下，微笑。）"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "I will leave you to your practice. Goodbye, our artist!",
+          "sourceChinese": "那我不打扰你练琴啦，艺术家再见！"
+        }
+      ]
+    },
+    {
+      "id": "wolf_rosin",
+      "node": 1,
+      "trigger": "send",
+      "parcels": [
+        1
+      ],
+      "lines": [
+        {
+          "speaker": "Wolfwoman",
+          "text": "Just in time! A block of rosin for our great artist, Miss Drow. Give her my regards!",
+          "sourceChinese": "来得正好！这是我们的伟大艺术家，Miss Drow的松香块，请代我向她问好。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "I hear she plays the violin. The rosin is for taking care of it, right?",
+          "sourceChinese": "我听说这位艺术家会拉小提琴，松香是用于养护小提琴的吧？"
+        },
+        {
+          "speaker": "Wolfwoman",
+          "text": "What a knowledgeable little ghost! See you around!",
+          "sourceChinese": "真是位博学的小幽灵，回见！"
+        }
+      ]
+    },
+    {
+      "id": "wolf_stew",
+      "node": 1,
+      "trigger": "receive",
+      "parcels": [
+        5
+      ],
+      "lines": [
+        {
+          "speaker": "Wolfwoman",
+          "text": "Oh, Goolie! That fresh scent of blood... It must be Ms. Vampire's signature maoxuewang!",
+          "sourceChinese": "哦，Goolie，这新鲜的血的气息，想必是Vampire女士的拿手好菜毛血旺吧。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Yes, and it is still piping hot. You can count on Ghost Post!",
+          "sourceChinese": "是的，还是滚烫的，幽灵快递您放心！"
+        },
+        {
+          "speaker": "Wolfwoman",
+          "text": "Wonderful! I spent all day posing as a human forest ranger, chasing children who wandered in because of this warm weather. My bones are falling apart!",
+          "sourceChinese": "太棒了，白天我装成人类护林员，在林子里撵了一整天趁着天暖和乱跑的人类小孩，骨头都快散架了。"
+        },
+        {
+          "speaker": "Wolfwoman",
+          "text": "A bite of this on a troublesome Halloween night makes everything feel better!",
+          "sourceChinese": "万圣夜这种糟心时间能吃上这一口，心情瞬间好起来了！"
+        }
+      ]
+    },
+    {
+      "id": "wolf_honey_jam",
+      "node": 1,
+      "trigger": "send",
+      "parcels": [
+        2,
+        3
+      ],
+      "lines": [
+        {
+          "speaker": "Wolfwoman",
+          "text": "This is gray-pine autumn honey for Little Werebear. Usually, the bees can only find honeydew seeping from the gray pines at this time of year.",
+          "sourceChinese": "这些是给小熊的灰松秋蜜，本来这个季节的蜜蜂只能找到灰松上渗出的甘露酿蜜。"
+        },
+        {
+          "speaker": "Wolfwoman",
+          "text": "But some roses have bloomed out of season. I did not use them for honey. I made flower jam for Mrs. Jiangshi's cakes instead. Our party is tomorrow, after all!",
+          "sourceChinese": "可是最近还有一些反季重开的玫瑰花。不过我没打算用来酿蜜，还是熬成酱交给Jiangshi老太太做鲜花饼吃吧，毕竟明天我们要开派对了。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "I agree! I heard about Mrs. Jiangshi's flower cakes before I even came to the valley. I would love to try one.",
+          "sourceChinese": "我赞同，我还没来灰松谷就听说过IJ太太的鲜花饼呢，真想试一试呀。"
+        },
+        {
+          "speaker": "Wolfwoman",
+          "text": "That lady is a wonderful cook. Enjoy yourself tomorrow!",
+          "sourceChinese": "那老太太手艺好着呢，明天尽情享受吧！"
+        }
+      ]
+    },
+    {
+      "id": "bear_mead",
+      "node": 2,
+      "trigger": "send",
+      "parcels": [
+        4
+      ],
+      "lines": [
+        {
+          "speaker": "Little Werebear",
+          "text": "Hello, little ghost. I started this light spring mead in April and May, and it has been aging ever since. Please take it to Ms. Witch.",
+          "sourceChinese": "你好呀小幽灵，这些是今年四五月春天就开始酿造、一直陈酿到现在的轻度蜂蜜酒，请你帮我送给女巫女士。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Hello, little bear! It looks so golden. Even the droplets on the bottles seem to glow!",
+          "sourceChinese": "小熊你好，这些酒看起来金灿灿的，连瓶身上的水珠都在发光呢。"
+        },
+        {
+          "speaker": "Little Werebear",
+          "text": "Yes. Spring honey usually comes from flowers. Autumn honey comes from pine honeydew and looks more like amber.",
+          "sourceChinese": "对哦，春蜜一般是花蜜，而秋蜜是松树甘露蜜，会更像琥珀一些。"
+        },
+        {
+          "speaker": "Little Werebear",
+          "text": "The cellar is usually chilly enough for storage by now. This year I had to move the barrels to the deepest corner.",
+          "sourceChinese": "说起来，往年这时候地窖里冷飕飕的正好存酒，今年我却得把酒桶挪到最深处的墙角才行呢。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "That sounds like hard work. I will get it there safely. Have a lovely time tomorrow!",
+          "sourceChinese": "辛苦你啦，我一定稳稳当当地送到，祝你明天玩得开心！"
+        }
+      ]
+    },
+    {
+      "id": "bear_honey",
+      "node": 2,
+      "trigger": "receive",
+      "parcels": [
+        2
+      ],
+      "lines": [
+        {
+          "speaker": "Goolie",
+          "text": "Look! Autumn honey from Wolfwoman. It smells so fresh. She says it is warm enough for flowers to bloom out of season, and sent flower jam to Mrs. Jiangshi.",
+          "sourceChinese": "请看，这些是狼人姐姐给的秋蜜，闻起来很清新呢。她还说，现在太热了，已经有反季花盛开了，托我给Jiangshi太太送过去。"
+        },
+        {
+          "speaker": "Little Werebear",
+          "text": "[Hugs the honey jar, yawns, then rubs her eyes.] No wonder I keep hearing water trickling under the cellar. Even the soil is warm.",
+          "sourceChinese": "（抱紧蜜罐，打了个小小的哈欠却又揉了揉眼睛）难怪这两天总听到地窖底下有淅淅沥沥的流水声，连土都是温的。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Oh! Will that affect your hibernation?",
+          "sourceChinese": "诶？那会影响你冬眠吗？"
+        },
+        {
+          "speaker": "Little Werebear",
+          "text": "It will... This winter is going to be warm. I might not be able to sleep.",
+          "sourceChinese": "会呀……今年一定会有个暖冬，我可能要失眠了。"
+        }
+      ]
+    },
+    {
+      "id": "vampire_tape",
+      "node": 3,
+      "trigger": "receive",
+      "parcels": [
+        0
+      ],
+      "lines": [
+        {
+          "speaker": "Vampire",
+          "text": "[Plays the tape and taps along with the melody.] I think I understand the feeling behind this piece. Miss Drow must have woven in the sound of glacial meltwater.",
+          "sourceChinese": "（将磁带放进机器试听，手指随着旋律轻敲桌面）我大概能领会到这首曲子的感情，Drow小姐肯定融入了冰川融水的声音。"
+        },
+        {
+          "speaker": "Vampire",
+          "text": "It is so ethereal and beautiful. Autumn used to bring only wind to the valley. To hear such lovely flowing water at the end of October...",
+          "sourceChinese": "这实在是空灵而美妙。以前入秋后山谷里只有风声，没想到今年到十月底还能听到如此美丽的水声……"
+        },
+        {
+          "speaker": "Vampire",
+          "text": "Little ghost, our ears are in for a treat at this party!",
+          "sourceChinese": "小幽灵，这次派对要大饱耳福啦。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Wonderful! I cannot wait!",
+          "sourceChinese": "太好了！真期待呢。"
+        }
+      ]
+    },
+    {
+      "id": "vampire_supplies",
+      "node": 3,
+      "trigger": "receive",
+      "parcels": [
+        8,
+        9
+      ],
+      "lines": [
+        {
+          "speaker": "Goolie",
+          "text": "Ms. Vampire, here is the cooling unit and fresh livestock blood you asked Ms. Witch to buy.",
+          "sourceChinese": "Vampire女士，这是您托Witch女士购买的散热装置还有禽畜的新鲜血液。"
+        },
+        {
+          "speaker": "Vampire",
+          "text": "What a devoted little ghost! My old radiator overloaded while I was adjusting the equipment. My night radio broadcast went off the air.",
+          "sourceChinese": "真是尽职呢小幽灵！刚才调试设备的时候，老散热器突然过载罢工，害得我的夜间电台都停播了。"
+        },
+        {
+          "speaker": "Vampire",
+          "text": "Now I can make it comfortable here again. [Gives the little ghost a kiss.]",
+          "sourceChinese": "这下又可以恢复到舒适的温度啦。（说完亲了小幽灵一口。）"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "[Blushes.] Ms. Vampire... Please do not tease me!",
+          "sourceChinese": "（一下子脸红）Vampire女士……不要戏弄我啦。"
+        }
+      ]
+    },
+    {
+      "id": "vampire_stew",
+      "node": 3,
+      "trigger": "send",
+      "parcels": [
+        5
+      ],
+      "lines": [
+        {
+          "speaker": "Vampire",
+          "text": "Here, some maoxuewang I just made. Before the studio cools down, hurry and take it to Wolfwoman. She must be starving after her patrol.",
+          "sourceChinese": "喏，这是我刚刚做好的毛血旺哟，趁着播音室里还没凉下来，小幽灵快去送给狼人姐姐吃吧，她巡林肯定饿坏了。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Consider it delivered!",
+          "sourceChinese": "使命必达！"
+        }
+      ]
+    },
+    {
+      "id": "jiangshi_jam",
+      "node": 4,
+      "trigger": "receive",
+      "parcels": [
+        3
+      ],
+      "lines": [
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "[Sniffs the jar and smiles.] Oh? Flowers out of season? I have lived here for over a century. That never used to happen.",
+          "sourceChinese": "（接过罐子闻了闻，眯起眼睛笑起来）哦？反季花，我在这里生活上百年了，以前哪有这样的事哦。"
+        },
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "It is getting warmer and warmer. When I get up at dusk for my daily care, I can see the snowy mountain caps shrinking.",
+          "sourceChinese": "现在越来越暖和了，我傍晚起来做保养的时候往山上看，连雪山的雪顶都变少了……"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "What are we going to do?",
+          "sourceChinese": "那可怎么办呀？"
+        },
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "Perhaps the valley will be flooded someday. My roomful of antiques could never survive that. I would hate to leave this place.",
+          "sourceChinese": "说不定以后这片山谷会被淹没……我这一屋子的老古董可经不起泡水，真是舍不得这里呀。"
+        },
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "Come, help me light the stove. This old lady will bake the flower cakes tonight!",
+          "sourceChinese": "来，帮我搭把手生个炉子，老太太我今晚就把鲜花饼烤出来！"
+        }
+      ]
+    },
+    {
+      "id": "jiangshi_lotion",
+      "node": 4,
+      "trigger": "receive",
+      "parcels": [
+        7
+      ],
+      "lines": [
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "What a thoughtful little ghost. You have saved these old bones! I chose the museum ruins because the remaining climate controller kept the temperature and humidity just right.",
+          "sourceChinese": "你真是个贴心的小幽灵，拯救了我这把老骨头。我当年选择住在博物馆遗迹里，就是因为这里还有剩余的环境调节器，温度和湿度都很适合我。"
+        },
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "But damp keeps coming through the floor tiles, and the old machine is no use now. I have to brush on two extra coats of moisture-repellent body lotion every day!",
+          "sourceChinese": "可惜最近地砖缝里总往外返潮气，老机器也不中用啦，我每天做日常护理都得把防潮剂当身体乳往身上多刷两层呢！"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Mrs. Jiangshi, will you keep living here?",
+          "sourceChinese": "IJ太太，您以后会继续住在这里吗？"
+        },
+        {
+          "speaker": "Immigrant Jiangshi",
+          "text": "I cannot say. Perhaps I will move farther north. This constant warming is not a good thing.",
+          "sourceChinese": "我可说不好，或许迁去更北的地方？这样的持续变暖可真不是好事呀。"
+        }
+      ]
+    },
+    {
+      "id": "witch_mead",
+      "node": 5,
+      "trigger": "receive",
+      "parcels": [
+        4
+      ],
+      "lines": [
+        {
+          "speaker": "Goolie",
+          "text": "Hello, Ms. Witch. This mead is from Little Werebear.",
+          "sourceChinese": "Witch女士您好，这是小熊送来的蜜酒。"
+        },
+        {
+          "speaker": "Witch",
+          "text": "Just looking at it, I can see spring flowers filling the forest and smell the rich fragrance of herbs and blossoms. These bottles hold a record of the season.",
+          "sourceChinese": "只是看着这些蜜酒，我仿佛能看到春花开遍森林，嗅到馥郁的花草香，这些酒是季节的记录。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Ms. Witch, you are so cultured!",
+          "sourceChinese": "Witch女士您实在是太有文化了。"
+        },
+        {
+          "speaker": "Witch",
+          "text": "[Chuckles.] Perhaps it comes from living among humans.",
+          "sourceChinese": "（咯咯笑）或许因为我一直和人类生活在一起吧。"
+        }
+      ]
+    },
+    {
+      "id": "witch_lotion",
+      "node": 5,
+      "trigger": "send",
+      "parcels": [
+        7
+      ],
+      "lines": [
+        {
+          "speaker": "Witch",
+          "text": "Keep this safe. It is moisture repellent for Mrs. Jiangshi. I hear groundwater has seeped into her basement. I hope she is all right.",
+          "sourceChinese": "收好哦，这是给IJ太太的防潮剂。听说她那里地下水渗入地下室了，希望她一切平安。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "Of course, madam.",
+          "sourceChinese": "好的女士。"
+        }
+      ]
+    },
+    {
+      "id": "witch_supplies",
+      "node": 5,
+      "trigger": "send",
+      "parcels": [
+        8,
+        9
+      ],
+      "lines": [
+        {
+          "speaker": "Witch",
+          "text": "This is the cooling unit for Ms. Vampire. I cannot imagine how such an elegant lady repairs those enormous machines.",
+          "sourceChinese": "这些是给Vampire女士的维修装置，我无法想象她这样的优雅鬼士是如何维修那些大型机械的。"
+        },
+        {
+          "speaker": "Witch",
+          "text": "And here is some livestock blood. I hope she enjoys her meal.",
+          "sourceChinese": "还有这些禽畜血，祝她吃得开心。"
+        },
+        {
+          "speaker": "Goolie",
+          "text": "I am sure she will handle it beautifully!",
+          "sourceChinese": "我相信Vampire大姐姐肯定可以完美解决的。"
+        }
+      ]
+    }
+  ],
+  "characterBackgrounds": [
+    {
+      "id": "drow",
+      "description": "A shy writer and part-time bard, with purple skin, white hair and red eyes. Needs rosin for her violin and sends her party theme recording to Vampire."
+    },
+    {
+      "id": "werewolf",
+      "description": "A warm, outgoing big sister and ranger of the foggy forest. Poses as a human by day, keeps bees, supplies rosin and shoos away lost children. Her patrols leave her hungry."
+    },
+    {
+      "id": "bear",
+      "description": "A sentimental young mead-maker who taught herself brewing. Has never known a human. Found a cellar after the human settlement shrank. Spring mead: primary fermentation April-May, secondary fermentation May-July, aging July-October."
+    },
+    {
+      "id": "vampire",
+      "description": "A caring older sister and radio DJ, formerly a broadcaster before she was bitten. Her radiator overloads and stops the night broadcast. Cooks maoxuewang using livestock blood."
+    },
+    {
+      "id": "zombie",
+      "description": "An endearingly absent-minded elderly jiangshi who crossed the ocean to Cangsong Valley a century ago. Repairs antiques in the museum ruins, uses moisture-repellent lotion and bakes Chinese flower cakes."
+    },
+    {
+      "id": "witch",
+      "description": "A maternal organizer, bar owner and bartender living among humans. Buys cooling equipment and livestock blood in the human settlement and needs mead for the party."
+    }
+  ],
+  "worldBackground": "The Rule of Silence: dark creatures agree never to reveal their society to humans. They live long lives but have short active periods and spend much of their time asleep, so their society is quiet."
+}

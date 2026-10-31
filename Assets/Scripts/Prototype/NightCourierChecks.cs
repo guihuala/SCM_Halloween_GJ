@@ -78,17 +78,17 @@ namespace NightCourier
         public static string RunAll()
         {
             assertions=0;CheckRoadEvents();var r=new CourierRun();
-            Require(r.BatchCount==11&&r.Parcels.Count==12,"Expected 11 orders / 12 items");
+            Require(r.BatchCount==9&&r.Parcels.Count==10,"Expected 9 orders / 10 items");
             for(int from=0;from<6;from++)for(int to=0;to<6;to++)
             {r.Node=from;int at=from;foreach(var road in r.FindRoute(to)){Require(road.Connects(at),"Disconnected route");at=road.Other(at);}Require(at==to,"Unreachable node");}
             r=new CourierRun();r.Node=5;
             Require(!r.LoadParcel(r.Parcels[0]),"Remote pickup allowed");
-            Require(r.LoadParcel(r.Parcels[10]),"Batch acceptance failed");
-            Require(r.Parcels[9].State==ParcelState.Loaded&&r.Parcels[10].State==ParcelState.Loaded,"Same pair not loaded as a batch");
-            Require(!r.LoadParcel(r.Parcels[8])&&!r.Unload(r.Parcels[9]),"Active order split, stored or second order accepted");
-            int origin=r.Parcels[9].Origin;r.Tick(10000);Require(r.OrderTurns==0,"Idle time counted");
-            Go(r,3);Require(r.Results.Count==1&&r.CompletedBatches==1&&r.Parcels[9].Origin==origin,"Batch delivery or origin changed");
-            Require(!r.CanLoad(r.Parcels[9]),"Completed order still available");
+            Require(r.LoadParcel(r.Parcels[9]),"Batch acceptance failed");
+            Require(r.Parcels[8].State==ParcelState.Loaded&&r.Parcels[9].State==ParcelState.Loaded,"Same pair not loaded as a batch");
+            Require(!r.LoadParcel(r.Parcels[7])&&!r.Unload(r.Parcels[8]),"Active order split, stored or second order accepted");
+            int origin=r.Parcels[8].Origin;r.Tick(10000);Require(r.OrderTurns==0,"Idle time counted");
+            Go(r,3);Require(r.Results.Count==1&&r.CompletedBatches==1&&r.Parcels[8].Origin==origin,"Batch delivery or origin changed");
+            Require(!r.CanLoad(r.Parcels[8]),"Completed order still available");
             Go(r,1);Require(r.LoadParcel(r.Parcels[1])&&r.OrderTurns==0,"Next order clock not reset");
             var carried=r.ActiveOrder;r.Durabilities[r.VehicleIndex]=0;Travel(r,0);
             Require(r.IsGhost&&carried.State==ParcelState.Delivered,"Exhaustion prevents delivery");
@@ -105,7 +105,7 @@ namespace NightCourier
             for(int seed=0;seed<20;seed++)
             {
                 r=new CourierRun(seed);r.UseGhost();CompleteAll(r);
-                Require(r.Results.Count==11&&r.CompletedBatches==11&&r.Delivered==12,"Ghost circuit cannot deliver every order");
+                Require(r.Results.Count==9&&r.CompletedBatches==9&&r.Delivered==10,"Ghost circuit cannot deliver every order");
                 Require(r.Parcels.All(p=>p.State==ParcelState.Delivered)&&r.State==ShiftState.EndingA,"All delivered did not clear game");
             }
             return assertions+" assertions passed: batch orders, discrete turns, evaluation, ghost fallback, frame-independent travel, all-delivered completion, 12 random events and retreat recovery.";

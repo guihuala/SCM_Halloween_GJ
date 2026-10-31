@@ -63,7 +63,7 @@ namespace NightCourier
                     break;
                 case 3:
                     title = "Choose a destination";
-                    body = "Take the tape to Abandoned Radio Tower. You can choose any open stop; orange lines show the full route.";
+                    body = "Take the tape to Abandoned TV Tower. You can choose any open stop; orange lines show the full route.";
                     if (planner != null) first = planner.stopLabels[3].rectTransform;
                     break;
                 case 4:

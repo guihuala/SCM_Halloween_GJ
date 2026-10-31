@@ -95,7 +95,7 @@ public static class CourierVehicleArtSmokeTest
                     Check(page.vehicleArtwork,1);ScreenCapture.CaptureScreenshot("/tmp/courier-vehicle-bicycle.png");CourierChecks.Go(owner.Run,3);break;
                 case 4:
                     Require(!page.possessButton.IsInteractable()&&page.possessIcon.gameObject.activeSelf&&!page.parkedVehicleArtwork.gameObject.activeSelf,"Locked pickup lost lock indicator");
-                    CourierChecks.Go(owner.Run,5);Require(owner.Run.LoadParcel(owner.Run.Parcels[9]),"Cannot collect repair batch");CourierChecks.Go(owner.Run,3);break;
+                    CourierChecks.Go(owner.Run,5);Require(owner.Run.LoadParcel(owner.Run.Parcels[8]),"Cannot collect repair batch");CourierChecks.Go(owner.Run,3);break;
                 case 5:
                     Check(page.parkedVehicleArtwork,2);Require(page.possessButton.IsInteractable(),"Delivered repair did not unlock pickup");page.possessButton.onClick.Invoke();break;
                 case 6:

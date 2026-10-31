@@ -229,7 +229,7 @@ public static class CourierPrefabBuilder
         var rt=Element("CourierCargoRow",null,0,0,502,132);Background(rt,Soft,true);
         var row=rt.gameObject.AddComponent<CourierCargoRow>();var layout=rt.gameObject.AddComponent<LayoutElement>();layout.preferredHeight=132;layout.minHeight=132;
         row.nameText=Text(rt,"ParcelName","Party Theme Tape",12,0,420,44,32);
-        Icon(rt,"RecipientIcon",CourierIconKind.Pin,12,50,28,Muted,"Delivery destination");row.destinationText=Text(rt,"Destination","Abandoned Radio Tower",52,44,270,40,28,Muted);
+        Icon(rt,"RecipientIcon",CourierIconKind.Pin,12,50,28,Muted,"Delivery destination");row.destinationText=Text(rt,"Destination","Abandoned TV Tower",52,44,270,40,28,Muted);
         Icon(rt,"WeightIcon",CourierIconKind.Box,348,50,28,Muted,"Cargo weight in slots");row.weightText=Text(rt,"WeightText","1",384,44,40,40,28,Muted);
         var tags=Element("Tags",rt,12,92,410,32);var group=tags.gameObject.AddComponent<HorizontalLayoutGroup>();group.spacing=12;group.childControlWidth=group.childControlHeight=false;group.childForceExpandWidth=group.childForceExpandHeight=false;
         row.storyIcon=Icon(tags,"StoryIcon",CourierIconKind.Story,0,0,32,Mint,"Story parcel - cannot be left behind");

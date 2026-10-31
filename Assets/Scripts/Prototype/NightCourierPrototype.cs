@@ -25,12 +25,15 @@ namespace NightCourier
         private float visualTime;
         private string[] dialogue = new string[0];
         private int dialogueIndex;
+        private int dialogueNode=-1;
         public bool ConversationActive { get { return dialogueIndex < dialogue.Length; } }
+        public string DialogueSpeaker { get { if(!ConversationActive)return "";var line=dialogue[dialogueIndex];int colon=line.IndexOf(':');return colon>0?line.Substring(0,colon):"Narrator"; } }
         public string Subtitle
         {
             get
             {
-                if (Run.State == ShiftState.Docked) return ConversationActive ? dialogue[dialogueIndex] : Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":"Click this stop or press E to talk.");
+                if (ConversationActive && (Run.State == ShiftState.Docked || Run.Finished)) return dialogue[dialogueIndex];
+                if (Run.State == ShiftState.Docked) return Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":"Click this stop or press E to talk.");
                 if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
                 if (Run.State == ShiftState.Driving && Run.IsReturning) return "Returning to " + Run.Stops[Run.TravelDestination].Name;
                 if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.TravelDestination].Name+(Run.HasJourney&&Run.TravelDestination!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.TravelDestination].Name:"");
@@ -39,14 +42,16 @@ namespace NightCourier
         }
         public void BeginConversation()
         {
-            if (Run.State != ShiftState.Docked || !Active) return;
+            if ((Run.State != ShiftState.Docked && !Run.Finished) || !Active) return;
+            if(ConversationActive&&dialogueNode==Run.Node)return;
+            dialogueNode=Run.Node;
             dialogue = Run.TalkToNpc(); dialogueIndex = 0;
         }
         public void AdvanceDialogue()
         {
             if(!Active)return;
             if(ConversationActive&&hud!=null&&hud.CompleteSubtitle())return;
-            if (ConversationActive) { dialogueIndex++; CourierSoundscape.PlayInterface("dialogue"); if(!ConversationActive)Tutorial.OpenMap(); }
+            if (ConversationActive) { dialogueIndex++; CourierSoundscape.PlayInterface("dialogue"); if(!ConversationActive){if(Run.Story!=null&&Run.Story.HasPending(Run))BeginConversation();else Tutorial.OpenMap();} }
             else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active)DepartTo(Run.PlannedDestination);
         }
         public float VisualTime { get { return visualTime; } }
@@ -89,7 +94,7 @@ namespace NightCourier
         public void ShowPlanner(string name)
         {
             if(!Active)return;
-            Tutorial.Observe(Run);if(!ConversationActive)Tutorial.OpenMap();
+            Tutorial.Observe(Run);if(!ConversationActive){if(Run.Story!=null&&Run.Story.HasPending(Run))BeginConversation();else Tutorial.OpenMap();}
             if(planner==null)planner=Open<CourierPanel>("CourierRoutePanel",UIPanelLayer.Bottom);
             var routePanel=planner as CourierRoutePanel;if(routePanel!=null)routePanel.SetCargoOpen(true);
         }
@@ -111,7 +116,7 @@ namespace NightCourier
         }
         public bool DepartTo(int destination)
         {
-            if(!Run.StartJourney(destination))return false;
+            if(ConversationActive||!Active||!Run.StartJourney(destination))return false;
             Tutorial.Observe(Run); Tutorial.Leave();
             InCar=!Run.IsGhost;ClosePlanner();return true;
         }
@@ -149,6 +154,7 @@ namespace NightCourier
             DriveBlend=RoadMotionTime=PossessionGlow=0;
             if (hud != null) hud.Bind(this);
             if (planner != null) planner.Bind(this);
+            dialogue=new string[0];dialogueIndex=0;
             BeginConversation();
         }
         private void Update()
@@ -164,11 +170,11 @@ namespace NightCourier
             Run.Tick(Time.deltaTime*cruisePlaybackSpeed);
             SyncState();
             if(Input.GetKeyDown(KeyCode.Tab)){var routePanel=planner as CourierRoutePanel;if(routePanel!=null)routePanel.ToggleCargoDrawer();}
-            if (Run.State != ShiftState.Docked) return;
+            if (Run.State != ShiftState.Docked && !Run.Finished) return;
             if(Input.GetKeyDown(KeyCode.M))ShowPlanner("CourierRoutePanel");
             if(Input.GetKeyDown(KeyCode.E))
             {
-                if(ConversationActive||Run.HasJourney)AdvanceDialogue();else BeginConversation();
+                if(ConversationActive||Run.HasJourney)AdvanceDialogue();else if(!Run.Finished)BeginConversation();
             }
         }
         private void SyncState()
@@ -180,9 +186,10 @@ namespace NightCourier
                 if (Run.State == ShiftState.Encounter)
                 { ClosePlanner(); forcedPanel = Open<CourierEventPanel>("CourierEventPanel", UIPanelLayer.Popup); }
                 if (Run.Finished)
-                { ClosePlanner(); CloseForced(); forcedPanel = Open<CourierResultPanel>("CourierResultPanel", UIPanelLayer.Popup); }
+                { ClosePlanner(); CloseForced(); if(Run.Story!=null&&Run.Story.HasPending(Run))BeginConversation();else {dialogue=new string[0];dialogueIndex=0;} }
                 lastState = Run.State;
             }
+            if(Run.Finished&&!ConversationActive&&forcedPanel==null)forcedPanel=Open<CourierResultPanel>("CourierResultPanel",UIPanelLayer.Popup);
         }
         private void OnDestroy()
         {

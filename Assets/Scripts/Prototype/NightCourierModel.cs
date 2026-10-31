@@ -72,13 +72,14 @@ namespace NightCourier
     }
     public sealed class CourierRun
     {
+        public CourierStory Story;
         public readonly Stop[] Stops={
-            new Stop("Abandoned Subway","DROW","Drow: Oh... hello. I made a party tape for the vampire. Could you take it? Only if you are going that way...",0.07f,0.5f,0,false),
-            new Stop("Forest Campsite","WOLF","Wolfwoman: There you are, little courier! Honey for the bear, rosin for the drow, flowers for granny. Leave the forest to your big sister!",0.31f,0.2f,-1,true),
-            new Stop("Mead Cellar","MEAD","Bear: The honey is late, the labels are damp... Oh dear, I am rambling again. Will my mead be ready for the party?",0.31f,0.8f,1,true),
-            new Stop("Abandoned Radio Tower","FM","Vampire: Hail, brave courier! By my honor, the feast shall have music. First, I must rescue this most unchivalrous radio.",0.6f,0.75f,2,true),
-            new Stop("Museum Ruins","MUSEUM","Zombie: Oh, a visitor! Did I order flowers? Yes, for the cakes. Come in, dear... which century is it again?",0.69f,0.2f,-1,true),
-            new Stop("Settlement Bar","BAR","Witch: Right, darling, one thing at a time. Blood and repairs for our knight, supplies for the bear, then supper. I have the list.",0.94f,0.5f,-1,true)
+            new Stop("Abandoned Subway","DROW","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
+            new Stop("Abandoned Campsite","WOLF","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
+            new Stop("Mead Cellar","MEAD","Little Werebear: The cellar feels warm again... I hope I can sleep this winter.",0.31f,0.8f,1,true),
+            new Stop("Abandoned TV Tower","FM","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
+            new Stop("Museum Ruins","MUSEUM","Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69f,0.2f,-1,true),
+            new Stop("Settlement Bar","BAR","Witch: One thing at a time, darling. I have the list.",0.94f,0.5f,-1,true)
         };
         // Capacity and wear fields remain for existing assets; they no longer gate order transport.
         public readonly Vehicle[] Vehicles={
@@ -94,16 +95,14 @@ namespace NightCourier
         public readonly List<Parcel> Parcels=new List<Parcel>{
             new Parcel("Party Theme Tape",0,3,1,25,false,false,false,true,0),
             new Parcel("Violin Rosin",1,0,1,20,false,false,false,true,0),
-            new Parcel("Autumn Honey",1,2,2,25,false,true,false,false,0),
-            new Parcel("Forest Flowers",1,4,1,20,false,false,false,false,0),
+            new Parcel("Gray-Pine Autumn Honey",1,2,2,25,false,true,false,false,0),
+            new Parcel("Flower Jam",1,4,1,20,false,false,false,false,0),
             new Parcel("Spring Mead",2,5,4,35,false,true,true,false,0),
             new Parcel("Spicy Blood Stew",3,1,1,25,false,false,false,false,60),
             new Parcel("Flower Cakes",4,1,1,20,false,false,false,false,60),
             new Parcel("Moisture Repellent",5,4,1,20,false,false,false,false,0),
-            new Parcel("Desiccant and Labels",5,2,1,20,false,false,false,true,0),
-            new Parcel("Repair Equipment",5,3,2,30,false,false,false,false,0),
-            new Parcel("Livestock Blood",5,3,1,20,false,false,false,false,0),
-            new Parcel("Late-Night Meal",5,1,1,20,false,false,false,false,90)
+            new Parcel("Cooling Unit",5,3,2,30,false,false,false,false,0),
+            new Parcel("Livestock Blood",5,3,1,20,false,false,false,false,0)
         };
         public readonly RoadEvent[] Events={
             new RoadEvent("Trick-or-Treaters","Children in all sorts of costumes stop Goolie. \"Trick or treat!\"","Share candy with the children",RoadEventEffect.Wait,1),
@@ -244,28 +243,12 @@ namespace NightCourier
         }
         public string[] TalkToNpc()
         {
-            if(State!=ShiftState.Docked)return new string[0];
+            if(State!=ShiftState.Docked&&!Finished)return new string[0];
             Talked[Node]=true;
             if(Node==2)UnlockedVehicles[1]=true;
-            if(Node==3&&Parcels[9].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
+            if(Node==3&&Parcels[8].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
             CheckEnding();
-            var lines=new List<string>{Stops[Node].Voice};
-            switch(Node)
-            {
-                case 0:lines.Add("Drow: The ranger brings my violin rosin. I wrote a tune for everyone... I hope they like it. Please do not tell them I am nervous.");
-                    lines.Add("Halloween Eve is your busiest shift. Tab opens cargo; load the tape, choose a stop on the map, then depart.");break;
-                case 1:lines.Add("Wolfwoman: I lead lost children out of the fog. Nothing to worry about! Though I could eat three suppers: the vampire's stew, granny's cakes, and the witch's meal.");
-                    lines.Add("Wolfwoman: Fewer bees each year, eh? We will manage. Take honey to our little bear, rosin to the shy drow, and flowers to granny.");break;
-                case 2:lines.Add("Bear: Spring mead takes months, you know. And the cellar is so warm... I need autumn honey from the wolf, desiccant and labels from the witch. Sorry, am I fussing?");
-                    lines.Add("Bear: Please take my mead to the witch. My bicycle can carry the heavy crate. Do borrow it... and mind the bottles. I would be ever so sad.");break;
-                case 3:lines.Add("Vampire: A theme tune from the drow! A worthy anthem. The witch supplies blood and repair equipment; until then, I stand guard over this fallen radio.");
-                    lines.Add(UnlockedVehicles[2]?"Vampire: Repairs delivered! By my oath, my trusty pickup is yours. It shall shield your glass cargo upon the gravel roads!":"Vampire: Bring repair equipment from the bar and my pickup shall serve you. Take this spicy blood stew to our valiant wolfwoman!");break;
-                case 4:lines.Add("Zombie: I moved here a century ago. Or was it last Tuesday? The witch sends moisture repellent. Very kind. My old bones do get damp.");
-                    lines.Add("Zombie: The wolf brings fresh flowers, and I bake her flower cakes. Take these to her, dear. Now... did I already offer you a cake?");break;
-                case 5:lines.Add("Witch: Blood and repair equipment for the vampire. Desiccant and labels for the bear. Moisture repellent for granny, supper for the wolf. Everyone gets what they need.");
-                    lines.Add("Witch: Bring the bear's honey mead here, darling. The humans parade tonight; our party is tomorrow. Eat something, watch the road, and leave the arrangements to me.");break;
-            }
-            return lines.ToArray();
+            return Story != null ? Story.Read(this) : new[] { Stops[Node].Voice };
         }
         private void CheckEnding()
         {
@@ -375,7 +358,7 @@ namespace NightCourier
                 foreach(var p in items){p.State=ParcelState.Delivered;p.DeliveryTurns=OrderTurns;p.DeliveredLate=result.Late;Delivered++;Earnings+=p.Reward;}
                 Results.Add(result);Log("Order delivered: "+result.Cargo+". "+OrderTurns+"/"+target+" turns - "+result.Evaluation);
             }
-            if(Parcels[9].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
+            if(Parcels[8].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
             CheckEnding();
         }
         private void AdvanceClock(float turns)

@@ -12,41 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c7a15927dd94fc8929e5e68f6fb172, type: 3}
   m_Name: Characters
   m_EditorClassIdentifier: 
-  fallbackPortrait: {fileID: 21300000, guid: 0a39d0cde5d5b46d59f85e2f04cdcb7e, type: 3}
+  fallbackPortrait: {fileID: 0}
   characters:
   - stopId: 0
     id: drow
     displayName: Drow
-    personality: "\u5185\u5411\u5634\u62D9\u59B9"
+    personality: "内向嘴拙的作家兼吟游诗人"
     portrait: {fileID: 21300000, guid: 61e6377700a18463bbf57698b11cd93a, type: 3}
     accent: {r: 0.7058824, g: 0.6156863, b: 0.89411765, a: 1}
   - stopId: 1
     id: werewolf
     displayName: Wolfwoman
-    personality: "\u8C6A\u723D\u5927\u59D0\u59D0"
-    portrait: {fileID: 21300000, guid: 19287251d3a0a4fbeae68bb770977d89, type: 3}
+    personality: "豪爽大姐姐，伪装成人类的浓雾森林护林员"
+    portrait: {fileID: 21300000, guid: 402a2a17afd814b3c9a9252198b9cf93, type: 3}
     accent: {r: 0.89411765, g: 0.68235296, b: 0.4509804, a: 1}
   - stopId: 2
     id: bear
-    displayName: Little Bear
-    personality: "\u561F\u561F\u56D4\u56D4\u3001\u591A\u6101\u5584\u611F\u7684\u5C0F\u59B9\u59B9"
+    displayName: Little Werebear
+    personality: "多愁善感的小妹妹，自学酿酒的酿蜜酒师"
     portrait: {fileID: 21300000, guid: ffce6a0aa4b0f46ac982f55344a9a736, type: 3}
     accent: {r: 0.8392157, g: 0.7411765, b: 0.47058824, a: 1}
   - stopId: 3
     id: vampire
     displayName: Vampire
-    personality: "\u9A91\u58EB\u8BED C \u59D0\uFF08\u9A91\u58EB\u89D2\u8272\u626E\u6F14\u53E3\u543B\uFF09"
+    personality: "知心姐姐，曾是播音员、被咬后成为吸血鬼的电台DJ"
     portrait: {fileID: 21300000, guid: b7781baca6c8943e4a5a2ca4b0fc9795, type: 3}
     accent: {r: 0.8627451, g: 0.56078434, b: 0.6313726, a: 1}
   - stopId: 4
     id: zombie
-    displayName: Granny Zombie
-    personality: "\u5446\u840C\u7684\u79FB\u6C11\u8001\u592A\u592A"
+    displayName: Immigrant Jiangshi
+    personality: "呆萌老太，百年前远渡重洋的移民僵尸，修护古董"
     portrait: {fileID: 21300000, guid: 7d791f9388c034fc2a3312f833c699e3, type: 3}
     accent: {r: 0.59607846, g: 0.75686276, b: 0.68235296, a: 1}
   - stopId: 5
     id: witch
     displayName: Witch
-    personality: "\u63A7\u573A\u7684\u5988\u5988"
+    personality: "控场的妈妈类型，生活在人类社会的酒吧老板兼调酒师"
     portrait: {fileID: 21300000, guid: f07b3a740e671475ba890e0a115ee239, type: 3}
     accent: {r: 0.65882355, g: 0.7019608, b: 0.85490197, a: 1}

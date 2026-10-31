@@ -6,11 +6,13 @@ public class TitleUIController : MonoBehaviour
     public Button newGameButton;
     public Button settingsButton;
     public Button exitButton;
+    public Button creditsButton;
 
     private void Awake()
     {
         if (newGameButton != null) newGameButton.onClick.AddListener(OnNewGameButtonClicked);
         if (settingsButton != null) settingsButton.onClick.AddListener(OnSettingsButtonClicked);
+        if (creditsButton != null) creditsButton.onClick.AddListener(OnCreditsButtonClicked);
         if (exitButton != null) exitButton.onClick.AddListener(OnExitButtonClicked);
     }
 
@@ -21,6 +23,13 @@ public class TitleUIController : MonoBehaviour
     }
 
     public void OnSettingsButtonClicked() => UIManager.Instance.OpenPanel("SettingPanel");
+
+    public void OnCreditsButtonClicked()
+    {
+        if (UIManager.Instance.IsPanelOpen("CreditPanel")) return;
+        if (creditsButton != null) creditsButton.Select();
+        UIManager.Instance.OpenPanel("CreditPanel", null, UIPanelLayer.Popup);
+    }
 
     public void OnExitButtonClicked()
     {

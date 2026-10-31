@@ -10,6 +10,8 @@ namespace NightCourier
     {
         public static void Apply(CourierRun run)
         {
+            var story = Resources.Load<TextAsset>("NightVoyage/Story");
+            if(story!=null)run.Story=new CourierStory(JsonUtility.FromJson<CourierStoryData>(story.text));
             Apply("Stops",(id,row)=>{
                 if(id<0||id>=run.Stops.Length)return;var stop=run.Stops[id];
                 stop.Name=row[1];stop.Sign=row[2];stop.Voice=row[3];

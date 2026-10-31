@@ -1,13 +1,11 @@
 id,name,weight,reward,fragile,heavy,dry,target_turns,origin,destination
 0,Party Theme Tape,1,25,0,0,1,12,0,3
 1,Violin Rosin,1,20,0,0,1,12,1,0
-2,Autumn Honey,2,25,1,0,0,12,1,2
-3,Forest Flowers,1,20,0,0,0,12,1,4
+2,Gray-Pine Autumn Honey,2,25,1,0,0,12,1,2
+3,Flower Jam,1,20,0,0,0,12,1,4
 4,Spring Mead,4,35,1,1,0,12,2,5
 5,Spicy Blood Stew,1,25,0,0,0,10,3,1
 6,Flower Cakes,1,20,0,0,0,10,4,1
 7,Moisture Repellent,1,20,0,0,0,12,5,4
-8,Desiccant and Labels,1,20,0,0,1,12,5,2
-9,Repair Equipment,2,30,0,0,0,12,5,3
-10,Livestock Blood,1,20,0,0,0,12,5,3
-11,Late-Night Meal,1,20,0,0,0,15,5,1
+8,Cooling Unit,2,30,0,0,0,12,5,3
+9,Livestock Blood,1,20,0,0,0,12,5,3

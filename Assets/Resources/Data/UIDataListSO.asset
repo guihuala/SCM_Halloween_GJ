@@ -33,3 +33,5 @@ MonoBehaviour:
     uiPath: Panel/Courier/CourierResultPanel
   - uiName: CourierTutorialPanel
     uiPath: Panel/Courier/CourierTutorialPanel
+  - uiName: CreditPanel
+    uiPath: Panel/CreditPanel

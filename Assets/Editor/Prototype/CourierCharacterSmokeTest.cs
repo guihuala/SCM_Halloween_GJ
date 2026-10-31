@@ -20,7 +20,6 @@ public static class CourierCharacterSmokeTest
     {
         var catalog = AssetDatabase.LoadAssetAtPath<CourierCharacterCatalog>(CourierCharacterInstaller.CatalogPath);
         Require(catalog != null && catalog.characters.Length == 6, "Expected six character configurations");
-        Require(catalog.fallbackPortrait != null, "Missing fallback portrait");
         Require(catalog.characters.Select(c => c.id).Distinct().Count() == 6, "Duplicate character IDs");
         for (int i = 0; i < 6; i++)
         {
@@ -29,12 +28,12 @@ public static class CourierCharacterSmokeTest
             Require(c.portrait.texture.width >= 256, "Portrait resolution too low");
         }
         var run = new CourierRun(); CourierContentOverrides.Apply(run);
-        int[] origins = { 0, 1, 1, 1, 2, 3, 4, 5, 5, 5, 5, 5 };
-        int[] destinations = { 3, 0, 2, 4, 5, 1, 1, 4, 2, 3, 3, 1 };
-        Require(run.Parcels.Count == 12, "Unexpected delivery count");
-        for (int i = 0; i < 12; i++)
+        int[] origins = { 0, 1, 1, 1, 2, 3, 4, 5, 5, 5 };
+        int[] destinations = { 3, 0, 2, 4, 5, 1, 1, 4, 3, 3 };
+        Require(run.Parcels.Count == 10, "Unexpected delivery count");
+        for (int i = 0; i < 10; i++)
             Require(run.Parcels[i].Origin == origins[i] && run.Parcels[i].Destination == destinations[i], "Supply relationship differs from reference: parcel " + i);
-        Debug.Log("COURIER_CHARACTER_CONFIG PASS: six portraits and personalities; twelve reference delivery relationships.");
+        Debug.Log("COURIER_CHARACTER_CONFIG PASS: six portraits and personalities; ten reference delivery relationships.");
         EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
         SessionState.SetBool(Key, true);
         EditorApplication.isPlaying = true;
@@ -53,6 +52,8 @@ public static class CourierCharacterSmokeTest
             Require(owner != null && hud != null && hud.characterCatalog != null, "Portrait HUD or catalog missing");
             if (step == 0)
             {
+                while(owner.ConversationActive)owner.AdvanceDialogue();
+                owner.Run.Story=null;
                 runtimeCatalog = UnityEngine.Object.Instantiate(hud.characterCatalog);
                 // Deep-copy entries before testing replacement; never mutate the asset's data.
                 runtimeCatalog.characters = hud.characterCatalog.characters.Select(c => new CourierCharacter { stopId = c.stopId, id = c.id, displayName = c.displayName, personality = c.personality, portrait = c.portrait, accent = c.accent }).ToArray();
@@ -87,6 +88,7 @@ public static class CourierCharacterSmokeTest
             else if (step == 8)
             {
                 Require(hud.speakerPortrait.sprite == runtimeCatalog.fallbackPortrait, "Missing portrait fallback failed");
+                Require(hud.speakerPortrait.enabled == (runtimeCatalog.fallbackPortrait != null), "Missing portrait should hide when no fallback is configured");
                 while (owner.ConversationActive) owner.AdvanceDialogue();
             }
             else if (step == 9)
@@ -102,7 +104,7 @@ public static class CourierCharacterSmokeTest
             }
             else if (step == 11)
             {
-                Require(hud.speakerPortrait.sprite == runtimeCatalog.ForStop(0).portrait && hud.speakerName.text == "Drow", "Restart speaker did not reset");
+                Require(owner.DialogueSpeaker == "Gooy" && !hud.speakerPortrait.gameObject.activeSelf, "Restart did not restore the opening letter");
                 SessionState.SetBool(Key, false);
                 Debug.Log("COURIER_CHARACTER_UI PASS: six speakers, full dialogue layout, custom sprite, fallback, status, driving and restart.");
                 EditorApplication.Exit(0);

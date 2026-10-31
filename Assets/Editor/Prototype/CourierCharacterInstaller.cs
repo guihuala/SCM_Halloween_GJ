@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 public static class CourierCharacterInstaller
 {
     public const string CatalogPath = "Assets/Resources/NightVoyage/Characters.asset";
-    private const string PortraitFolder = "Assets/Art/Characters/Placeholders/";
+    private const string PortraitFolder = "Assets/Art/Sprite/Character/Portrait/";
     private const string HudPath = "Assets/Resources/Panel/Courier/CourierHudPanel.prefab";
 
     [MenuItem("Tools/Night Courier/Install Character Portraits (preserve settings)")]
@@ -17,11 +17,11 @@ public static class CourierCharacterInstaller
     {
         AssetDatabase.Refresh();
         string[] ids = { "drow", "werewolf", "bear", "vampire", "zombie", "witch" };
-        string[] names = { "Drow", "Wolfwoman", "Little Bear", "Vampire", "Granny Zombie", "Witch" };
-        string[] personalities = { "内向嘴拙妹", "豪爽大姐姐", "嘟嘟囔囔、多愁善感的小妹妹", "骑士语 C 姐（骑士角色扮演口吻）", "呆萌的移民老太太", "控场的妈妈" };
+        string[] names = { "Drow", "Wolfwoman", "Little Werebear", "Vampire", "Immigrant Jiangshi", "Witch" };
+        string[] personalities = { "内向嘴拙妹", "豪爽大姐姐", "嘟嘟囔囔、多愁善感的小妹妹", "知心姐姐，曾是播音员的电台DJ", "呆萌的移民老太太", "控场的妈妈" };
         string[] colors = { "#B49DE4", "#E4AE73", "#D6BD78", "#DC8FA1", "#98C1AE", "#A8B3DA" };
         foreach (var id in ids) ImportPortrait(id);
-        ImportPortrait("unknown");
+        if(File.Exists(PortraitPath("unknown")))ImportPortrait("unknown");
         var catalog = AssetDatabase.LoadAssetAtPath<CourierCharacterCatalog>(CatalogPath);
         // Reinstalling the UI must never overwrite a designer's portraits or character settings.
         if (catalog == null)
@@ -46,13 +46,13 @@ public static class CourierCharacterInstaller
                 hud.portraitFrame = AddImage(parent, "SpeakerAccent", 32, 846, 3, 120);
             if (hud.speakerPortrait == null)
             {
-                hud.speakerPortrait = AddImage(parent, "SpeakerPortrait", 32, 815, 180, 180);
+                hud.speakerPortrait = AddImage(parent, "SpeakerPortrait", 32, 635, 360, 360);
                 hud.speakerPortrait.preserveAspect = true;
                 hud.speakerPortrait.sprite = catalog.PortraitFor(catalog.ForStop(0));
             }
             if (hud.speakerName == null)
             {
-                var rect = Element(parent, "SpeakerName", 236, 827, 1404, 36);
+                var rect = Element(parent, "SpeakerName", 416, 827, 1224, 36);
                 hud.speakerName = rect.gameObject.AddComponent<Text>();
                 hud.speakerName.font = hud.subtitleText.font;
                 hud.speakerName.fontSize = 28;
@@ -67,10 +67,14 @@ public static class CourierCharacterInstaller
         Debug.Log("COURIER_CHARACTERS INSTALLED: six configurable portraits, names, personalities and fallback; existing settings preserved.");
     }
 
-    private static Sprite Sprite(string id) { return AssetDatabase.LoadAssetAtPath<Sprite>(PortraitFolder + id + ".png"); }
+    private static string PortraitPath(string id)
+    {
+        return PortraitFolder + ((id=="drow"||id=="vampire"||id=="werewolf")?"gamejam_portrait_":"") + id + ".png";
+    }
+    private static Sprite Sprite(string id) { return AssetDatabase.LoadAssetAtPath<Sprite>(PortraitPath(id)); }
     private static void ImportPortrait(string id)
     {
-        string path = PortraitFolder + id + ".png";
+        string path = PortraitPath(id);
         if (!File.Exists(path)) throw new InvalidOperationException("Missing placeholder portrait: " + path);
         var importer = (TextureImporter)AssetImporter.GetAtPath(path);
         if (importer.textureType == TextureImporterType.Sprite && importer.spriteImportMode == SpriteImportMode.Single) return;

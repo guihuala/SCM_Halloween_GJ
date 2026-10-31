@@ -106,7 +106,7 @@ public static class CourierAudioSmokeTest
                     run.UseGhost();CourierChecks.Go(run,5);break;
                 case 5:
                     cargoBefore=audio.PlayCount("cargo");deliveredBefore=audio.PlayCount("delivered");
-                    Require(run.LoadParcel(run.Parcels[9]),"Batch acceptance failed");break;
+                    Require(run.LoadParcel(run.Parcels[8]),"Batch acceptance failed");break;
                 case 6:
                     Require(audio.PlayCount("cargo")==cargoBefore+1,"Batch should play once");
                     CourierChecks.Go(run,3);break;

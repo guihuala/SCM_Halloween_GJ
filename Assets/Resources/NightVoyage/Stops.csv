@@ -1,7 +1,7 @@
-﻿id,name,sign,voice,x,y,vehicle,repair
-0,Abandoned Subway,DROW,Drow: Oh... hello. I made a party tape for the vampire. Could you take it? Only if you are going that way...,0.07,0.5,0,0
-1,Forest Campsite,WOLF,"Wolfwoman: There you are, little courier! Honey for the bear, rosin for the drow, flowers for granny. Leave the forest to your big sister!",0.31,0.2,-1,1
-2,Mead Cellar,MEAD,"Bear: The honey is late, the labels are damp... Oh dear, I am rambling again. Will my mead be ready for the party?",0.31,0.8,1,1
-3,Abandoned Radio Tower,FM,"Vampire: Hail, brave courier! By my honor, the feast shall have music. First, I must rescue this most unchivalrous radio.",0.6,0.75,2,1
-4,Museum Ruins,MUSEUM,"Zombie: Oh, a visitor! Did I order flowers? Yes, for the cakes. Come in, dear... which century is it again?",0.69,0.2,-1,1
-5,Settlement Bar,BAR,"Witch: Right, darling, one thing at a time. Blood and repairs for our knight, supplies for the bear, then supper. I have the list.",0.94,0.5,-1,1
+id,name,sign,voice,x,y,vehicle,repair
+0,Abandoned Subway,DROW,Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.,0.07,0.5,0,0
+1,Abandoned Campsite,WOLF,"Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31,0.2,-1,1
+2,Mead Cellar,MEAD,Little Werebear: The cellar feels warm again... I hope I can sleep this winter.,0.31,0.8,1,1
+3,Abandoned TV Tower,FM,"Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6,0.75,2,1
+4,Museum Ruins,MUSEUM,"Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69,0.2,-1,1
+5,Settlement Bar,BAR,"Witch: One thing at a time, darling. I have the list.",0.94,0.5,-1,1

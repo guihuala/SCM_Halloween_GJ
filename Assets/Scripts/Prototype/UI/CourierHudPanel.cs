@@ -17,8 +17,8 @@ namespace NightCourier
         private void RefreshSpeaker()
         {
             if(characterCatalog==null)characterCatalog=Resources.Load<CourierCharacterCatalog>("NightVoyage/Characters");
-            bool talking=owner.ConversationActive&&Run.State==ShiftState.Docked;
-            var character=talking&&characterCatalog!=null?characterCatalog.ForStop(Run.Node):null;
+            bool talking=owner.ConversationActive&&(Run.State==ShiftState.Docked||Run.Finished);
+            var character=talking&&characterCatalog!=null?characterCatalog.ForStop(CourierStory.SpeakerStop(owner.DialogueSpeaker)):null;
             bool show=character!=null&&speakerPortrait!=null&&speakerName!=null;
             if(speakerPortrait!=null)
             {
@@ -26,12 +26,12 @@ namespace NightCourier
                 if(show){speakerPortrait.sprite=characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
             }
             if(portraitFrame!=null){portraitFrame.gameObject.SetActive(show);if(show)portraitFrame.color=character.accent;}
-            if(speakerName!=null){speakerName.gameObject.SetActive(show);if(show){speakerName.text=character.displayName;speakerName.color=character.accent;}}
+            if(speakerName!=null){speakerName.gameObject.SetActive(talking);if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?character.accent:Color.white;}}
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
             if(bar!=null){bar.gameObject.SetActive(talking);bar.anchoredPosition=new Vector2(0,-810);bar.sizeDelta=new Vector2(1800,190);}
             subtitleText.gameObject.SetActive(talking);
-            subtitleText.rectTransform.anchoredPosition=show?new Vector2(236,-867):talking?new Vector2(40,-827):new Vector2(40,-944);
-            subtitleText.rectTransform.sizeDelta=show?new Vector2(1404,110):talking?new Vector2(1600,153):new Vector2(1600,40);
+            subtitleText.rectTransform.anchoredPosition=talking?new Vector2(416,-867):new Vector2(40,-944);
+            subtitleText.rectTransform.sizeDelta=talking?new Vector2(1224,110):new Vector2(1600,40);
             subtitleText.fontSize=talking?30:26;
             var advanceRect=(RectTransform)advanceButton.transform;
             advanceRect.anchoredPosition=new Vector2(advanceRect.anchoredPosition.x,talking?-873:-936);
@@ -46,7 +46,7 @@ namespace NightCourier
         {
             RefreshSpeaker();
             if(subtitleJuice==null)subtitleJuice=subtitleText.GetComponent<CourierTextJuice>()??subtitleText.gameObject.AddComponent<CourierTextJuice>();
-            subtitleJuice.Present(owner.Subtitle,owner.ConversationActive&&Run.State==ShiftState.Docked);
+            subtitleJuice.Present(owner.Subtitle,owner.ConversationActive&&(Run.State==ShiftState.Docked||Run.Finished));
         }
         public bool CompleteSubtitle()
         {
@@ -69,7 +69,7 @@ namespace NightCourier
             progressFill.fillAmount=Run.Progress;
             PresentSubtitle();
             advanceButton.GetComponent<CourierIconHint>().message=owner.ConversationActive?"Continue dialogue - E":"Continue to "+(Run.HasJourney?Run.Stops[Run.PlannedDestination].Name:"")+" · E";
-            advanceButton.gameObject.SetActive(owner.ConversationActive&&Run.State==ShiftState.Docked);
+            advanceButton.gameObject.SetActive(owner.ConversationActive&&(Run.State==ShiftState.Docked||Run.Finished));
         }
     }
 }

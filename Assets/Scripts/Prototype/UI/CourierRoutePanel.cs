@@ -216,7 +216,7 @@ namespace NightCourier
             parkedVehicleArtwork.gameObject.SetActive(parked&&Run.UnlockedVehicles[v]);
             possessIcon.gameObject.SetActive(parked&&!Run.UnlockedVehicles[v]);
             if(parked)parkedVehicleArtwork.SetVehicle(v);
-            if(parked){possessButton.interactable=Run.CanPossess(v);Caption(possessButton,Run.Vehicles[v].Name);possessIcon.SetKind(Run.UnlockedVehicles[v]?CourierIconKind.Ghost:CourierIconKind.Lock);possessHint.message=!Run.UnlockedVehicles[v]?"Old pickup locked\nDeliver Repair Equipment from Settlement Bar to the vampire DJ.":Run.CanPossess(v)?"Possess "+Run.Vehicles[v].Name:"Vehicle unavailable at this stop.";}
+            if(parked){possessButton.interactable=Run.CanPossess(v);Caption(possessButton,Run.Vehicles[v].Name);possessIcon.SetKind(Run.UnlockedVehicles[v]?CourierIconKind.Ghost:CourierIconKind.Lock);possessHint.message=!Run.UnlockedVehicles[v]?"Old pickup locked\nDeliver the Cooling Unit from Settlement Bar to the vampire DJ.":Run.CanPossess(v)?"Possess "+Run.Vehicles[v].Name:"Vehicle unavailable at this stop.";}
             bool repair=docked&&!Run.IsGhost&&Run.Stops[Run.Node].Repair&&Run.Durability<Run.Car.MaxDurability;repairButton.gameObject.SetActive(repair);repairButton.interactable=Run.Durability<Run.Car.MaxDurability;
             int waiting=0,loadedCount=0;
             for(int i=0;i<rows.Count;i++)
@@ -254,7 +254,7 @@ namespace NightCourier
             if(route.Any(r=>r.Kind==RoadKind.River))warnings.Add("Keep cargo dry at the crossing");
             riskText.text=blocked!=""?blocked:string.Join(" · ",warnings);
             int at=Run.Node;var stops=new List<string>();foreach(var road in route){at=road.Other(at);stops.Add(Run.Stops[at].Name);}
-            departButton.interactable=blocked=="";departHint.message=blocked!=""?blocked:"Depart > "+string.Join(" > ",stops)+"\nFastest estimated route; events may add time. Stop at waypoints, then press E to continue.";
+            departButton.interactable=blocked==""&&!owner.ConversationActive;departHint.message=owner.ConversationActive?"Finish the conversation before departing.":blocked!=""?blocked:"Depart > "+string.Join(" > ",stops)+"\nFastest estimated route; events may add time. Stop at waypoints, then press E to continue.";
         }
     }
 }

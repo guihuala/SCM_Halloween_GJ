@@ -4,18 +4,18 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 
 ## 2026-10-31 核心流程统一
 
-以用户提供的《系统设计》为准：到供应者领取一个订单批次 → 选路并按整数回合移动 → 处理道路事件 → 到接收者自动交付并记录评价 → 空载前往下一单 → 全部11批交付后通关。
+以用户提供的《系统设计》为准：到供应者领取一个订单批次 → 选路并按整数回合移动 → 处理道路事件 → 到接收者自动交付并记录评价 → 空载前往下一单 → 全部9批交付后通关。
 
-- 保留六名角色与12件物资；同一供应者→接收者合为一批，因此为11批。女巫→吸血鬼的维修装置和血液同时领取、同时交付。一次只允许一个活动批次，不能中途取消、拆分或寄存。
+- 保留六名角色与10件物资；同一供应者→接收者合为一批，因此为9批。女巫→吸血鬼的散热装置和血液同时领取、同时交付。一次只允许一个活动批次，不能中途取消、拆分或寄存。
 - 所有未完成批次可在 Cargo 中查看来源、目的地及目标回合；必须到供应者所在节点才能领取。已完成批次从待接清单移除。
 - 订单回合在领取时归零，移动和事件增加整数回合，空载移动和界面等待不计入订单评价。旧240分钟夜间预算不再参与规则，没有天亮提前结算。
 - 道路基础成本暂取 max(2, ceil(旧分钟成本/6))，再按载具速度向上取整。行驶动画每8秒推进一个规则回合（默认4倍播放即每现实2秒一回合），F仅跳过动画，到事件或站点停止，不代选事件、不改变成本。
 - 载具每移动一个回合消耗一个使用回合，事件可额外消耗；界面显示剩余回合。沿用原载具资源上限作为临时数值，指定节点免费恢复；跨订单保留剩余回合。
 - 使用回合耗尽后自动切换幽灵，携带完整批次继续移动；幽灵速度为0.5，不消耗载具资源。重货和容量字段不再限制接单或运输，不再推车、自动维修或判限时件失败。
-- 超过目标回合、违反货物运输条件均降低评价，但始终接受交付。每批记录实际/目标回合、是否迟到、货物条件是否违反；地图显示最近评价，通关页汇总11批记录。没有新增最终等级或分支结局。
+- 超过目标回合、违反货物运输条件均降低评价，但始终接受交付。每批记录实际/目标回合、是否迟到、货物条件是否违反；地图显示最近评价，通关页汇总9批记录。没有新增最终等级或分支结局。
 - 只有全部物资均为 Delivered 才能通关。失败标记、累计时间、六人交谈和抵达酒吧均不能代替全部交付。
 
-目标回合暂为普通批次12、两份60分钟旧限时餐点10、90分钟旧夜宵15；同批按最严格目标。道路、目标回合与载具资源上限仍需真人调优。载具解锁内容保留；固定事件、三类环境适配及旧车消失等其余系统不在本次核心流程调整范围内。
+目标回合暂为普通批次12、两份60分钟旧限时餐点10；同批按最严格目标。道路、目标回合与载具资源上限仍需真人调优。载具解锁内容保留；固定事件、三类环境适配及旧车消失等其余系统不在本次核心流程调整范围内。
 
 地图、暂停、教学、头像和货物抽屉沿用现有界面。Tab / Cargo 展开订单，点击或拖拽领取整批；到站自动交付，E交谈或继续行程，F快进到下一个事件或站点。
 
@@ -32,16 +32,16 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 | 4 | 移民僵尸 / Granny Zombie | 呆萌老太 | zombie.png |
 | 5 | 女巫 / Witch | 控场的妈妈 | witch.png |
 
-六张 384×384 头像和通用缺图头像位于 `Assets/Art/Characters/Placeholders/`，可编辑矢量源文件在其 `Sources/` 子目录。缺失头像使用配置中的 `Fallback Portrait`。头像与姓名只在角色对话时显示，行驶及普通站点提示恢复原有字幕宽度；支持暂停、跳过文字与重开。
+六位角色头像位于 `Assets/Art/Sprite/Character/Portrait/`。缺失头像使用配置中的 `Fallback Portrait`；未配置回退图片时隐藏图像，保留姓名和对白。头像与姓名只在角色对话时显示，行驶及普通站点提示恢复原有字幕宽度；支持暂停、跳过文字与重开。
 
-已对照用户提供的六人供需表检查全部十二件物资：角色与收发方向一致。干燥剂与酒标合为一件；维修装置与血液分为两件；狼人从吸血鬼、僵尸和女巫三处获得食物。保留既有派对磁带配送。角色表没有给出重量、酬金、时限，这些仍是原型数值。
+已按本次剧情文案调整为十件物资：散热装置与血液分别配图、同批运送；狼人接收吸血鬼的毛血旺，鲜花饼沿用原来的狼人收件关系。重量、酬金和目标回合仍沿用原型数值。
 
-`Tools > Night Courier > Install Character Portraits (preserve settings)` 可为已有 HUD 安装头像区域，保留已有角色配置和图片；完整重建 UI 也会安装。`CourierCharacterInstaller.InstallAndCheck` 检查六人绑定、十二件物资与十一批订单、全段对话排版、自定义图片替换、缺图回退、行驶隐藏和重开。
+`Tools > Night Courier > Install Character Portraits (preserve settings)` 可为已有 HUD 安装头像区域，保留已有角色配置和图片；完整重建 UI 也会安装。`CourierCharacterInstaller.InstallAndCheck` 检查六人绑定、十件物资与九批订单、全段对话排版、自定义图片替换、缺图回退、行驶隐藏和重开。
 
 `Assets/Resources/NightVoyage/` 下UTF-8 CSV在开局和重开时读取，保留列名与ID：
 
 - `Stops.csv`：六处地点名称、招牌、人物开场白、地图位置、停放载具、维修权限。
-- `Parcels.csv`：十二件物资的名称、兼容重量、酬金、标签、目标回合 `target_turns`，以及新增的 `origin` / `destination` 节点ID。
+- `Parcels.csv`：十件物资的名称、兼容重量、酬金、标签、目标回合 `target_turns`，以及新增的 `origin` / `destination` 节点ID。
 - `Shift.csv`：旧夜间预算文件（兼容保留，当前不读取、不参与通关）。
 - `Vehicles.csv`：三辆载具的名称、能力、兼容容量、使用回合上限、速度与兼容损耗。
 - `Events.csv`：12个道路事件文案、效果与代价；包含分糖、骷髅狗、自拍少年、小蝙蝠、游行、间歇泉、浓雾、手电筒、泥石流、强风、硫磺蒸汽与花车。
@@ -80,7 +80,7 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 
 ## 检查入口
 
-- `Tools > Night Courier > Run Rule Checks`：2853项断言，覆盖六节点互达、十二项关系、单批次接单、整数回合、软性评价、幽灵运输、不同帧率与快进、完整配送和全部交付通关。
+- `Tools > Night Courier > Run Rule Checks`：2267项断言，覆盖六节点互达、十项关系、单批次接单、整数回合、软性评价、幽灵运输、不同帧率与快进、完整配送和全部交付通关。
 - `CourierPrefabBuilder.InstallTravelAndRun`：11步行驶控制检查，包含原生按钮点选、地图/事件暂停、跳过成本、中途停靠与幽灵兜底。
 - `NightCourierPanelSmokeTest.Run`：新版13步场景检查，覆盖接单、地图选路、中途停靠、暂停、事件、交付、无全局截止、全部订单评价、通关和重开。
 - `CourierTextJuiceSmokeTest.Run`：对话字幕动画检查，覆盖补全、箭头推进、暂停、自然落定、富文本和减少动态效果。
@@ -111,11 +111,11 @@ HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定�
 
 ## 货物图标（SVG 源文件）
 
-12件货物使用同一套256×256 SVG设计：深色圆角描边，薄荷绿、暖金、奶油白与淡紫配色，各图透明背景。源文件位于 `Assets/Art/Sprite/Cargo/Sources/`；游戏内使用对应的384×384透明PNG，位于 `Assets/Resources/NightVoyage/CargoIcons/`。总览在 `ArtPreviews/cargo-icons.svg` 和 `ArtPreviews/cargo-icons.png`，总览自身的深色底仅用于预览。
+10件货物使用同一套256×256 SVG设计：深色圆角描边，薄荷绿、暖金、奶油白与淡紫配色，各图透明背景。源文件位于 `Assets/Art/Sprite/Cargo/Sources/`；游戏内使用对应的384×384透明PNG，位于 `Assets/Resources/NightVoyage/CargoIcons/`。总览在 `ArtPreviews/cargo-icons.svg` 和 `ArtPreviews/cargo-icons.png`，总览自身的深色底仅用于预览。
 
-`Assets/Resources/NightVoyage/CargoIcons.asset` 按 `Parcels.csv` 的稳定ID绑定12张Sprite，可在Inspector中替换。货物卡片左侧显示图标；维修装置和血液的合批卡同时显示两张，拖拽时也保留货物图标。图片不拦截点击，文字按可用宽度换行并自动增加卡片高度。缺少图片时仍保留名称和配送信息。
+`Assets/Resources/NightVoyage/CargoIcons.asset` 按 `Parcels.csv` 的稳定ID绑定10张Sprite，可在Inspector中替换。货物卡片左侧显示图标；散热装置和血液的合批卡同时显示两张，拖拽时也保留货物图标。图片不拦截点击，文字按可用宽度换行并自动增加卡片高度。缺少图片时仍保留名称和配送信息。
 
-`Tools > Night Courier > Install Cargo Artwork (preserve layouts)` 将图标接入现有货物卡片，保留地图与抽屉布局；完整重建货物卡片也会接入。`CourierCargoArtInstaller.InstallAndCheck` 验证12个资源映射、合批双图、拖拽图像、文字排版、暂停、交付和重开。
+`Tools > Night Courier > Install Cargo Artwork (preserve layouts)` 将图标接入现有货物卡片，保留地图与抽屉布局；完整重建货物卡片也会接入。`CourierCargoArtInstaller.InstallAndCheck` 验证10个资源映射、合批双图、拖拽图像、文字排版、暂停、交付和重开。
 
 重新生成：`python3 Tools/Art/generate_cargo_icons.py`（需要Node.js和sharp；可通过 `CARGO_SHARP_MODULE` 指定sharp模块）。只生成SVG可加 `--svg-only`，无需图片渲染依赖。生成后运行上述安装入口更新Unity导入设置。
 
@@ -136,3 +136,13 @@ HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定�
 `Tools > Night Courier > Install Map Artwork (preserve layouts)` 为现有面板安装，`CourierMapArtworkInstaller.InstallAndCheck` 验证接入。替换步骤、Anchor/Scale/Offset与分层规范见 `Assets/Art/MapPlaceholder/README_地图重绘与动效.md`。
 
 地图移动标记现复用 `VehicleIcons.asset` 的当前载具图片；途中耗尽后切换同款幽灵标识。原路线高亮、行驶进度与呼吸光晕保留，暂停时图标和光晕同时冻结，到站隐藏。`RoadMap / CourierMapArtwork` 的 `Traveler Size` 可调整图标大小。`CourierMapTravelerSmokeTest.InstallAndCheck` 验证三种车型、途中切换、暂停、到站、重开与缺图兜底。
+
+## 剧情文案配置
+
+`Assets/Resources/NightVoyage/Story.json` 按本次提供的《文案》配置英文译文，每句保留 `sourceChinese` 原文。包含 Gooy 的信与 Goolie 开场，以及六名角色的寄件和收件剧情，共16段64句。背景资料也保存在该文件。`language` 当前为 `en`；中文原文仅用于核对，现有字体仍按英文界面使用。
+
+首次对话先播放站长的信，随后进入 Drow 寄件对白。未寄出的货物触发对应寄件段落，已交付的货物触发收件段落；收件优先，每段每局只播放一次，重开后重置。最后一单先播放收件对白，再显示结算。发言人随台词切换；Goolie、Gooy 和旁白暂不显示 NPC 头像。
+
+当前货物为：录音带、松香、灰松秋蜜、鲜花酱、春蜜酒、毛血旺、鲜花饼、防潮剂、散热装置、禽畜血液。鲜花饼沿用原配置送给狼人；文案未指定新的收件人。删除文案未出现的干燥剂与标签、女巫夜宵订单。散热装置与血液仍合为一批，共9批；旧散热装置／血液资源映射已随货物索引更新，图标沿用当前资源：鲜花酱对应 `flower_jam.png`，散热装置对应 `Heat_Dissipation_Device_.png`，保留已有图片资源引用。
+
+`CourierStorySmokeTest.Run` 检查剧情触发、顺序、去重、64句英文排版、最后一单对白与结算，以及重开。
