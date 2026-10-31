@@ -22,6 +22,30 @@ public static class NightCourierSmokeTest
     }
     [MenuItem("Tools/Night Courier/Run Rule Checks")]
     public static void CheckRules() { Debug.Log("COURIER_RULES PASS "+CourierChecks.RunAll()); }
+    public static void CheckRandomEventPanels()
+    {
+        CheckRules();
+        EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
+        var owner=UnityEngine.Object.FindObjectOfType<NightCourierPrototype>();
+        var run=new CourierRun();CourierContentOverrides.Apply(run);
+        typeof(NightCourierPrototype).GetProperty("Run").SetValue(owner,run,null);
+        var prefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resources/Panel/Courier/CourierEventPanel.prefab");
+        var instance=UnityEngine.Object.Instantiate(prefab);
+        try
+        {
+            var panel=instance.GetComponent<CourierEventPanel>();
+            for(int i=0;i<run.Events.Length;i++)
+            {
+                run.EncounterIndex=i;panel.Bind(owner);Canvas.ForceUpdateCanvases();
+                if(panel.riskButton.gameObject.activeSelf)throw new Exception("Old risk button visible");
+                foreach(var text in new[]{panel.titleText,panel.descriptionText,panel.safeButton.GetComponentInChildren<UnityEngine.UI.Text>()})
+                    if(text.preferredHeight>text.rectTransform.rect.height+.5f)throw new Exception("Event text clipped: "+i+" / "+text.name+" / "+text.preferredHeight+">"+text.rectTransform.rect.height);
+                if(run.Events[i].Effect!=(i<4?RoadEventEffect.Wait:i<9?RoadEventEffect.Detour:RoadEventEffect.Retreat))throw new Exception("CSV event effect mismatch: "+i);
+            }
+            Debug.Log("COURIER_RANDOM_EVENT_PANELS PASS: 12 CSV events, single action, full title/description/action layout.");
+        }
+        finally { UnityEngine.Object.DestroyImmediate(instance); }
+    }
     [MenuItem("Tools/Night Courier/Open Prototype")]
     public static void Open()
     {

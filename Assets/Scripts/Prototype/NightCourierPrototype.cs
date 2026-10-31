@@ -32,7 +32,8 @@ namespace NightCourier
             {
                 if (Run.State == ShiftState.Docked) return ConversationActive ? dialogue[dialogueIndex] : Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":"Click this stop or press E to talk.");
                 if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
-                if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.ActiveRoad.Other(Run.Node)].Name+(Run.HasJourney&&Run.ActiveRoad.Other(Run.Node)!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.ActiveRoad.Other(Run.Node)].Name:"");
+                if (Run.State == ShiftState.Driving && Run.IsReturning) return "Returning to " + Run.Stops[Run.TravelDestination].Name;
+                if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.TravelDestination].Name+(Run.HasJourney&&Run.TravelDestination!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.TravelDestination].Name:"");
                 return "";
             }
         }

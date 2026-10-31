@@ -107,8 +107,8 @@ public static class CourierPrefabBuilder
         for(int i=0;i<run.Vehicles.Length;i++){var v=run.Vehicles[i];vehicles.Add(Csv(i,v.Name,v.Ability,v.Capacity,v.MaxDurability,v.Speed,v.Wear));}
         var parcels=new System.Collections.Generic.List<string>{"id,name,weight,reward,fragile,heavy,dry,target_turns,origin,destination"};
         for(int i=0;i<run.Parcels.Count;i++){var p=run.Parcels[i];parcels.Add(Csv(i,p.Name,p.Weight,p.Reward,p.Fragile?1:0,p.Heavy?1:0,p.Dry?1:0,p.TimeLimit,p.Origin,p.Destination));}
-        var events=new System.Collections.Generic.List<string>{"id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage"};
-        for(int i=0;i<run.Events.Length;i++){var e=run.Events[i];events.Add(Csv(i,e.Title,e.Description,e.Safe.Split('·')[0].Trim(),e.Risky.Split('·')[0].Trim(),e.SafeMinutes,e.RiskDamage,e.BreakFragile?1:0,e.WetDry?1:0));}
+        var events=new System.Collections.Generic.List<string>{"id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage,effect"};
+        for(int i=0;i<run.Events.Length;i++){var e=run.Events[i];events.Add(Csv(i,e.Title,e.Description,e.Safe.Split('·')[0].Trim(),e.Risky.Split('·')[0].Trim(),e.SafeMinutes,e.RiskDamage,e.BreakFragile?1:0,e.WetDry?1:0,e.Effect));}
         var names=new[]{"Vehicles","Parcels","Events"};var tables=new[]{vehicles,parcels,events};
         for(int i=0;i<names.Length;i++){var path=dir+"/"+names[i]+".csv";if(!File.Exists(path))File.WriteAllText(path,string.Join("\n",tables[i])+"\n",new System.Text.UTF8Encoding(true));}
         AssetDatabase.Refresh();

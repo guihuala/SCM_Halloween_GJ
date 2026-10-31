@@ -1,11 +1,13 @@
-id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage
-0,Trick-or-Treaters,"Children gather in the headlights, demanding candy.",Share your candy,Brake and swerve,1,2,1,0
-1,Strangers in the Fog,Human parade-goers peer through the fog. Do not reveal the hidden society.,Dim the lights and wait,Push through the fog,1,2,0,0
-2,Waves on the River,The ferry rocks. Waves threaten to soak the trunk.,Secure the tarp,Ride through the waves,1,2,0,1
-3,Falling Rocks,"Rocks tumble down the slope, blocking the shortcut.",Pick a careful path,Drive over the rocks,1,3,1,0
-4,Werewolf Roadblock,A werewolf family has closed the road for their Halloween celebrations.,Stop and ask for a way through,Break through the fence,1,2,0,0
-5,The Bear's Honey Cart,"A little bear's cart, laden with honey, blocks the lane.",Help push the cart aside,Squeeze past the guardrail,1,1,0,0
-6,A Vampire Hitchhiker,He asks: Could you take me a little farther before sunrise?,Give him a ride,Swerve away,1,2,1,0
-7,The Zombie's Old Map,The museum restorer studies a century-old map. The roads have changed.,Mark the way for him,Take the muddy shoulder,1,2,0,1
-8,A Witch's Crosswind,A passing broomstick's wake pushes your vehicle toward the shoulder.,Pull over and wait,Accelerate into the wind,1,3,0,0
-9,Storm-Damaged Road,Lightning reveals fresh storm damage. Extreme weather is becoming more frequent.,Hold the vehicle steady,Race through the storm,1,3,1,0
+id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage,effect
+0,Trick-or-Treaters,"Children in all sorts of costumes stop Goolie. ""Trick or treat!""",Share candy with the children,Share candy with the children,1,0,0,0,Wait
+1,A Skeleton Dog,A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.,Find a dog-friendly treat,Find a dog-friendly treat,1,0,0,0,Wait
+2,The Hologram Ghost,"Teenagers in white bedsheets rush over with a selfie stick. ""Wow! This hologram ghost looks so real!""",Pose as a plastic decoration,Pose as a plastic decoration,1,0,0,0,Wait
+3,A Bat in the Postal Cap,"A lost bat, dizzy from the unusually hot October night, crashes into Goolie's postal cap.",Fan the bat to cool it down,Fan the bat to cool it down,1,0,0,0,Wait
+4,Halloween Parade,A Halloween parade blocks the road ahead.,Take a side path around the parade,Take a side path around the parade,2,0,0,0,Detour
+5,Erupting Geyser,A geyser erupts across the path ahead.,Take a path around the geyser,Take a path around the geyser,2,0,0,0,Detour
+6,Sudden Fog,A sudden bank of thick fog swallows the road.,Follow a clear side path,Follow a clear side path,2,0,0,0,Detour
+7,Ghost Hunters,Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.,Detour around the flashlight beams,Detour around the flashlight beams,2,0,0,0,Detour
+8,Thawing Hillside,Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.,Take a side path around the mudslide,Take a side path around the mudslide,2,0,0,0,Detour
+9,A Sudden Gust,A sudden gust nearly blows the little ghost away!,Fall back to the previous stop,Fall back to the previous stop,0,0,0,0,Retreat
+10,Sulfur Steam,Scalding sulfur steam bursts from a crack in the ground. The heat leaves Goolie unable to see.,Fall back from the hot spring steam,Fall back from the hot spring steam,0,0,0,0,Retreat
+11,An Unexpected Float,A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.,Fall back from the human parade,Fall back from the human parade,0,0,0,0,Retreat

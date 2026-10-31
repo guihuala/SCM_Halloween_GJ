@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.UI;
 namespace NightCourier
 {
@@ -10,12 +11,20 @@ namespace NightCourier
         protected override void Refresh()
         {
             var e=Run.Events[Run.EncounterIndex];titleText.text=e.Title;descriptionText.text=e.Description;
-            Caption(safeButton,e.Safe.Split('·')[0].Trim());Caption(riskButton,e.Risky.Split('·')[0].Trim());
-            var safeHint=safeButton.GetComponent<CourierIconHint>();var riskHint=riskButton.GetComponent<CourierIconHint>();
-            if(safeHint!=null)safeHint.message="Take the safe option\n"+Run.SafeChoice+". Protects cargo from this event.";
-            if(riskHint!=null)riskHint.message="Take the risky option\n"+Run.RiskChoice;
-            safeCostText.text="+"+e.SafeMinutes+" turns";riskCostText.text=Run.IsGhost?"0": "-"+e.RiskDamage;
-            fragileRisk.gameObject.SetActive(e.BreakFragile);dryRisk.gameObject.SetActive(e.WetDry);
+            Caption(safeButton,e.Safe.Split('·')[0].Trim());
+            riskButton.gameObject.SetActive(false);
+            var buttonRect=(RectTransform)safeButton.transform;
+            buttonRect.anchoredPosition=new Vector2(buttonRect.anchoredPosition.x,-284);
+            descriptionText.rectTransform.sizeDelta=new Vector2(descriptionText.rectTransform.sizeDelta.x,190);
+            var label=safeButton.GetComponentInChildren<Text>();
+            label.rectTransform.sizeDelta=new Vector2(776,label.rectTransform.sizeDelta.y);
+            var safeHint=safeButton.GetComponent<CourierIconHint>();
+            if(safeHint!=null)safeHint.message=Run.SafeChoice;
+            // Use the full description width for the outcome; the old cost badge is too narrow.
+            descriptionText.text=e.Description+"\n\n"+Run.EventCost+".";
+            safeCostText.text="";riskCostText.text="";
+            var clock=safeButton.transform.Find("ClockIcon");if(clock!=null)clock.gameObject.SetActive(false);
+            fragileRisk.gameObject.SetActive(false);dryRisk.gameObject.SetActive(false);
         }
     }
 }

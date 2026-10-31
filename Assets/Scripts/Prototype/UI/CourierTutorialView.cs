@@ -73,10 +73,10 @@ namespace NightCourier
                     if (!guide.Departed && planner != null) first = (RectTransform)planner.departButton.transform;
                     break;
                 case 5:
-                    title = run.State == ShiftState.Encounter ? "Make a road choice" : "Almost there";
-                    body = run.State == ShiftState.Encounter ? "Clock = extra order turns. Wrench = vehicle turns lost. Glass and umbrella icons warn of cargo damage. Choose either option."
+                    title = run.State == ShiftState.Encounter ? "A road event" : "Almost there";
+                    body = run.State == ShiftState.Encounter ? "Events make you wait one turn, take a detour, or return to the previous stop. Read the outcome, then confirm to continue."
                         : "Keep going. Parcels for the next stop will be delivered automatically when you arrive.";
-                    if (encounter != null) { first = (RectTransform)encounter.safeButton.transform; second = (RectTransform)encounter.riskButton.transform; }
+                    if (encounter != null) { first = (RectTransform)encounter.safeButton.transform; }
                     break;
                 default:
                     title = "First stop reached";

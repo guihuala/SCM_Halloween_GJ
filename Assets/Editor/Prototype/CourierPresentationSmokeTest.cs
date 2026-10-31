@@ -84,7 +84,7 @@ public static class CourierPresentationSmokeTest
                     var encounter=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
                     Require(encounter!=null,"Encounter panel missing");
                     FocusMatches(overlay.view,(RectTransform)encounter.safeButton.transform);
-                    FocusMatches(overlay.view,(RectTransform)encounter.riskButton.transform,1);
+                    Require(!encounter.riskButton.gameObject.activeSelf&&!overlay.view.focusFrames[1].gameObject.activeSelf,"Obsolete risk choice remains visible");
                     Require(overlay.transform.GetSiblingIndex()>encounter.transform.GetSiblingIndex(),"Tutorial appears behind encounter");
                     GameManager.Instance.PauseGame();break;
                 case 6:Require(!overlay.view.strip.gameObject.activeSelf&&overlay.view.focusFrames.All(x=>!x.gameObject.activeSelf),"Tutorial remains visible during pause");GameManager.Instance.ResumeGame();break;

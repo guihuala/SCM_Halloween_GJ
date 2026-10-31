@@ -15,7 +15,7 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 - 超过目标回合、违反货物运输条件均降低评价，但始终接受交付。每批记录实际/目标回合、是否迟到、货物条件是否违反；地图显示最近评价，通关页汇总11批记录。没有新增最终等级或分支结局。
 - 只有全部物资均为 Delivered 才能通关。失败标记、累计时间、六人交谈和抵达酒吧均不能代替全部交付。
 
-目标回合暂为普通批次12、两份60分钟旧限时餐点10、90分钟旧夜宵15；同批按最严格目标。道路、目标回合与载具资源上限仍需真人调优。当前事件池与载具解锁内容保留；固定事件、三类环境适配及旧车消失等其余系统不在本次核心流程调整范围内。
+目标回合暂为普通批次12、两份60分钟旧限时餐点10、90分钟旧夜宵15；同批按最严格目标。道路、目标回合与载具资源上限仍需真人调优。载具解锁内容保留；固定事件、三类环境适配及旧车消失等其余系统不在本次核心流程调整范围内。
 
 地图、暂停、教学、头像和货物抽屉沿用现有界面。Tab / Cargo 展开订单，点击或拖拽领取整批；到站自动交付，E交谈或继续行程，F快进到下一个事件或站点。
 
@@ -44,9 +44,9 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 - `Parcels.csv`：十二件物资的名称、兼容重量、酬金、标签、目标回合 `target_turns`，以及新增的 `origin` / `destination` 节点ID。
 - `Shift.csv`：旧夜间预算文件（兼容保留，当前不读取、不参与通关）。
 - `Vehicles.csv`：三辆载具的名称、能力、兼容容量、使用回合上限、速度与兼容损耗。
-- `Events.csv`：十个道路事件文案与代价；已适配缄默法则和气候变化背景。
+- `Events.csv`：12个道路事件文案、效果与代价；包含分糖、骷髅狗、自拍少年、小蝙蝠、游行、间歇泉、浓雾、手电筒、泥石流、强风、硫磺蒸汽与花车。
 
-物资数量及默认内容、换车解锁、节点追加对话、结算规则在 `NightCourierModel.cs`。事件 safe_turns / risk_turns 为整数回合，按钮代价从数值自动生成。编辑CSV后重开生效。
+物资数量及默认内容、换车解锁、节点追加对话、结算规则在 `NightCourierModel.cs`。事件 `effect` 为 Wait / Detour / Retreat：等待按 `safe_turns` 增加订单回合（默认1，不耗载具）；绕路为本路段局部便道，增加 `safe_turns` 个实际移动回合（暂定2，正常耗载具）；倒退沿原路回到本段出发节点，按当前速度计移动回合，保留订单和原目的地，可重新选路或继续。每段道路中途等概率抽取一个事件，返程不再触发；事件统一为单个确认按钮。旧风险字段仅兼容保留，不再参与这些事件结算。编辑CSV后重开生效。
 
 原生UI面板位于 `Assets/Resources/Panel/Courier/`，单件货物卡位于 `Assets/Prefab/UI/CourierCargoRow.prefab`。`Tools > Night Courier > Rebuild UI Prefabs (overwrite layouts)` 会覆盖布局，不覆盖已有CSV。
 
@@ -80,7 +80,7 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 
 ## 检查入口
 
-- `Tools > Night Courier > Run Rule Checks`：2242项断言，覆盖六节点互达、十二项关系、单批次接单、整数回合、软性评价、幽灵运输、不同帧率与快进、完整配送和全部交付通关。
+- `Tools > Night Courier > Run Rule Checks`：2853项断言，覆盖六节点互达、十二项关系、单批次接单、整数回合、软性评价、幽灵运输、不同帧率与快进、完整配送和全部交付通关。
 - `CourierPrefabBuilder.InstallTravelAndRun`：11步行驶控制检查，包含原生按钮点选、地图/事件暂停、跳过成本、中途停靠与幽灵兜底。
 - `NightCourierPanelSmokeTest.Run`：新版13步场景检查，覆盖接单、地图选路、中途停靠、暂停、事件、交付、无全局截止、全部订单评价、通关和重开。
 - `CourierTextJuiceSmokeTest.Run`：对话字幕动画检查，覆盖补全、箭头推进、暂停、自然落定、富文本和减少动态效果。
@@ -95,7 +95,7 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 
 `CourierButtonFeedback` 挂在按钮上，自动播放悬停、键盘选中、按压和点击反馈；也可通过 UnityEvent 调用它的 `Play()`。`effectPrefab` 可替换成另一个带 `CourierInteractionEffect` 的 Prefab；不指定时加载共享资源。动画使用不受游戏暂停影响的时间。
 
-`CourierIconHint.message` 是具体提示文案，同一组件支持鼠标和键盘。不可点击按钮仍可用鼠标查看具体条件：例如必须先交付当前订单、必须到供应节点取货、旧皮卡需要从酒吧送来维修装置。事件选项提示会显示订单回合、载具回合和货损代价。
+`CourierIconHint.message` 是具体提示文案，同一组件支持鼠标和键盘。不可点击按钮仍可用鼠标查看具体条件：例如必须先交付当前订单、必须到供应节点取货、旧皮卡需要从酒吧送来维修装置。事件按钮提示会显示等待、绕路或返回节点的实际效果。
 
 `Tools > Night Courier > Install Interaction Feedback (preserve layouts)` 为现有面板和货物卡接入提示，不重建布局；已有的两个反馈 Prefab 不会被覆盖，便于保留手工调整。完整重建面板也会自动执行此接入。
 

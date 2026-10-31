@@ -51,11 +51,15 @@ namespace NightCourier
         {Name=name;Origin=origin;Destination=destination;Weight=weight;Reward=reward;Critical=critical;Fragile=fragile;Heavy=heavy;Dry=dry;TimeLimit=timeLimit;}
         public string Tags {get{return (Critical?"Story ":"")+(TimeLimit>0?"Timed ":"")+(Fragile?"Fragile ":"")+(Heavy?"Heavy ":"")+(Dry?"Keep dry":"");}}
     }
+    public enum RoadEventEffect { Wait, Detour, Retreat }
     public sealed class RoadEvent
     {
         public string Title,Description,Safe,Risky;
         public float SafeMinutes,RiskDamage;
         public bool BreakFragile,WetDry;
+        public RoadEventEffect Effect;
+        public RoadEvent(string title,string description,string action,RoadEventEffect effect,int turns)
+        {Title=title;Description=description;Safe=action;Risky=action;Effect=effect;SafeMinutes=turns;}
         public RoadEvent(string title,string description,string safe,string risky,float time,float damage,bool fragile=false,bool wet=false)
         {Title=title;Description=description;Safe=safe;Risky=risky;SafeMinutes=time;RiskDamage=damage;BreakFragile=fragile;WetDry=wet;}
     }
@@ -102,16 +106,18 @@ namespace NightCourier
             new Parcel("Late-Night Meal",5,1,1,20,false,false,false,false,90)
         };
         public readonly RoadEvent[] Events={
-            new RoadEvent("Trick-or-Treaters","Children gather in the headlights, demanding candy.","Share your candy · +4 min","Brake and swerve · -7 durability / fragile cargo damaged",4,7,true),
-            new RoadEvent("Strangers in the Fog","Dark elves peer through the fog, trying to read your license plate.","Dim the lights and wait · +6 min","Push through the fog · -12 durability",6,12),
-            new RoadEvent("Waves on the River","The ferry rocks. Waves threaten to soak the trunk.","Secure the tarp · +5 min","Ride through the waves · -8 durability / dry cargo soaked",5,8,false,true),
-            new RoadEvent("Falling Rocks","Rocks tumble down the slope, blocking the shortcut.","Pick a careful path · +5 min","Drive over the rocks · -14 durability / fragile cargo damaged",5,14,true),
-            new RoadEvent("Werewolf Roadblock","A werewolf family has closed the road for their Halloween celebrations.","Stop and ask for a way through · +4 min","Break through the fence · -10 durability",4,10),
-            new RoadEvent("The Bear's Honey Cart","A little bear's cart, laden with honey, blocks the lane.","Help push the cart aside · +5 min","Squeeze past the guardrail · -6 durability",5,6),
-            new RoadEvent("A Vampire Hitchhiker","He asks: Could you take me a little farther before sunrise?","Give him a ride · +4 min","Swerve away · -8 durability / fragile cargo damaged",4,8,true),
-            new RoadEvent("The Zombie's Old Map","A zombie newcomer holds an old map upside down.","Mark the way for him · +3 min","Take the muddy shoulder · -9 durability / dry cargo soaked",3,9,false,true),
-            new RoadEvent("A Witch's Crosswind","A passing broomstick's wake pushes your vehicle toward the shoulder.","Pull over and wait · +5 min","Accelerate into the wind · -13 durability",5,13),
-            new RoadEvent("Old Headlights in the Storm","Lightning reveals last night's tire tracks. You recognize the skid marks.","Hold the vehicle steady · +6 min","Race after the headlights · -18 durability / fragile cargo damaged",6,18,true)
+            new RoadEvent("Trick-or-Treaters","Children in all sorts of costumes stop Goolie. \"Trick or treat!\"","Share candy with the children",RoadEventEffect.Wait,1),
+            new RoadEvent("A Skeleton Dog","A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.","Find a dog-friendly treat",RoadEventEffect.Wait,1),
+            new RoadEvent("The Hologram Ghost","Teenagers in white bedsheets rush over with a selfie stick. \"Wow! This hologram ghost looks so real!\"","Pose as a plastic decoration",RoadEventEffect.Wait,1),
+            new RoadEvent("A Bat in the Postal Cap","A lost bat, dizzy from the unusually hot October night, crashes into Goolie's postal cap.","Fan the bat to cool it down",RoadEventEffect.Wait,1),
+            new RoadEvent("Halloween Parade","A Halloween parade blocks the road ahead.","Take a side path around the parade",RoadEventEffect.Detour,2),
+            new RoadEvent("Erupting Geyser","A geyser erupts across the path ahead.","Take a path around the geyser",RoadEventEffect.Detour,2),
+            new RoadEvent("Sudden Fog","A sudden bank of thick fog swallows the road.","Follow a clear side path",RoadEventEffect.Detour,2),
+            new RoadEvent("Ghost Hunters","Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.","Detour around the flashlight beams",RoadEventEffect.Detour,2),
+            new RoadEvent("Thawing Hillside","Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.","Take a side path around the mudslide",RoadEventEffect.Detour,2),
+            new RoadEvent("A Sudden Gust","A sudden gust nearly blows the little ghost away!","Fall back to the previous stop",RoadEventEffect.Retreat,0),
+            new RoadEvent("Sulfur Steam","Scalding sulfur steam bursts from a crack in the ground. The heat leaves Goolie unable to see.","Fall back from the hot spring steam",RoadEventEffect.Retreat,0),
+            new RoadEvent("An Unexpected Float","A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.","Fall back from the human parade",RoadEventEffect.Retreat,0)
         };
         public readonly float[] Durabilities={50,120,80};
         public readonly bool[] Talked=new bool[6];
@@ -131,7 +137,8 @@ namespace NightCourier
         public bool HasJourney {get{return PlannedDestination>=0&&PlannedDestination!=Node&&!Finished;}}
         public string Notice="";
         private int destination;
-        private bool eventTriggered, gravelProtected;
+        private bool eventTriggered, gravelProtected, returning;
+        private float returnStartProgress;
         private float animationSeconds;
         private int legTurnsRemaining, legTurnsTotal;
         private const float SecondsPerTurn = 8f;
@@ -144,10 +151,12 @@ namespace NightCourier
         public Parcel ActiveOrder { get { return Parcels.FirstOrDefault(p => p.State == ParcelState.Loaded); } }
         public IEnumerable<Parcel> Batch(Parcel parcel) { return Parcels.Where(p => p.Origin == parcel.Origin && p.Destination == parcel.Destination); }
         public int TargetTurns(Parcel parcel) { return (int)Batch(parcel).Min(p => p.TimeLimit > 0 ? p.TimeLimit : 12); }
+        public bool IsReturning { get { return returning; } }
+        public int TravelDestination { get { return destination; } }
         public int RemainingTravelTurns { get { return legTurnsRemaining; } }
         private readonly Random random;
         public CourierRun(int seed=31)
-        {random=new Random(seed);foreach(var p in Parcels)p.TimeLimit=p.TimeLimit>0?(float)Math.Ceiling(p.TimeLimit/6):12;foreach(var e in Events){e.SafeMinutes=(float)Math.Ceiling(e.SafeMinutes/6);e.RiskDamage=(float)Math.Ceiling(e.RiskDamage/6);}Log("Halloween Eve. Keep the Silence Pact and deliver the party supplies.");}
+        {random=new Random(seed);foreach(var p in Parcels)p.TimeLimit=p.TimeLimit>0?(float)Math.Ceiling(p.TimeLimit/6):12;Log("Halloween Eve. Keep the Silence Pact and deliver the party supplies.");}
         public Vehicle Car {get{return IsGhost?ghost:Vehicles[VehicleIndex];}}
         public float Durability {get{return IsGhost?0:Durabilities[VehicleIndex];}}
         public int Load {get{return Parcels.Where(p=>p.State==ParcelState.Loaded).Sum(p=>p.Weight);}}
@@ -272,7 +281,7 @@ namespace NightCourier
         private bool BeginLeg(Road r)
         {
             if(!IsGhost&&Durability<=0)BreakDown();
-            ActiveRoad=r;destination=r.Other(Node);Progress=0;eventTriggered=false;animationSeconds=0;
+            ActiveRoad=r;destination=r.Other(Node);Progress=0;eventTriggered=false;returning=false;animationSeconds=0;
             gravelProtected=!IsGhost&&VehicleIndex==2;
             legTurnsRemaining=legTurnsTotal=(int)TimeCost(r);
             State=ShiftState.Driving;Log("Departing for "+Stops[destination].Name);return true;
@@ -291,7 +300,7 @@ namespace NightCourier
             {
                 animationSeconds-=SecondsPerTurn;
                 AdvanceClock(1);legTurnsRemaining--;
-                Progress=1-(float)legTurnsRemaining/legTurnsTotal;
+                Progress=returning?returnStartProgress*legTurnsRemaining/legTurnsTotal:1-(float)legTurnsRemaining/legTurnsTotal;
                 if(IsGhost)gravelProtected=false;
                 else
                 {
@@ -301,13 +310,13 @@ namespace NightCourier
                         BreakDown();
                         // Remaining distance takes twice as long on foot. Completed turns stay counted once.
                         legTurnsRemaining=(int)Math.Ceiling(legTurnsRemaining*Vehicles[lastVehicle].Speed/ghost.Speed);
-                        legTurnsTotal=legTurnsRemaining==0?1:(int)Math.Ceiling(legTurnsRemaining/Math.Max(.001f,1-Progress));
+                        legTurnsTotal=legTurnsRemaining==0?1:(int)Math.Ceiling(legTurnsRemaining/Math.Max(.001f,returning?Progress/returnStartProgress:1-Progress));
                     }
                 }
-                if(legTurnsRemaining<=0){Progress=1;Arrive();return;}
+                if(legTurnsRemaining<=0){Progress=returning?0:1;Arrive();return;}
                 if(!eventTriggered&&Progress>=.5f)
                 {
-                    eventTriggered=true;EncounterIndex=ActiveRoad.Kind==RoadKind.River?2:ActiveRoad.Kind==RoadKind.Fog?1:ActiveRoad.Kind==RoadKind.Storm?9:random.Next(Events.Length);
+                    eventTriggered=true;EncounterIndex=random.Next(Events.Length);
                     State=ShiftState.Encounter;animationSeconds=0;return;
                 }
             }
@@ -320,23 +329,40 @@ namespace NightCourier
         }
         public string EncounterTitle{get{return Events[EncounterIndex].Title;}}
         public string EncounterDescription{get{return Events[EncounterIndex].Description;}}
-        public string SafeChoice{get{var e=Events[EncounterIndex];return e.Safe.Split('·')[0].Trim()+" · +"+e.SafeMinutes+" turns";}}
-        public string RiskChoice{get{var e=Events[EncounterIndex];return e.Risky.Split('·')[0].Trim()+" · -"+(IsGhost?0:e.RiskDamage)+" vehicle turns"+(e.BreakFragile?" / fragile cargo damaged":"")+(e.WetDry?" / dry cargo soaked":"");}}
+        public string EventCost
+        {
+            get
+            {
+                var e=Events[EncounterIndex];
+                if(e.Effect==RoadEventEffect.Retreat)return "Return to "+Stops[Node].Name+"; travel turns apply";
+                return "+"+e.SafeMinutes+(e.Effect==RoadEventEffect.Detour?" travel turns":" order turn");
+            }
+        }
+        public string SafeChoice{get{return Events[EncounterIndex].Safe+" · "+EventCost;}}
+        // Retained for existing callers; these events have one mandatory consequence.
+        public string RiskChoice{get{return SafeChoice;}}
         public void ResolveEncounter(bool safe)
         {
             if(State!=ShiftState.Encounter)return;
-            var e=Events[EncounterIndex];State=ShiftState.Driving;
-            if(safe)AdvanceClock(e.SafeMinutes);
+            var e=Events[EncounterIndex];State=ShiftState.Driving;animationSeconds=0;
+            if(e.Effect==RoadEventEffect.Wait)AdvanceClock(e.SafeMinutes);
+            else if(e.Effect==RoadEventEffect.Detour)
+            {
+                // Local bypasses also work on bridge roads with no alternate graph route.
+                legTurnsRemaining+=(int)e.SafeMinutes;
+                legTurnsTotal=(int)Math.Ceiling(legTurnsRemaining/Math.Max(.001f,1-Progress));
+            }
             else
             {
-                if(!IsGhost){Durabilities[VehicleIndex]=Math.Max(0,Durability-e.RiskDamage);if(Durability<=0){BreakDown();legTurnsRemaining=(int)Math.Ceiling(legTurnsRemaining*Vehicles[lastVehicle].Speed/ghost.Speed);legTurnsTotal=(int)Math.Ceiling(legTurnsRemaining/Math.Max(.001f,1-Progress));}}
-                foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&((e.BreakFragile&&p.Fragile)||(e.WetDry&&p.Dry))))p.Damaged=true;
+                // Node still identifies the last reached stop while travelling.
+                returning=true;returnStartProgress=Progress;destination=Node;
+                legTurnsRemaining=legTurnsTotal=Math.Max(1,(int)Math.Ceiling(TimeCost(ActiveRoad)*Progress));
             }
-            Log(safe?"Safe passage: "+e.Title:"Risky passage: "+e.Title);
+            Log(e.Title+": "+SafeChoice);
         }
         private void Arrive()
         {
-            if(!gravelProtected&&ActiveRoad.Gravel)
+            if(!returning&&!gravelProtected&&ActiveRoad.Gravel)
                 foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&p.Fragile))p.Damaged=true;
             Node=destination;State=ShiftState.Docked;animationSeconds=0;
             if(Node==PlannedDestination)PlannedDestination=-1;

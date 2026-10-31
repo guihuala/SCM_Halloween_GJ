@@ -137,7 +137,7 @@ namespace NightCourier
             bool visible=!Run.Finished&&(moving||(docked&&!owner.ConversationActive));
             nodePromptButton.gameObject.SetActive(visible);
             if(!visible)return;
-            int node=moving&&Run.ActiveRoad!=null?Run.ActiveRoad.Other(Run.Node):Run.Node;
+            int node=moving&&Run.ActiveRoad!=null?Run.TravelDestination:Run.Node;
             nodePromptText.text=docked?(Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E]":"Talk  [E]")
                 :Run.State==ShiftState.Pushing?"Pushing to this stop":"Heading to this stop";
             nodePromptButton.interactable=docked&&owner.Active;
@@ -238,10 +238,10 @@ namespace NightCourier
             departButton.gameObject.SetActive(docked);
             if(!docked&&Run.ActiveRoad!=null)
             {
-                if(objectiveText!=null)objectiveText.text=(Run.State==ShiftState.Encounter?"Road event":Run.State==ShiftState.Pushing?"Pushing to next stop":"In transit")+" - "+Mathf.RoundToInt(Run.Progress*100)+"%";
-                destinationText.text="Next: "+Run.Stops[Run.ActiveRoad.Other(Run.Node)].Name;
+                if(objectiveText!=null)objectiveText.text=(Run.State==ShiftState.Encounter?"Road event":Run.IsReturning?"Returning to previous stop":Run.State==ShiftState.Pushing?"Pushing to next stop":"In transit")+" - "+Mathf.RoundToInt(Run.Progress*100)+"%";
+                destinationText.text="Next: "+Run.Stops[Run.TravelDestination].Name;
                 costGroup.SetActive(true);timeCostText.text=Run.RemainingTravelTurns+" turns";
-                wearCostText.text="-"+Mathf.CeilToInt(Run.WearCost(Run.ActiveRoad)*(1-Run.Progress));riskText.text=(Run.IsGhost?"Ghost transport - ":"")+"F: skip animation to the next event or stop";return;
+                wearCostText.text="-"+Mathf.Min(Mathf.CeilToInt(Run.Durability),Run.RemainingTravelTurns);riskText.text=(Run.IsGhost?"Ghost transport - ":"")+"F: skip animation to the next event or stop";return;
             }
             costGroup.SetActive(route.Count>0);
             if(selected<0||selected==Run.Node){destinationText.text="Choose a destination";riskText.text=Run.Results.Count>0?"Last order: "+Run.Results.Last().Turns+"/"+Run.Results.Last().TargetTurns+" turns - "+Run.Results.Last().Evaluation:"";departButton.interactable=false;departHint.message="Depart\nSelect a stop on the map first.";return;}

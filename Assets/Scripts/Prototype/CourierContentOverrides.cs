@@ -31,6 +31,7 @@ namespace NightCourier
             Apply("Events",(id,row)=>{
                 if(id<0||id>=run.Events.Length)return;var e=run.Events[id];
                 e.Title=row[1];e.Description=row[2];e.Safe=row[3];e.Risky=row[4];e.SafeMinutes=(float)Math.Ceiling(Number(row[5],e.SafeMinutes,0,30));
+                RoadEventEffect effect;if(row.Count>9&&Enum.TryParse(row[9],true,out effect)&&Enum.IsDefined(typeof(RoadEventEffect),effect))e.Effect=effect;
                 e.RiskDamage=(float)Math.Ceiling(Number(row[6],e.RiskDamage,0,100));e.BreakFragile=row[7]=="1";e.WetDry=row[8]=="1";
             });
         }
