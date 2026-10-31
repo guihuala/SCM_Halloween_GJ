@@ -16,9 +16,9 @@ MonoBehaviour:
   terrainTint: {r: 1, g: 1, b: 1, a: 1}
   landmarkHeightFraction: 0.28
   maximumLandmarkSize: 160
-  idleRoadColor: {r: 0.4, g: 0.51, b: 0.48, a: 1}
-  adjacentRoadColor: {r: 0.45, g: 0.7, b: 0.61, a: 1}
-  selectedRoadColor: {r: 1, g: 0.66, b: 0.34, a: 1}
+  idleRoadColor: {r: 0.49019608, g: 0.59607846, b: 0.5686275, a: 1}
+  adjacentRoadColor: {r: 0.49019608, g: 0.59607846, b: 0.5686275, a: 1}
+  selectedRoadColor: {r: 0.9137255, g: 0.7058824, b: 0.42352942, a: 1}
   landmarks:
   - stopId: 0
     sprite: {fileID: 21300000, guid: 81899f634a054641a6f64eeb8b7f6500, type: 3}

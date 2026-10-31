@@ -19,34 +19,34 @@ MonoBehaviour:
     displayName: Drow
     personality: "内向嘴拙的作家兼吟游诗人"
     portrait: {fileID: 21300000, guid: 61e6377700a18463bbf57698b11cd93a, type: 3}
-    accent: {r: 0.7058824, g: 0.6156863, b: 0.89411765, a: 1}
+    accent: {r: 0.7176471, g: 0.64705884, b: 0.8039216, a: 1}
   - stopId: 1
     id: werewolf
     displayName: Wolfwoman
     personality: "豪爽大姐姐，伪装成人类的浓雾森林护林员"
     portrait: {fileID: 21300000, guid: 402a2a17afd814b3c9a9252198b9cf93, type: 3}
-    accent: {r: 0.89411765, g: 0.68235296, b: 0.4509804, a: 1}
+    accent: {r: 0.9137255, g: 0.7058824, b: 0.42352942, a: 1}
   - stopId: 2
     id: bear
     displayName: Little Werebear
     personality: "多愁善感的小妹妹，自学酿酒的酿蜜酒师"
     portrait: {fileID: 21300000, guid: 4c540305a1b794ad49f7a88b67737d52, type: 3}
-    accent: {r: 0.8392157, g: 0.7411765, b: 0.47058824, a: 1}
+    accent: {r: 0.76862746, g: 0.6666667, b: 0.4745098, a: 1}
   - stopId: 3
     id: vampire
     displayName: Vampire
     personality: "知心姐姐，曾是播音员、被咬后成为吸血鬼的电台DJ"
     portrait: {fileID: 21300000, guid: b7781baca6c8943e4a5a2ca4b0fc9795, type: 3}
-    accent: {r: 0.8627451, g: 0.56078434, b: 0.6313726, a: 1}
+    accent: {r: 0.87058824, g: 0.5686275, b: 0.52156866, a: 1}
   - stopId: 4
     id: zombie
     displayName: Immigrant Jiangshi
     personality: "呆萌老太，百年前远渡重洋的移民僵尸，修护古董"
     portrait: {fileID: 21300000, guid: bc884d50ef95c4740b84cbaec42d1a06, type: 3}
-    accent: {r: 0.59607846, g: 0.75686276, b: 0.68235296, a: 1}
+    accent: {r: 0.6039216, g: 0.8352941, b: 0.7294118, a: 1}
   - stopId: 5
     id: witch
     displayName: Witch
     personality: "控场的妈妈类型，生活在人类社会的酒吧老板兼调酒师"
     portrait: {fileID: 21300000, guid: f07b3a740e671475ba890e0a115ee239, type: 3}
-    accent: {r: 0.65882355, g: 0.7019608, b: 0.85490197, a: 1}
+    accent: {r: 0.5294118, g: 0.7490196, b: 0.8, a: 1}

@@ -1,0 +1,64 @@
+{
+  "cues": [
+    {
+      "cue": "event_candy",
+      "path": "Audio/Courier/Events/candy",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_dog",
+      "path": "Audio/Courier/Events/dog",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_camera",
+      "path": "Audio/Courier/Events/camera",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_bat",
+      "path": "Audio/Courier/Events/bat",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_parade",
+      "path": "Audio/Courier/Events/parade",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_steam",
+      "path": "Audio/Courier/Events/steam",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_wind",
+      "path": "Audio/Courier/Events/wind",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_hunters",
+      "path": "Audio/Courier/Events/hunters",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_slide",
+      "path": "Audio/Courier/Events/slide",
+      "gain": 0.8
+    },
+    {
+      "cue": "event_wait",
+      "path": "Audio/Courier/Events/wait",
+      "gain": 0.65
+    },
+    {
+      "cue": "event_retreat",
+      "path": "Audio/Courier/Events/retreat",
+      "gain": 0.65
+    },
+    {
+      "cue": "exhausted",
+      "path": "Audio/Courier/Events/exhausted",
+      "gain": 0.7
+    }
+  ]
+}

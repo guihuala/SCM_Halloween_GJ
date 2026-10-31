@@ -28,6 +28,7 @@ namespace NightCourier
                 else if(sprite=="ProgressTrack"||name=="Scrollbar"||name=="Progress")color=CourierColors.Raised;
                 else if(sprite=="Card")color=CourierColors.Raised;
                 else if(sprite=="Dialogue")color=CourierColors.Night;
+                else if(name=="Window"&&root.name.StartsWith("CourierRoutePanel",StringComparison.Ordinal))color=CourierColors.Night;
                 else if(sprite=="Panel"||name=="ContentPanel"||name=="Dialog"||name=="Window")color=CourierColors.Panel;
                 else if(name=="Bg"||name=="Loading"||image.transform==root.transform)color=CourierColors.Night;
                 else if(name=="SpeakerAccent")continue;
@@ -61,8 +62,12 @@ namespace NightCourier
             }
             foreach(var outline in root.GetComponentsInChildren<Outline>(true))
                 outline.effectColor=CourierColors.Alpha(outline.GetComponent<Text>()!=null?CourierColors.Night:CourierColors.Gold,outline.effectColor.a);
+            foreach(var map in root.GetComponentsInChildren<CourierRouteGraphic>(true))
+            {map.idleRoadColor=map.adjacentRoadColor=CourierColors.Road;map.selectedRoadColor=CourierColors.Gold;map.previewRoadColor=CourierColors.Mint;map.SetVerticesDirty();}
             foreach(var effect in root.GetComponentsInChildren<CourierInteractionEffect>(true))
             {effect.focusColor=CourierColors.Mint;effect.blockedColor=CourierColors.Gold;}
+            foreach(var hud in root.GetComponentsInChildren<CourierHudPanel>(true))hud.ApplyReadingColors();
+            foreach(var guide in root.GetComponentsInChildren<CourierTutorialView>(true))guide.ApplyReadingColors();
         }
         private static bool IsPrimary(string name)=>name=="ResumeButton"||name=="ConfirmButton"||name=="DepartButton"||name=="LoadButton"||name=="SafeButton"||name=="NewGame"||name=="AdvanceButton";
         private static bool IsPaper(Image image)

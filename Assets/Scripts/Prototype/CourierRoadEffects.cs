@@ -77,7 +77,7 @@ namespace NightCourier
             var surface=travelEdges[index].Surface;
             foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&!p.Damaged))
                 if(surface==StreetSurface.Heat&&p.HeatSensitive&&!HeatShield||surface==StreetSurface.Water&&p.Dry&&!Waterproof||surface==StreetSurface.Bumpy&&p.Fragile&&!Suspension)
-                {p.Damaged=true;Log(p.Name+": cargo conditions violated.");}
+                {p.Damaged=true;EmitAudio("damage");Log(p.Name+": cargo conditions violated.");}
             return 0;
         }
         private void CompleteStreetTurn()
@@ -102,7 +102,7 @@ namespace NightCourier
             if(order!=null&&order.Destination!=destination&&!OrderEventTriggered&&(delay||retreat)&&random.NextDouble()<EventProbability)
             {
                 var pool=Events.Select((e,i)=>new {e,i}).Where(x=>x.e.Effect==(delay?RoadEventEffect.Wait:RoadEventEffect.Retreat)).ToArray();
-                if(pool.Length>0){EncounterIndex=pool[random.Next(pool.Length)].i;OrderEventTriggered=true;State=ShiftState.Encounter;return;}
+                if(pool.Length>0){EncounterIndex=pool[random.Next(pool.Length)].i;OrderEventTriggered=true;State=ShiftState.Encounter;EmitAudio(Events[EncounterIndex].SoundCue);return;}
             }
             CompleteStreetTurn();
         }

@@ -57,7 +57,7 @@ namespace NightCourier
                     var point=MapPoint(node.Point,rectTransform.rect.size);
                     if(System.Array.IndexOf(run.DelayEventNodes,node.Id)>=0||System.Array.IndexOf(run.RetreatEventNodes,node.Id)>=0)
                     {
-                        var color=System.Array.IndexOf(run.DelayEventNodes,node.Id)>=0?new Color(.75f,.38f,.83f):new Color(.22f,.77f,.77f);
+                        var color=System.Array.IndexOf(run.DelayEventNodes,node.Id)>=0?CourierColors.Lavender:CourierColors.Water;
                         for(int i=0;i<12;i++)
                         {
                             float a=i*Mathf.PI/6,b=a+.15f;

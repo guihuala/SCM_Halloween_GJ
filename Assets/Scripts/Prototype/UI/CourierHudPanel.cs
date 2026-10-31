@@ -43,8 +43,20 @@ namespace NightCourier
                 if(label!=null){label.fontSize=30;label.rectTransform.sizeDelta=new Vector2(256,72);}
             }
         }
+        public void ApplyReadingColors()
+        {
+            var bar=subtitleText.transform.parent.Find("SubtitleBar");
+            var image=bar!=null?bar.GetComponent<Image>():null;
+            if(image!=null)image.color=CourierColors.Alpha(CourierColors.Paper,1);
+            subtitleText.color=CourierColors.Night;
+            foreach(var outline in subtitleText.GetComponents<Outline>())outline.enabled=false;
+            if(speakerName!=null)speakerName.color=CourierColors.Night;
+            var buttonImage=advanceButton.targetGraphic as Image;if(buttonImage!=null)buttonImage.color=CourierColors.Mint;
+            var icon=advanceButton.GetComponentInChildren<CourierIconGraphic>(true);if(icon!=null)icon.color=CourierColors.Night;
+        }
         private void RefreshSpeaker()
         {
+            ApplyReadingColors();
             if(characterCatalog==null)characterCatalog=Resources.Load<CourierCharacterCatalog>("NightVoyage/Characters");
             bool talking=owner.ConversationActive&&(Run.State==ShiftState.Docked||Run.Finished);
             var character=talking&&characterCatalog!=null?characterCatalog.ForStop(CourierStory.SpeakerStop(owner.DialogueSpeaker)):null;
@@ -54,7 +66,7 @@ namespace NightCourier
                 if(show){speakerPortrait.sprite=characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
             }
             if(portraitFrame!=null){if(show)portraitFrame.color=character.accent;}
-            if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?character.accent:CourierColors.Paper;}}
+            if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
             if(bar!=null){bar.anchoredPosition=new Vector2(0,-810);bar.sizeDelta=new Vector2(1800,190);}
             subtitleText.rectTransform.anchoredPosition=new Vector2(416,-867);

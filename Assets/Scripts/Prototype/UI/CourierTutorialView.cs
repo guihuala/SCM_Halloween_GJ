@@ -19,9 +19,20 @@ namespace NightCourier
             skipButton.onClick.AddListener(() => { owner.Tutorial.Dismiss(); Refresh(); });
             Refresh();
         }
+        public void ApplyReadingColors()
+        {
+            var background=strip.GetComponent<Image>();
+            if(background!=null)background.color=CourierColors.Alpha(Color.Lerp(CourierColors.Paper,CourierColors.Mint,.10f),1);
+            heading.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.18f);
+            instruction.color=CourierColors.Night;
+            foreach(var label in new[]{heading,instruction})foreach(var outline in label.GetComponents<Outline>())outline.enabled=false;
+            var buttonImage=skipButton.targetGraphic as Image;if(buttonImage!=null)buttonImage.color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.55f);
+            var buttonText=skipButton.GetComponentInChildren<Text>(true);if(buttonText!=null)buttonText.color=CourierColors.Night;
+        }
         public void Refresh()
         {
             if (owner == null) return;
+            ApplyReadingColors();
             var run = owner.Run; var guide = owner.Tutorial;
             int step = guide.Step(run, owner.ConversationActive);
             bool visible = owner.Active && !guide.Finished && !run.Finished;

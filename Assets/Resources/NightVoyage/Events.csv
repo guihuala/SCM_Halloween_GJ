@@ -1,13 +1,13 @@
-id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage,effect,illustration
-0,Trick-or-Treaters,"Children in all sorts of costumes stop Goolie. ""Trick or treat!""",Share candy with the children,Share candy with the children,1,0,0,0,Wait,social
-1,A Skeleton Dog,A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.,Find a dog-friendly treat,Find a dog-friendly treat,1,0,0,0,Wait,social
-2,The Hologram Ghost,"Teenagers in white bedsheets rush over with a selfie stick. ""Wow! This hologram ghost looks so real!""",Pose as a plastic decoration,Pose as a plastic decoration,1,0,0,0,Wait,social
-3,A Bat in the Postal Cap,"A lost bat is splashed by a geyser and crashes, dizzy, into Goolie's postal cap.",Fan the bat to cool it down,Fan the bat to cool it down,1,0,0,0,Wait,weather
-4,Halloween Parade,A Halloween parade blocks the road ahead.,Wait for the road to clear,Wait for the road to clear,1,0,0,0,Wait,social
-5,Erupting Geyser,A geyser erupts across the path ahead.,Wait for the road to clear,Wait for the road to clear,1,0,0,0,Wait,weather
-6,Sudden Fog,A sudden bank of thick fog swallows the road.,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather
-7,Ghost Hunters,Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.,Wait for the road to clear,Wait for the road to clear,1,0,0,0,Wait,social
-8,Thawing Hillside,Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather
-9,A Sudden Gust,A sudden gust nearly blows the little ghost away!,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather
-10,Sulfur Steam,A geyser suddenly blasts scalding steam. The heat leaves light-as-air Goolie unable to keep their eyes open.,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather
-11,An Unexpected Float,A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.,Fall back one node,Fall back one node,0,0,0,0,Retreat,social
+id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage,effect,illustration,sound_cue
+0,Trick-or-Treaters,"Children in all sorts of costumes stop Goolie. ""Trick or treat!""",Share candy with the children,Share candy with the children,1,0,0,0,Wait,social,event_candy
+1,A Skeleton Dog,A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.,Find a dog-friendly treat,Find a dog-friendly treat,1,0,0,0,Wait,social,event_dog
+2,The Hologram Ghost,"Teenagers in white bedsheets rush over with a selfie stick. ""Wow! This hologram ghost looks so real!""",Pose as a plastic decoration,Pose as a plastic decoration,1,0,0,0,Wait,social,event_camera
+3,A Bat in the Postal Cap,"A lost bat is splashed by a geyser and crashes, dizzy, into Goolie's postal cap.",Fan the bat to cool it down,Fan the bat to cool it down,1,0,0,0,Wait,weather,event_bat
+4,Halloween Parade,A Halloween parade blocks the road ahead.,Wait for the road to clear,Wait for the road to clear,1,0,0,0,Wait,social,event_parade
+5,Erupting Geyser,A geyser erupts across the path ahead.,Wait for the road to clear,Wait for the road to clear,1,0,0,0,Wait,weather,event_steam
+6,Sudden Fog,A sudden bank of thick fog swallows the road.,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather,event_wind
+7,Ghost Hunters,Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.,Wait for the road to clear,Wait for the road to clear,1,0,0,0,Wait,social,event_hunters
+8,Thawing Hillside,Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather,event_slide
+9,A Sudden Gust,A sudden gust nearly blows the little ghost away!,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather,event_wind
+10,Sulfur Steam,A geyser suddenly blasts scalding steam. The heat leaves light-as-air Goolie unable to keep their eyes open.,Fall back one node,Fall back one node,0,0,0,0,Retreat,weather,event_steam
+11,An Unexpected Float,A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.,Fall back one node,Fall back one node,0,0,0,0,Retreat,social,event_parade

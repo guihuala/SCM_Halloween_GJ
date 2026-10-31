@@ -56,7 +56,7 @@ namespace NightCourier
     public sealed class RoadEvent
     {
         public string Title,Description,Safe,Risky;
-        public string Illustration="social";
+        public string Illustration="social",SoundCue="encounter";
         public float SafeMinutes,RiskDamage;
         public bool BreakFragile,WetDry;
         public RoadEventEffect Effect;
@@ -75,6 +75,10 @@ namespace NightCourier
     public sealed partial class CourierRun
     {
         public CourierStory Story;
+        // Committed actions survive fast-forward and multiple transitions within one frame.
+        public readonly Queue<string> AudioCues=new Queue<string>();
+        private void EmitAudio(string cue){if(!string.IsNullOrEmpty(cue))AudioCues.Enqueue(cue);}
+
         public readonly Stop[] Stops={
             new Stop("Abandoned Subway","DROW","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
             new Stop("Abandoned Campsite","WOLF","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
@@ -233,7 +237,7 @@ namespace NightCourier
         public bool LoadParcel(Parcel p)
         {
             if(!CanLoad(p))return false;
-            OrderTurns=0;OrderEventTriggered=false;
+            OrderTurns=0;OrderEventTriggered=false;EmitAudio("cargo");
             foreach(var item in Batch(p)){item.State=ParcelState.Loaded;item.Deadline=0;}
             Log("Order accepted: "+string.Join(" + ",Batch(p).Select(item=>item.Name))+" > "+Stops[p.Destination].Name+". Target: "+TargetTurns(p)+" turns.");return true;
         }
@@ -242,12 +246,12 @@ namespace NightCourier
         public bool CanPossess(int v)
         {return State==ShiftState.Docked&&v>=0&&v<Vehicles.Length&&UnlockedVehicles[v]&&Stops[Node].Vehicle==v;}
         public bool Possess(int v)
-        {if(!CanPossess(v))return false;if(!IsGhost)Durabilities[VehicleIndex]=0;VehicleIndex=v;Durabilities[v]=Vehicles[v].MaxDurability;AdvanceClock(1);Log("Vehicle exchanged: "+Car.Name+". 5 vehicle turns; exchange costs 1 order turn.");return true;}
+        {if(!CanPossess(v))return false;if(!IsGhost)Durabilities[VehicleIndex]=0;VehicleIndex=v;Durabilities[v]=Vehicles[v].MaxDurability;AdvanceClock(1);EmitAudio("possession");Log("Vehicle exchanged: "+Car.Name+". 5 vehicle turns; exchange costs 1 order turn.");return true;}
         public bool Repair(){return false;}
         public bool UseGhost()
         {
             if(State!=ShiftState.Docked)return false;
-            if(!IsGhost)Durabilities[VehicleIndex]=0;VehicleIndex=-1;Log("Ghost transport: all cargo can still be delivered.");return true;
+            if(!IsGhost){Durabilities[VehicleIndex]=0;EmitAudio("possession");}VehicleIndex=-1;Log("Ghost transport: all cargo can still be delivered.");return true;
         }
         public string[] TalkToNpc()
         {
@@ -259,7 +263,7 @@ namespace NightCourier
         private void CheckEnding()
         {
             if(!Parcels.All(p=>p.State==ParcelState.Delivered))return;
-            State=ShiftState.EndingA;PlannedDestination=-1;
+            State=ShiftState.EndingA;PlannedDestination=-1;EmitAudio("ending");
             Log("All "+BatchCount+" orders delivered. Halloween deliveries complete!");
         }
         public bool Depart(Road r)
@@ -271,7 +275,7 @@ namespace NightCourier
         {
             if(!IsGhost&&Durability<=0)BreakDown();
             ActiveRoad=r;destination=r.Other(Node);Progress=0;returning=false;animationSeconds=0;
-            State=ShiftState.Driving;ResetStreetTravel();Log("Departing for "+Stops[destination].Name);return true;
+            State=ShiftState.Driving;EmitAudio("departure");ResetStreetTravel();Log("Departing for "+Stops[destination].Name);return true;
         }
         // Animation only: skips stop at each event and do not change turn costs.
         public bool FastForwardTravel()
@@ -285,7 +289,7 @@ namespace NightCourier
         }
         private void BreakDown()
         {
-            VehicleIndex=-1;UsedPush=true;
+            VehicleIndex=-1;UsedPush=true;EmitAudio("exhausted");
             Log("Vehicle exhausted. Continue carrying the complete order as a ghost.");
         }
         public string EncounterTitle{get{return Events[EncounterIndex].Title;}}
@@ -306,6 +310,7 @@ namespace NightCourier
         {
             if(State!=ShiftState.Encounter)return;
             var e=Events[EncounterIndex];
+            EmitAudio(e.Effect==RoadEventEffect.Wait?"event_wait":"event_retreat");
             if(e.Effect==RoadEventEffect.Wait)AdvanceClock(1);
             else if(travelEdges!=null&&travelEdges.Length>0)
             {
@@ -325,6 +330,7 @@ namespace NightCourier
 
             if(Node==PlannedDestination)PlannedDestination=-1;
             var order=ActiveOrder;
+            EmitAudio(order!=null&&order.Destination==Node?"delivered":"arrival");
             if(order!=null&&order.Destination==Node)
             {
                 var items=Batch(order).ToArray();int target=TargetTurns(order);

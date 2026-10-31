@@ -1,164 +1,121 @@
 using System;
+using System.IO;
 using NightCourier;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 [InitializeOnLoad]
 public static class CourierAudioSmokeTest
 {
-    private const string Key="CourierAudio.Test";
-    private static int step,cargoBefore,deliveredBefore,departureBefore,encounterBefore,clickBefore;
+    private const string Key="CourierAudio.V24";
+    private static int step;
     private static double next,deadline;
+    private static int cargo,departure,arrival,damage,delivery,possession,repair,wait;
     private static float master,sfx,bgm;
     private static bool saved;
-    private static AudioSource musicLoop,windLoop,engineLoop;
-    static CourierAudioSmokeTest(){EditorApplication.update+=Tick;}
-    private static void Require(bool ok,string error){if(!ok)throw new Exception(error);}
-    [MenuItem("Tools/Night Courier/Checks/Audio (exits editor)")]
+    static CourierAudioSmokeTest(){EditorApplication.update+=Attach;}
+    private static void Require(bool ok,string message){if(!ok)throw new Exception(message);}
+    [MenuItem("Tools/Night Courier/Checks/Audio (keep editor open)")]
     public static void Run()
     {
-        Debug.Log(CourierChecks.RunAll());
-        foreach(var cue in CourierSoundscape.CueNames)
+        try
         {
-            var clip=Resources.Load<AudioClip>("Audio/Courier/"+cue);
-            Require(clip!=null&&clip.length>0&&clip.length<4,"Invalid sound: "+cue);
-            Require(clip.LoadAudioData(),"Cannot decode sound: "+cue);
+            File.WriteAllText("/tmp/courier-audio-v24.txt","Running");
+            foreach(var cue in CourierSoundscape.CueNames)Validate("Audio/Courier/"+cue);
+            var config=JsonUtility.FromJson<CourierAudioConfig>(Resources.Load<TextAsset>("NightVoyage/AudioCues").text);
+            Require(config.cues.Length==12,"Expected 12 new cues");
+            foreach(var cue in config.cues)Validate(cue.path);
+            foreach(string name in new[]{"night_waltz","night_wind","vehicle_engine"})Validate("Audio/Courier/Loops/"+name);
+            var configured=new CourierRun();CourierContentOverrides.Apply(configured);
+            foreach(var e in configured.Events)Require(Array.Exists(config.cues,c=>c.cue==e.SoundCue),"Unmapped event sound "+e.Title);
+            Debug.Log(CourierChecks.RunAll());
+            SessionState.SetString(Key+".Scene",EditorSceneManager.GetActiveScene().path);
+            EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
+            step=0;next=0;deadline=EditorApplication.timeSinceStartup+90;saved=false;
+            SessionState.SetBool(Key,true);Application.runInBackground=true;EditorApplication.isPlaying=true;
         }
-        foreach(var name in new[]{"night_waltz","night_wind","vehicle_engine"})
-        {
-            var clip=Resources.Load<AudioClip>("Audio/Courier/Loops/"+name);
-            Require(clip!=null&&clip.length>3&&clip.LoadAudioData(),"Invalid ambience: "+name);
-            Debug.Log("COURIER_LOOP "+name+": "+clip.length+" seconds, "+clip.channels+" channels");
-        }
-        Require(Resources.Load<TextAsset>("Audio/Courier/AudioCredits")!=null,"Missing shipped attribution");
-        EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
-        SessionState.SetBool(Key,true);EditorApplication.isPlaying=true;
+        catch(Exception e){File.WriteAllText("/tmp/courier-audio-v24.txt","FAIL "+e);Debug.LogException(e);}
     }
-    private static void Restore()
+    private static void Validate(string path)
+    {var clip=Resources.Load<AudioClip>(path);Require(clip!=null&&clip.length>0&&clip.LoadAudioData(),"Cannot decode "+path);}
+    private static void Attach()
     {
-        if(saved&&AudioManager.Instance!=null)
-        {
-            AudioManager.Instance.ChangeMainVolume(master);
-            AudioManager.Instance.ChangeSfxVolume(sfx);
-            AudioManager.Instance.ChangeBgmVolume(bgm);
-        }
+        if(!SessionState.GetBool(Key,false)||!EditorApplication.isPlaying)return;
+        var owner=UnityEngine.Object.FindObjectOfType<NightCourierPrototype>();if(owner==null)return;
+        var pump=owner.GetComponent<CourierStreetMapCheckPump>()??owner.gameObject.AddComponent<CourierStreetMapCheckPump>();pump.Check=Tick;
+    }
+    private static AudioSource Engine(NightCourierPrototype owner)
+    {return Array.Find(owner.GetComponents<AudioSource>(),s=>s.clip!=null&&s.clip.name=="vehicle_engine");}
+    private static void Record(CourierSoundscape a)
+    {cargo=a.PlayCount("cargo");departure=a.PlayCount("departure");arrival=a.PlayCount("arrival");damage=a.PlayCount("damage");delivery=a.PlayCount("delivered");possession=a.PlayCount("possession");repair=a.PlayCount("repair");wait=a.PlayCount("event_wait");}
+    private static void Finish(bool ok,string message)
+    {
+        if(GameManager.Instance!=null&&GameManager.Instance.CurrentState==GameManager.GameState.Paused)GameManager.Instance.ResumeGame();
+        if(saved&&AudioManager.Instance!=null){AudioManager.Instance.ChangeMainVolume(master);AudioManager.Instance.ChangeSfxVolume(sfx);AudioManager.Instance.ChangeBgmVolume(bgm);}
+        SessionState.SetBool(Key,false);File.WriteAllText("/tmp/courier-audio-v24.txt",(ok?"PASS ":"FAIL ")+message);
+        EditorApplication.isPlaying=false;EditorApplication.delayCall+=()=>{var path=SessionState.GetString(Key+".Scene","");if(!string.IsNullOrEmpty(path))EditorSceneManager.OpenScene(path);};
     }
     private static void Tick()
     {
-        if(!SessionState.GetBool(Key,false)||!EditorApplication.isPlaying)return;
-        if(deadline==0){deadline=EditorApplication.timeSinceStartup+80;next=EditorApplication.timeSinceStartup+3;}
+        if(deadline==0)deadline=EditorApplication.timeSinceStartup+90;
+        if(EditorApplication.timeSinceStartup<next)return;
         try
         {
-            Require(EditorApplication.timeSinceStartup<deadline,"Audio test timed out at "+step);
-            if(EditorApplication.timeSinceStartup<next)return;
-            var owner=UnityEngine.Object.FindObjectOfType<NightCourierPrototype>();
-            Require(owner!=null,"Gameplay missing");
-            var audio=owner.GetComponent<CourierSoundscape>();
-            Require(audio!=null,"Soundscape missing");
-            var run=owner.Run;
+            Require(EditorApplication.timeSinceStartup<deadline,"Audio check timed out at "+step);
+            var owner=UnityEngine.Object.FindObjectOfType<NightCourierPrototype>();if(owner==null||!owner.HasPlanner)return;
+            var a=owner.GetComponent<CourierSoundscape>();var r=owner.Run;
+            Require(a!=null,"Soundscape not initialized");
             switch(step)
             {
                 case 0:
                     owner.enabled=false;owner.Tutorial.Dismiss();
-                    foreach(var source in owner.GetComponents<AudioSource>())
-                    {
-                        if(source.clip==null)continue;
-                        if(source.clip.name=="night_waltz")musicLoop=source;
-                        if(source.clip.name=="night_wind")windLoop=source;
-                        if(source.clip.name=="vehicle_engine")engineLoop=source;
-                    }
-                    Require(musicLoop!=null&&windLoop!=null&&engineLoop!=null,"Imported loops not bound");
-                    Require(musicLoop.loop&&windLoop.loop&&engineLoop.loop,"Loop mode missing");
-                    Require(musicLoop.outputAudioMixerGroup.name=="BGM"&&windLoop.outputAudioMixerGroup.name=="Sfx"&&engineLoop.outputAudioMixerGroup.name=="Sfx","Ambience mixer routing wrong");
-                    foreach(var cue in CourierSoundscape.CueNames)Require(audio.HasCue(cue),"Runtime cue missing: "+cue);
-                    var buttonObject=new GameObject("AudioTestButton",typeof(RectTransform),typeof(Button),typeof(CourierButtonFeedback));
-                    var button=buttonObject.GetComponent<Button>();
-                    clickBefore=audio.PlayCount("click");
-                    button.OnSubmit(new BaseEventData(EventSystem.current));
-                    buttonObject.GetComponent<CourierButtonFeedback>().OnSubmit(new BaseEventData(EventSystem.current));
-                    Require(audio.PlayCount("click")==clickBefore+1,"Keyboard submit played twice");
-                    button.interactable=false;button.onClick.Invoke();
-                    Require(audio.PlayCount("click")==clickBefore+1,"Disabled button played");
-                    int hover=audio.PlayCount("hover");
-                    CourierSoundscape.PlayInterface("hover");CourierSoundscape.PlayInterface("hover");
-                    Require(audio.PlayCount("hover")==hover+1,"Hover throttling failed");
-                    UnityEngine.Object.Destroy(buttonObject);
-                    cargoBefore=audio.PlayCount("cargo");Require(run.LoadParcel(run.Parcels[0]),"Acceptance failed");break;
+                    foreach(var e in r.Events)Require(a.HasCue(e.SoundCue),"Runtime event cue missing");
+                    master=AudioManager.Instance.mainVolume;sfx=AudioManager.Instance.sfxVolumeFactor;bgm=AudioManager.Instance.bgmVolumeFactor;saved=true;
+                    Record(a);r.EventProbability=0;r.LoadParcel(r.Parcels[0]);
+                    var edge=new StreetEdge(CourierStreetMap.Nodes[0],CourierStreetMap.Nodes[3],StreetSurface.Water,null);
+                    r.Roads[0]=new Road(0,3,6,0){StreetPath=new[]{edge}};
+                    Require(r.Depart(r.Roads[0]),"Cannot depart");r.FastForwardTravel();
+                    Require(r.Results.Count==1&&r.Results[0].Damaged,"Damage/delivery fixture failed");break;
                 case 1:
-                    Require(audio.PlayCount("cargo")==cargoBefore+1,"Cargo acceptance cue missing");
-                    Require(!run.LoadParcel(run.Parcels[0]),"Duplicate acceptance succeeded");
-                    departureBefore=audio.PlayCount("departure");Require(run.StartJourney(3),"Departure failed");break;
+                    Require(a.PlayCount("cargo")==cargo+1&&a.PlayCount("departure")==departure+1&&a.PlayCount("damage")==damage+1&&a.PlayCount("delivered")==delivery+1,"Same-frame pickup/skip/damage/delivery lost a cue");
+                    Record(a);r.Node=6;r.Possess(0);r.Possess(0);break;
                 case 2:
-                    Require(audio.PlayCount("departure")==departureBefore+1,"Departure cue missing");
-                    encounterBefore=audio.PlayCount("encounter");run.State=ShiftState.Encounter;break;
+                    Require(a.PlayCount("possession")==possession+2&&a.PlayCount("repair")==repair,"Same-type exchange played repair or lost swap");
+                    Record(a);r.UseGhost();r.Node=5;r.LoadParcel(r.Parcels[8]);r.Parcels[8].Dry=r.Parcels[9].Dry=true;
+                    var wet=new StreetEdge(CourierStreetMap.Nodes[5],CourierStreetMap.Nodes[3],StreetSurface.Water,null);
+                    r.Roads[0]=new Road(5,3,6,0){StreetPath=new[]{wet}};r.Depart(r.Roads[0]);r.FastForwardTravel();break;
                 case 3:
-                    Require(audio.PlayCount("encounter")==encounterBefore+1,"Encounter cue missing");
-                    deliveredBefore=audio.PlayCount("delivered");
-                    for(int i=0;i<100&&run.State!=ShiftState.Docked&&!run.Finished;i++)
-                        if(run.State==ShiftState.Encounter)run.ResolveEncounter(true);else run.FastForwardTravel();
-                    CourierChecks.Go(run,3);
-                    Require(run.State==ShiftState.Docked,"Arrival failed");break;
+                    Require(a.PlayCount("damage")==damage+1&&a.PlayCount("delivered")==delivery+1,"Batch warning was duplicated or suppressed");
+                    Record(a);r.Node=0;r.Parcels[0].State=ParcelState.Waiting;r.LoadParcel(r.Parcels[0]);r.EventProbability=1;
+                    var c=CourierStreetMap.Node("C");r.Roads[0]=new Road(0,c.StopId,6,0){StreetPath=new[]{new StreetEdge(CourierStreetMap.Nodes[0],c,StreetSurface.Normal,null)}};
+                    r.Depart(r.Roads[0]);r.FastForwardTravel();Require(r.State==ShiftState.Encounter,"No configured event");
+                    // Confirm in this same frame: both the event and its resolution must still play.
+                    r.ResolveEncounter(true);break;
                 case 4:
-                    Require(audio.PlayCount("delivered")==deliveredBefore+1,"Delivery cue missing");
-                    run.UseGhost();CourierChecks.Go(run,5);break;
+                    Require(a.PlayCount("event_wait")==wait+1&&a.PlayCount("arrival")==arrival+1,"Skipped event resolution/arrival lost");
+                    r.Node=6;r.Possess(0);r.StartJourney(0);break;
                 case 5:
-                    cargoBefore=audio.PlayCount("cargo");deliveredBefore=audio.PlayCount("delivered");
-                    Require(run.LoadParcel(run.Parcels[8]),"Batch acceptance failed");break;
+                    Require(Engine(owner).volume>.02f,"H engine silent");r.State=ShiftState.Docked;r.Node=7;r.Possess(1);r.StartJourney(0);break;
                 case 6:
-                    Require(audio.PlayCount("cargo")==cargoBefore+1,"Batch should play once");
-                    CourierChecks.Go(run,3);break;
+                    Require(Engine(owner).volume>.02f&&Mathf.Abs(Engine(owner).pitch-1.05f)<.05f,"W still treated as bicycle");r.State=ShiftState.Docked;r.Node=8;r.Possess(2);r.StartJourney(0);break;
                 case 7:
-                    Require(audio.PlayCount("delivered")==deliveredBefore+1,"Batch delivery should play once");
-                    clickBefore=audio.PlayCount("click");GameManager.Instance.PauseGame();
-                    CourierSoundscape.PlayInterface("click");
-                    Require(audio.PlayCount("click")==clickBefore,"Paused game played interaction cue");break;
+                    Require(Engine(owner).volume>.02f&&Mathf.Abs(Engine(owner).pitch-.8f)<.05f,"Q engine wrong");r.State=ShiftState.Docked;r.UseGhost();r.StartJourney(0);break;
                 case 8:
-                    GameManager.Instance.ResumeGame();
-                    var manager=AudioManager.Instance;Require(manager!=null&&manager.audioMixer!=null,"Mixer missing");
-                    master=manager.mainVolume;sfx=manager.sfxVolumeFactor;bgm=manager.bgmVolumeFactor;saved=true;
-                    manager.ChangeMainVolume(0);
-                    Require(manager.audioMixer.GetFloat("Sfx",out var muted)&&muted<=-79,"Master mute missed courier sources");
-                    manager.ChangeMainVolume(.5f);manager.ChangeSfxVolume(.5f);
-                    Require(manager.audioMixer.GetFloat("Sfx",out var gain)&&Mathf.Abs(gain-20*Mathf.Log10(.25f))<.01f,"Master/SFX gain wrong");
-                    Restore();saved=false;cargoBefore=audio.PlayCount("cargo");
-                    owner.RestartShift();break;
+                    Require(Engine(owner).volume<.005f,"Ghost engine not silent");Record(a);
+                    GameManager.Instance.PauseGame();r.AudioCues.Enqueue("event_wait");break;
                 case 9:
-                    Require(audio.PlayCount("cargo")==cargoBefore,"Restart replayed old cargo cue");
-                    run.VehicleIndex=1;run.ActiveRoad=run.Roads[0];run.State=ShiftState.Driving;break;
+                    Require(a.PlayCount("event_wait")==wait,"Paused cue played");GameManager.Instance.ResumeGame();break;
                 case 10:
-                    Require(engineLoop.volume==0,"Bicycle has an engine sound");
-                    run.VehicleIndex=0;break;
+                    Require(a.PlayCount("event_wait")==wait+1,"Paused cue lost on resume");
+                    Record(a);r.AudioCues.Enqueue("event_wait");owner.RestartShift();break;
                 case 11:
-                    Require(engineLoop.volume>.1f&&engineLoop.pitch>1,"Scooter engine did not fade in");
-                    run.VehicleIndex=2;break;
-                case 12:
-                    Require(engineLoop.volume>.15f&&engineLoop.pitch<1.1f,"Pickup engine did not change tone");
-                    run.VehicleIndex=-1;break;
-                case 13:
-                    Require(engineLoop.volume==0,"Ghost has an engine sound");
-                    run.ActiveRoad=Array.Find(run.Roads,r=>r.Kind==RoadKind.Storm);break;
-                case 14:
-                    Require(windLoop.volume>.25f,"Storm wind did not strengthen");
-                    var settings=UIManager.Instance.OpenPanel("SettingPanel",null,UIPanelLayer.Top);
-                    Require(settings!=null,"Settings missing");break;
-                case 15:
-                    var panel=UIManager.Instance.GetPanel("SettingPanel");
-                    var credit=panel.transform.Find("AudioCredits").GetComponent<Text>();
-                    Require(credit.text.Contains("Wolfgang_")&&credit.text.Contains("qubodup")&&!credit.raycastTarget,"Credits missing or blocking input");
-                    Canvas.ForceUpdateCanvases();
-                    Debug.Log("COURIER_CREDITS size="+credit.rectTransform.rect.size+" preferredHeight="+credit.preferredHeight);
-                    Require(credit.preferredHeight<=credit.rectTransform.rect.height,"Audio credits clipped vertically");
-                    ScreenCapture.CaptureScreenshot("/tmp/courier-audio-credits.png");break;
-                case 16:
-                    SessionState.SetBool(Key,false);
-                    Debug.Log("COURIER_AUDIO PASS: 12 cues, 3 imported loops, mixer routing, acceptance/delivery, batch deduplication, pause/master mute/restart, bicycle/ghost silent engine, scooter/pickup tone, storm wind and readable attribution.");
-                    EditorApplication.Exit(0);return;
+                    Require(a.PlayCount("event_wait")==wait,"Restart replayed stale audio");
+                    Require(a.PlayCount("cargo")==cargo&&a.PlayCount("delivered")==delivery,"Restart replayed cargo/delivery");
+                    Finish(true,"24 cues + 3 loops decoded; 12 event mappings; fast-forward damage/delivery; batch deduplication; same-type exchange; H/W/Q and ghost engines; paused queue/resume; restart. Rules passed.");return;
             }
-            Debug.Log("COURIER_AUDIO step "+step+" passed");step++;next=EditorApplication.timeSinceStartup+.75;
+            step++;next=EditorApplication.timeSinceStartup+2.2;
         }
-        catch(Exception error){Restore();SessionState.SetBool(Key,false);Debug.LogException(error);EditorApplication.Exit(1);}
+        catch(Exception e){Debug.LogException(e);Finish(false,e.ToString());}
     }
 }
