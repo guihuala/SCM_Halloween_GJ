@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 namespace NightCourier
 {
-    // Authored CC0 interaction cues, with procedural ambience until music/loops are supplied.
+    // Licensed, imported loops and interaction cues. Attribution ships in AudioCredits.txt.
     public sealed class CourierSoundscape : MonoBehaviour
     {
         private NightCourierPrototype owner;
         private AudioSource music,wind,engine,cues;
-        private readonly List<AudioClip> generated=new List<AudioClip>();
         private ShiftState previousState;
         private int previousVehicle;
         private bool paused;
@@ -43,20 +40,16 @@ namespace NightCourier
         public void Initialize(NightCourierPrototype prototype,AudioClip authoredMusic)
         {
             owner=prototype;
-            music=Source("BGM",.055f);wind=Source("Sfx",.045f);engine=Source("Sfx",.025f);cues=Source("Sfx",.55f);
+            music=Source("BGM",0);wind=Source("Sfx",0);engine=Source("Sfx",0);cues=Source("Sfx",.55f);
             foreach(var cue in CueNames)
             {
                 effects[cue]=Resources.Load<AudioClip>("Audio/Courier/"+cue);
                 if(effects[cue]==null)Debug.LogWarning("Missing courier sound: "+cue);
             }
-            music.clip=authoredMusic!=null?authoredMusic:Generate("Temporary radio loop",8,t=>{
-                float[] notes={110,130.8128f,146.8324f,98};float f=notes[Math.Min(3,(int)(t/2))];float phase=t%2;
-                return (float)((Math.Sin(2*Math.PI*f*t)+.35*Math.Sin(2*Math.PI*f*1.5*t)+.20*Math.Sin(2*Math.PI*f*2*t))*Math.Exp(-phase*1.8)*.22);
-            });
-            var random=new System.Random(321);float filter=0;
-            wind.clip=Generate("Temporary wind loop",4,t=>{filter=filter*.94f+((float)random.NextDouble()*2-1)*.06f;return filter;});
-            engine.clip=Generate("Temporary engine loop",2,t=>(float)(Math.Sin(t*Math.PI*2*48)*.4+Math.Sin(t*Math.PI*2*96)*.15));
-            music.loop=wind.loop=engine.loop=true;music.Play();wind.Play();engine.Play();
+            music.clip=authoredMusic!=null?authoredMusic:LoadLoop("night_waltz");
+            wind.clip=LoadLoop("night_wind");engine.clip=LoadLoop("vehicle_engine");
+            foreach(var source in new[]{music,wind,engine})
+            {source.loop=true;if(source.clip!=null)source.Play();}
             Snapshot(owner.Run);
         }
         private AudioSource Source(string group,float volume)
@@ -66,11 +59,11 @@ namespace NightCourier
             {var groups=AudioManager.Instance.audioMixer.FindMatchingGroups(group);if(groups.Length>0)source.outputAudioMixerGroup=groups[0];}
             return source;
         }
-        private AudioClip Generate(string name,float seconds,Func<float,float> sample)
+        private static AudioClip LoadLoop(string name)
         {
-            const int rate=22050;int length=(int)(seconds*rate);var data=new float[length];
-            for(int i=0;i<length;i++)data[i]=Mathf.Clamp(sample(i/(float)rate),-1,1);
-            var clip=AudioClip.Create(name,length,1,rate,false);clip.SetData(data,0);generated.Add(clip);return clip;
+            var clip=Resources.Load<AudioClip>("Audio/Courier/Loops/"+name);
+            if(clip==null)Debug.LogWarning("Missing courier ambience: "+name);
+            return clip;
         }
         private void Snapshot(CourierRun run)
         {
@@ -110,9 +103,11 @@ namespace NightCourier
             else if(driving&&previousState==ShiftState.Docked)PlayCue("departure",.7f);
             else if(run.VehicleIndex==previousVehicle&&run.Durability>durability)PlayCue("repair",.65f);
             bool storm=run.ActiveRoad!=null&&run.ActiveRoad.Kind==RoadKind.Storm;
-            SetVolume(music,run.Parcels[0].State==ParcelState.Delivered?.075f:.045f,true);
-            SetVolume(wind,driving?(storm?.16f:.07f):.025f,false);
-            SetVolume(engine,driving&&!run.IsGhost?(run.VehicleIndex==2?.05f:.02f):0,false);
+            SetVolume(music,run.State==ShiftState.Docked&&owner.ConversationActive?.12f:run.Parcels[0].State==ParcelState.Delivered?.22f:.18f,true);
+            SetVolume(wind,driving?(storm?.30f:.15f):.045f,false);
+            // Vehicle 1 is a bicycle; it must never inherit the combustion-engine layer.
+            SetVolume(engine,driving&&(run.VehicleIndex==0||run.VehicleIndex==2)?(run.VehicleIndex==2?.18f:.13f):0,false);
+            engine.pitch=Mathf.MoveTowards(engine.pitch,run.VehicleIndex==0?1.35f:.8f,Time.unscaledDeltaTime*.5f);
             SetVolume(cues,.55f,false);
             Snapshot(run);
         }
@@ -120,9 +115,9 @@ namespace NightCourier
         {
             // The mixer already applies master/category gain. Fall back to settings if no mixer exists.
             var manager=AudioManager.Instance;
-            source.volume=gain*(source.outputAudioMixerGroup!=null?1:manager!=null?
+            float target=gain*(source.outputAudioMixerGroup!=null?1:manager!=null?
                 manager.mainVolume*(bgm?manager.bgmVolumeFactor:manager.sfxVolumeFactor):1);
+            source.volume=Mathf.MoveTowards(source.volume,target,Time.unscaledDeltaTime*.35f);
         }
-        private void OnDestroy(){foreach(var clip in generated)if(clip!=null)Destroy(clip);}
     }
 }

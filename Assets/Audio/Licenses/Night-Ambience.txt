@@ -1,0 +1,42 @@
+Night Courier ambience provenance
+
+MUSIC
+Title: Skeleton Waltz Theme / Bone Yard Waltz - Loopable
+Author: Wolfgang_
+Source: https://opengameart.org/content/skeleton-waltz-theme
+Download: https://opengameart.org/sites/default/files/Bone%20Yard%20Waltz%20-%20Loopable_0.ogg
+License: Creative Commons Attribution 4.0 International
+https://creativecommons.org/licenses/by/4.0/
+Local: Resources/Audio/Courier/Loops/night_waltz.ogg
+Changes: None to audio file. Playback gain is reduced during dialogue.
+
+WIND
+Title: wind1
+Author: Luke.RUSTLTD
+Source: https://opengameart.org/content/wind1
+Download: https://opengameart.org/sites/default/files/wind1.wav
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Local: Resources/Audio/Courier/Loops/night_wind.wav
+Changes: DC removal, gain adjustment, two-second loop crossfade, PCM16 mono.
+This is the author's PureData wind sound, not a field recording.
+
+ENGINE
+Title: Car Engine Loop 96kHz, 4s
+Author: qubodup / Iwan Gabovitch
+Source: https://opengameart.org/content/car-engine-loop-96khz-4s
+Download: https://opengameart.org/sites/default/files/engine-loop.7z
+Archive member: engine-loop/engine-loop-1-normalized.wav
+License chosen: Creative Commons Attribution 3.0 Unported
+https://creativecommons.org/licenses/by/3.0/
+Local: Resources/Audio/Courier/Loops/vehicle_engine.wav
+Changes: Stereo downmix to mono, DC removal, RMS gain adjustment, 50ms loop crossfade.
+Pitch and volume vary in-game for scooter and pickup. Bicycle and ghost do not use this engine.
+
+The music and engine are NOT CC0. Retain credits in the settings screen and the distributed AudioCredits.txt.
+Original works remain under their respective licenses. No endorsement by these authors is implied.
+
+SHA-256 of downloaded source files (before processing):
+89307593d0d18cd6667f1c0fbf13698ecf55cba1fccc7ab8547f06c384bf5b8b  courier-waltz.ogg
+a2856f794fbf77e05f8241dc4adeade7f62fa21c3c9dc49f7725b6c6218060c3  courier-wind.wav
+06b14b760fde613b357d043517f604dfde024318e764dff209a179ea39c566d6  courier-engine.7z
