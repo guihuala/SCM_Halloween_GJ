@@ -7,6 +7,7 @@ namespace NightCourier
     public sealed class CourierRouteGraphic : MaskableGraphic
     {
         public NightCourierPrototype Owner;
+        public CourierMapLegend Legend;
         public bool drawRoads=true,drawTravel=true;
         public bool drawRegions=true;
         public bool drawBaseRoads=true,drawBaseNodes=true;
@@ -88,6 +89,19 @@ namespace NightCourier
                     }
                 }
             }
+            if(Legend!=null)
+                foreach(var node in CourierStreetMap.Nodes)
+                {
+                    if(!Legend.HighlightsNode(node.StopId))continue;
+                    var point=MapPoint(node.Point,rectTransform.rect.size);
+                    Circle(vh,point,20,CourierColors.Alpha(CourierColors.Gold,.22f));
+                    for(int i=0;i<32;i++)
+                    {
+                        float a=i*Mathf.PI/16,b=(i+1)*Mathf.PI/16;
+                        Segment(vh,point+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*18,
+                            point+new Vector2(Mathf.Cos(b),Mathf.Sin(b))*18,CourierColors.Gold,2);
+                    }
+                }
             if(drawTravel&&Owner!=null&&run.ActiveRoad!=null&&(run.State==ShiftState.Driving||run.State==ShiftState.Pushing||run.State==ShiftState.Encounter))
             {
                 var position=TravelPoint(run,rectTransform.rect.size);

@@ -9,6 +9,7 @@ namespace NightCourier
         public CourierInteractionEffect effectPrefab;
         [Tooltip("Optional visual bounds for controls whose clickable area differs from their artwork.")]
         public RectTransform feedbackTarget;
+        public bool suppressOutline;
         private readonly Vector3[] feedbackCorners=new Vector3[4];
         private CourierInteractionEffect effect;
         private Button button;
@@ -36,11 +37,11 @@ namespace NightCourier
         public void Play()
         {
             if(!button.IsActive()||!button.IsInteractable())return;
-            if(effect!=null)effect.Play();
+            if(effect!=null&&!suppressOutline)effect.Play();
             if(burst!=null&&(effect==null||!effect.reducedMotion))burst.Play(effect!=null?effect.focusColor:CourierColors.Mint);
         }
         private void PlayClick(){if(!button.IsActive()||!button.IsInteractable())return;Play();CourierSoundscape.PlayInterface("click");}
-        private void Update(){if(effect!=null)effect.SetState(hovered||selected,pressed&&button.IsInteractable(),!button.IsInteractable());}
+        private void Update(){if(effect!=null){if(suppressOutline)effect.ResetEffect();else effect.SetState(hovered||selected,pressed&&button.IsInteractable(),!button.IsInteractable());}}
         private void LateUpdate()
         {
             if(effect==null||feedbackTarget==null)return;

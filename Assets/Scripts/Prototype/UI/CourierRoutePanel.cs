@@ -52,6 +52,8 @@ namespace NightCourier
         private CourierMapCanvas mapCanvas;
         private RectTransform mapViewport;
         private Text mapCanvasHelp;
+        private CourierMapLegend mapLegend;
+        public bool LegendHighlightsNode(int node) => mapLegend!=null&&mapLegend.HighlightsNode(node);
         private bool destinationVisible;
         private CourierMapMotion mapMotion;
         public bool MapReducedMotion => reducedPanelMotion;
@@ -179,6 +181,8 @@ namespace NightCourier
             Place(mapViewport,0,0,size.x,size.y);
             Place(mapCanvasHelp.rectTransform,24,size.y-40,440,32);
             PrepareDestinationTooltip();
+            if(mapLegend==null)mapLegend=CourierMapLegend.Create(page,this,vehicleText.font);
+            mapLegend.ApplyLayout(size);
             if(mapHeading!=null)mapHeading.gameObject.SetActive(false);
             foreach(var name in new[]{"PageHeaderRule","SummaryRule"})
             {var decoration=page.Find(name);if(decoration!=null)decoration.gameObject.SetActive(false);}

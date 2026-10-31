@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace NightCourier
 {
@@ -8,12 +9,18 @@ namespace NightCourier
     {
         public CourierRoutePanel panel;
         private readonly Dictionary<RectTransform,Vector3> originalScales=new Dictionary<RectTransform,Vector3>();
-        private CourierRoundedRing selectionRing;
+        private readonly Dictionary<Image,CourierLandmarkGlow> glows=new Dictionary<Image,CourierLandmarkGlow>();
+        private readonly HashSet<Image> legendImages=new HashSet<Image>();
         private CourierClickBurst burst;
         private int pulseNode=-1,lastSelected=-1,lastHovered=-1;
-        private float pulseAge=1,ringAlpha,routeArrival=1;
+        private float pulseAge=1,routeArrival=1;
         private StreetEdge[] lastPath;
         private readonly Vector3[] corners=new Vector3[4];
+        private void OnEnable()
+        {
+            var legacy=transform.Find("MapSelectedOutline");
+            if(legacy!=null)legacy.gameObject.SetActive(false);
+        }
         private RectTransform Visual(int node)
         {
             var art=panel.mapArtwork;if(art==null)return null;
@@ -52,6 +59,7 @@ namespace NightCourier
             int selected=active?panel.SelectedMapNode:-1,hovered=active?panel.HoveredMapNode:-1;
             float dt=Time.unscaledDeltaTime,blend=reduced?1:1-Mathf.Exp(-18*dt);
             pulseAge=Mathf.Min(1,pulseAge+dt/.3f);
+            legendImages.Clear();
             for(int node=0;node<9;node++)
             {
                 var target=Visual(node);if(target==null)continue;
@@ -59,25 +67,22 @@ namespace NightCourier
                 float scale=1;
                 if(!reduced&&active)
                 {
-                    scale+=hovered==node?.065f:selected==node?.025f:0;
+                    scale+=hovered==node||panel.LegendHighlightsNode(node)?.065f:selected==node?.025f:0;
                     if(node==pulseNode)scale+=Mathf.Sin(pulseAge*Mathf.PI)*(1-pulseAge)*.09f;
                 }
                 target.localScale=Vector3.Lerp(target.localScale,original*scale,blend);
                 if((target.localScale-original*scale).sqrMagnitude<.000001f)target.localScale=original*scale;
+                var image=target.GetComponent<Image>();
+                if(active&&panel.LegendHighlightsNode(node)&&image!=null&&image.sprite!=null)
+                {
+                    legendImages.Add(image);
+                    if(!glows.ContainsKey(image))glows.Add(image,CourierLandmarkGlow.Create(image));
+                }
             }
             var selectedTarget=Visual(selected)??(selected>=9?panel.mapArtwork.NodeTarget(selected):null);
-            if(selectionRing==null&&selectedTarget!=null)
-            {
-                var go=new GameObject("MapSelectedOutline",typeof(RectTransform),typeof(CanvasRenderer),typeof(CourierRoundedRing));
-                go.transform.SetParent(transform,false);selectionRing=go.GetComponent<CourierRoundedRing>();selectionRing.raycastTarget=false;
-            }
-            ringAlpha=Mathf.MoveTowards(ringAlpha,selectedTarget!=null?1:0,reduced?1:dt/.14f);
-            if(selectionRing!=null)
-            {
-                if(selectedTarget!=null)Fit(selectionRing.rectTransform,selectedTarget,12);
-                selectionRing.color=CourierColors.Alpha(CourierColors.Gold,ringAlpha*.85f);
-                selectionRing.enabled=ringAlpha>0;
-            }
+            var selectedImage=selectedTarget!=null?selectedTarget.GetComponent<Image>():null;
+            if(selectedImage!=null&&selectedImage.sprite!=null&&!glows.ContainsKey(selectedImage))glows.Add(selectedImage,CourierLandmarkGlow.Create(selectedImage));
+            foreach(var entry in glows)if(entry.Value!=null)entry.Value.SetSelected(entry.Key==selectedImage||legendImages.Contains(entry.Key),reduced);
             var roads=panel.mapGraphic.PreviewRoute.Count>0?panel.mapGraphic.PreviewRoute:panel.mapGraphic.SelectedRoute;
             var path=roads.Count>0?roads[0].StreetPath:null;
             if(selected!=lastSelected||hovered!=lastHovered||path!=lastPath){routeArrival=reduced?1:0;lastSelected=selected;lastHovered=hovered;lastPath=path;}
@@ -99,9 +104,9 @@ namespace NightCourier
         private void OnDisable()
         {
             foreach(var entry in originalScales)if(entry.Key!=null)entry.Key.localScale=entry.Value;
-            if(selectionRing!=null)selectionRing.enabled=false;
+            foreach(var glow in glows.Values)if(glow!=null)glow.ResetGlow();
             if(burst!=null)burst.enabled=false;
-            ringAlpha=0;pulseAge=1;lastSelected=lastHovered=-1;routeArrival=1;
+            pulseAge=1;lastSelected=lastHovered=-1;routeArrival=1;
             if(panel!=null&&panel.mapGraphic!=null){panel.mapGraphic.highlightVisibility=panel.mapGraphic.highlightProgress=1;panel.mapGraphic.SetVerticesDirty();}
         }
     }

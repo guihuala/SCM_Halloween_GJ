@@ -78,7 +78,7 @@ namespace NightCourier
                 foreach(var graphic in panel.stopButtons[i].GetComponentsInChildren<Graphic>())
                     graphic.raycastTarget=false;
                 var feedback=panel.stopButtons[i].GetComponent<CourierButtonFeedback>();
-                if(feedback!=null)feedback.feedbackTarget=rt;
+                if(feedback!=null){feedback.feedbackTarget=rt;feedback.suppressOutline=true;}
                 // The legacy button rectangle is an input region, not the landmark's visual bounds.
                 var focus=panel.stopButtons[i].GetComponent<CourierFocusRing>();
                 if(focus!=null){if(focus.ring!=null)focus.ring.enabled=false;focus.ring=null;}
