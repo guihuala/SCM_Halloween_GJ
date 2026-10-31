@@ -46,13 +46,13 @@ public static class CourierCharacterInstaller
                 hud.portraitFrame = AddImage(parent, "SpeakerAccent", 32, 846, 3, 120);
             if (hud.speakerPortrait == null)
             {
-                hud.speakerPortrait = AddImage(parent, "SpeakerPortrait", 44, 846, 120, 120);
+                hud.speakerPortrait = AddImage(parent, "SpeakerPortrait", 32, 815, 180, 180);
                 hud.speakerPortrait.preserveAspect = true;
                 hud.speakerPortrait.sprite = catalog.PortraitFor(catalog.ForStop(0));
             }
             if (hud.speakerName == null)
             {
-                var rect = Element(parent, "SpeakerName", 188, 827, 1452, 36);
+                var rect = Element(parent, "SpeakerName", 236, 827, 1404, 36);
                 hud.speakerName = rect.gameObject.AddComponent<Text>();
                 hud.speakerName.font = hud.subtitleText.font;
                 hud.speakerName.fontSize = 28;

@@ -30,8 +30,8 @@ namespace NightCourier
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
             if(bar!=null){bar.gameObject.SetActive(talking);bar.anchoredPosition=new Vector2(0,-810);bar.sizeDelta=new Vector2(1800,190);}
             subtitleText.gameObject.SetActive(talking);
-            subtitleText.rectTransform.anchoredPosition=show?new Vector2(188,-867):talking?new Vector2(40,-827):new Vector2(40,-944);
-            subtitleText.rectTransform.sizeDelta=show?new Vector2(1452,110):talking?new Vector2(1600,153):new Vector2(1600,40);
+            subtitleText.rectTransform.anchoredPosition=show?new Vector2(236,-867):talking?new Vector2(40,-827):new Vector2(40,-944);
+            subtitleText.rectTransform.sizeDelta=show?new Vector2(1404,110):talking?new Vector2(1600,153):new Vector2(1600,40);
             subtitleText.fontSize=talking?30:26;
             var advanceRect=(RectTransform)advanceButton.transform;
             advanceRect.anchoredPosition=new Vector2(advanceRect.anchoredPosition.x,talking?-873:-936);
