@@ -107,13 +107,13 @@
 
 ## 可用性修正
 
-Orders 使用右侧竖栏，待领取与已装载上下排列；Talk / Continue 固定在地图上方。地点标牌使用场所名称（SUBWAY / FOREST / MEAD / TOWER / MUSEUM / BAR）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用常规无衬线字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
+Orders 使用右侧竖栏，待领取与已装载上下排列；Talk / Continue 固定在地图上方。地点标牌使用场所名称（SUBWAY / FOREST / MEAD / TOWER / MUSEUM / BAR）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用易读的手写字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
 
 事件保留每个合资格路口 35% 的概率，每单最多一次，空载不触发；不同路口的机会累计，因此经过 2 个合资格路口至少遇到一次的概率为 57.75%。每次新开局与重开使用新的随机种子。验收入口：`Tools > Night Courier > Checks > Usability and Depot Start`。
 
 ## 界面字体
 
-界面统一使用 Nunito SemiBold（600），来自 Google Fonts 官方 Nunito 项目，圆润字形适配手绘氛围，常规宽度方便阅读长对话、订单及数字。字体位于 `Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf`，由官方可变字体固定为 600 字重；预制体、场景、运行时提示框与 UI 生成工具均已绑定。OFL 1.1 授权副本位于 `Assets/Art/Fonts/Nunito-OFL.txt` 及 `Assets/StreamingAssets/Nunito-OFL.txt`，后者随构建发布。来源：https://github.com/google/fonts/tree/main/ofl/nunito 。
+界面按功能搭配两款手写字体：Short Stack 用于标题、按钮及地图标牌；Itim 用于对话、订单、数值及提示。字体位于 `Assets/Resources/NightVoyage/Fonts/`，由 `CourierTypography` 统一分配，预制体、场景和运行时生成的文字使用相同规则。保留原字号与布局，不使用模拟粗体。两款字体均来自 Google Fonts 官方仓库（https://github.com/google/fonts/tree/main/ofl/shortstack 、https://github.com/google/fonts/tree/main/ofl/itim），OFL 1.1 授权位于 `Assets/StreamingAssets/ShortStack-OFL.txt` 和 `Assets/StreamingAssets/Itim-OFL.txt`，随构建发布。菜单 `Tools > Night Courier > Apply Handwritten Fonts (preserve layouts)` 可重新应用分工。
 
 ## 图标界面
 

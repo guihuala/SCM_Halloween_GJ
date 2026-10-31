@@ -16,6 +16,7 @@ namespace NightCourier
         private CourierTextJuice subtitleJuice;
         [Header("HUD Motion")]
         public bool reducedMotion;
+        public UIInfiniteScroll backgroundScroll;
         private readonly CourierHudMotion motion = new CourierHudMotion();
         private bool progressReady;
         private int progressLeg = -1;
@@ -66,7 +67,7 @@ namespace NightCourier
             bool show=(character!=null||goolie)&&speakerPortrait!=null&&speakerName!=null;
             if(speakerPortrait!=null)
             {
-                if(show){speakerPortrait.sprite=goolie?Resources.Load<Sprite>("NightVoyage/VehicleIcons/Ghost_"):characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
+                if(show){speakerPortrait.sprite=goolie?Resources.Load<Sprite>("NightVoyage/GooliePortrait"):characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
             }
             if(portraitFrame!=null){if(show)portraitFrame.color=goolie?CourierColors.Mint:character.accent;}
             if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
@@ -116,6 +117,7 @@ namespace NightCourier
         public override void Bind(NightCourierPrototype prototype){if(stageGraphic!=null){stageGraphic.gameObject.SetActive(false);stageGraphic.Owner=prototype;}base.Bind(prototype);}
         protected override void Refresh()
         {
+            if(backgroundScroll!=null)backgroundScroll.reducedMotion=reducedMotion;
             motion.RestoreLayout();ApplyReadableLayout();
             bool driving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
             var statusRect=(RectTransform)roadStatus.transform;var root=(RectTransform)transform;

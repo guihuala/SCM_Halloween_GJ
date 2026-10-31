@@ -125,13 +125,16 @@ namespace NightCourier
         private void CompactGuide(int step,string title,string body)
         {
             strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.zero;
-            strip.anchoredPosition=new Vector2(32,24);strip.sizeDelta=new Vector2(264,80);
+            strip.anchoredPosition=new Vector2(24,32);strip.sizeDelta=new Vector2(248,80);
             instruction.enabled=false;heading.enabled=true;heading.text=Mathf.Max(1,step)+"/6";
-            heading.rectTransform.anchoredPosition=new Vector2(80,-16);heading.rectTransform.sizeDelta=new Vector2(88,48);heading.alignment=TextAnchor.MiddleCenter;
+            heading.rectTransform.anchoredPosition=new Vector2(80,-16);heading.rectTransform.sizeDelta=new Vector2(72,48);heading.alignment=TextAnchor.MiddleCenter;
             var kind=step==0?CourierIconKind.Talk:step<=2?CourierIconKind.Box:step==3?CourierIconKind.Route:step==5?CourierIconKind.Warning:step==6?CourierIconKind.Check:CourierIconKind.Arrow;
             CourierSymbolUI.Icon(strip,"GuideSymbol",kind,16,16,48,CourierColors.Night,title+"\n"+body);
-            var close=(RectTransform)skipButton.transform;close.anchoredPosition=new Vector2(184,-8);close.sizeDelta=Vector2.one*64;
+            var close=(RectTransform)skipButton.transform;close.anchorMin=close.anchorMax=close.pivot=new Vector2(0,1);close.anchoredPosition=new Vector2(176,-12);close.sizeDelta=Vector2.one*56;
             CourierSymbolUI.Button(skipButton,CourierIconKind.Close,step==6?"Finish guide":"Dismiss guide");
+            var closeImage=skipButton.targetGraphic as Image;if(closeImage!=null)closeImage.color=Color.clear;
+            foreach(var outline in skipButton.GetComponents<Outline>())outline.enabled=false;
+            var closeSymbol=skipButton.transform.Find("ActionSymbol") as RectTransform;if(closeSymbol!=null)closeSymbol.sizeDelta=Vector2.one*32;
         }
         private void Focus(int index, RectTransform target)
         {

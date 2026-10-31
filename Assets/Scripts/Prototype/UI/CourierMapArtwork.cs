@@ -191,8 +191,8 @@ namespace NightCourier
                 for(int i=0;i<3;i++)
                 {
                     int target=6+i;var rect=CreateRect(landmarkLayer,"StationButton_"+target);
-                    var image=GetOrAdd<Image>(rect.gameObject);image.color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.10f);
-                    var outline=GetOrAdd<Outline>(rect.gameObject);outline.effectColor=CourierColors.Road;outline.effectDistance=new Vector2(1,-1);
+                    var image=GetOrAdd<Image>(rect.gameObject);image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");image.type=Image.Type.Sliced;image.color=CourierColors.Paper;
+                    var outline=GetOrAdd<Outline>(rect.gameObject);outline.enabled=false;
                     var button=GetOrAdd<Button>(rect.gameObject);button.targetGraphic=image;
                     button.onClick.AddListener(()=>panel.Select(target));
                     var hover=GetOrAdd<CourierMapNodeHover>(rect.gameObject);hover.panel=panel;hover.node=target;
@@ -201,7 +201,7 @@ namespace NightCourier
                     stationButtons[i]=button;
                 }
                 var statusRect=CreateRect(transform,"ProtectionStatus");protectionStatus=GetOrAdd<Text>(statusRect.gameObject);
-                protectionStatus.font=panel.stopLabels[0].font;protectionStatus.fontSize=24;protectionStatus.color=CourierColors.Muted;protectionStatus.raycastTarget=false;
+                protectionStatus.font=CourierTypography.Body;protectionStatus.fontSize=24;protectionStatus.color=CourierColors.Muted;protectionStatus.raycastTarget=false;
             }
             for(int i=0;i<3;i++)
             {
@@ -231,6 +231,12 @@ namespace NightCourier
                 var stationLabel=button.GetComponentInChildren<Text>();
                 stationLabel.text=title+"\n"+"Swap · +1 turn";
                 CourierSymbolUI.Button(button,i==0?CourierIconKind.Heat:i==1?CourierIconKind.Dry:CourierIconKind.Fragile,CourierInformation.Station(run,target));
+                var oldSymbol=button.transform.Find("ActionSymbol");if(oldSymbol!=null)oldSymbol.GetComponent<CourierIconGraphic>().enabled=false;
+                var vehicle=CourierVehicleIconView.Ensure(button.transform,"StationVehicleArtwork",Vector2.zero,Vector2.one*56);
+                vehicle.SetVehicle(i);var vehicleRect=(RectTransform)vehicle.transform;vehicleRect.anchorMin=vehicleRect.anchorMax=vehicleRect.pivot=Vector2.one*.5f;vehicleRect.anchoredPosition=Vector2.zero;
+                var background=button.targetGraphic as Image;
+                if(background!=null){background.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");background.type=Image.Type.Sliced;background.color=CourierColors.Paper;}
+                foreach(var border in button.GetComponents<Outline>())border.enabled=false;
                 stationLabel.rectTransform.offsetMin=new Vector2(12,8);stationLabel.rectTransform.offsetMax=new Vector2(-12,-8);
                 var colors=button.colors;colors.normalColor=run.HasProtection(target)?CourierColors.Mint:Color.white;colors.highlightedColor=CourierColors.Hover;button.colors=colors;
             }

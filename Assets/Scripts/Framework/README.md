@@ -16,7 +16,7 @@ Unity 2022.3.62f3。打开 `Assets/Scenes/MainMenu.unity`，点击新游戏直�
 
 `Assets/Editor/GameFlowSmokeTest.cs` 提供批处理入口 `GameFlowSmokeTest.Run`（启动 Unity 时传 `-executeMethod GameFlowSmokeTest.Run`，不要加 `-quit`）。它运行真实场景，验证开始、暂停、设置、恢复、胜负结算、连续重开、返回菜单、单例数量、慢动作恢复和音效停止隔离；不操作玩家存档。
 
-游戏界面固定英文，使用项目内 Nunito SemiBold 字体，本地化和模板对话模块已移除；夜航对白由 `CourierRun.TalkToNpc()` 提供，并在电影字幕中展示。
+游戏界面固定英文，使用项目内 Short Stack 标题字体与 Itim 正文字体，本地化和模板对话模块已移除；夜航对白由 `CourierRun.TalkToNpc()` 提供，并在电影字幕中展示。
 
 以下为保留模块的参考说明；默认场景以本节流程为准。
 

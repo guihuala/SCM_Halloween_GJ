@@ -12,7 +12,7 @@ namespace NightCourier
             var image=GetComponent<Image>();
             if(image!=null){image.color=CourierColors.Paper;image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Panel");image.type=Image.Type.Sliced;image.raycastTarget=false;}
             var outline=GetComponent<Outline>();if(outline!=null)outline.enabled=false;
-            if(label!=null){label.color=CourierColors.Night;label.font=Resources.Load<Font>("NightVoyage/Fonts/Nunito-SemiBold");label.fontSize=Mathf.Max(28,label.fontSize);label.supportRichText=true;label.lineSpacing=1.18f;label.alignment=TextAnchor.UpperLeft;}
+            if(label!=null){label.color=CourierColors.Night;label.font=CourierTypography.Body;label.fontSize=Mathf.Max(28,label.fontSize);label.supportRichText=true;label.lineSpacing=1.18f;label.alignment=TextAnchor.UpperLeft;}
             maxWidth=Mathf.Max(620,maxWidth);padding=Mathf.Max(28,padding);
         }
         public string FormatMessage(string message)

@@ -87,10 +87,9 @@ public static class GameFlowSmokeTest
         if (menuMotion != null && menuMotion.IsExiting) return;
         try
         {
-            var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
             foreach(var text in UnityEngine.Object.FindObjectsOfType<Text>(true))
             {
-                Require(text.font==font,"Project font missing on "+text.name);
+                Require(text.font==NightCourier.CourierTypography.For(text),"Font role mismatch on "+text.name);
                 Require(!System.Text.RegularExpressions.Regex.IsMatch(text.text,@"[\u3400-\u9fff]"),"Non-English UI text on "+text.name);
             }
             var game = GameManager.Instance;

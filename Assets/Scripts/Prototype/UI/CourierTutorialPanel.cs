@@ -12,8 +12,7 @@ namespace NightCourier
         {
             owner=prototype;
             if(GetComponent<CourierTooltip>()==null)gameObject.AddComponent<CourierTooltip>();
-            if(owner.UIFont!=null)
-                foreach(var label in GetComponentsInChildren<UnityEngine.UI.Text>(true))label.font=owner.UIFont;
+            CourierTypography.Apply(gameObject);
             view.Bind(owner);
         }
         private void LateUpdate()

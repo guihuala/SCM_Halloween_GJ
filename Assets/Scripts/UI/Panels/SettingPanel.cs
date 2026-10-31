@@ -25,7 +25,7 @@ public class SettingPanel : BasePanel
         if(credits==null||label==null)return;
         var go=new GameObject("AudioCredits",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));
         go.transform.SetParent(transform,false);
-        var text=go.GetComponent<Text>();text.font=label.font;text.fontSize=18;
+        var text=go.GetComponent<Text>();text.font=NightCourier.CourierTypography.Body;text.fontSize=18;
         text.alignment=TextAnchor.LowerCenter;text.color=NightCourier.CourierColors.Muted;text.raycastTarget=false;
         text.text=credits.text;
         var rect=text.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.right;

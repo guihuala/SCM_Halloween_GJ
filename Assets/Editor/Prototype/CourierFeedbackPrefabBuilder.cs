@@ -61,7 +61,7 @@ public static class CourierFeedbackPrefabBuilder
         var view=rect.gameObject.AddComponent<CourierHintView>();view.group=rect.gameObject.AddComponent<CanvasGroup>();view.group.blocksRaycasts=false;view.group.interactable=false;
         var outline=rect.gameObject.AddComponent<Outline>();outline.effectColor=new Color(.45f,.94f,.77f,.65f);outline.effectDistance=new Vector2(1,-1);
         var text=Rect("Hint",rect);text.anchorMin=Vector2.zero;text.anchorMax=Vector2.one;text.offsetMin=new Vector2(16,16);text.offsetMax=new Vector2(-16,-16);
-        view.label=text.gameObject.AddComponent<Text>();view.label.font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");view.label.fontSize=24;
+        view.label=text.gameObject.AddComponent<Text>();view.label.font=CourierTypography.Body;view.label.fontSize=24;
         view.label.color=new Color(.92f,.95f,.93f);view.label.lineSpacing=1.15f;view.label.raycastTarget=false;view.label.alignment=TextAnchor.MiddleLeft;
         PrefabUtility.SaveAsPrefabAsset(rect.gameObject,path);Object.DestroyImmediate(rect.gameObject);
     }

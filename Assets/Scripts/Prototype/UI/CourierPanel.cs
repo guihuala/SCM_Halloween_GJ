@@ -20,8 +20,7 @@ namespace NightCourier
         public virtual void Bind(NightCourierPrototype prototype)
         {
             owner = prototype;
-            if (owner.UIFont != null)
-                foreach (var text in GetComponentsInChildren<Text>(true)) text.font = owner.UIFont;
+            CourierTypography.Apply(gameObject);
             Refresh();
         }
         protected virtual void Update() { if (owner != null && !hasRemoved) {

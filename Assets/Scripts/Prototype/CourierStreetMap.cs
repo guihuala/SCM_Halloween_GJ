@@ -33,11 +33,12 @@ namespace NightCourier
         public StreetEdge(StreetNode a,StreetNode b,StreetSurface surface,StreetPoint? control)
         {
             A=a;B=b;Surface=surface;
-            Points=new StreetPoint[17];lengths=new float[17];
+            var traced=CourierRouteTrace.Get(a.Id,b.Id,surface);
+            Points=traced??new StreetPoint[65];lengths=new float[Points.Length];
             for(int i=0;i<Points.Length;i++)
             {
-                float t=i/16f;
-                Points[i]=control.HasValue?StreetPoint.Lerp(StreetPoint.Lerp(a.Point,control.Value,t),StreetPoint.Lerp(control.Value,b.Point,t),t):StreetPoint.Lerp(a.Point,b.Point,t);
+                float t=i/(float)(Points.Length-1);
+                if(traced==null)Points[i]=control.HasValue?StreetPoint.Lerp(StreetPoint.Lerp(a.Point,control.Value,t),StreetPoint.Lerp(control.Value,b.Point,t),t):StreetPoint.Lerp(a.Point,b.Point,t);
                 if(i>0)lengths[i]=lengths[i-1]+StreetPoint.Distance(Points[i-1],Points[i]);
             }
         }

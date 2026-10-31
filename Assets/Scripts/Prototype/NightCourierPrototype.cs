@@ -67,8 +67,8 @@ namespace NightCourier
             Current = this;
             Run = new CourierRun(System.Environment.TickCount) { Node = CourierStreetMap.Node("S").StopId };
             CourierContentOverrides.Apply(Run);
-            // Use a regular-weight sans serif for small HUD and order text.
-            uiFont = Resources.Load<Font>("NightVoyage/Fonts/Nunito-SemiBold");
+            // Handwritten body face; headings and actions use the display role.
+            uiFont = CourierTypography.Body;
         }
         private void Start()
         {

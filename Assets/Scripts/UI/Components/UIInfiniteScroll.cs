@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Drives the postal tape material with unscaled time, only while enabled.</summary>
+/// <summary>Drives repeating UI materials with unscaled time, only while enabled.</summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Graphic))]
 public sealed class UIInfiniteScroll : MonoBehaviour
 {
     [SerializeField] private Material scrollMaterial;
+    public bool reducedMotion;
 
     private static readonly int PhaseId = Shader.PropertyToID("_ScrollPhase");
     private static readonly int SpeedId = Shader.PropertyToID("_Speed");
@@ -21,7 +22,7 @@ public sealed class UIInfiniteScroll : MonoBehaviour
         originalMaterial = graphic.material;
         var source = scrollMaterial != null ? scrollMaterial : originalMaterial;
         if (source == null || !source.HasProperty(PhaseId) || !source.HasProperty(SpeedId)) return;
-        instance = new Material(source) { name = source.name + " (Loading Instance)" };
+        instance = new Material(source) { name = source.name + " (UI Scroll Instance)" };
         phase = 0f;
         instance.SetFloat(PhaseId, phase);
         graphic.material = instance;
@@ -29,7 +30,7 @@ public sealed class UIInfiniteScroll : MonoBehaviour
 
     private void Update()
     {
-        if (instance == null) return;
+        if (instance == null || reducedMotion) return;
         phase = Mathf.Repeat(phase + Time.unscaledDeltaTime * instance.GetFloat(SpeedId), 1f);
         instance.SetFloat(PhaseId, phase);
         // Mask creates a stencil material copy; keep its phase in sync as well.

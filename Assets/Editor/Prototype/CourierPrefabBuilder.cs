@@ -21,8 +21,8 @@ public static class CourierPrefabBuilder
     public static void Build()
     {
         Directory.CreateDirectory(Folder); Directory.CreateDirectory("Assets/Prefab/UI"); AssetDatabase.Refresh();
-        font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
-        if(font==null)throw new System.InvalidOperationException("Project font is missing: Nunito SemiBold");
+        font = AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Itim-Regular.ttf");
+        if(font==null)throw new System.InvalidOperationException("Project font is missing: Itim");
         ExportContentTables(); BuildRow(); BuildTutorial(); BuildHud(); BuildRoute(); BuildEvent(); BuildResult();
         var registry = AssetDatabase.LoadAssetAtPath<UIDatas>("Assets/Resources/Data/UIDataListSO.asset");
         registry.uiDataList.RemoveAll(x=>x.uiName=="CourierCargoPanel"||x.uiName=="CourierVehiclePanel");
@@ -41,12 +41,13 @@ public static class CourierPrefabBuilder
         CourierMapPageInstaller.Install();
         CourierHudArtInstaller.Install();
         CourierPaletteInstaller.Install();
+        CourierHudBackgroundInstaller.Install();
         Debug.Log("COURIER_PREFABS PASS: cinematic HUD, unified map/trunk, event, endings and cargo card saved.");
     }
     [MenuItem("Tools/Night Courier/Add Travel Controls (preserve layouts)")]
     public static void InstallTravelControls()
     {
-        font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Nunito-SemiBold.ttf");
+        font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/NightVoyage/Fonts/Itim-Regular.ttf");
         foreach(var name in new[]{"CourierHudPanel","CourierRoutePanel","CourierEventPanel"})
         {
             string path=Folder+"/"+name+".prefab";var root=PrefabUtility.LoadPrefabContents(path);
@@ -136,7 +137,7 @@ public static class CourierPrefabBuilder
     {var image=rt.gameObject.AddComponent<Image>();image.color=c;image.raycastTarget=raycast;return image;}
     private static Text Text(Transform parent,string name,string content,float x,float y,float w,float h,int size=24,Color? color=null)
     {
-        var t=Element(name,parent,x,y,w,h).gameObject.AddComponent<Text>();t.font=font;t.text=content;t.fontSize=size;t.color=color??White;
+        var t=Element(name,parent,x,y,w,h).gameObject.AddComponent<Text>();t.font=CourierTypography.For(t);t.text=content;t.fontSize=size;t.color=color??White;
         t.alignment=TextAnchor.MiddleLeft;t.raycastTarget=false;t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;t.lineSpacing=1.18f;
         return t;
     }

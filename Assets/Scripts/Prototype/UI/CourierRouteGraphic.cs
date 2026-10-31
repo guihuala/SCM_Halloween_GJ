@@ -17,6 +17,8 @@ namespace NightCourier
         public Color selectedRoadColor=new Color(1,.66f,.34f);
         public System.Collections.Generic.List<Road> SelectedRoute=new System.Collections.Generic.List<Road>();
         public Color previewRoadColor=new Color(.45f,.94f,.77f);
+        [Range(0,1)] public float highlightVisibility=1;
+        [Range(0,1)] public float highlightProgress=1;
         public System.Collections.Generic.List<Road> PreviewRoute=new System.Collections.Generic.List<Road>();
         private static readonly CourierRun Preview = new CourierRun();
         public static readonly Vector2 MapCanvasSize=new Vector2(1200,820);
@@ -55,10 +57,9 @@ namespace NightCourier
                 foreach(var edge in CourierStreetMap.Edges)
                 {
                     bool active=run.ActiveRoad!=null&&run.State!=ShiftState.Docked&&!run.Finished&&run.ActiveRoad.StreetPath!=null&&System.Array.IndexOf(run.ActiveRoad.StreetPath,edge)>=0;
-                    bool highlighted=Includes(PreviewRoute,edge)||active||(PreviewRoute.Count==0&&Includes(SelectedRoute,edge));
-                    if(!drawBaseRoads&&!highlighted)continue;
+                    if(!drawBaseRoads&&!active)continue;
                     Color surface=edge.Surface==StreetSurface.Heat?CourierColors.Heat:edge.Surface==StreetSurface.Water?CourierColors.Water:edge.Surface==StreetSurface.Bumpy?CourierColors.Rough:idleRoadColor;
-                    Color c=Includes(PreviewRoute,edge)?previewRoadColor:active||(PreviewRoute.Count==0&&Includes(SelectedRoute,edge))?selectedRoadColor:surface;
+                    Color c=active?selectedRoadColor:surface;
                     for(int i=1;i<edge.Points.Length;i++)
                     {
                         var a=MapPoint(edge.Points[i-1],rectTransform.rect.size);var b=MapPoint(edge.Points[i],rectTransform.rect.size);
@@ -66,6 +67,8 @@ namespace NightCourier
                         if(edge.Surface!=StreetSurface.Bumpy||i%2==1)Segment(vh,a,b,c,2.2f);
                     }
                 }
+                if(run.State==ShiftState.Docked)
+                    DrawRoute(vh,run,PreviewRoute.Count>0?PreviewRoute:SelectedRoute,PreviewRoute.Count>0?previewRoadColor:selectedRoadColor);
                 foreach(var node in CourierStreetMap.Nodes)
                 {
                     var point=MapPoint(node.Point,rectTransform.rect.size);
@@ -90,6 +93,36 @@ namespace NightCourier
                 var position=TravelPoint(run,rectTransform.rect.size);
                 Circle(vh,position,travelHaloRadius+Mathf.Sin(Owner.VisualTime*3)*1.5f,CourierColors.Alpha(CourierColors.Mint,.18f));
                 if(drawTravelDot)Circle(vh,position,7,CourierColors.Mint);
+            }
+        }
+        private void DrawRoute(VertexHelper mesh,CourierRun run,System.Collections.Generic.List<Road> roads,Color tint)
+        {
+            if(roads.Count==0||highlightProgress<=0)return;
+            float length=0;foreach(var road in roads)if(road.StreetPath!=null)foreach(var edge in road.StreetPath)length+=edge.Length;
+            float budget=length*highlightProgress;
+            var node=System.Array.Find(CourierStreetMap.Nodes,n=>n.StopId==run.Node);
+            if(node==null)return;
+            tint.a*=highlightVisibility;
+            foreach(var road in roads)
+            {
+                var path=road.StreetPath;if(path==null)continue;
+                bool forward=node.StopId==road.A;
+                for(int e=0;e<path.Length;e++)
+                {
+                    var edge=path[forward?e:path.Length-1-e];bool fromA=edge.A==node;
+                    for(int i=1;i<edge.Points.Length;i++)
+                    {
+                        var start=edge.Points[fromA?i-1:edge.Points.Length-i];var end=edge.Points[fromA?i:edge.Points.Length-1-i];
+                        float distance=StreetPoint.Distance(start,end);if(distance<=.0001f)continue;
+                        float fraction=Mathf.Clamp01(budget/distance);
+                        var a=MapPoint(start,rectTransform.rect.size);var b=MapPoint(StreetPoint.Lerp(start,end,fraction),rectTransform.rect.size);
+                        Segment(mesh,a,b,CourierColors.Alpha(tint,tint.a*.16f),5);
+                        Segment(mesh,a,b,tint,2.3f);
+                        budget-=distance;
+                        if(budget<=0){if(highlightProgress<1)Circle(mesh,b,3.2f,CourierColors.Paper);return;}
+                    }
+                    node=edge.Other(node);
+                }
             }
         }
         private void Region(VertexHelper vh,Color color,Vector2[] points)

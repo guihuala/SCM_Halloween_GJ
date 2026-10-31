@@ -53,7 +53,7 @@ namespace NightCourier
         public void Bind(NightCourierPrototype prototype,Parcel item)
         {
             owner=prototype;parcel=item;DropFeedbackOrigin=null;PrepareArtwork();RefreshArtwork();
-            foreach(var t in GetComponentsInChildren<Text>(true))t.font=owner.UIFont;
+            CourierTypography.Apply(gameObject);
             actionButton.onClick.AddListener(()=>{if(parcel.State==ParcelState.Loaded)owner.Run.Unload(parcel);else owner.Run.LoadParcel(parcel);});
         }
         public bool LoadByDrop()

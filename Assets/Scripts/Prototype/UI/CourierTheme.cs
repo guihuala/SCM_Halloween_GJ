@@ -10,6 +10,7 @@ namespace NightCourier
     {
         public static void Apply(GameObject root)
         {
+            CourierTypography.Apply(root);
             foreach(var image in root.GetComponentsInChildren<Image>(true))
             {
                 if(image.color.a<=.001f)continue; // Hit regions and masks keep their authored transparency.
