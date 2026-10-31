@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c176f7aefc4648669e9cb3c19fc0539d, type: 3}
+  m_Name: VehicleIcons
+  m_EditorClassIdentifier:
+  icons:
+  - vehicleId: 0
+    sprite: {fileID: 21300000, guid: ae7fea274d104f699e2e7c918082c8e1, type: 3}
+  - vehicleId: 1
+    sprite: {fileID: 21300000, guid: 9fc9067bc33a4670bac25fc4d67990d4, type: 3}
+  - vehicleId: 2
+    sprite: {fileID: 21300000, guid: ba84afdbb5234b0c9bda204e405f6140, type: 3}

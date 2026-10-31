@@ -13,6 +13,13 @@ namespace NightCourier
         public CourierRouteGraphic mapGraphic;
         public Text objectiveText,destinationText,timeCostText,wearCostText,riskText,vehicleText,durabilityText,loadText;
         public Image durabilityFill;
+        public CourierVehicleIconView vehicleArtwork, parkedVehicleArtwork;
+        public void PrepareVehicleArtwork()
+        {
+            vehicleArtwork=CourierVehicleIconView.Ensure(vehicleText.transform.parent,"CurrentVehicleArtwork",new Vector2(32,-14),new Vector2(68,68));
+            parkedVehicleArtwork=CourierVehicleIconView.Ensure(possessButton.transform,"ParkedVehicleArtwork",new Vector2(10,-6),new Vector2(40,40));
+            vehicleText.rectTransform.anchoredPosition=new Vector2(112,-24);vehicleText.rectTransform.sizeDelta=new Vector2(140,44);
+        }
         public Button departButton,possessButton,repairButton;
         public CourierIconGraphic possessIcon;
         public CourierIconHint departHint,possessHint;
@@ -72,7 +79,7 @@ namespace NightCourier
                 Place((RectTransform)costGroup.transform,size.x*.5f,contentBottom-100,580,42);
                 Place(riskText.rectTransform,32,contentBottom-48,size.x-168,44);
                 Place((RectTransform)departButton.transform,size.x-96,contentBottom-100,64,64);
-                Place(vehicleText.rectTransform,32,24,200,44);
+                Place(vehicleText.rectTransform,112,24,140,44);
                 Move("DurabilityIcon",260,28);Move("DurabilityFillBackground",308,44);Move("DurabilityFill",308,44);
                 Place(durabilityText.rectTransform,444,28,120,36);
                 Move("LoadIcon",580,28);Place(loadText.rectTransform,628,28,172,36);
@@ -135,7 +142,7 @@ namespace NightCourier
         }
         protected override void Awake()
         {
-            base.Awake();
+            base.Awake();PrepareVehicleArtwork();
             if(cargoToggleButton!=null)cargoToggleButton.onClick.AddListener(ToggleCargoDrawer);
             if(cargoCloseButton!=null)cargoCloseButton.onClick.AddListener(()=>SetCargoOpen(false));
             if(nodePromptButton!=null)nodePromptButton.onClick.AddListener(()=>{if(owner==null||!owner.Active||Run.State!=ShiftState.Docked)return;if(Run.HasJourney)owner.AdvanceDialogue();else owner.BeginConversation();});
@@ -171,11 +178,16 @@ namespace NightCourier
                 stopHints[i].message=Run.Stops[i].Name+(current?" - You are here":"")+(locked?" - Story locked":"")+
                     (parcels.Length>0?"\nDeliveries: "+string.Join(", ",parcels.Select(p=>p.Name)):"")+string.Concat(pending.Select(g=>"\nPick up: "+string.Join(" + ",g.Select(p=>p.Name))+" > "+Run.Stops[g.Key].Name));
             }
+            if(vehicleArtwork==null||parkedVehicleArtwork==null)PrepareVehicleArtwork();
+            vehicleArtwork.SetVehicle(Run.VehicleIndex);
             vehicleText.text=Run.Car.Name;durabilityText.text=Run.IsGhost?"No limit":Mathf.CeilToInt(Run.Durability)+" turns";loadText.text=Run.ActiveOrder==null?"No active order":"Order "+Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder);
             loadText.color=Run.Overloaded?new Color(1,.66f,.34f):new Color(.92f,.95f,.93f);
             durabilityFill.fillAmount=Run.IsGhost?1:Run.Durability/Run.Car.MaxDurability;
             int v=Run.Stops[Run.Node].Vehicle;bool parked=docked&&v>=0&&v!=Run.VehicleIndex;
             possessButton.gameObject.SetActive(parked);
+            parkedVehicleArtwork.gameObject.SetActive(parked&&Run.UnlockedVehicles[v]);
+            possessIcon.gameObject.SetActive(parked&&!Run.UnlockedVehicles[v]);
+            if(parked)parkedVehicleArtwork.SetVehicle(v);
             if(parked){possessButton.interactable=Run.CanPossess(v);Caption(possessButton,Run.Vehicles[v].Name);possessIcon.SetKind(Run.UnlockedVehicles[v]?CourierIconKind.Ghost:CourierIconKind.Lock);possessHint.message=!Run.UnlockedVehicles[v]?"Old pickup locked\nDeliver Repair Equipment from Settlement Bar to the vampire DJ.":Run.CanPossess(v)?"Possess "+Run.Vehicles[v].Name:"Vehicle unavailable at this stop.";}
             bool repair=docked&&!Run.IsGhost&&Run.Stops[Run.Node].Repair&&Run.Durability<Run.Car.MaxDurability;repairButton.gameObject.SetActive(repair);repairButton.interactable=Run.Durability<Run.Car.MaxDurability;
             int waiting=0,loadedCount=0;

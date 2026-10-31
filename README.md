@@ -108,3 +108,13 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定。整句文字一次排版，播放时只变更字符顶点，换行不会随逐字播放跳动；行驶状态提示直接显示。按 E 或对话箭头先补全当前句，再次操作进入下一句，游戏暂停时动画同步暂停。
 
 可在 HUD 的字幕 Text 上添加 `CourierTextJuice` 调整 `charactersPerSecond`（默认42）、`settleDuration`（0.24秒）、`rise`（8）和 `pop`（0.16）；未添加时 HUD 自动挂载默认组件。`reducedMotion` 开启后直接显示完整文字。
+
+## 货物图标（SVG 源文件）
+
+12件货物使用同一套256×256 SVG设计：深色圆角描边，薄荷绿、暖金、奶油白与淡紫配色，各图透明背景。源文件位于 `Assets/Art/Sprite/Cargo/Sources/`；游戏内使用对应的384×384透明PNG，位于 `Assets/Resources/NightVoyage/CargoIcons/`。总览在 `ArtPreviews/cargo-icons.svg` 和 `ArtPreviews/cargo-icons.png`，总览自身的深色底仅用于预览。
+
+`Assets/Resources/NightVoyage/CargoIcons.asset` 按 `Parcels.csv` 的稳定ID绑定12张Sprite，可在Inspector中替换。货物卡片左侧显示图标；维修装置和血液的合批卡同时显示两张，拖拽时也保留货物图标。图片不拦截点击，文字按可用宽度换行并自动增加卡片高度。缺少图片时仍保留名称和配送信息。
+
+`Tools > Night Courier > Install Cargo Artwork (preserve layouts)` 将图标接入现有货物卡片，保留地图与抽屉布局；完整重建货物卡片也会接入。`CourierCargoArtInstaller.InstallAndCheck` 验证12个资源映射、合批双图、拖拽图像、文字排版、暂停、交付和重开。
+
+重新生成：`python3 Tools/Art/generate_cargo_icons.py`（需要Node.js和sharp；可通过 `CARGO_SHARP_MODULE` 指定sharp模块）。只生成SVG可加 `--svg-only`，无需图片渲染依赖。生成后运行上述安装入口更新Unity导入设置。

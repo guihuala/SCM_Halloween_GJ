@@ -241,6 +241,7 @@ public static class CourierPrefabBuilder
         var clock=Icon(timed,"ClockIcon",CourierIconKind.Clock,0,0,32,Orange,"Timed delivery");row.timeHint=clock.GetComponent<CourierIconHint>();row.timeText=Text(timed,"TimeText","60",44,-3,62,38,28,Orange);
         row.actionButton=IconButton(rt,"LoadButton",CourierIconKind.Load,"Load into trunk",438,28,56,true);var buttonRect=(RectTransform)row.actionButton.transform;buttonRect.anchorMin=buttonRect.anchorMax=new Vector2(1,1);buttonRect.anchoredPosition=new Vector2(-64,-28);
         row.actionIcon=row.actionButton.GetComponentInChildren<CourierIconGraphic>();row.actionHint=row.actionButton.GetComponent<CourierIconHint>();
+        row.PrepareArtwork();
         PrefabUtility.SaveAsPrefabAsset(rt.gameObject,"Assets/Prefab/UI/CourierCargoRow.prefab");Object.DestroyImmediate(rt.gameObject);
     }
     private static Transform Scroll(Transform parent,string name,float x,float y,float w,float h)
@@ -292,6 +293,7 @@ public static class CourierPrefabBuilder
         Icon(card,"DurabilityIcon",CourierIconKind.Wrench,756,72,36,Muted,"Remaining vehicle turns");p.durabilityFill=Fill(card,"DurabilityFill",804,88,120,8,Mint);p.durabilityText=Text(card,"DurabilityText","50/50",936,72,120,36,24);
         Icon(card,"LoadIcon",CourierIconKind.Box,1056,72,36,Muted,"One active order batch at a time");p.loadText=Text(card,"LoadText","1/3",1104,72,172,36,24);
         p.possessButton=IconLabelButton(card,"PossessButton","Bicycle",CourierIconKind.Ghost,"Possess ",756,120,250,52);p.possessIcon=p.possessButton.GetComponentInChildren<CourierIconGraphic>();p.possessHint=p.possessButton.GetComponent<CourierIconHint>();
+        p.PrepareVehicleArtwork();
         p.repairButton=IconLabelButton(card,"RepairButton","Free",CourierIconKind.Wrench,"Restore vehicle turns for free",1056,120,220,52);
         var waiting=Element("WaitingSection",card,756,182,520,180);p.waitingSection=waiting;Text(waiting,"WaitingHeading","Pick Up",0,0,500,30,20,Muted);p.waitingContent=Scroll(waiting,"WaitingParcels",0,38,520,142);
         var loaded=Element("LoadedSection",card,756,342,520,250);p.loadedSection=loaded;Text(loaded,"TrunkHeading","On Board",0,0,500,30,20,Mint);
