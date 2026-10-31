@@ -118,3 +118,11 @@ HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定�
 `Tools > Night Courier > Install Cargo Artwork (preserve layouts)` 将图标接入现有货物卡片，保留地图与抽屉布局；完整重建货物卡片也会接入。`CourierCargoArtInstaller.InstallAndCheck` 验证12个资源映射、合批双图、拖拽图像、文字排版、暂停、交付和重开。
 
 重新生成：`python3 Tools/Art/generate_cargo_icons.py`（需要Node.js和sharp；可通过 `CARGO_SHARP_MODULE` 指定sharp模块）。只生成SVG可加 `--svg-only`，无需图片渲染依赖。生成后运行上述安装入口更新Unity导入设置。
+
+## 载具图标
+
+滑板车、单车、旧皮卡使用与货物相同的透明SVG风格，源文件位于 `Assets/Art/Sprite/Vehicles/Sources/`，运行时384×384透明Sprite位于 `Assets/Resources/NightVoyage/VehicleIcons/`。`VehicleIcons.asset` 按 `Vehicles.csv` 的0/1/2 ID映射图片，可在Inspector替换。
+
+地图顶部显示当前载具，换车按钮显示可用载具；旧皮卡未解锁时保留锁定图示。耗尽切换幽灵时隐藏车辆图片并显示幽灵标识。既有载具详情面板也接入当前和停放载具图片，所有图片均不拦截点击。
+
+`Tools > Night Courier > Install Vehicle Artwork (preserve layouts)` 为已有面板接入图标；完整重建地图面板也会接入。`CourierVehicleArtInstaller.InstallAndCheck` 验证三种映射、换车、锁定、详情、暂停、幽灵兜底和重开。

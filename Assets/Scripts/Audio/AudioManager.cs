@@ -287,7 +287,7 @@ public class AudioManager : SingletonPersistent<AudioManager>
     /// <param name="volume">新的全局音量</param>
     public void ChangeMainVolume(float volume)
     {
-        mainVolume = volume;
+        mainVolume = Mathf.Clamp01(volume);
         PlayerPrefs.SetFloat("MainVolume", mainVolume);
 
         foreach (var info in bgmAudioInfoList)
@@ -298,6 +298,9 @@ public class AudioManager : SingletonPersistent<AudioManager>
         {
             info.audioSource.volume = mainVolume * sfxVolumeFactor;
         }
+        // Scene-local courier sources share these groups and must react to master changes too.
+        ChangeBgmVolume(bgmVolumeFactor);
+        ChangeSfxVolume(sfxVolumeFactor);
         Debug.Log($"MainVolume changed to {mainVolume}");
     }
 
@@ -312,7 +315,7 @@ public class AudioManager : SingletonPersistent<AudioManager>
 
         PlayerPrefs.SetFloat("BgmVolumeFactor", bgmVolumeFactor);
         
-        if (bgmVolumeFactor == 0)
+        if (bgmVolumeFactor == 0 || mainVolume <= 0)
         {
             audioMixer.SetFloat(BGM_VOLUME_PARAM, -80f);
         }
@@ -334,7 +337,7 @@ public class AudioManager : SingletonPersistent<AudioManager>
         PlayerPrefs.SetFloat("SfxVolumeFactor", sfxVolumeFactor);
 
         // 如果因子为0，则设置为非常小的音量接近静音
-        if (sfxVolumeFactor == 0)
+        if (sfxVolumeFactor == 0 || mainVolume <= 0)
         {
             audioMixer.SetFloat(SFX_VOLUME_PARAM, -80f);
         }

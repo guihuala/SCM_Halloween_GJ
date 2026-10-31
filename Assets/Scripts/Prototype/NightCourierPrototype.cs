@@ -45,7 +45,7 @@ namespace NightCourier
         {
             if(!Active)return;
             if(ConversationActive&&hud!=null&&hud.CompleteSubtitle())return;
-            if (ConversationActive) { dialogueIndex++; if(!ConversationActive)Tutorial.OpenMap(); }
+            if (ConversationActive) { dialogueIndex++; CourierSoundscape.PlayInterface("dialogue"); if(!ConversationActive)Tutorial.OpenMap(); }
             else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active)DepartTo(Run.PlannedDestination);
         }
         public float VisualTime { get { return visualTime; } }

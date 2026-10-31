@@ -18,6 +18,7 @@ namespace NightCourier
         {
             vehicleArtwork=CourierVehicleIconView.Ensure(vehicleText.transform.parent,"CurrentVehicleArtwork",new Vector2(32,-14),new Vector2(68,68));
             parkedVehicleArtwork=CourierVehicleIconView.Ensure(possessButton.transform,"ParkedVehicleArtwork",new Vector2(10,-6),new Vector2(40,40));
+            parkedVehicleArtwork.SetVehicle(1);possessIcon.gameObject.SetActive(false);
             vehicleText.rectTransform.anchoredPosition=new Vector2(112,-24);vehicleText.rectTransform.sizeDelta=new Vector2(140,44);
         }
         public Button departButton,possessButton,repairButton;

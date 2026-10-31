@@ -21,19 +21,24 @@ namespace NightCourier
                 var rect=(RectTransform)effect.transform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
                 rect.offsetMin=new Vector2(-4,-4);rect.offsetMax=new Vector2(4,4);effect.ResetEffect();
             }
-            button.onClick.AddListener(Play);
+            button.onClick.AddListener(PlayClick);
         }
         // Can also be triggered by a UnityEvent or animation event.
-        public void Play(){if(effect!=null&&button.IsActive()&&button.IsInteractable())effect.Play();}
+        public void Play()
+        {
+            if(!button.IsActive()||!button.IsInteractable())return;
+            if(effect!=null)effect.Play();
+        }
+        private void PlayClick(){if(!button.IsActive()||!button.IsInteractable())return;Play();CourierSoundscape.PlayInterface("click");}
         private void Update(){if(effect!=null)effect.SetState(hovered||selected,pressed&&button.IsInteractable(),!button.IsInteractable());}
-        public void OnPointerEnter(PointerEventData e){hovered=true;}
+        public void OnPointerEnter(PointerEventData e){hovered=true;if(button.IsInteractable())CourierSoundscape.PlayInterface("hover");}
         public void OnPointerExit(PointerEventData e){hovered=false;pressed=false;}
         public void OnPointerDown(PointerEventData e){if(e.button==PointerEventData.InputButton.Left)pressed=true;}
         public void OnPointerUp(PointerEventData e){pressed=false;}
-        public void OnSelect(BaseEventData e){selected=e is AxisEventData||Input.GetKey(KeyCode.Tab)||Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.UpArrow)||Input.GetKey(KeyCode.DownArrow);}
+        public void OnSelect(BaseEventData e){selected=e is AxisEventData||Input.GetKey(KeyCode.Tab)||Input.GetKey(KeyCode.LeftArrow)||Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.UpArrow)||Input.GetKey(KeyCode.DownArrow);if(selected&&button.IsInteractable())CourierSoundscape.PlayInterface("hover");}
         public void OnDeselect(BaseEventData e){selected=false;}
         public void OnSubmit(BaseEventData e){Play();}
         private void OnDisable(){hovered=selected=pressed=false;if(effect!=null)effect.ResetEffect();}
-        private void OnDestroy(){if(button!=null)button.onClick.RemoveListener(Play);}
+        private void OnDestroy(){if(button!=null)button.onClick.RemoveListener(PlayClick);}
     }
 }
