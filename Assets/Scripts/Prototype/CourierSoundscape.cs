@@ -54,7 +54,7 @@ namespace NightCourier
             if(run.VehicleIndex!=previousVehicle)cues.PlayOneShot(chime);
             float master=AudioManager.Instance!=null?AudioManager.Instance.mainVolume:1;
             bool storm=run.ActiveRoad!=null&&run.ActiveRoad.Kind==RoadKind.Storm;
-            music.volume=(run.TruthRevealed?.075f:.045f)*master;
+            music.volume=(run.Parcels[0].State==ParcelState.Delivered?.075f:.045f)*master;
             wind.volume=(driving?(storm?.16f:.07f):.025f)*master;
             engine.volume=(driving&&run.VehicleIndex==2?.05f:.005f)*master;
             previousState=run.State;previousVehicle=run.VehicleIndex;

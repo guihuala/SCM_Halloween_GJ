@@ -12,6 +12,10 @@ namespace NightCourier
         public Vector2 GhostPosition { get; private set; } = new Vector2(395, 330);
         [SerializeField] private Font uiFont;
         [SerializeField] private AudioClip radioMusic;
+        [SerializeField,Range(1,8)] private float cruisePlaybackSpeed=4f;
+        public float DriveBlend {get;private set;}
+        public float RoadMotionTime {get;private set;}
+        public float PossessionGlow {get;private set;}
         public Font UIFont { get { return uiFont; } }
         public bool HasPlanner { get { return planner != null; } }
         private CourierPanel planner, forcedPanel;
@@ -25,7 +29,7 @@ namespace NightCourier
         {
             get
             {
-                if (Run.State == ShiftState.Docked) return ConversationActive ? dialogue[dialogueIndex] : Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Waypoint stop - Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue  -  Tab: Reroute]":Run.ObjectiveText + "  [E: Talk / Exit  -  Tab: Map]");
+                if (Run.State == ShiftState.Docked) return ConversationActive ? dialogue[dialogueIndex] : Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":"Click this stop or press E to talk.");
                 if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
                 if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.ActiveRoad.Other(Run.Node)].Name+(Run.HasJourney&&Run.ActiveRoad.Other(Run.Node)!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.ActiveRoad.Other(Run.Node)].Name:"");
                 return "";
@@ -33,13 +37,13 @@ namespace NightCourier
         }
         public void BeginConversation()
         {
-            if (Run.State != ShiftState.Docked || HasPlanner || !Active) return;
+            if (Run.State != ShiftState.Docked || !Active) return;
             dialogue = Run.TalkToNpc(); dialogueIndex = 0;
         }
         public void AdvanceDialogue()
         {
-            if (ConversationActive) dialogueIndex++;
-            else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active&&!HasPlanner)DepartTo(Run.PlannedDestination);
+            if (ConversationActive) { dialogueIndex++; if(!ConversationActive)Tutorial.OpenMap(); }
+            else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active)DepartTo(Run.PlannedDestination);
         }
         public float VisualTime { get { return visualTime; } }
         public bool Active { get { return GameManager.Instance == null || GameManager.Instance.CurrentState == GameManager.GameState.Playing; } }
@@ -54,7 +58,8 @@ namespace NightCourier
         {
             var previousHud = FindObjectOfType<HudController>();
             if (previousHud != null && previousHud.pauseButton != null) previousHud.pauseButton.gameObject.SetActive(false);
-            hud = Open<CourierHudPanel>("CourierHudPanel", UIPanelLayer.Bottom);
+            planner = Open<CourierPanel>("CourierRoutePanel", UIPanelLayer.Bottom);
+            hud = Open<CourierHudPanel>("CourierHudPanel", UIPanelLayer.Normal);
             lastState = Run.State;
             BeginConversation();
             gameObject.AddComponent<CourierSoundscape>().Initialize(this, radioMusic);
@@ -67,20 +72,12 @@ namespace NightCourier
         }
         public void ShowPlanner(string name)
         {
-            if (!Active || Run.State != ShiftState.Docked) return;
-            Tutorial.Observe(Run); Tutorial.OpenMap();
-            ClosePlanner(); dialogue = new string[0]; dialogueIndex = 0;
-            // The former cargo and vehicle windows now share the single map/trunk panel.
-            if (name == "CourierCargoPanel" || name == "CourierVehiclePanel") name = "CourierRoutePanel";
-            planner = Open<CourierPanel>(name, UIPanelLayer.Popup);
+            if(!Active)return;
+            Tutorial.Observe(Run);if(!ConversationActive)Tutorial.OpenMap();
+            if(planner==null)planner=Open<CourierPanel>("CourierRoutePanel",UIPanelLayer.Bottom);
         }
-        public bool ClosePlanner()
-        {
-            if (planner == null) return false;
-            UIManager.Instance.ClosePanel(planner.gameObject.name.Replace("(Clone)", ""));
-            planner = null;
-            return true;
-        }
+        // The map is the main play surface, so Esc now goes straight to pause.
+        public bool ClosePlanner(){return false;}
         public void ToggleCar()
         {
             if (Run.State != ShiftState.Docked || !Active) return;
@@ -91,7 +88,7 @@ namespace NightCourier
         {
             int vehicle = Run.Stops[Run.Node].Vehicle;
             if (vehicle < 0 || !Run.Possess(vehicle)) return false;
-            InCar = true;
+            InCar = true; PossessionGlow=1;
             return true;
         }
         public bool DepartTo(int destination)
@@ -107,6 +104,11 @@ namespace NightCourier
             Tutorial.Observe(Run); Tutorial.Leave();
             ClosePlanner();
             return true;
+        }
+        public bool SkipRide()
+        {
+            if(!Active||!Run.FastForwardTravel())return false;
+            SyncState();return true;
         }
         public void ResolveEncounter(bool safe)
         {
@@ -126,14 +128,31 @@ namespace NightCourier
             Run = new CourierRun(System.Environment.TickCount);
             CourierContentOverrides.Apply(Run);
             InCar = true; GhostPosition = new Vector2(395, 330); lastState = Run.State;
+            DriveBlend=RoadMotionTime=PossessionGlow=0;
             if (hud != null) hud.Bind(this);
+            if (planner != null) planner.Bind(this);
             BeginConversation();
         }
         private void Update()
         {
             if (!Active) return;
             visualTime += Time.deltaTime;
-            Run.Tick(Time.deltaTime);
+            bool moving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
+            DriveBlend=Mathf.MoveTowards(DriveBlend,moving?1:0,Time.deltaTime*3);
+            if(moving)RoadMotionTime+=Time.deltaTime*DriveBlend*(Run.State==ShiftState.Pushing?.4f:1);
+            PossessionGlow=Mathf.MoveTowards(PossessionGlow,0,Time.deltaTime*2);
+            if(moving&&Input.GetKeyDown(KeyCode.F)){SkipRide();return;}
+            Run.Tick(Time.deltaTime*cruisePlaybackSpeed);
+            SyncState();
+            if (Run.State != ShiftState.Docked) return;
+            if(Input.GetKeyDown(KeyCode.Tab)||Input.GetKeyDown(KeyCode.M))ShowPlanner("CourierRoutePanel");
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                if(ConversationActive||Run.HasJourney)AdvanceDialogue();else BeginConversation();
+            }
+        }
+        private void SyncState()
+        {
             if (Run.State != lastState)
             {
                 if (Run.State == ShiftState.Docked) { InCar = true; GhostPosition = new Vector2(395, 330); BeginConversation(); }
@@ -143,20 +162,6 @@ namespace NightCourier
                 { ClosePlanner(); CloseForced(); forcedPanel = Open<CourierResultPanel>("CourierResultPanel", UIPanelLayer.Popup); }
                 lastState = Run.State;
             }
-            if (Run.State != ShiftState.Docked) return;
-            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.M))
-            { if (!ClosePlanner()) ShowPlanner("CourierRoutePanel"); return; }
-            if (HasPlanner) return;
-            if (ConversationActive) { if (Input.GetKeyDown(KeyCode.E)) AdvanceDialogue(); return; }
-            if (InCar)
-            { if (Input.GetKeyDown(KeyCode.E)) {if(Run.HasJourney)AdvanceDialogue();else ToggleCar();} return; }
-            GhostPosition = new Vector2(Mathf.Clamp(GhostPosition.x + Input.GetAxisRaw("Horizontal") * Time.deltaTime * 320, 180, 1230),
-                Mathf.Clamp(GhostPosition.y - Input.GetAxisRaw("Vertical") * Time.deltaTime * 150, 270, 370));
-            if (!Input.GetKeyDown(KeyCode.E)) return;
-            if (Mathf.Abs(GhostPosition.x - 790) < 115) BeginConversation();
-            else if (Mathf.Abs(GhostPosition.x - 1080) < 110 && Run.Stops[Run.Node].Vehicle >= 0)
-            { if (!PossessParkedVehicle()) ShowPlanner("CourierRoutePanel"); }
-            else if (Mathf.Abs(GhostPosition.x - 395) < 130) ShowPlanner("CourierRoutePanel");
         }
         private void OnDestroy()
         {

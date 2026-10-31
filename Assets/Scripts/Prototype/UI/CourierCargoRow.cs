@@ -36,9 +36,9 @@ namespace NightCourier
             ((RectTransform)actionButton.transform).anchoredPosition=new Vector2(-64,-(height-56)/2);
             float remaining=parcel.Deadline>0?parcel.Deadline-run.Elapsed:parcel.TimeLimit;
             timeText.text=Mathf.CeilToInt(Mathf.Max(0,remaining)).ToString();timeHint.message=parcel.Deadline>0?"Time left: "+timeText.text+" min":"Deliver within "+timeText.text+" min of loading";
-            actionButton.gameObject.SetActive(!loaded||!parcel.Critical);actionButton.interactable=loaded?!parcel.Critical:run.CanLoad(parcel);
+            actionButton.gameObject.SetActive(!loaded||!parcel.Critical);actionButton.interactable=run.State==ShiftState.Docked&&(loaded?!parcel.Critical:run.CanLoad(parcel));
             actionIcon.SetKind(loaded?CourierIconKind.Store:CourierIconKind.Load);
-            actionHint.message=loaded?"Store at this stop":parcel.Heavy&&run.VehicleIndex==0?"Switch vehicles to carry heavy cargo":run.CanLoad(parcel)?"Load into trunk":"Not enough cargo space";
+            actionHint.message=run.State!=ShiftState.Docked?"Cargo can be changed after arrival":loaded?"Store "+parcel.Name+"\nLeave it at "+run.Stops[run.Node].Name+"; collect it here later.":parcel.Heavy&&run.VehicleIndex==0?"Heavy cargo\nPossess the bicycle at Mead Cellar or the old pickup at the radio tower.":run.CanLoad(parcel)?"Load "+parcel.Name+"\nDeliver to "+run.Stops[parcel.Destination].Name+". Click or drag into On Board.":"Trunk full\nStore another parcel or switch to a vehicle with more capacity.";
         }
         public void OnBeginDrag(PointerEventData data)
         {

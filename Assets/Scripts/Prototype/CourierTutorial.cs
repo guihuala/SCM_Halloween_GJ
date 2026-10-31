@@ -13,7 +13,7 @@ namespace NightCourier
         public void Observe(CourierRun run)
         {
             if (Finished) return;
-            CargoLoaded |= run.Parcels[3].State != ParcelState.Waiting;
+            CargoLoaded |= System.Linq.Enumerable.Any(run.Parcels, p => p.State == ParcelState.Loaded || p.State == ParcelState.Delivered);
             Departed |= run.State == ShiftState.Driving || run.State == ShiftState.Encounter || run.State == ShiftState.Pushing;
             Arrived |= run.Node != 0;
             if (run.Finished) Finished = true;

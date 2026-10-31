@@ -1,0 +1,7 @@
+﻿id,name,sign,voice,x,y,vehicle,repair
+0,Abandoned Subway,DROW,Drow: Keep our world a secret. Please take my party theme tape to the vampire DJ.,0.07,0.5,0,0
+1,Forest Campsite,WOLF,"Wolfwoman: Humans must never learn about us. There is honey, rosin and flowers to deliver.",0.31,0.2,-1,1
+2,Mead Cellar,MEAD,"Bear: Too warm to sleep. Damp labels, spoiled mead... I need autumn honey and fresh supplies.",0.31,0.8,1,1
+3,Abandoned Radio Tower,FM,Vampire: Tonight I play the host! If only this overheated radio would cooperate.,0.6,0.75,2,1
+4,Museum Ruins,MUSEUM,Zombie: I repair antiques. Flowers for cakes. Moisture repellent for me. Please.,0.69,0.2,-1,1
+5,Settlement Bar,BAR,"Witch: The human parade is outside. Keep the Silence Pact, and bring the party supplies inside.",0.94,0.5,-1,1

@@ -28,8 +28,73 @@ public static class CourierPrefabBuilder
             entry.uiPath="Panel/Courier/"+name;
         }
         EditorUtility.SetDirty(registry); AssetDatabase.SaveAssets();
+        CourierFeedbackPrefabBuilder.Install();
+        InstallTravelControls();
+        InstallMapOnly();
         Debug.Log("COURIER_PREFABS PASS: cinematic HUD, unified map/trunk, event, endings and cargo card saved.");
     }
+    [MenuItem("Tools/Night Courier/Add Travel Controls (preserve layouts)")]
+    public static void InstallTravelControls()
+    {
+        font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");
+        foreach(var name in new[]{"CourierHudPanel","CourierRoutePanel","CourierEventPanel"})
+        {
+            string path=Folder+"/"+name+".prefab";var root=PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                var panel=root.GetComponent<CourierPanel>();
+                if(panel.pauseButton==null)
+                {
+                    panel.pauseButton=IconButton(root.transform,"TravelPauseButton",CourierIconKind.Pause,"Pause game",0,0,64);
+                    var rect=(RectTransform)panel.pauseButton.transform;rect.anchorMin=rect.anchorMax=rect.pivot=Vector2.one;rect.anchoredPosition=new Vector2(-24,-24);
+                }
+                panel.pauseButton.GetComponent<CourierIconHint>().message="Pause game";
+                var hud=panel as CourierHudPanel;
+                if(hud!=null&&hud.skipRideButton==null)
+                {
+                    hud.skipRideButton=Button(root.transform.Find("HudLayout"),"SkipRideButton","Skip ride  [F]",1496,899,264,64,false);
+                    hud.skipRideButton.GetComponentInChildren<Text>().fontSize=28;
+                    hud.skipRideButton.gameObject.AddComponent<CourierIconHint>().message="Skip to the next event or stop. Time, wear and cargo effects still apply.";
+                }
+                foreach(var button in hud!=null?new[]{panel.pauseButton,hud.skipRideButton}:new[]{panel.pauseButton})
+                {
+                    var feedback=button.GetComponent<CourierButtonFeedback>()??button.gameObject.AddComponent<CourierButtonFeedback>();
+                    feedback.effectPrefab=AssetDatabase.LoadAssetAtPath<CourierInteractionEffect>("Assets/Resources/Feedback/CourierInteractionEffect.prefab");
+                    var old=button.GetComponent<CourierFocusRing>();if(old!=null){if(old.ring!=null)old.ring.enabled=false;Object.DestroyImmediate(old);}
+                }
+                PrefabUtility.SaveAsPrefabAsset(root,path);
+            }
+            finally{PrefabUtility.UnloadPrefabContents(root);}
+        }
+        AssetDatabase.SaveAssets();Debug.Log("COURIER_TRAVEL_CONTROLS PASS: pause and skip installed, existing layouts preserved.");
+    }
+    public static void InstallTravelAndRun(){InstallTravelControls();NightCourierTravelSmokeTest.Run();}
+    [MenuItem("Tools/Night Courier/Use Map-only Presentation (preserve layout)")]
+    public static void InstallMapOnly()
+    {
+        string hudPath=Folder+"/CourierHudPanel.prefab";var root=PrefabUtility.LoadPrefabContents(hudPath);
+        try
+        {
+            var hud=root.GetComponent<CourierHudPanel>();var background=root.GetComponent<Image>();background.color=Color.clear;background.raycastTarget=false;
+            if(hud.stageGraphic!=null){Object.DestroyImmediate(hud.stageGraphic.gameObject);hud.stageGraphic=null;}
+            var road=(RectTransform)hud.roadStatus.transform;road.anchoredPosition=new Vector2(0,-5);road.sizeDelta=new Vector2(220,65);
+            var clock=(RectTransform)road.Find("ClockIcon");clock.anchoredPosition=Vector2.zero;
+            hud.timeText.rectTransform.anchoredPosition=new Vector2(50,0);hud.timeText.rectTransform.sizeDelta=new Vector2(170,38);
+            var track=(RectTransform)road.Find("ProgressFillBackground");track.sizeDelta=new Vector2(220,5);hud.progressFill.rectTransform.sizeDelta=new Vector2(220,5);
+            PrefabUtility.SaveAsPrefabAsset(root,hudPath);
+        }
+        finally{PrefabUtility.UnloadPrefabContents(root);}
+        string routePath=Folder+"/CourierRoutePanel.prefab";root=PrefabUtility.LoadPrefabContents(routePath);
+        try
+        {
+            var panel=root.GetComponent<CourierRoutePanel>();root.GetComponent<Image>().color=Ink;
+            if(panel.closeButton!=null){Object.DestroyImmediate(panel.closeButton.gameObject);panel.closeButton=null;}
+            PrefabUtility.SaveAsPrefabAsset(root,routePath);
+        }
+        finally{PrefabUtility.UnloadPrefabContents(root);}
+        AssetDatabase.SaveAssets();Debug.Log("COURIER_MAP_ONLY PASS: permanent map, no street stage, dialogue and travel HUD retained.");
+    }
+    public static void InstallMapOnlyAndRun(){InstallMapOnly();NightCourierPanelSmokeTest.Run();}
     private static string Csv(params object[] cells)
     {return string.Join(",",cells.Select(c=>"\""+System.Convert.ToString(c,System.Globalization.CultureInfo.InvariantCulture).Replace("\"","\"\"")+"\""));}
     private static void ExportContentTables()
@@ -134,7 +199,7 @@ public static class CourierPrefabBuilder
             frame.gameObject.SetActive(false);
         }
         var strip=Element("GuideStrip",root,0,64,1300,128);strip.anchorMin=strip.anchorMax=new Vector2(.5f,1);strip.pivot=new Vector2(.5f,1);strip.anchoredPosition=new Vector2(0,-64);Background(strip,Card);
-        view.strip=strip;view.heading=Text(strip,"StepTitle","FIRST SHIFT  1/7",24,8,1140,30,22,Mint);
+        view.strip=strip;view.heading=Text(strip,"StepTitle","FIRST SHIFT  1/6",24,8,1140,30,22,Mint);
         view.instruction=Text(strip,"Instruction","Press E to continue your first conversation.",24,40,1140,80,26);view.instruction.alignment=TextAnchor.UpperLeft;
         view.skipButton=Button(strip,"SkipGuideButton","Skip",1200,40,80,48,false);
         PrefabUtility.SaveAsPrefabAsset(root.gameObject,"Assets/Prefab/UI/CourierTutorial.prefab");Object.DestroyImmediate(root.gameObject);
@@ -160,8 +225,8 @@ public static class CourierPrefabBuilder
     {
         var rt=Element("CourierCargoRow",null,0,0,502,132);Background(rt,Soft,true);
         var row=rt.gameObject.AddComponent<CourierCargoRow>();var layout=rt.gameObject.AddComponent<LayoutElement>();layout.preferredHeight=132;layout.minHeight=132;
-        row.nameText=Text(rt,"ParcelName","Unmarked Parcel",12,0,420,44,32);
-        Icon(rt,"RecipientIcon",CourierIconKind.Pin,12,50,28,Muted,"Delivery destination");row.destinationText=Text(rt,"Destination","Cliffside Lighthouse",52,44,270,40,28,Muted);
+        row.nameText=Text(rt,"ParcelName","Party Theme Tape",12,0,420,44,32);
+        Icon(rt,"RecipientIcon",CourierIconKind.Pin,12,50,28,Muted,"Delivery destination");row.destinationText=Text(rt,"Destination","Abandoned Radio Tower",52,44,270,40,28,Muted);
         Icon(rt,"WeightIcon",CourierIconKind.Box,348,50,28,Muted,"Cargo weight in slots");row.weightText=Text(rt,"WeightText","1",384,44,40,40,28,Muted);
         var tags=Element("Tags",rt,12,92,410,32);var group=tags.gameObject.AddComponent<HorizontalLayoutGroup>();group.spacing=12;group.childControlWidth=group.childControlHeight=false;group.childForceExpandWidth=group.childForceExpandHeight=false;
         row.storyIcon=Icon(tags,"StoryIcon",CourierIconKind.Story,0,0,32,Mint,"Story parcel - cannot be left behind");
@@ -190,7 +255,7 @@ public static class CourierPrefabBuilder
     {
         RectTransform card;var p=Panel<CourierRoutePanel>("CourierRoutePanel",true,out card,1300,660);
         p.closeButton=IconButton(card,"CloseButton",CourierIconKind.Close,"Close - Esc",1220,16,56);
-        p.objectiveText=Text(card,"ObjectiveText","Visit Rust Anchor Diner.",24,14,690,48,22,Mint);
+        p.objectiveText=Text(card,"ObjectiveText","Deliver the party theme tape.",24,14,690,48,22,Mint);
         var map=Element("RoadMap",card,24,70,690,400);var edges=Element("RoadConnections",map,0,0,690,400);p.mapGraphic=edges.gameObject.AddComponent<CourierRouteGraphic>();p.mapGraphic.raycastTarget=false;
         var run=new CourierRun();int count=run.Stops.Length;p.stopButtons=new Button[count];p.stopLabels=new Text[count];p.stopCounts=new Text[count];p.stopIcons=new CourierIconGraphic[count];p.stopHints=new CourierIconHint[count];
         for(int i=0;i<count;i++)

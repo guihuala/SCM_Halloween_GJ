@@ -55,8 +55,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.92, g: 0.95, b: 0.93, a: 1}
   m_RaycastTarget: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "No vehicle available"
+  m_Text: No vehicle available
 --- !u!1 &637708228299112167
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,7 +92,8 @@ GameObject:
   - component: {fileID: 7505128163171845940}
   - component: {fileID: 5786635616461837335}
   - component: {fileID: 6763928378231094215}
-  - component: {fileID: 2660177750927613005}
+  - component: {fileID: 248180703777241430}
+  - component: {fileID: 8150390192597990130}
   m_Layer: 0
   m_Name: RepairButton
   m_TagString: Untagged
@@ -138,8 +139,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.105, g: 0.15, b: 0.19, a: 1}
   m_RaycastTarget: 1
@@ -168,8 +169,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -212,12 +213,12 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_EffectColor: {r: 1, g: 0.66, b: 0.34, a: 1}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 0
---- !u!114 &2660177750927613005
+--- !u!114 &248180703777241430
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,10 +227,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 637708228299112167}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2177025257e943ad824dbb941cc1dc0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ring: {fileID: 6763928378231094215}
+  m_Script: {fileID: 11500000, guid: b131ae2c94964b3ea7012626ebdea063, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  effectPrefab: {fileID: 8466961778407436070, guid: 5b0f7f407a3374456969731b0315a18d, type: 3}
+--- !u!114 &8150390192597990130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637708228299112167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  message: Repair - 12 min
 --- !u!1 &1564382582545793153
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +257,8 @@ GameObject:
   - component: {fileID: 4226986333023352029}
   - component: {fileID: 1969380769410073224}
   - component: {fileID: 2919403514499864443}
-  - component: {fileID: 3005298631675776915}
+  - component: {fileID: 5540241550482829291}
+  - component: {fileID: 2968887911048083407}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -289,8 +304,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.105, g: 0.15, b: 0.19, a: 1}
   m_RaycastTarget: 1
@@ -319,8 +334,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -363,12 +378,12 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_EffectColor: {r: 1, g: 0.66, b: 0.34, a: 1}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 0
---- !u!114 &3005298631675776915
+--- !u!114 &5540241550482829291
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -377,10 +392,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 1564382582545793153}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2177025257e943ad824dbb941cc1dc0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ring: {fileID: 2919403514499864443}
+  m_Script: {fileID: 11500000, guid: b131ae2c94964b3ea7012626ebdea063, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  effectPrefab: {fileID: 8466961778407436070, guid: 5b0f7f407a3374456969731b0315a18d, type: 3}
+--- !u!114 &2968887911048083407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564382582545793153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  message: Close
 --- !u!1 &2011443345236949833
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,8 +464,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.92, g: 0.95, b: 0.93, a: 1}
   m_RaycastTarget: 0
@@ -518,8 +546,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.78}
   m_RaycastTarget: 1
@@ -560,8 +588,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e339cf85bbed4b608bcbeee40fa88df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   backgroundFadeDuration: 0.08
   fadeInDuration: 0.12
   fadeOutDuration: 0
@@ -634,8 +662,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.92, g: 0.95, b: 0.93, a: 1}
   m_RaycastTarget: 0
@@ -657,7 +685,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Repair - 12 min"
+  m_Text: Repair - 12 min
 --- !u!1 &3663289999222469722
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,7 +764,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Close"
+  m_Text: Close
 --- !u!1 &4202165503677302595
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,7 +778,8 @@ GameObject:
   - component: {fileID: 8324224525150033555}
   - component: {fileID: 1080713638450354425}
   - component: {fileID: 9170898129870758558}
-  - component: {fileID: 8700434343250580067}
+  - component: {fileID: 1757366692680713058}
+  - component: {fileID: 328388494320493129}
   m_Layer: 0
   m_Name: PossessButton
   m_TagString: Untagged
@@ -796,8 +825,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.45, g: 0.94, b: 0.77, a: 1}
   m_RaycastTarget: 1
@@ -826,8 +855,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -870,12 +899,12 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_EffectColor: {r: 1, g: 0.66, b: 0.34, a: 1}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 0
---- !u!114 &8700434343250580067
+--- !u!114 &1757366692680713058
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -884,10 +913,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 4202165503677302595}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2177025257e943ad824dbb941cc1dc0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ring: {fileID: 9170898129870758558}
+  m_Script: {fileID: 11500000, guid: b131ae2c94964b3ea7012626ebdea063, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  effectPrefab: {fileID: 8466961778407436070, guid: 5b0f7f407a3374456969731b0315a18d, type: 3}
+--- !u!114 &328388494320493129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4202165503677302595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  message: 'Possess '
 --- !u!1 &4622518996237637869
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,8 +985,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.92, g: 0.95, b: 0.93, a: 1}
   m_RaycastTarget: 0
@@ -966,7 +1008,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Capacity 4 slots - Durability 70/70"
+  m_Text: Capacity 4 slots - Durability 70/70
 --- !u!1 &5886308386085650615
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,7 +1087,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Possess "
+  m_Text: 'Possess '
 --- !u!1 &6459487311045708005
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,8 +1143,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.92, g: 0.95, b: 0.93, a: 1}
   m_RaycastTarget: 0
@@ -1124,7 +1166,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Vehicle"
+  m_Text: Vehicle
 --- !u!1 &6802683391513491164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,8 +1232,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.075, g: 0.11, b: 0.15, a: 1}
   m_RaycastTarget: 0
@@ -1265,8 +1307,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.66, g: 0.74, b: 0.77, a: 1}
   m_RaycastTarget: 0
@@ -1288,7 +1330,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Repairs available at the junkyard and ferry"
+  m_Text: Repairs available at the junkyard and ferry
 --- !u!1 &8174008173690161622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1344,8 +1386,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 0.45, g: 0.94, b: 0.77, a: 1}
   m_RaycastTarget: 0
@@ -1367,7 +1409,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: "Compact Car"
+  m_Text: Compact Car
 --- !u!1 &8994513908622225559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1423,8 +1465,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.66, b: 0.34, a: 1}
   m_RaycastTarget: 0

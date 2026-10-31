@@ -1,8 +1,13 @@
-﻿id,name,weight,reward,fragile,heavy,dry,time_limit
-0,Unmarked Parcel,1,0,1,0,0,0
-1,Lost Love Tape,1,0,0,0,0,0
-2,Lighthouse Key,1,0,0,0,1,0
-3,Engine Parts,2,25,0,0,0,0
-4,Sailor's Watch,1,30,1,0,1,0
-5,Hot Coffee,1,20,0,0,0,60
-6,Farewell Letters,4,35,0,1,0,0
+﻿id,name,weight,reward,fragile,heavy,dry,time_limit,origin,destination
+0,Party Theme Tape,1,25,0,0,1,0,0,3
+1,Violin Rosin,1,20,0,0,1,0,1,0
+2,Autumn Honey,2,25,1,0,0,0,1,2
+3,Forest Flowers,1,20,0,0,0,0,1,4
+4,Spring Mead,4,35,1,1,0,0,2,5
+5,Spicy Blood Stew,1,25,0,0,0,60,3,1
+6,Flower Cakes,1,20,0,0,0,60,4,1
+7,Moisture Repellent,1,20,0,0,0,0,5,4
+8,Desiccant and Labels,1,20,0,0,1,0,5,2
+9,Repair Equipment,2,30,0,0,0,0,5,3
+10,Livestock Blood,1,20,0,0,0,0,5,3
+11,Late-Night Meal,1,20,0,0,0,90,5,1

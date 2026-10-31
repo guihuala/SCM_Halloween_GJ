@@ -46,7 +46,7 @@ namespace NightCourier
             Rect(0,0,1440,440,sky);
             float time = Owner != null ? Owner.VisualTime : 0;
             bool driving = Owner != null && (Owner.Run.State == ShiftState.Driving || Owner.Run.State == ShiftState.Encounter || Owner.Run.State == ShiftState.Pushing);
-            float motion = driving ? time : 0;
+            float motion = driving && Owner!=null ? Owner.RoadMotionTime : 0;
             Circle(1210,83,58,new Color(.86f,.84f,.66f)); Circle(1186,65,55,sky);
             for (int i=0;i<50;i++) Rect(20+(i*173)%1380,18+(i*47)%160,2,2,new Color(.37f,.46f,.54f));
             for (int i=0;i<20;i++)
@@ -59,7 +59,7 @@ namespace NightCourier
             if (!driving)
             {
                 Landmark(Owner != null ? Owner.Run.Node : 0);
-                Ghost(790,320,.7f,orange);
+                Ghost(790,320+Mathf.Sin(time*2)*3,.7f,orange);
                 int available=Owner != null ? Owner.Run.Stops[Owner.Run.Node].Vehicle : -1;
                 if(available>=0) Car(1080,348,available,.75f,new Color(.40f,.46f,.41f));
             }
@@ -74,7 +74,8 @@ namespace NightCourier
                 if(Owner.Run.ActiveRoad.Kind==RoadKind.Storm)
                     for(int i=0;i<65;i++)Line(20+(i*71)%1420,Mathf.Repeat(i*37+time*220,370),30+(i*71)%1420,Mathf.Repeat(i*37+time*220,370)+24,new Color(.6f,.69f,.77f,.25f),1);
             }
-            Car(395,352+(driving?Mathf.Sin(time*12)*2:0),Owner!=null?Owner.Run.VehicleIndex:0,1,mint);
+            if(Owner!=null&&Owner.PossessionGlow>0)Circle(395,320,40+(1-Owner.PossessionGlow)*70,new Color(mint.r,mint.g,mint.b,Owner.PossessionGlow*.16f));
+            Car(395,352+(driving?Mathf.Sin(time*12)*2*Owner.DriveBlend:0),Owner!=null?Owner.Run.VehicleIndex:0,1,mint);
             if(Owner!=null && Owner.Run.State==ShiftState.Pushing)Ghost(510,330,1,mint);
             if(Owner!=null && !Owner.InCar && !driving) Ghost(Owner.GhostPosition.x,Owner.GhostPosition.y+Mathf.Sin(time*3)*5,1,mint);
         }
@@ -138,18 +139,23 @@ namespace NightCourier
                     Triangle(770,113,885,113,827,85,dark);Triangle(870,125,1250,50,1250,205,new Color(1,.85f,.45f,.12f));break;
             }
         }
+        private void Wheel(float x,float y,float radius,Color body,Color rim)
+        {
+            Circle(x,y,radius,body);Circle(x,y,radius*.64f,sky);
+            float spin=Owner!=null?Owner.RoadMotionTime*9:0;
+            for(int i=0;i<3;i++){float a=spin+i*Mathf.PI*2/3;Line(x,y,x+Mathf.Cos(a)*radius*.68f,y+Mathf.Sin(a)*radius*.68f,new Color(rim.r,rim.g,rim.b,.65f),1.5f);}
+        }
         private void Car(float x,float y,int type,float s,Color c)
         {
             Color body=new Color(.035f,.09f,.10f);
             if(type==0)
             {
-                Circle(x-48*s,y,13*s,body);Circle(x+50*s,y,13*s,body);Line(x-48*s,y-14*s,x+48*s,y-14*s,c,5*s);
+                Wheel(x-48*s,y,13*s,body,c);Wheel(x+50*s,y,13*s,body,c);Line(x-48*s,y-14*s,x+48*s,y-14*s,c,5*s);
                 Line(x+40*s,y-14*s,x+29*s,y-68*s,c,4*s);Line(x+13*s,y-68*s,x+43*s,y-68*s,c,4*s);
             }
             else if(type==1)
             {
-                Circle(x-55*s,y,23*s,body);Circle(x+60*s,y,23*s,body);
-                Circle(x-55*s,y,18*s,sky);Circle(x+60*s,y,18*s,sky);
+                Wheel(x-55*s,y,23*s,body,c);Wheel(x+60*s,y,23*s,body,c);
                 Line(x-55*s,y,x-10*s,y-39*s,c,3*s);Line(x-10*s,y-39*s,x+15*s,y,c,3*s);
                 Line(x-55*s,y,x+15*s,y,c,3*s);Line(x+15*s,y,x+46*s,y-43*s,c,3*s);
                 Line(x+46*s,y-43*s,x-10*s,y-39*s,c,3*s);Line(x+46*s,y-43*s,x+60*s,y,c,3*s);Line(x+40*s,y-55*s,x+65*s,y-55*s,c,4*s);
@@ -158,7 +164,7 @@ namespace NightCourier
             {
                 Rect(x-91*s,y-40*s,182*s,37*s,body);Rect(x-45*s,y-72*s,65*s,35*s,body);
                 Rect(x-34*s,y-66*s,42*s,24*s,new Color(.12f,.22f,.23f));Line(x-91*s,y-40*s,x+91*s,y-40*s,c,3*s);
-                Circle(x-53*s,y,19*s,body);Circle(x+65*s,y,19*s,body);Circle(x-53*s,y,7*s,c);Circle(x+65*s,y,7*s,c);
+                Wheel(x-53*s,y,19*s,body,c);Wheel(x+65*s,y,19*s,body,c);Circle(x-53*s,y,7*s,c);Circle(x+65*s,y,7*s,c);
             }
             Rect(x+(type==2?88:47)*s,y-30*s,6*s,10*s,orange);
             if((Owner==null||Owner.InCar)&&(Owner==null||Owner.Run.State!=ShiftState.Pushing))Ghost(x-12*s,y-54*s,type==2?.3f:.55f,mint);

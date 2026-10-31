@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace NightCourier
 {
-    public enum CourierIconKind { Close,Arrow,Load,Store,Wrench,Box,Clock,Fragile,Heavy,Dry,Story,Lock,Pin,Dot,Ghost,Home,Restart,Warning }
+    public enum CourierIconKind { Close,Arrow,Load,Store,Wrench,Box,Clock,Fragile,Heavy,Dry,Story,Lock,Pin,Dot,Ghost,Home,Restart,Warning,Pause }
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class CourierIconGraphic : MaskableGraphic
     {
@@ -14,6 +14,7 @@ namespace NightCourier
             vh.Clear();mesh=vh;
             switch(kind)
             {
+                case CourierIconKind.Pause:Line(8,5,8,19,3);Line(16,5,16,19,3);break;
                 case CourierIconKind.Close:Line(6,6,18,18);Line(18,6,6,18);break;
                 case CourierIconKind.Arrow:Line(4,12,20,12);Line(14,6,20,12);Line(20,12,14,18);break;
                 case CourierIconKind.Load:Box(4,11,20,22);Line(12,2,12,15);Line(8,11,12,15);Line(12,15,16,11);break;

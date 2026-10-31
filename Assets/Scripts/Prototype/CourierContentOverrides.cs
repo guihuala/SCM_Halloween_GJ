@@ -10,6 +10,13 @@ namespace NightCourier
     {
         public static void Apply(CourierRun run)
         {
+            Apply("Shift",(id,row)=>{if(id==0)run.NightMinutes=Number(row[1],run.NightMinutes,60,1440);});
+            Apply("Stops",(id,row)=>{
+                if(id<0||id>=run.Stops.Length)return;var stop=run.Stops[id];
+                stop.Name=row[1];stop.Sign=row[2];stop.Voice=row[3];
+                stop.X=Number(row[4],stop.X,0,1);stop.Y=Number(row[5],stop.Y,0,1);
+                stop.Vehicle=Int(row[6],stop.Vehicle,-1,run.Vehicles.Length-1);stop.Repair=row[7]=="1";
+            });
             Apply("Vehicles",(id,row)=>{
                 if(id<0||id>=run.Vehicles.Length)return;var v=run.Vehicles[id];
                 v.Name=row[1];v.Ability=row[2];v.Capacity=Int(row[3],v.Capacity,1,12);v.MaxDurability=Number(row[4],v.MaxDurability,1,200);
@@ -19,6 +26,7 @@ namespace NightCourier
                 if(id<0||id>=run.Parcels.Count)return;var p=run.Parcels[id];
                 p.Name=row[1];p.Weight=Int(row[2],p.Weight,1,4);p.Reward=Int(row[3],p.Reward,0,1000);
                 p.Fragile=row[4]=="1";p.Heavy=row[5]=="1";p.Dry=row[6]=="1";
+                if(row.Count>=10){p.Origin=Int(row[8],p.Origin,0,run.Stops.Length-1);p.Destination=Int(row[9],p.Destination,0,run.Stops.Length-1);}
                 if(!p.Critical)p.TimeLimit=Number(row[7],p.TimeLimit,0,240);
             });
             Apply("Events",(id,row)=>{

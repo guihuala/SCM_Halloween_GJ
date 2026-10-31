@@ -28,42 +28,42 @@ namespace NightCourier
             bool visible = owner.Active && !guide.Finished && !run.Finished;
             if (host is CourierHudPanel) visible &= !owner.HasPlanner && run.State != ShiftState.Encounter;
             if (host is CourierEventPanel) visible &= run.State == ShiftState.Encounter;
-            if (host is CourierRoutePanel) visible &= run.State == ShiftState.Docked;
+            if (host is CourierRoutePanel) visible &= run.State != ShiftState.Encounter;
             strip.gameObject.SetActive(visible);
             foreach (var frame in focusFrames) frame.gameObject.SetActive(false);
             if (!visible) return;
-            strip.anchoredPosition = new Vector2(0, run.State == ShiftState.Driving || run.State == ShiftState.Pushing ? -128 : -64);
+            strip.anchoredPosition = new Vector2(0,-64);
             skipButton.GetComponentInChildren<Text>().text = step == 6 ? "Done" : "Skip";
             string title, body; RectTransform first = null, second = null;
             var hud = host as CourierHudPanel; var planner = host as CourierRoutePanel; var encounter = host as CourierEventPanel;
             switch (step)
             {
                 case 0:
-                    title = "Meet the dispatcher";
-                    body = "Press E or the dialogue arrow to continue. Your unmarked parcel is already on board.";
+                    title = "Meet the drow";
+                    body = "Press E or the dialogue arrow to continue. The drow has a party theme tape to send.";
                     if (hud != null) first = (RectTransform)hud.advanceButton.transform;
                     break;
                 case 1:
                     title = "Open your map";
-                    body = "Press Tab, or click your vehicle, to open the map and trunk. Planning does not use time.";
+                    body = "Your map and cargo are already open. Choose a stop or load a parcel. Planning does not use time.";
                     break;
                 case 2:
                     title = "Load your first delivery";
-                    body = "Load Engine Parts from Pick Up: click its box arrow, or drag the card into On Board. Watch your load / capacity.";
+                    body = "Load Party Theme Tape from Pick Up: click its box arrow, or drag the card into On Board. Watch your load / capacity.";
                     if (planner != null)
                     {
-                        var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item == run.Parcels[3]);
+                        var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item == run.Parcels[0]);
                         if (row != null) first = (RectTransform)row.actionButton.transform;
                     }
                     break;
                 case 3:
                     title = "Choose a destination";
-                    body = "Try Rust Anchor Diner. You can choose any open stop; orange lines show the full route.";
-                    if (planner != null) first = planner.stopLabels[1].rectTransform;
+                    body = "Take the tape to Abandoned Radio Tower. You can choose any open stop; orange lines show the full route.";
+                    if (planner != null) first = planner.stopLabels[3].rectTransform;
                     break;
                 case 4:
                     title = guide.Departed ? "On the road" : "Ready to depart";
-                    body = guide.Departed ? "Driving uses time and durability. The road will pause when an event needs your choice."
+                    body = guide.Departed ? "Driving uses time and durability. Press F to skip to the next event or stop; choices remain yours."
                         : "Check the time and wrench costs, then press the green arrow. A full load means slower travel and more wear.";
                     if (!guide.Departed && planner != null) first = (RectTransform)planner.departButton.transform;
                     break;
@@ -75,14 +75,14 @@ namespace NightCourier
                     break;
                 default:
                     title = "First stop reached";
-                    body = "Deliveries happen automatically. Talk to locals, then open Tab to load more cargo or change your route. You're ready!";
+                    body = "Deliveries happen automatically. Click your current stop to talk, load more cargo, or choose a new route. You're ready!";
                     if (hud != null && owner.ConversationActive) first = (RectTransform)hud.advanceButton.transform;
                     break;
             }
             if (run.State == ShiftState.Pushing) body = "Broken down? No Game Over: your ghost pushes to the next stop. Timed side parcels expire, but the story continues.";
             if (!owner.HasPlanner && run.State == ShiftState.Docked && step >= 2 && step <= 4)
-            { body = "Press Tab or click your vehicle to return to your map and trunk. You can explore freely or skip this guide."; first = null; }
-            heading.text = "FIRST SHIFT  " + (step + 1) + "/7  -  " + title;
+            { body = "Choose a stop on the map and manage your cargo on the right. You can explore freely or skip this guide."; first = null; }
+            heading.text = "FIRST SHIFT  " + Mathf.Max(1,step) + "/6  -  " + title;
             instruction.text = body;
             Focus(0, first); Focus(1, second);
         }

@@ -58,12 +58,12 @@ namespace NightCourier
     public sealed class CourierRun
     {
         public readonly Stop[] Stops={
-            new Stop("Route Zero Depot","00","Dispatcher: Halloween again. Head to Rust Anchor Diner, and keep your own parcel close.",.07f,.5f),
-            new Stop("Rust Anchor Diner","24H","Waitress: Would you take this tape to the DJ at Midnight Radio Tower?",.31f,.20f),
-            new Stop("Echo Junkyard","ECHO","Mechanic: Bring me the engine parts, and that bicycle is yours to possess.",.31f,.80f,1,true),
-            new Stop("Sunken Bridge Ferry","FERRY","Sailor: A driver swerved off the cliff last night. Take this key to the lighthouse.",.60f,.75f,-1,true),
-            new Stop("Midnight Radio Tower","FM 00","DJ: I've been waiting for that tape. And for you.",.69f,.20f,2),
-            new Stop("Cliffside Lighthouse","DAWN","The lighthouse shines toward a home still awake.",.94f,.5f)
+            new Stop("Abandoned Subway","DROW","Drow: Keep our world a secret. Please take my party theme tape to the vampire DJ.",0.07f,0.5f,0,false),
+            new Stop("Forest Campsite","WOLF","Wolfwoman: Humans must never learn about us. There is honey, rosin and flowers to deliver.",0.31f,0.2f,-1,true),
+            new Stop("Mead Cellar","MEAD","Bear: Too warm to sleep. Damp labels, spoiled mead... I need autumn honey and fresh supplies.",0.31f,0.8f,1,true),
+            new Stop("Abandoned Radio Tower","FM","Vampire: Tonight I play the host! If only this overheated radio would cooperate.",0.6f,0.75f,2,true),
+            new Stop("Museum Ruins","MUSEUM","Zombie: I repair antiques. Flowers for cakes. Moisture repellent for me. Please.",0.69f,0.2f,-1,true),
+            new Stop("Settlement Bar","BAR","Witch: The human parade is outside. Keep the Silence Pact, and bring the party supplies inside.",0.94f,0.5f,-1,true)
         };
         // 3.4.1 is authoritative; heavy eligibility follows unlock tier, not vehicle name.
         public readonly Vehicle[] Vehicles={
@@ -77,13 +77,18 @@ namespace NightCourier
             new Road(3,4,20,16,RoadKind.Gravel),new Road(4,5,24,31,RoadKind.Storm)
         };
         public readonly List<Parcel> Parcels=new List<Parcel>{
-            new Parcel("Unmarked Parcel",0,5,1,0,true,true),
-            new Parcel("Lost Love Tape",1,4,1,0,true),
-            new Parcel("Lighthouse Key",3,5,1,0,true,false,false,true),
-            new Parcel("Engine Parts",0,2,2,25),
-            new Parcel("Sailor's Watch",3,1,1,30,false,true,false,true),
-            new Parcel("Hot Coffee",1,2,1,20,false,false,false,false,60),
-            new Parcel("Farewell Letters",2,4,4,35,false,false,true)
+            new Parcel("Party Theme Tape",0,3,1,25,false,false,false,true,0),
+            new Parcel("Violin Rosin",1,0,1,20,false,false,false,true,0),
+            new Parcel("Autumn Honey",1,2,2,25,false,true,false,false,0),
+            new Parcel("Forest Flowers",1,4,1,20,false,false,false,false,0),
+            new Parcel("Spring Mead",2,5,4,35,false,true,true,false,0),
+            new Parcel("Spicy Blood Stew",3,1,1,25,false,false,false,false,60),
+            new Parcel("Flower Cakes",4,1,1,20,false,false,false,false,60),
+            new Parcel("Moisture Repellent",5,4,1,20,false,false,false,false,0),
+            new Parcel("Desiccant and Labels",5,2,1,20,false,false,false,true,0),
+            new Parcel("Repair Equipment",5,3,2,30,false,false,false,false,0),
+            new Parcel("Livestock Blood",5,3,1,20,false,false,false,false,0),
+            new Parcel("Late-Night Meal",5,1,1,20,false,false,false,false,90)
         };
         public readonly RoadEvent[] Events={
             new RoadEvent("Trick-or-Treaters","Children gather in the headlights, demanding candy.","Share your candy · +4 min","Brake and swerve · -7 durability / fragile cargo damaged",4,7,true),
@@ -102,11 +107,11 @@ namespace NightCourier
         public readonly bool[] UnlockedVehicles={true,false,false};
         public readonly List<string> Journal=new List<string>();
         public const float ShiftMinutes=240;
-        public const float FinalTimeLimit=30;
+        public float NightMinutes=ShiftMinutes;
         public const float CruiseMinutesPerSecond=.3f;
         public int Node,VehicleIndex,Delivered,Earnings,EncounterIndex;
-        public float Elapsed,Progress,FinalDeadline;
-        public bool TruthRevealed,UsedPush;
+        public float Elapsed,Progress;
+        public bool UsedPush;
         public ShiftState State=ShiftState.Docked;
         public Road ActiveRoad;
         public int PlannedDestination {get;private set;} = -1;
@@ -116,25 +121,23 @@ namespace NightCourier
         private bool eventTriggered,pushedThisLeg;
         private readonly Random random;
         public CourierRun(int seed=31)
-        {random=new Random(seed);Parcels[0].State=ParcelState.Loaded;Log("Your unmarked parcel is in the trunk. The night shift begins.");}
+        {random=new Random(seed);Log("Halloween Eve. Keep the Silence Pact and deliver the party supplies.");}
         public Vehicle Car {get{return Vehicles[VehicleIndex];}}
         public float Durability {get{return Durabilities[VehicleIndex];}}
         public int Load {get{return Parcels.Where(p=>p.State==ParcelState.Loaded).Sum(p=>p.Weight);}}
         public bool Overloaded {get{return Load>=Car.Capacity;}}
-        public bool Late {get{return Elapsed>=ShiftMinutes;}}
-        public bool FinalLegLate {get{return FinalDeadline>0&&Elapsed>FinalDeadline;}}
+        public bool Late {get{return Elapsed>=NightMinutes;}}
         public bool Finished {get{return State==ShiftState.EndingA||State==ShiftState.EndingB;}}
-        public bool FinalRoadUnlocked {get{return TruthRevealed&&Parcels[2].State==ParcelState.Loaded;}}
         public string ObjectiveText
         {
             get
             {
-                if(!Talked[1])return "Visit Rust Anchor Diner and speak to the waitress.";
-                if(Parcels[3].State==ParcelState.Loaded)return "Deliver the engine parts to Echo Junkyard.";
-                if(Parcels[2].State==ParcelState.Waiting)return "Visit the sailor at Sunken Bridge Ferry for the lighthouse key.";
-                if(!TruthRevealed)return "Deliver the tape to Midnight Radio Tower and speak to the DJ.";
-                if(VehicleIndex!=2)return "Possess the old pickup at the tower, then head to the lighthouse.";
-                return "Reach Cliffside Lighthouse with your parcel and the key.";
+                var cargo=Parcels.FirstOrDefault(p=>p.State==ParcelState.Loaded);
+                if(cargo!=null)return "Deliver "+cargo.Name+" to "+Stops[cargo.Destination].Name+".";
+                var waiting=Parcels.FirstOrDefault(p=>p.State==ParcelState.Waiting&&p.Origin==Node)
+                    ??Parcels.FirstOrDefault(p=>p.State==ParcelState.Waiting);
+                if(waiting!=null)return "Collect "+waiting.Name+" at "+Stops[waiting.Origin].Name+". Keep the Silence Pact.";
+                return "Speak to the locals. The Halloween party is almost ready.";
             }
         }
         public float TimeCost(Road r){return r.Minutes/Car.Speed*(Overloaded?1.35f:1);}
@@ -146,10 +149,6 @@ namespace NightCourier
         }
         private string RoadAccessReason(Road r)
         {
-            if(r.Kind!=RoadKind.Storm)return "";
-            if(!TruthRevealed)return "Deliver the tape to the tower and speak to the DJ first";
-            if(Parcels[2].State!=ParcelState.Loaded)return "You need the lighthouse key from the ferry's sailor";
-            if(VehicleIndex!=2)return "Possess the old pickup at the tower first";
             return "";
         }
         // Lowest estimated driving time; event delays remain unknown until encountered.
@@ -175,7 +174,6 @@ namespace NightCourier
         {
             if(target<0||target>=Stops.Length)return "Choose a destination";
             if(target==Node)return "You are already here";
-            if(target==5){string reason=RoadAccessReason(Roads.First(r=>r.Kind==RoadKind.Storm));if(reason!="")return reason;}
             return FindRoute(target).Count>0?"":"No open route is available";
         }
         public bool StartJourney(int target)
@@ -210,26 +208,34 @@ namespace NightCourier
         {
             if(State!=ShiftState.Docked)return new string[0];
             Talked[Node]=true;
-            if(Node==1)GiveCritical(Parcels[1]);
-            if(Node==3)GiveCritical(Parcels[2]);
-            if(Node==4&&Parcels[1].State==ParcelState.Delivered){TruthRevealed=true;UnlockedVehicles[2]=true;}
+            if(Node==2)UnlockedVehicles[1]=true;
+            if(Node==3&&Parcels[9].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
+            CheckEnding();
+            var lines=new List<string>{Stops[Node].Voice};
             switch(Node)
             {
-                case 0:return new[]{"Dispatcher: Welcome to Route Zero. It's Halloween. The roads will be busy tonight.","Dispatcher: That parcel in your trunk has no name on either side. Don't leave it behind.","Dispatcher: Try Rust Anchor Diner first. Tab opens your map and trunk. Drag parcels to load them; press E to continue."};
-                case 1:return Parcels[4].State==ParcelState.Delivered?new[]{"Waitress: His watch. So he did remember the time we agreed on.","The scent of hot coffee brings back your last stop among the living."}:new[]{"Waitress: He promised to play a song for me on the radio this Halloween.","Waitress: Take this tape to the DJ at Midnight Radio Tower. I've put it in your trunk.","You remember sitting by this window, drinking a cup of coffee that would never be refilled."};
-                case 2:return UnlockedVehicles[1]?new[]{"Mechanic: The parts are here. An old friend can finally ride again.","Mechanic: That bicycle is yours. Plenty of room, even for heavy cargo. Check your load before possessing it.","Mechanic: There's a box of unsent farewell letters. Could you take it to the radio tower?"}:new[]{"Mechanic: I'm waiting for engine parts from Route Zero Depot. Bring them here, and the bicycle is yours.","Mechanic: Repairs are on the house. Money is for the living. All I ask is a little time."};
-                case 3:return new[]{"Sailor: There was a pileup on the broken bridge last night.","Sailor: One driver swerved to spare the others and went over the cliff. Parcels scattered everywhere.","Sailor: Take this key to the lighthouse. And return my watch to Rust Anchor Diner. Keep it dry."};
-                case 4:return TruthRevealed?new[]{"DJ: I played her tape for everyone on the road. Did you hear it?","DJ: You were the driver who went over the cliff. That unmarked parcel is what you never got to send home.","DJ: The old pickup is below the tower. Take the sailor's key and your parcel. The storm road is open."}:new[]{"DJ: I'm waiting for a tape from Rust Anchor Diner. That song will tell me where you came from.","DJ: The storm has cut off the lighthouse. Ask the sailor at the ferry first."};
-                default:return new[]{"The lighthouse shines through the night toward a home still awake."};
+                case 0:lines.Add("Drow: I write and play the violin. The ranger supplies my rosin; my new tune is for tomorrow's party.");
+                    lines.Add("Halloween Eve is your busiest shift. Tab opens the map and trunk; load the tape, choose a stop, then depart.");break;
+                case 1:lines.Add("Wolfwoman: I patrol the foggy forest and lead stray children home. Tonight I could eat three suppers.");
+                    lines.Add("Wolfwoman: Fewer bees each year. Take autumn honey to the bear, rosin to the drow, and flowers to the museum.");break;
+                case 2:lines.Add("Bear: Spring mead takes months! Now the cellar is too warm, and the labels are damp. Are we going to have to move?");
+                    lines.Add("Bear: Take the mead to the witch. You may possess my bicycle; it can carry the heavy crate.");break;
+                case 3:lines.Add("Vampire: A theme tune for our grand celebration! My radiator is overloaded; the witch has the repair equipment.");
+                    lines.Add(UnlockedVehicles[2]?"Vampire: Repairs delivered! The old pickup is yours to possess. It protects glass on gravel.":"Vampire: Bring the repair equipment from the bar to unlock my old pickup. I have a hot supper for the ranger.");break;
+                case 4:lines.Add("Zombie: Came here a century ago. Still here. Still damp. The witch has moisture repellent.");
+                    lines.Add("Zombie: Forest flowers make good cakes. Take these to the ranger. Before they go stale.");break;
+                case 5:lines.Add("Witch: I trade with the humans. Blood and repair equipment for the DJ, labels for the bear, lotion for our old friend.");
+                    lines.Add("Witch: The humans parade tonight. Tomorrow is our party. Deliver what you can; we will celebrate together.");break;
             }
+            return lines.ToArray();
         }
-        private void GiveCritical(Parcel p)
+        private void CheckEnding()
         {
-            if(p.State!=ParcelState.Waiting)return;
-            // Automatically store side parcels locally rather than blocking a main-story handoff.
-            foreach(var side in Parcels.Where(x=>x.State==ParcelState.Loaded&&!x.Critical).Reverse())
-            {if(Load+p.Weight<=Car.Capacity+2)break;side.State=ParcelState.Waiting;side.Origin=Node;Log("Stored to make room for a story parcel: "+side.Name);}
-            p.State=ParcelState.Loaded;Log("Story parcel received: "+p.Name);
+            bool resolved=Parcels.All(p=>p.State==ParcelState.Delivered||p.State==ParcelState.Failed);
+            if(!resolved&&!(Late&&Talked.All(t=>t)))return;
+            bool perfect=!Late&&Parcels.All(p=>p.State==ParcelState.Delivered&&!p.Damaged);
+            State=perfect?ShiftState.EndingA:ShiftState.EndingB;PlannedDestination=-1;
+            Log(perfect?"Party Ready! Every delivery arrived safely. Ghost Courier is always with you.":"Together at Dawn. The night was difficult, but everyone is welcome at the party.");
         }
         public bool Depart(Road r)
         {
@@ -239,8 +245,15 @@ namespace NightCourier
         private bool BeginLeg(Road r)
         {
             ActiveRoad=r;destination=r.Other(Node);Progress=0;eventTriggered=false;pushedThisLeg=false;
-            State=ShiftState.Driving;if(r.Kind==RoadKind.Storm)FinalDeadline=Elapsed+FinalTimeLimit;Log("Departing for "+Stops[destination].Name);
+            State=ShiftState.Driving;Log("Departing for "+Stops[destination].Name);
             if(Durability<=0)BreakDown();return true;
+        }
+        // Fast-forward presentation only; never choose an event for the player.
+        public bool FastForwardTravel()
+        {
+            if(State!=ShiftState.Driving&&State!=ShiftState.Pushing)return false;
+            for(int i=0;i<100000&&(State==ShiftState.Driving||State==ShiftState.Pushing);i++)Tick(.1f);
+            return true;
         }
         public void Tick(float seconds)
         {
@@ -295,14 +308,9 @@ namespace NightCourier
                 if(p.Damaged&&!p.Critical){p.State=ParcelState.Failed;Log("Refused, damaged: "+p.Name);}
                 else {p.State=ParcelState.Delivered;Delivered++;Earnings+=p.Reward;Log("Delivered: "+p.Name);}
             }
-            if(Parcels[3].State==ParcelState.Delivered)UnlockedVehicles[1]=true;
+            if(Parcels[9].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
             if(pushedThisLeg){Durabilities[VehicleIndex]=Car.MaxDurability*.35f;Log("Pushed to the stop. Emergency repairs restore 35% durability. You can continue.");}
-            if(Node==5)
-            {
-                bool perfect=!Late&&!FinalLegLate&&!Parcels[0].Damaged&&Parcels.Where(p=>!p.Critical).All(p=>p.State==ParcelState.Delivered);
-                State=perfect?ShiftState.EndingA:ShiftState.EndingB;
-                Log(perfect?"Ending A - Perfect Delivery. Your parcel becomes light, bound for the living.":"Ending B - Road Keeper. You remain as the next midnight courier.");
-            }
+            CheckEnding();
         }
         private void AdvanceClock(float minutes)
         {

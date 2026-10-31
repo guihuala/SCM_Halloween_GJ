@@ -9,104 +9,79 @@ namespace NightCourier
         public static Road To(CourierRun run,int node){return run.Roads.First(r=>r.Connects(run.Node)&&r.Other(run.Node)==node);}
         public static void Travel(CourierRun r,int node,bool safe=true,float delay=0)
         {
-            Require(r.Depart(To(r,node)),"Departure rejected: "+r.Node+">"+node);
-            r.Elapsed+=delay;
-            for(int i=0;i<100&&(r.State==ShiftState.Driving||r.State==ShiftState.Pushing||r.State==ShiftState.Encounter);i++)
+            Require(r.Depart(To(r,node)),"Departure rejected: "+r.Node+">"+node);r.Elapsed+=delay;
+            for(int i=0;i<100&&!r.Finished&&r.State!=ShiftState.Docked;i++)
             {if(r.State==ShiftState.Encounter)r.ResolveEncounter(safe);else r.Tick(10000);}
-            Require(r.Node==node,"Did not reach node "+node+": "+r.State);
+            Require(r.Node==node,"Did not reach node "+node);
             if(!r.Finished)r.TalkToNpc();
         }
-        private static CourierRun PerfectRoute(bool lateFinal=false)
+        public static void Go(CourierRun r,int target)
         {
-            var r=new CourierRun();r.TalkToNpc();Require(r.LoadParcel(r.Parcels[3]),"Engine cannot fit starting vehicle");
-            Travel(r,1);Require(r.Parcels[1].State==ParcelState.Loaded,"Tape was not handed over");Require(r.LoadParcel(r.Parcels[5]),"Coffee load rejected");
-            Travel(r,2);Require(r.UnlockedVehicles[1]&&r.Possess(1),"Bicycle unlock failed");Require(r.LoadParcel(r.Parcels[6]),"Heavy farewell load rejected");
-            Travel(r,3);Require(r.Parcels[2].State==ParcelState.Loaded,"Lighthouse key missing");Require(r.LoadParcel(r.Parcels[4]),"Watch load rejected");
-            Travel(r,1);Require(r.Parcels[4].State==ParcelState.Delivered,"Watch did not arrive dry");
-            Travel(r,4);Require(r.TruthRevealed&&r.UnlockedVehicles[2],"DJ reveal did not unlock pickup");Require(r.Possess(2),"Pickup possession failed");
-            Travel(r,5,true,lateFinal?31:0);Require(r.State==(lateFinal?ShiftState.EndingB:ShiftState.EndingA),"Final deadline / ending mismatch");return r;
+            foreach(var road in r.FindRoute(target).ToArray())
+            {Travel(r,road.Other(r.Node));if(r.Finished)break;}
+            if(!r.Finished)r.TalkToNpc();
         }
-        private static void CheckTutorial()
+        private static void CheckFastForward()
         {
-            var run=new CourierRun();var guide=new CourierTutorial();
-            Require(guide.Step(run,true)==0&&guide.Step(run,false)==1,"Opening guidance does not follow dialogue");
-            guide.OpenMap();Require(guide.Step(run,false)==2,"Map did not advance to cargo guidance");
-            run.LoadParcel(run.Parcels[3]);Require(guide.Step(run,false)==3,"Loading cargo did not advance guidance");
-            guide.ChooseRoute();Require(guide.Step(run,false)==4,"Selecting route did not advance guidance");
-            run.StartJourney(1);guide.Leave();run.Tick(10000);
-            Require(guide.Step(run,false)==5,"Encounter guidance missing");
-            run.ResolveEncounter(true);guide.ResolveEvent();Require(guide.Step(run,false)==5,"Guide moved backwards after event");run.Tick(10000);
-            Require(guide.Step(run,true)==6&&!guide.Finished,"Arrival guidance missing");guide.OpenMap();Require(guide.Finished,"Guide did not finish after first stop");
-            guide=new CourierTutorial();guide.Dismiss();guide.OpenMap();guide.Observe(new CourierRun());Require(guide.Finished,"Skipped guide reappeared");
-            run=new CourierRun();guide=new CourierTutorial();Require(run.StartJourney(4),"Guide blocked free destination choice");guide.Leave();
-            Require(guide.Step(run,false)==4&&run.Parcels[3].State==ParcelState.Waiting,"Guide forced optional cargo loading");
-        }
-        private static void CheckJourneys()
-        {
-            var r=new CourierRun();
-            for(int from=0;from<5;from++)for(int to=0;to<5;to++)
-            {
-                r.Node=from;var route=r.FindRoute(to);int at=from;
-                foreach(var road in route){Require(road.Connects(at),"Route contains disconnected leg");at=road.Other(at);}
-                Require(at==to,"Open destination unreachable");
-            }
-            r=new CourierRun();var planned=r.FindRoute(4);
-            Require(planned.Count==2&&planned[0]==r.Roads[0]&&planned[1]==r.Roads[5],"Fastest route not selected");
-            Require(r.FindRoute(5).Count==0&&!r.StartJourney(5)&&r.PlannedDestination==-1,"Story lock bypassed by route planner");
-            Require(r.FindRoute(-1).Count==0&&!r.StartJourney(99)&&!r.StartJourney(0),"Invalid/current destination accepted");
-            Require(r.StartJourney(4)&&r.PlannedDestination==4,"Cross-map journey rejected");
-            while(r.State!=ShiftState.Docked){if(r.State==ShiftState.Encounter)r.ResolveEncounter(true);else r.Tick(10000);}
-            Require(r.Node==1&&r.HasJourney&&r.Elapsed>=6&&r.Durability<50,"Intermediate stop skipped costs or lost destination");
-            float clock=r.Elapsed;r.Tick(10000);Require(r.Elapsed==clock,"Intermediate stop did not wait for player");
-            r.TalkToNpc();Require(r.ContinueJourney(),"Continuation failed after dialogue/cargo handoff");
-            while(r.State!=ShiftState.Docked){if(r.State==ShiftState.Encounter)r.ResolveEncounter(true);else r.Tick(10000);}
-            Require(r.Node==4&&!r.HasJourney&&r.Parcels[1].State==ParcelState.Delivered,"Final arrival did not finish journey/deliver tape");
-            r.TalkToNpc();Require(!r.StartJourney(5),"Key/vehicle gate bypassed");
-            Require(r.StartJourney(0),"Return journey rejected");
-            while(r.State!=ShiftState.Docked){if(r.State==ShiftState.Encounter)r.ResolveEncounter(true);else r.Tick(10000);}
-            Require(r.Node==1&&r.HasJourney&&r.StartJourney(2)&&r.PlannedDestination==2,"Midway change of destination failed");
-            r=new CourierRun();r.Durabilities[0]=0;Require(r.StartJourney(4)&&r.State==ShiftState.Pushing,"Journey breakdown recovery failed");r.Tick(10000);
-            Require(r.Node==1&&r.HasJourney&&r.ContinueJourney(),"Push recovery lost remaining journey");
+            var fast=new CourierRun(31);var normal=new CourierRun(31);
+            fast.LoadParcel(fast.Parcels[0]);normal.LoadParcel(normal.Parcels[0]);
+            Require(!fast.FastForwardTravel(),"Skip accepted while docked");
+            fast.StartJourney(3);normal.StartJourney(3);
+            Require(fast.FastForwardTravel()&&fast.State==ShiftState.Encounter,"Skip bypassed the next event");
+            while(normal.State==ShiftState.Driving)normal.Tick(.07f);
+            Require(fast.EncounterIndex==normal.EncounterIndex&&Math.Abs(fast.Elapsed-normal.Elapsed)<.002f&&Math.Abs(fast.Durability-normal.Durability)<.002f,"Skip changed road costs or event selection");
+            float clock=fast.Elapsed;Require(!fast.FastForwardTravel()&&fast.Elapsed==clock,"Skip resolved an event automatically");
+            fast.ResolveEncounter(true);normal.ResolveEncounter(true);fast.FastForwardTravel();
+            while(normal.State==ShiftState.Driving||normal.State==ShiftState.Pushing)normal.Tick(.07f);
+            Require(fast.Node==normal.Node&&fast.Node==1&&fast.HasJourney&&Math.Abs(fast.Elapsed-normal.Elapsed)<.002f&&Math.Abs(fast.Durability-normal.Durability)<.002f,"Skip lost intermediate stop or costs");
+            fast=new CourierRun();fast.Durabilities[0]=0;fast.StartJourney(3);
+            Require(fast.FastForwardTravel()&&fast.State==ShiftState.Docked&&fast.Durability>0,"Skipping push recovery failed");
         }
         public static string RunAll()
         {
-            assertions=0;CheckTutorial();CheckJourneys();var delayed=PerfectRoute(true);Require(delayed.FinalLegLate&&delayed.State==ShiftState.EndingB,"Final storm timeout blocked or incorrectly produced ending A");
-            var r=PerfectRoute();
-            Require(r.Stops.Length==6&&r.Parcels.Count==7&&r.Events.Length==10,"Content counts differ from 2.0");
-            Require(r.Delivered==7,"Seven parcels were not delivered");
-            Require(r.Vehicles[0].Capacity==3&&r.Vehicles[1].Capacity==8&&r.Vehicles[2].Capacity==4,"Vehicle table mismatch");
-            Require(r.Vehicles[0].MaxDurability==50&&r.Vehicles[1].MaxDurability==120&&r.Vehicles[2].MaxDurability==80,"Durability table mismatch");
-            float clock=r.Elapsed;r.Tick(10000);Require(r.Elapsed==clock,"Finished ending still ticks");
-            r=new CourierRun();Require(!r.Unload(r.Parcels[0]),"Main parcel can be discarded");
-            Require(!r.Depart(r.Roads[7]),"Disconnected storm road allowed");
-            Require(r.LoadParcel(r.Parcels[3])&&!r.LoadParcel(r.Parcels[3]),"Duplicate load accepted");
-            Require(r.Overloaded&&Math.Abs(r.TimeCost(r.Roads[0])-8.1f)<.001,"Full-load speed penalty missing");
-            Travel(r,2);Require(r.Parcels[0].Damaged,"Gravel did not affect fragile parcel");
-            Require(r.Possess(1),"Bike unavailable after parts delivered");r.Durabilities[1]=42;
-            Require(r.Repair()&&r.Durability==120,"Repair failed");clock=r.Elapsed;Require(!r.Repair()&&r.Elapsed==clock,"Repair at full condition charged time");
-            Require(r.LoadParcel(r.Parcels[6]),"Bike rejected heavy cargo");Require(r.Unload(r.Parcels[6])&&r.Parcels[6].Origin==2,"Local storage failed");
-            r=new CourierRun();r.Elapsed=300;Travel(r,1);Travel(r,3);Travel(r,4);Require(r.Possess(2),"Late main route blocked at pickup");Travel(r,5);
-            Require(r.State==ShiftState.EndingB,"Dawn/side-skipping did not produce ending B");
-            r=new CourierRun();r.Parcels[5].Origin=0;Require(r.LoadParcel(r.Parcels[5]),"Timed parcel rejected");
-            r.Durabilities[0]=0;Require(r.Depart(r.Roads[0])&&r.State==ShiftState.Pushing,"Breakdown did not start pushing");
-            Require(r.Parcels[5].State==ParcelState.Failed&&r.Parcels[0].State==ParcelState.Loaded,"Pushing failed the wrong parcels");
-            r.Tick(10000);Require(r.Node==1&&r.State==ShiftState.Docked&&r.Durability>0,"Push arrival or temporary repair failed");
-            r.TalkToNpc();Travel(r,3);Travel(r,4);Require(r.Possess(2),"Recovery blocked pickup");Travel(r,5);Require(r.Finished,"Breakdown route cannot reach an ending");
-            r=new CourierRun();Travel(r,1);Travel(r,3);r.Node=4;Require(!r.Depart(r.Roads[7]),"Unrevealed storm road opened");
-            r.Node=3;r.Parcels[4].State=ParcelState.Loaded;r.Depart(To(r,1));r.Tick(10000);
-            Require(r.State==ShiftState.Encounter&&r.Progress==.5f,"Long frame skipped encounter");clock=r.Elapsed;r.Tick(10000);Require(r.Elapsed==clock,"Event choice consumed time");
-            r.EncounterIndex=2;r.ResolveEncounter(false);Require(r.Parcels[4].Damaged&&r.Parcels[2].Damaged,"River event ignored dry requirement");
-            Require(r.Parcels[2].State==ParcelState.Loaded,"Damaged main key vanished");
-            r=new CourierRun();r.LoadParcel(r.Parcels[3]);var extra=new Parcel("Storage test",0,3,2);r.Parcels.Add(extra);r.LoadParcel(extra);Travel(r,1);
-            Require(r.Parcels[1].State==ParcelState.Loaded&&extra.State==ParcelState.Waiting&&extra.Origin==1,"Critical handoff overflow softlocked");
-            // Different unsafe event sequences, repeated breakdowns and dawn must still permit a main-story ending.
-            for(int seed=0;seed<50;seed++)
+            assertions=0;CheckFastForward();var r=new CourierRun();
+            Require(r.Stops.Length==6&&r.Parcels.Count==12&&r.Events.Length==10,"Updated content counts");
+            Require(r.Load==0&&r.Parcels.All(p=>!p.Critical),"Legacy story cargo remains");
+            Require(r.Vehicles.Select(v=>v.Capacity).SequenceEqual(new[]{3,8,4}),"Vehicle capacity mismatch");
+            Require(r.Vehicles.Select(v=>v.MaxDurability).SequenceEqual(new[]{50f,120f,80f}),"Vehicle durability mismatch");
+            for(int from=0;from<6;from++)for(int to=0;to<6;to++)
+            {r.Node=from;int at=from;foreach(var road in r.FindRoute(to)){Require(road.Connects(at),"Disconnected route");at=road.Other(at);}Require(at==to,"New node locked");}
+            r=new CourierRun();var guide=new CourierTutorial();guide.OpenMap();Require(guide.Step(r,false)==2,"Initial load guide");
+            Require(r.LoadParcel(r.Parcels[0]),"Initial tape unavailable");Require(guide.Step(r,false)==3,"Tape loading did not advance guide");
+            Require(r.Unload(r.Parcels[0])&&r.Load==0,"Local storage failed");
+            Go(r,2);Require(r.UnlockedVehicles[1]&&r.Possess(1),"Bear bicycle unavailable");
+            Require(r.LoadParcel(r.Parcels[4]),"Heavy mead rejected by bicycle");Travel(r,1);Travel(r,4);Travel(r,5);
+            Require(!r.Finished&&r.Parcels[4].State==ParcelState.Delivered,"Bar ends game prematurely or mead damaged");
+            Require(r.LoadParcel(r.Parcels[9]),"Repair equipment unavailable");Go(r,3);
+            Require(r.UnlockedVehicles[2]&&r.Possess(2),"Repair delivery did not unlock pickup");
+            r=new CourierRun();r.Node=2;Require(!r.LoadParcel(r.Parcels[4]),"Scooter accepted heavy mead");
+            r=new CourierRun();r.Parcels[5].Origin=0;Require(r.LoadParcel(r.Parcels[5]),"Timed meal rejected");
+            r.Durabilities[0]=0;Require(r.StartJourney(3)&&r.State==ShiftState.Pushing,"Breakdown recovery unavailable");
+            Require(r.Parcels[5].State==ParcelState.Failed&&r.Parcels[0].State==ParcelState.Waiting,"Breakdown failed wrong cargo");
+            r.Tick(10000);Require(r.Node==1&&r.Durability>0&&r.HasJourney,"Push lost onward journey");
+            r=new CourierRun();r.Node=5;r.LoadParcel(r.Parcels[8]);r.StartJourney(3);r.Tick(10000);
+            float clock=r.Elapsed;r.Tick(10000);Require(r.Elapsed==clock&&r.State==ShiftState.Encounter,"Encounter did not pause time");
+            r.EncounterIndex=2;r.ResolveEncounter(false);Require(r.Parcels[8].Damaged,"Dry label cargo survived river risk");
+            // A complete safe delivery circuit: no clock reset, injected delivery states or cargo teleports.
+            r=new CourierRun();r.NightMinutes=1440;Go(r,2);r.Possess(1);
+            foreach(int id in new[]{4,9,0,1,2,3,7,8,10,11,5,6})
             {
-                r=new CourierRun(seed);r.TalkToNpc();r.Elapsed=seed%2==0?300:0;r.Durabilities[0]=seed%3==0?0:50;
-                Travel(r,1,false);Travel(r,3,false);Travel(r,4,false);Require(r.Possess(2),"Fuzz route pickup blocked");Travel(r,5,false);
-                Require(r.State==ShiftState.EndingB,"Unsafe/skip route lacks ending B, seed "+seed);
+                var parcel=r.Parcels[id];Go(r,parcel.Origin);Require(!r.Finished,"Shift ended before delivery circuit completed");
+                r.Repair();Require(r.LoadParcel(parcel),"Circuit cannot load "+parcel.Name);
+                if(id==4){Travel(r,1);Travel(r,4);Travel(r,5);}else if(id==11){Go(r,4);r.Repair();Go(r,1);}else Go(r,parcel.Destination);
             }
-            return assertions+" assertions passed: 2.0 content, A/B endings, unlocks, critical protection, deadlines, push recovery, dry/fragile events, overflow storage and 50 unsafe main routes.";
+            Require(r.Finished&&r.Delivered==12,"Delivery circuit did not reach party: "+r.State+" "+r.Delivered+" "+string.Join(",",r.Parcels.Select(p=>p.Name+":"+p.State))+" time="+r.Elapsed);
+            float circuitMinutes=r.Elapsed;
+            // Explicit boundary conditions for both party outcomes.
+            r=new CourierRun();foreach(var p in r.Parcels)p.State=ParcelState.Delivered;r.TalkToNpc();Require(r.State==ShiftState.EndingA,"Perfect party missing");
+            r=new CourierRun();foreach(var p in r.Parcels)p.State=ParcelState.Failed;r.TalkToNpc();Require(r.State==ShiftState.EndingB,"Failed deliveries block party");
+            for(int seed=0;seed<20;seed++)
+            {
+                r=new CourierRun(seed);r.Elapsed=CourierRun.ShiftMinutes;
+                foreach(int node in new[]{0,1,2,3,4,5}){Go(r,node);if(r.Finished)break;}
+                Require(r.State==ShiftState.EndingB,"Dawn cannot reach party: "+seed);
+            }
+            return assertions+" assertions passed; six open nodes, twelve delivery relations, vehicle unlocks, tags, tutorial, push recovery, party endings; safe circuit "+circuitMinutes+" min.";
         }
     }
 }
