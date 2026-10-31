@@ -155,13 +155,13 @@
         },
         {
           "speaker": "Wolfwoman",
-          "text": "Wonderful! I spent all day posing as a human forest ranger, chasing children who wandered in because of this warm weather. My bones are falling apart!",
-          "sourceChinese": "太棒了，白天我装成人类护林员，在林子里撵了一整天趁着天暖和乱跑的人类小孩，骨头都快散架了。"
+          "text": "Wonderful! I spent all day chasing human children who wandered into the woods because of this warm weather. My bones are falling apart! I really cannot stand dealing with humans. I do not know how Witch puts up with them.",
+          "sourceChinese": "太棒了，今天我在林子里撵了一整天趁着天暖和乱跑的人类小孩，骨头都快散架了。我是真不爱跟人类打交道，不知道女巫怎么忍受得了。"
         },
         {
           "speaker": "Wolfwoman",
-          "text": "A bite of this on a troublesome Halloween night makes everything feel better!",
-          "sourceChinese": "万圣夜这种糟心时间能吃上这一口，心情瞬间好起来了！"
+          "text": "Still, a bite of this on a troublesome Halloween night makes everything feel better!",
+          "sourceChinese": "不过万圣夜这种糟心时间能吃上这一口，心情瞬间好起来了！"
         }
       ]
     },
@@ -276,8 +276,8 @@
         },
         {
           "speaker": "Vampire",
-          "text": "It is so ethereal and beautiful. Autumn used to bring only wind to the valley. To hear such lovely flowing water at the end of October...",
-          "sourceChinese": "这实在是空灵而美妙。以前入秋后山谷里只有风声，没想到今年到十月底还能听到如此美丽的水声……"
+          "text": "It is so ethereal and beautiful. She really knows how to tell stories through music. Long before I met her, she was already capturing the sights and sounds of many places in her songs...",
+          "sourceChinese": "这实在是空灵而美妙。她真的很擅长用音乐讲故事呢，在我认识她以前，她就用音乐记录过许多地方的风物……"
         },
         {
           "speaker": "Vampire",
@@ -392,8 +392,8 @@
         },
         {
           "speaker": "Immigrant Jiangshi",
-          "text": "But damp keeps coming through the floor tiles, and the old machine is no use now. I have to brush on two extra coats of moisture-repellent body lotion every day!",
-          "sourceChinese": "可惜最近地砖缝里总往外返潮气，老机器也不中用啦，我每天做日常护理都得把防潮剂当身体乳往身上多刷两层呢！"
+          "text": "But damp keeps coming through the floor tiles, and the old machine is no use now. It is even damper than when I crossed the ocean! I have to brush on two extra coats of moisture-repellent body lotion every day!",
+          "sourceChinese": "可惜最近地砖缝里总往外返潮气，老机器也不中用啦，简直比我以前远渡重洋的时候还潮呢，我每天做日常护理都得把防潮剂当身体乳往身上多刷两层呢！"
         },
         {
           "speaker": "Goolie",
@@ -422,8 +422,8 @@
         },
         {
           "speaker": "Witch",
-          "text": "Just looking at it, I can see spring flowers filling the forest and smell the rich fragrance of herbs and blossoms. These bottles hold a record of the season.",
-          "sourceChinese": "只是看着这些蜜酒，我仿佛能看到春花开遍森林，嗅到馥郁的花草香，这些酒是季节的记录。"
+          "text": "Just looking at this mead, I can see spring flowers filling the forest and smell the rich fragrance of herbs and blossoms. This mead is a notebook of the seasons.",
+          "sourceChinese": "只是看着这些蜜酒，我仿佛能看到春花开遍森林，嗅到馥郁的花草香，这些酒是季节的记事本。"
         },
         {
           "speaker": "Goolie",
@@ -487,11 +487,13 @@
   "characterBackgrounds": [
     {
       "id": "drow",
-      "description": "A shy writer and part-time bard, with purple skin, white hair and red eyes. Needs rosin for her violin and sends her party theme recording to Vampire."
+      "description": "A shy writer and part-time bard, with purple skin, white hair and red eyes. Wanders between small dark societies. She struggles with conversation, but has recorded many stories through music. Needs rosin for her violin and sends her party theme recording to Vampire.",
+      "sourceChinese": "游走在各个暗夜小社会间的吟游诗人，不擅长沟通，但是通过音乐记录了很多故事。"
     },
     {
       "id": "werewolf",
-      "description": "A warm, outgoing big sister and ranger of the foggy forest. Poses as a human by day, keeps bees, supplies rosin and shoos away lost children. Her patrols leave her hungry."
+      "description": "A warm, outgoing big sister and ranger of the foggy forest. Poses as a human by day, keeps bees, supplies rosin and shoos away lost children. Roams the wilderness and longs for freedom. She dislikes dealing with humans, and her patrols leave her hungry.",
+      "sourceChinese": "游离在山野之中，向往自由。"
     },
     {
       "id": "bear",
