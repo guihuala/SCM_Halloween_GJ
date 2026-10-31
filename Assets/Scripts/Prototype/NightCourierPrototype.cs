@@ -59,8 +59,6 @@ namespace NightCourier
         }
         private void Start()
         {
-            var previousHud = FindObjectOfType<HudController>();
-            if (previousHud != null && previousHud.pauseButton != null) previousHud.pauseButton.gameObject.SetActive(false);
             planner = Open<CourierPanel>("CourierRoutePanel", UIPanelLayer.Bottom);
             hud = Open<CourierHudPanel>("CourierHudPanel", UIPanelLayer.Normal);
             lastState = Run.State;

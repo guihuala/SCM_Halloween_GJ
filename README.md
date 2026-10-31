@@ -126,3 +126,13 @@ HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定�
 地图顶部显示当前载具，换车按钮显示可用载具；旧皮卡未解锁时保留锁定图示。耗尽切换幽灵时隐藏车辆图片并显示幽灵标识。既有载具详情面板也接入当前和停放载具图片，所有图片均不拦截点击。
 
 `Tools > Night Courier > Install Vehicle Artwork (preserve layouts)` 为已有面板接入图标；完整重建地图面板也会接入。`CourierVehicleArtInstaller.InstallAndCheck` 验证三种映射、换车、锁定、详情、暂停、幽灵兜底和重开。
+
+## 地图占位美术接入
+
+当前地图使用 `Assets/Resources/NightVoyage/MapArtwork.asset` 配置纯地形底图与六个地标，可直接在Inspector中替换为手绘Sprite，按Stop Id绑定。地形随地图容器伸展，地标保持比例并使用统一脚底锚点；对话、订单抽屉和不同地图尺寸共用原节点坐标。完整重建地图UI也会接入美术层。
+
+道路和路线高亮由原 `CourierRouteGraphic` 绘制；移动进度、光点及呼吸光晕在单独的 `TravelOverlay` 绘制，保持可见与暂停行为。地标图像的点击区域挂在原节点按钮上，名称和节点标记仍可点击。
+
+`Tools > Night Courier > Install Map Artwork (preserve layouts)` 为现有面板安装，`CourierMapArtworkInstaller.InstallAndCheck` 验证接入。替换步骤、Anchor/Scale/Offset与分层规范见 `Assets/Art/MapPlaceholder/README_地图重绘与动效.md`。
+
+地图移动标记现复用 `VehicleIcons.asset` 的当前载具图片；途中耗尽后切换同款幽灵标识。原路线高亮、行驶进度与呼吸光晕保留，暂停时图标和光晕同时冻结，到站隐藏。`RoadMap / CourierMapArtwork` 的 `Traveler Size` 可调整图标大小。`CourierMapTravelerSmokeTest.InstallAndCheck` 验证三种车型、途中切换、暂停、到站、重开与缺图兜底。

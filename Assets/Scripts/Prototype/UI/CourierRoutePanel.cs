@@ -11,6 +11,12 @@ namespace NightCourier
         public CourierIconGraphic[] stopIcons;
         public CourierIconHint[] stopHints;
         public CourierRouteGraphic mapGraphic;
+        public CourierMapArtwork mapArtwork;
+        public void PrepareMapArtwork()
+        {
+            var container=mapGraphic.transform.parent;
+            if(mapArtwork==null)mapArtwork=container.GetComponent<CourierMapArtwork>()??container.gameObject.AddComponent<CourierMapArtwork>();
+        }
         public Text objectiveText,destinationText,timeCostText,wearCostText,riskText,vehicleText,durabilityText,loadText;
         public Image durabilityFill;
         public CourierVehicleIconView vehicleArtwork, parkedVehicleArtwork;
@@ -113,6 +119,8 @@ namespace NightCourier
                     var point=CourierRouteGraphic.NodePoint(stops[i],new Vector2(mapWidth,mapHeight));
                     ((RectTransform)stopButtons[i].transform).anchoredPosition=new Vector2(point.x-90,-point.y+36);
                 }
+            if(mapArtwork==null)PrepareMapArtwork();
+            if(mapArtwork.isActiveAndEnabled)mapArtwork.Apply(this,stops);
             if(owner!=null)RefreshNodePrompt();
         }
         private void Move(string name,float x,float y)
@@ -139,7 +147,26 @@ namespace NightCourier
             var point=CourierRouteGraphic.NodePoint(Run.Stops[node],map.rect.size);
             float labelTop=map.rect.yMax-upper.y,labelBottom=map.rect.yMax-lower.y;
             float top=labelBottom<point.y?labelTop-height-8:labelBottom+8;
-            Place((RectTransform)nodePromptButton.transform,Mathf.Clamp(point.x-width*.5f,0,map.rect.width-width),Mathf.Clamp(top,0,map.rect.height-height),width,height);
+            var placement=new Rect(Mathf.Clamp(point.x-width*.5f,0,map.rect.width-width),Mathf.Clamp(top,0,map.rect.height-height),width,height);
+            for(int candidate=0;candidate<4;candidate++)
+            {
+                Rect option;
+                if(candidate==0)option=new Rect(point.x-width*.5f,top,width,height);
+                else if(candidate==1)option=new Rect(point.x-126-width,labelTop+(labelBottom-labelTop-height)*.5f,width,height);
+                else if(candidate==2)option=new Rect(point.x+126,labelTop+(labelBottom-labelTop-height)*.5f,width,height);
+                else option=new Rect(point.x-width*.5f,labelTop-height-8,width,height);
+                if(option.xMin<0||option.yMin<0||option.xMax>map.rect.width||option.yMax>map.rect.height)continue;
+                bool overlaps=false;
+                foreach(var label in stopLabels)
+                {
+                    label.rectTransform.GetWorldCorners(dialogueCorners);
+                    var lo=map.InverseTransformPoint(dialogueCorners[0]);var hi=map.InverseTransformPoint(dialogueCorners[2]);
+                    var labelBounds=Rect.MinMaxRect(lo.x-map.rect.xMin,map.rect.yMax-hi.y,hi.x-map.rect.xMin,map.rect.yMax-lo.y);
+                    if(option.Overlaps(labelBounds)){overlaps=true;break;}
+                }
+                if(!overlaps){placement=option;break;}
+            }
+            Place((RectTransform)nodePromptButton.transform,placement.x,placement.y,width,height);
         }
         protected override void Awake()
         {

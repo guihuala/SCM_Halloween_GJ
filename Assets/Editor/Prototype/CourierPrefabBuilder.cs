@@ -283,6 +283,7 @@ public static class CourierPrefabBuilder
             p.stopButtons[i]=b;p.stopLabels[i]=label;p.stopIcons[i]=Icon(b.transform,"Marker",CourierIconKind.Dot,72,18,36,Muted);
             p.stopCounts[i]=Text(b.transform,"ParcelCount","",117,18,35,36,28,Mint);p.stopHints[i]=b.gameObject.AddComponent<CourierIconHint>();p.stopHints[i].message=run.Stops[i].Name;
         }
+        p.PrepareMapArtwork();p.mapArtwork.Apply(p);
         p.destinationText=Text(card,"DestinationText","Choose a destination",24,496,590,40,28);
         var costs=Element("SelectedCosts",card,24,540,580,42);p.costGroup=costs.gameObject;
         Icon(costs,"ClockIcon",CourierIconKind.Clock,0,3,32,Muted,"Estimated travel turns");p.timeCostText=Text(costs,"TimeCostText","",44,0,130,40,24);
