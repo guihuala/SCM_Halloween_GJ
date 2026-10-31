@@ -20,7 +20,7 @@ namespace NightCourier
         }
         public static string Station(CourierRun run,int id)
         {
-            return run.Stops[id].Name+"\n"+run.StationDescription(id)+"\nUp to "+run.Vehicles[id-6].Speed+" edges per turn. Protection ends when the vehicle expires.";
+            return run.Stops[id].Name+"\n"+run.StationDescription(id).Replace(". ",".\n")+"\nUp to "+run.Vehicles[id-6].Speed+" edges per turn.\nProtection ends when the vehicle expires.";
         }
         public static string Rules(CourierRun run)
         {

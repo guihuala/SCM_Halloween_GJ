@@ -117,6 +117,7 @@ public static class CourierUsabilitySmokeTest
                     Check(eventPanel!=null&&eventPanel.safeButton.transform.Find("ActionSymbol")!=null&&!eventPanel.safeButton.GetComponentInChildren<Text>().enabled,"Event confirm symbol missing");
                     eventPanel.safeButton.onClick.Invoke();Check(run.State==ShiftState.Docked,"Event confirm symbol does not resolve event");break;
                 case 14:
+                    run.EventProbability=.35f;
                     var recipient=page.transform.Find("Window/ActiveRecipientLabel").GetComponent<Text>();
                     Check(recipient.gameObject.activeSelf&&recipient.text==run.Stops[run.ActiveOrder.Destination].Name,"Current recipient missing from HUD");
                     foreach(var station in page.mapArtwork.stationButtons){string message=station.GetComponent<CourierIconHint>().message;Check(message.Contains("5 vehicle turns")&&message.Contains("2 edges"),"Station rules incomplete");}

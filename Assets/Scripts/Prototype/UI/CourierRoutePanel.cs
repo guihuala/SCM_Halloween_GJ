@@ -48,6 +48,12 @@ namespace NightCourier
         [Range(0,1)] public float dialogueMapAlpha=.28f;
         private CanvasGroup mapInteraction;
         private readonly CourierHudMotion drawerMotion = new CourierHudMotion();
+        private readonly CourierHudMotion destinationMotion = new CourierHudMotion();
+        private CourierMapCanvas mapCanvas;
+        private RectTransform mapViewport;
+        private Text mapCanvasHelp;
+        private bool destinationVisible;
+        public bool CanNavigateMap => owner!=null&&owner.Active&&!owner.ConversationActive&&!CargoOpen&&!Run.Finished;
         private CourierCargoFeedback cargoFeedback;
         public bool CargoOpen { get; private set; }
         private bool tutorialCargoLoaded;
@@ -88,9 +94,14 @@ namespace NightCourier
         }
         private void LateUpdate()
         {
-            if(hasRemoved||cargoDrawer==null)return;
-            drawerMotion.RestoreLayout();
-            drawerMotion.Present(cargoDrawer.gameObject,CargoOpen,new Vector2(0,-48),reducedPanelMotion);
+            if(hasRemoved)return;
+            if(cargoDrawer!=null){drawerMotion.RestoreLayout();drawerMotion.Present(cargoDrawer.gameObject,CargoOpen,new Vector2(0,-48),reducedPanelMotion);}
+            if(destinationTooltip!=null)
+            {
+                destinationMotion.RestoreLayout();
+                if(destinationVisible)RefreshDestinationTooltip();
+                destinationMotion.Present(destinationTooltip.gameObject,destinationVisible,new Vector2(0,-12),reducedPanelMotion);
+            }
         }
         public void ToggleCargoDrawer(){if(owner!=null&&owner.Active&&!owner.ConversationActive)SetCargoOpen(!CargoOpen);}
         private readonly List<CourierCargoRow> rows=new List<CourierCargoRow>();
@@ -123,10 +134,21 @@ namespace NightCourier
         public void ApplyFullscreenLayout()
         {
             drawerMotion.RestoreLayout();
+            destinationMotion.RestoreLayout();
             if(page==null)page=transform.Find("Window") as RectTransform;
             if(page==null)return;
             page.anchorMin=Vector2.zero;page.anchorMax=Vector2.one;page.offsetMin=page.offsetMax=Vector2.zero;
             if(map==null)map=mapGraphic.transform.parent as RectTransform;
+            if(mapViewport==null)
+            {
+                mapViewport=new GameObject("MapViewport",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(RectMask2D),typeof(CourierMapCanvas)).GetComponent<RectTransform>();
+                mapViewport.SetParent(page,false);mapViewport.SetAsFirstSibling();
+                var surface=mapViewport.GetComponent<Image>();surface.color=Color.clear;surface.raycastTarget=true;
+                map.SetParent(mapViewport,false);mapCanvas=mapViewport.GetComponent<CourierMapCanvas>();mapCanvas.content=map;mapCanvas.panel=this;
+                var help=new GameObject("MapCanvasHelp",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));help.transform.SetParent(page,false);
+                mapCanvasHelp=help.GetComponent<Text>();mapCanvasHelp.font=vehicleText.font;mapCanvasHelp.fontSize=20;mapCanvasHelp.color=CourierColors.Muted;
+                mapCanvasHelp.text="Scroll to zoom  ·  Drag to move";mapCanvasHelp.raycastTarget=false;
+            }
             if(nodePromptButton!=null&&nodePromptButton.transform.parent!=page)nodePromptButton.transform.SetParent(page,false);
             if(objectiveText==null)
             {
@@ -149,7 +171,9 @@ namespace NightCourier
                 var bar=hud!=null?hud.subtitleText.transform.parent.Find("SubtitleBar") as RectTransform:null;
                 if(bar!=null&&owner.ConversationActive&&Run.State==ShiftState.Docked){bar.GetWorldCorners(dialogueCorners);contentBottom=page.rect.yMax-page.InverseTransformPoint(dialogueCorners[1]).y-16;}
             }
-            float mapX=32,mapWidth=size.x-64,mapHeight=Mathf.Max(260,size.y-208);
+            float mapX=0,mapWidth=size.x-32,mapHeight=Mathf.Max(260,size.y-144);
+            Place(mapViewport,0,112,size.x,Mathf.Max(260,size.y-112));
+            Place(mapCanvasHelp.rectTransform,24,size.y-40,440,32);
             PrepareDestinationTooltip();
             if(mapHeading!=null)mapHeading.gameObject.SetActive(false);
             foreach(var name in new[]{"PageHeaderRule","SummaryRule"})
@@ -158,7 +182,7 @@ namespace NightCourier
             {
                 pageSize=size;layoutBottom=contentBottom;
                 if(pageTitle!=null)pageTitle.gameObject.SetActive(false);
-                Place(map,mapX,184,mapWidth,mapHeight);
+                Place(map,mapX,0,mapWidth,mapHeight);mapCanvas.ApplyLayout();
                 var edges=mapGraphic.rectTransform;edges.anchorMin=Vector2.zero;edges.anchorMax=Vector2.one;edges.offsetMin=edges.offsetMax=Vector2.zero;
                 Place(vehicleText.rectTransform,132,24,260,56);vehicleText.fontSize=34;
                 SizeElement("DurabilityIcon",160,28,48,48);
@@ -213,7 +237,7 @@ namespace NightCourier
             {
                 var old=map.Find("DestinationTooltip");
                 destinationTooltip=old!=null?(RectTransform)old:new GameObject("DestinationTooltip",typeof(RectTransform)).GetComponent<RectTransform>();
-                destinationTooltip.SetParent(map,false);
+                destinationTooltip.SetParent(page,false);
                 var image=destinationTooltip.GetComponent<Image>();
                 if(image==null)image=destinationTooltip.gameObject.AddComponent<Image>();
                 image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Panel");image.type=Image.Type.Sliced;
@@ -221,6 +245,7 @@ namespace NightCourier
                 foreach(var element in new Transform[]{destinationText.transform,costGroup.transform,riskText.transform,departButton.transform})element.SetParent(destinationTooltip,false);
                 destinationTooltip.gameObject.SetActive(false);
             }
+            if(destinationTooltip.parent!=page)destinationTooltip.SetParent(page,false);
             if(routeModeButton==null)
             {
                 var go=new GameObject("RouteModeButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button));
@@ -236,38 +261,53 @@ namespace NightCourier
         private void RefreshDestinationTooltip()
         {
             if(destinationTooltip==null)return;
-            bool show=selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!CargoOpen;
-            destinationTooltip.gameObject.SetActive(show);
-            if(!show)return;
-            float width=Mathf.Min(600,map.rect.width-24);
+            destinationVisible=selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!CargoOpen;
+            if(!destinationVisible)return;
+            float width=Mathf.Min(600,page.rect.width-24);
             riskText.fontSize=24;riskText.resizeTextForBestFit=false;
             riskText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,width-32);
-            float height=Mathf.Min(264,map.rect.height-24);
+            float height=Mathf.Min(352,page.rect.height-136);
             var target=selected>=6?mapArtwork.NodeTarget(selected):mapArtwork!=null&&selected<mapArtwork.landmarkImages.Length?mapArtwork.landmarkImages[selected].rectTransform:(RectTransform)stopButtons[selected].transform;
             target.GetWorldCorners(dialogueCorners);
-            var lo=map.InverseTransformPoint(dialogueCorners[0]);var hi=map.InverseTransformPoint(dialogueCorners[2]);
-            float left=hi.x-map.rect.xMin+16;
-            if(left+width>map.rect.width-12)left=lo.x-map.rect.xMin-width-16;
-            float top=map.rect.yMax-hi.y;
-            Place(destinationTooltip,Mathf.Clamp(left,12,map.rect.width-width-12),Mathf.Clamp(top,12,Mathf.Max(12,map.rect.height-height-12)),width,height);
-            Place(destinationText.rectTransform,20,16,width-136,88);destinationText.fontSize=32;
+            var lo=page.InverseTransformPoint(dialogueCorners[0]);var hi=page.InverseTransformPoint(dialogueCorners[2]);
+            float left=hi.x-page.rect.xMin+16;
+            if(left+width>page.rect.width-12)left=lo.x-page.rect.xMin-width-16;
+            float top=page.rect.yMax-hi.y;
+            Place(destinationTooltip,Mathf.Clamp(left,12,page.rect.width-width-12),Mathf.Clamp(top,120,Mathf.Max(120,page.rect.height-height-12)),width,height);
+            Place(destinationText.rectTransform,24,20,width-144,76);destinationText.fontSize=34;destinationText.fontStyle=FontStyle.Bold;destinationText.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.28f);
             Place((RectTransform)departButton.transform,width-100,20,80,80);ResizeIconButton(departButton,80);
             Place((RectTransform)costGroup.transform,20,112,width-40,56);
-            Place((RectTransform)routeModeButton.transform,20,180,72,64);
+            Place((RectTransform)routeModeButton.transform,20,268,72,64);
             Caption(routeModeButton,Run.PreferSafeRoutes?"Safe route  |  Switch to fastest":"Fastest route  |  Switch to safe");
             CourierSymbolUI.Button(routeModeButton,Run.PreferSafeRoutes?CourierIconKind.Check:CourierIconKind.FastForward,Run.PreferSafeRoutes?"Safe route · click for fastest route":"Fastest route · click for safe route");
             routeModeButton.interactable=owner.Active&&!owner.ConversationActive;
-            timeCostText.fontSize=wearCostText.fontSize=28;
+            timeCostText.fontSize=wearCostText.fontSize=32;
+            wearCostText.color=Color.Lerp(CourierColors.Night,CourierColors.Gold,.38f);
             Place(timeCostText.rectTransform,56,0,130,48);Place(wearCostText.rectTransform,256,0,120,48);
             var timeIcon=costGroup.transform.Find("ClockIcon") as RectTransform;var wearIcon=costGroup.transform.Find("WearIcon") as RectTransform;
             if(timeIcon!=null)Place(timeIcon,0,4,40,40);if(wearIcon!=null)Place(wearIcon,200,4,40,40);
-            Place(riskText.rectTransform,20,252,width-40,Mathf.Max(64,height-268));riskText.fontSize=24;
-            riskText.alignment=TextAnchor.UpperLeft;
-            riskText.resizeTextForBestFit=true;riskText.resizeTextMinSize=18;riskText.resizeTextMaxSize=24;
             riskText.enabled=false;
-            var warning=CourierSymbolUI.Icon(destinationTooltip,"RouteWarningSymbol",CourierIconKind.Warning,112,188,48,CourierColors.Gold,riskText.text);
+            string summary=riskText.text;
+            int sentence=summary.IndexOf(". ",System.StringComparison.Ordinal);if(sentence>=0)summary=summary.Substring(0,sentence+1);
+            if(summary.Length>96)summary=summary.Substring(0,93)+"…";
+            Color summaryColor=summary.StartsWith("Protect",System.StringComparison.OrdinalIgnoreCase)?Color.Lerp(CourierColors.Night,CourierColors.Mint,.38f):Color.Lerp(CourierColors.Night,CourierColors.Gold,.3f);
+            var summaryLabel=MetricLabel("RouteSummary",summary,24,194,summaryColor);
+            summaryLabel.fontSize=23;summaryLabel.fontStyle=FontStyle.Normal;Place(summaryLabel.rectTransform,24,194,width-48,64);
+            summaryLabel.horizontalOverflow=HorizontalWrapMode.Wrap;summaryLabel.verticalOverflow=VerticalWrapMode.Truncate;
+            MetricLabel("TravelLabel","TURNS",80,164,Color.Lerp(CourierColors.Night,CourierColors.Mint,.32f));
+            MetricLabel("WearLabel","WEAR",280,164,wearCostText.color);
+            MetricLabel("RouteModeLabel",Run.PreferSafeRoutes?"Safer route":"Fastest route",112,280,CourierColors.Night);
+            var warning=CourierSymbolUI.Icon(destinationTooltip,"RouteWarningSymbol",CourierIconKind.Warning,width-68,280,36,CourierColors.Gold,riskText.text);
             warning.gameObject.SetActive(!string.IsNullOrWhiteSpace(riskText.text));
             destinationTooltip.SetAsLastSibling();
+        }
+        private Text MetricLabel(string name,string text,float x,float y,Color color)
+        {
+            var child=destinationTooltip.Find(name);
+            if(child==null){var go=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));go.transform.SetParent(destinationTooltip,false);child=go.transform;}
+            var label=child.GetComponent<Text>();label.font=destinationText.font;label.fontSize=20;label.fontStyle=FontStyle.Bold;label.text=text;label.color=color;label.raycastTarget=false;
+            Place(label.rectTransform,x,y,220,36);
+            return label;
         }
         private void RefreshDialogueFocus()
         {
@@ -279,7 +319,7 @@ namespace NightCourier
             if(talking)
             {
                 SetCargoOpen(false);
-                if(destinationTooltip!=null)destinationTooltip.gameObject.SetActive(false);
+                destinationVisible=false;
                 var events=UnityEngine.EventSystems.EventSystem.current;
                 if(events!=null&&events.currentSelectedGameObject!=null&&events.currentSelectedGameObject.transform.IsChildOf(map))events.SetSelectedGameObject(null);
             }
@@ -345,7 +385,11 @@ namespace NightCourier
                 CourierSymbolUI.Hint(activeRecipientLabel.transform,CourierInformation.Order(Run,order));activeRecipientLabel.raycastTarget=true;
             }
             var loadIcon=loadText.transform.parent.Find("LoadIcon");
-            if(loadIcon!=null)CourierSymbolUI.Hint(loadIcon,active?CourierInformation.Order(Run,order):"No active order · visit a sender and accept a batch in Orders (Tab)");
+            if(loadIcon!=null)
+            {
+                var symbol=loadIcon.GetComponent<CourierIconGraphic>();if(symbol!=null)symbol.SetKind(active?CourierIconKind.Clock:CourierIconKind.Box);
+                CourierSymbolUI.Hint(loadIcon,active?CourierInformation.Order(Run,order):"No active order · visit a sender and accept a batch in Orders (Tab)");
+            }
         }
         protected override void Awake()
         {
@@ -380,6 +424,13 @@ namespace NightCourier
             base.Bind(prototype);
         }
         public void Select(int node){if(!owner.Active||owner.ConversationActive||Run.State!=ShiftState.Docked)return;if(node==Run.Node){owner.BeginConversation();return;}selected=node;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();}
+        public void ClearDestination()
+        {
+            if(!CanNavigateMap)return;
+            selected=hoveredNode=-1;
+            var events=UnityEngine.EventSystems.EventSystem.current;if(events!=null)events.SetSelectedGameObject(null);
+            Refresh();
+        }
         protected override void Refresh()
         {
             if(cargoFeedback!=null)cargoFeedback.Observe(reducedPanelMotion);
