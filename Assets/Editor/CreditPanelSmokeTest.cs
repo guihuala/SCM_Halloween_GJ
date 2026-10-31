@@ -59,7 +59,7 @@ public static class CreditPanelSmokeTest
                     Require(EventSystem.current.currentSelectedGameObject == panel.GetComponentInChildren<Button>().gameObject, "Back button not focused");
                     Canvas.ForceUpdateCanvases();
                     var body = panel.transform.Find("MessageText").GetComponent<Text>();
-                    Require(body.text.Contains("Wolfgang_") && body.text.Contains("Kenney"), "Audio credits missing");
+                    Require(body.text.Contains("SCM Halloween Game Jam") && !body.text.Contains("AUDIO CREDITS") && !body.text.Contains("opengameart.org"), "Unexpected credits content");
                     Require(body.preferredHeight <= body.rectTransform.rect.height, "Credits text clipped");
                     Require(body.cachedTextGenerator.vertexCount > 4, "Credits not rendered");
                     ScreenCapture.CaptureScreenshot("/tmp/scm-credits-panel.png");

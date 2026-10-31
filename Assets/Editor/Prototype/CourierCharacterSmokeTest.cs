@@ -94,7 +94,7 @@ public static class CourierCharacterSmokeTest
             else if (step == 9)
             {
                 Require(!hud.speakerPortrait.gameObject.activeSelf && !hud.speakerName.gameObject.activeSelf, "Speaker stays visible outside dialogue");
-                Require(hud.subtitleText.rectTransform.sizeDelta == new Vector2(1600, 40), "Status text width was not restored");
+                Require(!hud.subtitleText.gameObject.activeSelf, "Dialogue subtitle stays visible outside conversation");
                 owner.Run.StartJourney(4);
             }
             else if (step == 10)

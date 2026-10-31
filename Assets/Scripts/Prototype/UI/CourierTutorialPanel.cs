@@ -7,6 +7,7 @@ namespace NightCourier
     {
         public CourierTutorialView view;
         private NightCourierPrototype owner;
+        protected override bool SlideContent { get { return false; } }
         public void Bind(NightCourierPrototype prototype)
         {
             owner=prototype;
@@ -16,13 +17,12 @@ namespace NightCourier
         }
         private void LateUpdate()
         {
-            if(owner==null)return;
+            if(owner==null||hasRemoved)return;
             view.Refresh();
             // Modal encounters are created after this panel; keep the guide above them.
             // During pause all guide graphics are hidden, leaving the pause UI in control.
             if(owner.Active&&!owner.Tutorial.Finished&&!owner.Run.Finished&&transform.GetSiblingIndex()!=transform.parent.childCount-1)
                 transform.SetAsLastSibling();
         }
-        public override void ClosePanel(){ClosePanelImmediate();}
     }
 }

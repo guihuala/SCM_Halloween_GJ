@@ -1,17 +1,65 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.U2D;
 namespace NightCourier
 {
-    public enum CourierIconKind { Close,Arrow,Load,Store,Wrench,Box,Clock,Fragile,Heavy,Dry,Story,Lock,Pin,Dot,Ghost,Home,Restart,Warning,Pause }
+    public enum CourierIconKind { Close,Arrow,Load,Store,Wrench,Box,Clock,Fragile,Heavy,Dry,Story,Lock,Pin,Dot,Ghost,Home,Restart,Warning,Pause,Check,FastForward,Talk,Route,Delivered,Fuel,Moon,Volume,Music,Settings }
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class CourierIconGraphic : MaskableGraphic
     {
         public CourierIconKind kind;
+        [Tooltip("Custom HUD sprite. Replace here, or overwrite the matching NightVoyage/HUD PNG.")]
+        public Sprite artwork;
+        private Sprite resolvedArtwork;
+        private CourierIconKind resolvedKind;
+        private bool resolved;
+        private Sprite Artwork
+        {
+            get
+            {
+                if (artwork != null) return artwork;
+                if (!resolved || resolvedKind != kind)
+                {
+                    resolved = true; resolvedKind = kind;
+                    resolvedArtwork = Resources.Load<Sprite>("NightVoyage/HUD/" + kind);
+                }
+                return resolvedArtwork;
+            }
+        }
+        public override Texture mainTexture { get { var sprite=Artwork; return sprite!=null?sprite.texture:base.mainTexture; } }
+        protected override void OnEnable()
+        {
+            base.OnEnable();SpriteAtlasManager.atlasRegistered+=OnAtlasRegistered;
+        }
+        protected override void OnDisable()
+        {
+            SpriteAtlasManager.atlasRegistered-=OnAtlasRegistered;base.OnDisable();
+        }
+        private void OnAtlasRegistered(SpriteAtlas atlas)
+        {
+            var sprite=Artwork;if(sprite!=null&&atlas.CanBindTo(sprite))SetAllDirty();
+        }
         private VertexHelper mesh;
-        public void SetKind(CourierIconKind value){if(kind==value)return;kind=value;SetVerticesDirty();}
+        public void SetKind(CourierIconKind value){if(kind==value)return;kind=value;artwork=null;SetAllDirty();}
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();mesh=vh;
+            var sprite=Artwork;
+            if(sprite!=null)
+            {
+                var uv=UnityEngine.Sprites.DataUtility.GetOuterUV(sprite);
+                var rect=rectTransform.rect;
+                float side=Mathf.Min(rect.width,rect.height);
+                float ratio=sprite.rect.width/sprite.rect.height;
+                float width=ratio>=1?side:side*ratio, height=ratio>=1?side/ratio:side;
+                var c=rect.center;
+                vh.AddVert(new Vector3(c.x-width/2,c.y-height/2),color,new Vector2(uv.x,uv.y));
+                vh.AddVert(new Vector3(c.x-width/2,c.y+height/2),color,new Vector2(uv.x,uv.w));
+                vh.AddVert(new Vector3(c.x+width/2,c.y+height/2),color,new Vector2(uv.z,uv.w));
+                vh.AddVert(new Vector3(c.x+width/2,c.y-height/2),color,new Vector2(uv.z,uv.y));
+                vh.AddTriangle(0,1,2);vh.AddTriangle(2,3,0);
+                return;
+            }
             switch(kind)
             {
                 case CourierIconKind.Pause:Line(8,5,8,19,3);Line(16,5,16,19,3);break;

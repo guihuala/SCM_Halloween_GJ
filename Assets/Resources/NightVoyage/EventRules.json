@@ -1,0 +1,12 @@
+{
+  "probability": 0.35,
+  "delayNodes": [
+    "C",
+    "J"
+  ],
+  "retreatNodes": [
+    "N",
+    "P",
+    "E"
+  ]
+}

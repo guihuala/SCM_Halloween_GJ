@@ -28,7 +28,7 @@ namespace NightCourier
             currentText.text = Run.Car.Name;
             currentStatsText.text = Run.IsGhost ? Run.Car.Ability : Stats(Run.VehicleIndex);
             int v = Run.Stops[Run.Node].Vehicle;
-            bool available = v >= 0 && v != Run.VehicleIndex;
+            bool available = v >= 0;
             parkedArtwork.gameObject.SetActive(available);if(available)parkedArtwork.SetVehicle(v);
             parkedText.text = available ? Run.Vehicles[v].Name : "No vehicle available";
             parkedStatsText.text = available ? Stats(v) : "";
@@ -39,14 +39,14 @@ namespace NightCourier
             repairButton.gameObject.SetActive(repair);
             repairButton.interactable = repair && Run.Durability < Run.Car.MaxDurability;
             repairText.gameObject.SetActive(!repair);
-            repairText.text = "Repairs are available at marked stops";
+            repairText.text = "Exchange at H, W or Q: +1 order turn; fresh 5 vehicle turns";
             feedbackText.gameObject.SetActive(!string.IsNullOrEmpty(feedbackText.text));
         }
         private string Stats(int index)
         {
             var car = Run.Vehicles[index];
             return "Vehicle turns " + Mathf.CeilToInt(Run.Durabilities[index]) + "/" + car.MaxDurability +
-                "\n\nAll order batches can be carried. " + (index==2?"Protects fragile cargo on gravel.":"");
+                "\n\nAll order batches can be carried. " + car.Ability;
         }
     }
 }

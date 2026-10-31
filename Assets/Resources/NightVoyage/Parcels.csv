@@ -1,11 +1,13 @@
-id,name,weight,reward,fragile,heavy,dry,target_turns,origin,destination
-0,Party Theme Tape,1,25,0,0,1,12,0,3
-1,Violin Rosin,1,20,0,0,1,12,1,0
-2,Gray-Pine Autumn Honey,2,25,1,0,0,12,1,2
-3,Flower Jam,1,20,0,0,0,12,1,4
-4,Spring Mead,4,35,1,1,0,12,2,5
-5,Spicy Blood Stew,1,25,0,0,0,10,3,1
-6,Flower Cakes,1,20,0,0,0,10,4,1
-7,Moisture Repellent,1,20,0,0,0,12,5,4
-8,Cooling Unit,2,30,0,0,0,12,5,3
-9,Livestock Blood,1,20,0,0,0,12,5,3
+id,name,weight,reward,fragile,heavy,dry,target_turns,origin,destination,heat_sensitive
+0,Party Theme Tape,1,0,0,0,1,4,0,3,0
+1,Violin Rosin,1,0,0,0,0,3,1,0,1
+2,Gray-Pine Autumn Honey,2,0,1,0,0,4,1,2,0
+3,Flowers,1,0,0,0,0,5,1,4,1
+4,Spring Mead,4,0,1,0,0,4,2,5,0
+5,Spicy Blood Stew,1,0,0,0,0,4,3,1,0
+6,Flower Cakes,1,0,0,0,1,4,4,1,0
+7,Moisture Repellent,1,0,0,0,1,4,5,4,0
+8,Repair Device,2,0,0,0,0,4,5,3,1
+9,Livestock Blood,1,0,0,0,0,4,5,3,1
+10,"Desiccant, Labels and Sundries",1,0,0,0,0,4,5,2,0
+11,Late-night Snack,1,0,0,0,0,4,5,1,0

@@ -44,10 +44,14 @@ public static class CourierMapPageInstaller
             Decoration(page,"PageHeaderRule",new Color(.45f,.94f,.77f,.18f));
             Decoration(page,"SummaryRule",new Color(.45f,.94f,.77f,.18f));
             if(panel.objectiveText!=null)panel.objectiveText.fontSize=26;
-            panel.ApplyFullscreenLayout();panel.SetCargoOpen(false);
+            panel.PrepareVehicleArtwork();panel.ApplyFullscreenLayout();panel.SetCargoOpen(false);
+            if(panel.mapArtwork!=null)panel.mapArtwork.travelerSize=72;
             PrefabUtility.SaveAsPrefabAsset(root,Folder+"CourierRoutePanel.prefab");
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
+        var hudRoot=PrefabUtility.LoadPrefabContents(Folder+"CourierHudPanel.prefab");
+        try{hudRoot.GetComponent<CourierHudPanel>().ApplyReadableLayout();PrefabUtility.SaveAsPrefabAsset(hudRoot,Folder+"CourierHudPanel.prefab");}
+        finally{PrefabUtility.UnloadPrefabContents(hudRoot);}
         AssetDatabase.SaveAssets();Debug.Log("COURIER_MAP_PAGE INSTALLED: full-width map, top vehicle status, collapsible two-column cargo drawer; portrait removal preserved.");
     }
     private static RectTransform Element(Transform parent,string name)

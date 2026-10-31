@@ -4,16 +4,12 @@ using UnityEngine.UI;
 
 public class CreditPanel : BasePanel
 {
-    [SerializeField] private Text creditsText;
-    [SerializeField] private TextAsset audioCredits;
     [SerializeField] private Button backButton;
     private GameObject previousSelection;
 
     protected override void Awake()
     {
         base.Awake();
-        if (creditsText != null && audioCredits != null)
-            creditsText.text += "\n\nAUDIO CREDITS\n" + audioCredits.text;
         backButton.onClick.AddListener(Back);
         // Keep directional navigation inside this single-button modal.
         backButton.navigation = new Navigation { mode = Navigation.Mode.None };

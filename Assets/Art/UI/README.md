@@ -20,7 +20,17 @@ nine-sliced sprites are supported. No repeat texture or external tween library i
 To reuse on another UI Image or RawImage, assign the material and add UIInfiniteScroll.
 To preview, enter Play mode and enable the object, or trigger a normal scene transition.
 The stripes indicate activity; the existing reveal mask and percentage still show actual
-loading progress. This change does not replace the loading page with the concept artwork.
+loading progress.
+
+The loading page uses a dark teal night backdrop, existing hand-drawn moon/ghost/parcel
+icons and the pickup artwork. The pickup follows displayed loading progress along the
+road and gently rocks using unscaled time. `LoadingScreen`'s `Animate Courier` switch
+disables the decorative rocking. The percentage and scene transitions use real progress.
+
+`Tools > Night Courier > Install Loading Screen Artwork` reapplies this layout to the
+loading prefab. Text and artwork remain editable prefab objects; the installer preserves
+the existing progress mask and animated tape material. A rendered preview is saved in
+`ArtPreviews/loading-night-courier.png`.
 
 Validation: `PostalLoadingScrollCheck.Run` renders the actual prefab, checks phase wrap,
 progress clipping and material lifecycle, and saves a screenshot to

@@ -33,7 +33,7 @@ namespace NightCourier
             get
             {
                 if (ConversationActive && (Run.State == ShiftState.Docked || Run.Finished)) return dialogue[dialogueIndex];
-                if (Run.State == ShiftState.Docked) return Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":"Click this stop or press E to talk.");
+                if (Run.State == ShiftState.Docked) return Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":(Run.Node>=6?Run.StationDescription(Run.Node):"Click this stop or press E to talk."));
                 if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
                 if (Run.State == ShiftState.Driving && Run.IsReturning) return "Returning to " + Run.Stops[Run.TravelDestination].Name;
                 if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.TravelDestination].Name+(Run.HasJourney&&Run.TravelDestination!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.TravelDestination].Name:"");
@@ -42,7 +42,7 @@ namespace NightCourier
         }
         public void BeginConversation()
         {
-            if ((Run.State != ShiftState.Docked && !Run.Finished) || !Active) return;
+            if ((Run.State != ShiftState.Docked && !Run.Finished) || !Active || Run.Node>=6) return;
             if(ConversationActive&&dialogueNode==Run.Node)return;
             dialogueNode=Run.Node;
             dialogue = Run.TalkToNpc(); dialogueIndex = 0;
@@ -109,6 +109,7 @@ namespace NightCourier
         }
         public bool PossessParkedVehicle()
         {
+            if(!Active||ConversationActive)return false;
             int vehicle = Run.Stops[Run.Node].Vehicle;
             if (vehicle < 0 || !Run.Possess(vehicle)) return false;
             InCar = true; PossessionGlow=1;
@@ -171,6 +172,26 @@ namespace NightCourier
             SyncState();
             if(Input.GetKeyDown(KeyCode.Tab)){var routePanel=planner as CourierRoutePanel;if(routePanel!=null)routePanel.ToggleCargoDrawer();}
             if (Run.State != ShiftState.Docked && !Run.Finished) return;
+            if(!ConversationActive&&!Run.Finished)
+            {
+                Vector2 direction=Vector2.zero;
+                if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow))direction=Vector2.up;
+                if(Input.GetKeyDown(KeyCode.S)||Input.GetKeyDown(KeyCode.DownArrow))direction=Vector2.down;
+                if(Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.LeftArrow))direction=Vector2.left;
+                if(Input.GetKeyDown(KeyCode.D)||Input.GetKeyDown(KeyCode.RightArrow))direction=Vector2.right;
+                if(direction!=Vector2.zero)
+                {
+                    var here=CourierStreetMap.Nodes[System.Array.FindIndex(CourierStreetMap.Nodes,n=>n.StopId==Run.Node)];
+                    StreetNode best=null;float score=.2f;
+                    foreach(var edge in CourierStreetMap.Edges)
+                    {
+                        if(edge.A!=here&&edge.B!=here)continue;
+                        var next=edge.Other(here);var delta=new Vector2(next.Point.X-here.Point.X,here.Point.Y-next.Point.Y).normalized;
+                        float alignment=Vector2.Dot(direction,delta);if(alignment>score){score=alignment;best=next;}
+                    }
+                    if(best!=null)DepartTo(best.StopId);
+                }
+            }
             if(Input.GetKeyDown(KeyCode.M))ShowPlanner("CourierRoutePanel");
             if(Input.GetKeyDown(KeyCode.E))
             {

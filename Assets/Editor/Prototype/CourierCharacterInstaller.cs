@@ -69,6 +69,8 @@ public static class CourierCharacterInstaller
 
     private static string PortraitPath(string id)
     {
+        if (id == "bear") return PortraitFolder + "gameJam2026_LittleWerebear.png";
+        if (id == "zombie") return PortraitFolder + "gameJam2026_jiangshiGranny_02.png";
         return PortraitFolder + ((id=="drow"||id=="vampire"||id=="werewolf")?"gamejam_portrait_":"") + id + ".png";
     }
     private static Sprite Sprite(string id) { return AssetDatabase.LoadAssetAtPath<Sprite>(PortraitPath(id)); }

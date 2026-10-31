@@ -5,6 +5,7 @@ namespace NightCourier
     // Shared presentation settings live on the prefab, not on individual buttons.
     public sealed class CourierHintView : MonoBehaviour
     {
+        private void Awake(){CourierTheme.Apply(gameObject);}
         public Text label;
         public CanvasGroup group;
         [Min(0)] public float hoverDelay=.22f;

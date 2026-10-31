@@ -104,14 +104,15 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   backgroundFadeDuration: 0.08
-  fadeInDuration: 0.12
-  fadeOutDuration: 0
-  fadeInEase: 6
-  fadeOutEase: 5
+  fadeInDuration: 0.28
+  fadeOutDuration: 0.18
+  fadeInEase: 9
+  fadeOutEase: 8
   scaleAnimation: 0
   scaleFrom: {x: 0.8, y: 0.8}
   scaleDuration: 0.3
   closeButton: {fileID: 0}
+  pauseButton: {fileID: 0}
   titleText: {fileID: 4770507988500964042}
   summaryText: {fileID: 3489259950387715798}
   restartButton: {fileID: 3654977736923809650}
@@ -197,6 +198,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 15
+  artwork: {fileID: 21300000, guid: fbe8b6f5b7d04a5d9d75e96d05d08923, type: 3}
 --- !u!1 &4913805540526273824
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,8 +347,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: c250935d9583458291a7dc271ad9c0e8, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -425,8 +427,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -590,8 +592,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -830,3 +832,4 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 16
+  artwork: {fileID: 21300000, guid: 97fdc2337088403aa7dcb4831b6dbeb8, type: 3}

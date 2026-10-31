@@ -30,7 +30,7 @@ namespace NightCourier
             {
                 var go=new GameObject("GhostFallback",typeof(RectTransform),typeof(CanvasRenderer),typeof(CourierIconGraphic));go.transform.SetParent(view.transform,false);
                 var g=(RectTransform)go.transform;g.anchorMin=Vector2.zero;g.anchorMax=Vector2.one;g.offsetMin=g.offsetMax=Vector2.zero;
-                view.ghost=go.GetComponent<CourierIconGraphic>();view.ghost.SetKind(CourierIconKind.Ghost);view.ghost.color=new Color(.5f,.81f,.7f);view.ghost.raycastTarget=false;
+                view.ghost=go.GetComponent<CourierIconGraphic>();view.ghost.SetKind(CourierIconKind.Ghost);view.ghost.color=CourierColors.Mint;view.ghost.raycastTarget=false;
             }
             view.SetVehicle(0);return view;
         }

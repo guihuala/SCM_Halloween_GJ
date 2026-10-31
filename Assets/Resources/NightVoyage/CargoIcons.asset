@@ -23,8 +23,8 @@ MonoBehaviour:
     displayName: gray_pine_autumn_honey
     sprite: {fileID: 21300000, guid: 0e0e48b10f714d7b8fddc5632193b890, type: 3}
   - parcelId: 3
-    displayName: flower_jam
-    sprite: {fileID: 21300000, guid: 9ab0482f5da1a4783aad7ddb23024aa6, type: 3}
+    displayName: forest_flowers
+    sprite: {fileID: 21300000, guid: 6a1e4aeae2cf4f479dde76e0b3c0230e, type: 3}
   - parcelId: 4
     displayName: spring_mead
     sprite: {fileID: 21300000, guid: ad7ce091baec4eafae4138497d93b315, type: 3}
@@ -38,8 +38,14 @@ MonoBehaviour:
     displayName: moisture_repellent
     sprite: {fileID: 21300000, guid: 85400b2198e143bf98940ecda4943fee, type: 3}
   - parcelId: 8
-    displayName: cooling_unit
-    sprite: {fileID: 21300000, guid: 24463988c85b24b8e813ca96f0a1f4fd, type: 3}
+    displayName: repair_equipment
+    sprite: {fileID: 21300000, guid: b1f83305981a4ebd8ae31c1bc9962cc8, type: 3}
   - parcelId: 9
     displayName: livestock_blood
     sprite: {fileID: 21300000, guid: 5d5cfc3276164693bcbdf0e426bec6bd, type: 3}
+  - parcelId: 10
+    displayName: moisture_repellent
+    sprite: {fileID: 21300000, guid: 85400b2198e143bf98940ecda4943fee, type: 3}
+  - parcelId: 11
+    displayName: late_night_meal
+    sprite: {fileID: 21300000, guid: 3507f1bcacb74014b6fe8590321e2e24, type: 3}

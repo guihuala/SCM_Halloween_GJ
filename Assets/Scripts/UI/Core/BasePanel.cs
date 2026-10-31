@@ -9,17 +9,21 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class BasePanel : MonoBehaviour
 {
+    public const float EnterMotionDuration = .28f, ExitMotionDuration = .18f;
     protected bool hasRemoved = false;
     protected string panelName;
     protected CanvasGroup canvasGroup;
 
     [Header("动画设置")]
-    [SerializeField, Min(0f)] protected float backgroundFadeDuration = 0.15f;
-    [SerializeField] protected float fadeInDuration = 0.5f;
-    [SerializeField] protected float fadeOutDuration = 0.5f;
-    [SerializeField] protected Ease fadeInEase = Ease.OutQuad;
-    [SerializeField] protected Ease fadeOutEase = Ease.InQuad;
-    [SerializeField] protected bool scaleAnimation = true;
+    [SerializeField, Min(0f)] protected float backgroundFadeDuration = 0.08f;
+    [SerializeField] protected float fadeInDuration = EnterMotionDuration;
+    [SerializeField] protected float fadeOutDuration = ExitMotionDuration;
+    [SerializeField] protected Ease fadeInEase = Ease.OutCubic;
+    [SerializeField] protected Ease fadeOutEase = Ease.InCubic;
+    [SerializeField] protected bool scaleAnimation = false;
+    [SerializeField] protected bool reducedPanelMotion;
+    protected virtual bool SlideContent { get { return true; } }
+    private static readonly Vector2 SlideOffset = new Vector2(0, -48);
     [SerializeField] protected Vector2 scaleFrom = new Vector2(0.8f, 0.8f);
     [SerializeField] protected float scaleDuration = 0.3f;
 
@@ -34,12 +38,14 @@ public class BasePanel : MonoBehaviour
         public CanvasGroup group;
         public float alpha;
         public Vector3 scale;
+        public Vector2 position;
     }
 
     protected virtual void OnDestroy() => transition?.Kill();
 
     protected virtual void Awake()
     {
+        NightCourier.CourierTheme.Apply(gameObject);
         canvasGroup = GetComponent<CanvasGroup>();
         background = GetComponent<Graphic>();
         if (background != null) backgroundAlpha = background.color.a;
@@ -55,18 +61,20 @@ public class BasePanel : MonoBehaviour
                 transform = child,
                 group = group,
                 alpha = group.alpha,
-                scale = child.localScale
+                scale = child.localScale,
+                position = child is RectTransform rect ? rect.anchoredPosition : Vector2.zero
             });
         }
     }
 
     public virtual void OpenPanel(string name)
     {
+        bool interrupted = transition != null && transition.IsActive();
         transition?.Kill();
         panelName = name;
         hasRemoved = false;
         gameObject.SetActive(true);
-        canvasGroup.alpha = 1f;
+        if (!interrupted) canvasGroup.alpha = 1f;
         SetInteractable(false);
         // The backdrop blocks clicks immediately, including while it is fading in.
         canvasGroup.blocksRaycasts = true;
@@ -74,26 +82,35 @@ public class BasePanel : MonoBehaviour
         if (background != null)
         {
             Color color = background.color;
-            color.a = 0f;
+            if (!interrupted) color.a = 0f;
             background.color = color;
         }
         foreach (var card in cards)
         {
             if (card.transform == null) continue;
-            card.group.alpha = 0f;
-            card.transform.localScale = scaleAnimation ? GetFromScale(card.scale) : card.scale;
+            if (!interrupted)
+            {
+                card.group.alpha = 0f;
+                card.transform.localScale = scaleAnimation && !reducedPanelMotion ? GetFromScale(card.scale) : card.scale;
+                if (SlideContent && card.transform is RectTransform rect)
+                    rect.anchoredPosition = card.position + (reducedPanelMotion ? Vector2.zero : SlideOffset);
+            }
         }
 
         Sequence s = transition = DOTween.Sequence().SetUpdate(true).SetTarget(this);
-        float contentStart = background != null ? Mathf.Max(0f, backgroundFadeDuration) : 0f;
+        float contentStart = !reducedPanelMotion && background != null ? Mathf.Max(0f, backgroundFadeDuration) : 0f;
+        float enterDuration = reducedPanelMotion ? 0 : Mathf.Max(0f, fadeInDuration);
+        s.Insert(0f, canvasGroup.DOFade(1f, enterDuration));
         if (background != null)
             s.Insert(0f, background.DOFade(backgroundAlpha, contentStart).SetEase(fadeInEase));
 
         foreach (var card in cards)
         {
             if (card.transform == null) continue;
-            s.Insert(contentStart, card.group.DOFade(card.alpha, Mathf.Max(0f, fadeInDuration)).SetEase(fadeInEase));
-            if (scaleAnimation)
+            s.Insert(contentStart, card.group.DOFade(card.alpha, enterDuration).SetEase(fadeInEase));
+            if (SlideContent && card.transform is RectTransform rect)
+                s.Insert(contentStart, rect.DOAnchorPos(card.position, enterDuration).SetEase(fadeInEase));
+            if (scaleAnimation && !reducedPanelMotion)
                 s.Insert(contentStart, card.transform.DOScale(card.scale, Mathf.Max(0f, scaleDuration)).SetEase(fadeInEase));
         }
         s.OnComplete(() =>
@@ -104,17 +121,23 @@ public class BasePanel : MonoBehaviour
 
     public virtual void ClosePanel()
     {
+        if (hasRemoved) return;
         hasRemoved = true;
         SetInteractable(false);
         transition?.Kill();
         Sequence s = transition = DOTween.Sequence().SetUpdate(true).SetTarget(this);
-        s.Append(canvasGroup.DOFade(0f, Mathf.Max(0f, fadeOutDuration)).SetEase(fadeOutEase));
-        if (scaleAnimation)
+        float exitDuration = reducedPanelMotion ? 0 : Mathf.Max(0f, fadeOutDuration);
+        s.Insert(0f, canvasGroup.DOFade(0f, exitDuration).SetEase(fadeOutEase));
+        if (SlideContent && !reducedPanelMotion)
+            foreach (var card in cards)
+                if (card.transform is RectTransform rect)
+                    s.Insert(0f, rect.DOAnchorPos(card.position + SlideOffset, exitDuration).SetEase(fadeOutEase));
+        if (scaleAnimation && !reducedPanelMotion)
         {
             foreach (var card in cards)
             {
                 if (card.transform == null) continue;
-                s.Join(card.transform.DOScale(GetFromScale(card.scale), Mathf.Max(0f, Mathf.Min(fadeOutDuration, scaleDuration)))
+                s.Insert(0f, card.transform.DOScale(GetFromScale(card.scale), Mathf.Max(0f, Mathf.Min(fadeOutDuration, scaleDuration)))
                     .SetEase(fadeOutEase));
             }
         }

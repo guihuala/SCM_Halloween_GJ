@@ -225,6 +225,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 12
+  artwork: {fileID: 21300000, guid: b146461ab0254cf6bfa7d747c2d7928a, type: 3}
 --- !u!114 &3735496152307700543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,8 +384,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -582,6 +583,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 17
+  artwork: {fileID: 21300000, guid: 5774aaa028b045d594082eacdbd9f2c6, type: 3}
 --- !u!114 &941637316105422221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,6 +664,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 10
+  artwork: {fileID: 21300000, guid: fcade73daf754f969ea9cef9496b7420, type: 3}
 --- !u!114 &4733432819166118770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -968,6 +971,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 5
+  artwork: {fileID: 21300000, guid: 44cdcd91259f4dcfa16779fe158d5590, type: 3}
 --- !u!114 &8521084753259490878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1122,6 +1126,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 2
+  artwork: {fileID: 21300000, guid: e53c4e914f4e49138bc59b4cc049393d, type: 3}
 --- !u!1 &7400979175839723625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1189,6 +1194,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 8
+  artwork: {fileID: 21300000, guid: 1b82b71efbc84cb58041200c7092f05b, type: 3}
 --- !u!114 &4774173076010508973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1269,6 +1275,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 9
+  artwork: {fileID: 21300000, guid: 3c2a79e151d64d37bc9b8eb2ff50e892, type: 3}
 --- !u!114 &5627986132289693506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1358,8 +1365,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: d837c05025754dab87ab3de04aeab2cb, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1484,6 +1491,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 7
+  artwork: {fileID: 21300000, guid: e9b69033fe864597bcfb89f74076c05c, type: 3}
 --- !u!114 &7232441376448154282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1564,6 +1572,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   kind: 6
+  artwork: {fileID: 21300000, guid: 31acdfe417f94323bb38e53c74a5c781, type: 3}
 --- !u!114 &5636138240044365305
 MonoBehaviour:
   m_ObjectHideFlags: 0

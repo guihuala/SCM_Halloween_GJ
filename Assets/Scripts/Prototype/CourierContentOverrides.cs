@@ -6,14 +6,17 @@ using UnityEngine;
 namespace NightCourier
 {
     // Stable IDs preserve story logic; CSVs expose text and balance fields to designers.
+    [Serializable] public sealed class CourierEventRules { public float probability=.35f; public string[] delayNodes,retreatNodes; }
     public static class CourierContentOverrides
     {
         public static void Apply(CourierRun run)
         {
+            var rules=Resources.Load<TextAsset>("NightVoyage/EventRules");
+            if(rules!=null){var config=JsonUtility.FromJson<CourierEventRules>(rules.text);run.EventProbability=Mathf.Clamp01(config.probability);if(config.delayNodes!=null)run.DelayEventNodes=config.delayNodes;if(config.retreatNodes!=null)run.RetreatEventNodes=config.retreatNodes;}
             var story = Resources.Load<TextAsset>("NightVoyage/Story");
             if(story!=null)run.Story=new CourierStory(JsonUtility.FromJson<CourierStoryData>(story.text));
             Apply("Stops",(id,row)=>{
-                if(id<0||id>=run.Stops.Length)return;var stop=run.Stops[id];
+                if(id<0||id>=6)return;var stop=run.Stops[id];
                 stop.Name=row[1];stop.Sign=row[2];stop.Voice=row[3];
                 stop.X=Number(row[4],stop.X,0,1);stop.Y=Number(row[5],stop.Y,0,1);
                 stop.Vehicle=Int(row[6],stop.Vehicle,-1,run.Vehicles.Length-1);stop.Repair=row[7]=="1";
@@ -26,13 +29,13 @@ namespace NightCourier
             Apply("Parcels",(id,row)=>{
                 if(id<0||id>=run.Parcels.Count)return;var p=run.Parcels[id];
                 p.Name=row[1];p.Weight=Int(row[2],p.Weight,1,4);p.Reward=Int(row[3],p.Reward,0,1000);
-                p.Fragile=row[4]=="1";p.Heavy=row[5]=="1";p.Dry=row[6]=="1";
-                if(row.Count>=10){p.Origin=Int(row[8],p.Origin,0,run.Stops.Length-1);p.Destination=Int(row[9],p.Destination,0,run.Stops.Length-1);}
+                p.HeatSensitive=row.Count>10&&row[10]=="1";p.Fragile=row[4]=="1";p.Heavy=row[5]=="1";p.Dry=row[6]=="1";
+                if(row.Count>=10){p.Origin=Int(row[8],p.Origin,0,5);p.Destination=Int(row[9],p.Destination,0,5);}
                 p.TimeLimit=(float)Math.Ceiling(Number(row[7],p.TimeLimit,1,240));
             });
             Apply("Events",(id,row)=>{
                 if(id<0||id>=run.Events.Length)return;var e=run.Events[id];
-                e.Title=row[1];e.Description=row[2];e.Safe=row[3];e.Risky=row[4];e.SafeMinutes=(float)Math.Ceiling(Number(row[5],e.SafeMinutes,0,30));
+                if(row.Count>10)e.Illustration=row[10];e.Title=row[1];e.Description=row[2];e.Safe=row[3];e.Risky=row[4];e.SafeMinutes=(float)Math.Ceiling(Number(row[5],e.SafeMinutes,0,30));
                 RoadEventEffect effect;if(row.Count>9&&Enum.TryParse(row[9],true,out effect)&&Enum.IsDefined(typeof(RoadEventEffect),effect))e.Effect=effect;
                 e.RiskDamage=(float)Math.Ceiling(Number(row[6],e.RiskDamage,0,100));e.BreakFragile=row[7]=="1";e.WetDry=row[8]=="1";
             });

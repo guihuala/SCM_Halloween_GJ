@@ -13,6 +13,7 @@ namespace NightCourier
         public bool reducedMotion;
         private bool focused,pressed,blocked;
         private float pulse;
+        private void Awake(){focusColor=CourierColors.Mint;blockedColor=CourierColors.Gold;}
         public void SetState(bool focus,bool down,bool unavailable)
         {focused=focus;pressed=down;blocked=unavailable;}
         public void Play(){pulse=pulseDuration;}
@@ -24,7 +25,7 @@ namespace NightCourier
             float emphasis=reducedMotion?0:(pressed?.55f:pulseDuration>0?pulse/pulseDuration:0);
             transform.localScale=Vector3.one*(1+emphasis*.045f);
             Color color=blocked?blockedColor:focusColor;
-            foreach(var edge in edges)edge.color=Color.Lerp(color,Color.white,emphasis*.55f);
+            foreach(var edge in edges)edge.color=Color.Lerp(color,CourierColors.Paper,emphasis*.55f);
         }
         public void ResetEffect(){focused=pressed=false;pulse=0;if(group!=null)group.alpha=0;transform.localScale=Vector3.one;}
         private void OnDisable(){ResetEffect();}

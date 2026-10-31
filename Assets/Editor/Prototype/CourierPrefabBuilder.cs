@@ -9,8 +9,13 @@ using UnityEngine.UI;
 public static class CourierPrefabBuilder
 {
     private const string Folder = "Assets/Resources/Panel/Courier";
-    private static readonly Color Ink = new Color(.035f,.055f,.085f), Card = new Color(.075f,.11f,.15f), Soft = new Color(.105f,.15f,.19f);
-    private static readonly Color White = new Color(.92f,.95f,.93f), Muted = new Color(.66f,.74f,.77f), Mint = new Color(.45f,.94f,.77f), Orange = new Color(1,.66f,.34f);
+    private static Color Ink=>CourierColors.Night;
+    private static Color Card=>CourierColors.Panel;
+    private static Color Soft=>CourierColors.Raised;
+    private static Color White=>CourierColors.Paper;
+    private static Color Muted=>CourierColors.Muted;
+    private static Color Mint=>CourierColors.Mint;
+    private static Color Orange=>CourierColors.Gold;
     private static Font font;
     [MenuItem("Tools/Night Courier/Rebuild UI Prefabs (overwrite layouts)")]
     public static void Build()
@@ -34,6 +39,8 @@ public static class CourierPrefabBuilder
         CourierCharacterInstaller.Install();
         CourierPresentationInstaller.Install();
         CourierMapPageInstaller.Install();
+        CourierHudArtInstaller.Install();
+        CourierPaletteInstaller.Install();
         Debug.Log("COURIER_PREFABS PASS: cinematic HUD, unified map/trunk, event, endings and cargo card saved.");
     }
     [MenuItem("Tools/Night Courier/Add Travel Controls (preserve layouts)")]
@@ -151,8 +158,8 @@ public static class CourierPrefabBuilder
         var panel=root.gameObject.AddComponent<T>();
         var serialized=new SerializedObject(panel);
         serialized.FindProperty("backgroundFadeDuration").floatValue=modal?.08f:0;
-        serialized.FindProperty("fadeInDuration").floatValue=modal?.12f:0;
-        serialized.FindProperty("fadeOutDuration").floatValue=0;
+        serialized.FindProperty("fadeInDuration").floatValue=modal?BasePanel.EnterMotionDuration:0;
+        serialized.FindProperty("fadeOutDuration").floatValue=BasePanel.ExitMotionDuration;
         serialized.FindProperty("scaleAnimation").boolValue=false;
         serialized.ApplyModifiedPropertiesWithoutUndo();return panel;
     }
@@ -186,7 +193,7 @@ public static class CourierPrefabBuilder
         var root=Element("CourierTutorialPanel",null,0,0,1920,1080);Stretch(root);
         var view=root.gameObject.AddComponent<CourierTutorialView>();
         var panel=root.gameObject.AddComponent<CourierTutorialPanel>();panel.view=view;
-        var settings=new SerializedObject(panel);settings.FindProperty("backgroundFadeDuration").floatValue=0;settings.FindProperty("fadeInDuration").floatValue=0;settings.FindProperty("fadeOutDuration").floatValue=0;settings.FindProperty("scaleAnimation").boolValue=false;settings.ApplyModifiedPropertiesWithoutUndo();
+        var settings=new SerializedObject(panel);settings.FindProperty("backgroundFadeDuration").floatValue=0;settings.FindProperty("fadeInDuration").floatValue=BasePanel.EnterMotionDuration;settings.FindProperty("fadeOutDuration").floatValue=BasePanel.ExitMotionDuration;settings.FindProperty("scaleAnimation").boolValue=false;settings.ApplyModifiedPropertiesWithoutUndo();
         view.focusFrames=new RectTransform[2];
         for(int i=0;i<2;i++)
         {
@@ -210,7 +217,7 @@ public static class CourierPrefabBuilder
     private static Image Fill(Transform parent,string name,float x,float y,float w,float h,Color color)
     {
         Background(Element(name+"Background",parent,x,y,w,h),Soft);var image=Background(Element(name,parent,x,y,w,h),color);
-        image.sprite=AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");image.type=Image.Type.Filled;image.fillMethod=Image.FillMethod.Horizontal;image.fillOrigin=0;image.fillAmount=1;return image;
+        image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/ProgressFill");image.type=Image.Type.Filled;image.fillMethod=Image.FillMethod.Horizontal;image.fillOrigin=0;image.fillAmount=1;return image;
     }
     private static void BuildHud()
     {
@@ -261,7 +268,7 @@ public static class CourierPrefabBuilder
         p.closeButton=IconButton(card,"CloseButton",CourierIconKind.Close,"Close - Esc",1220,16,56);
         p.objectiveText=Text(card,"ObjectiveText","Deliver the party theme tape.",24,14,690,48,22,Mint);
         var map=Element("RoadMap",card,24,70,690,400);var edges=Element("RoadConnections",map,0,0,690,400);p.mapGraphic=edges.gameObject.AddComponent<CourierRouteGraphic>();p.mapGraphic.raycastTarget=false;
-        var run=new CourierRun();int count=run.Stops.Length;p.stopButtons=new Button[count];p.stopLabels=new Text[count];p.stopCounts=new Text[count];p.stopIcons=new CourierIconGraphic[count];p.stopHints=new CourierIconHint[count];
+        var run=new CourierRun();int count=6;p.stopButtons=new Button[count];p.stopLabels=new Text[count];p.stopCounts=new Text[count];p.stopIcons=new CourierIconGraphic[count];p.stopHints=new CourierIconHint[count];
         for(int i=0;i<count;i++)
         {
             var point=CourierRouteGraphic.NodePoint(run.Stops[i]);var b=Button(map,"Stop_"+i,run.Stops[i].Name,point.x-90,point.y-36,180,164,false);

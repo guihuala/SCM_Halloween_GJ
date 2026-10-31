@@ -28,7 +28,7 @@ namespace NightCourier
             strip.gameObject.SetActive(visible);
             foreach (var frame in focusFrames) frame.gameObject.SetActive(false);
             if (!visible) return;
-            strip.anchoredPosition = new Vector2(0,-120);
+            strip.anchoredPosition = new Vector2(0,-192);
             float width=Mathf.Min(1300,((RectTransform)transform).rect.width-64);
             strip.sizeDelta=new Vector2(width,104);
             heading.rectTransform.sizeDelta=new Vector2(width-152,30);

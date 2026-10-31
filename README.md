@@ -2,51 +2,48 @@
 
 Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运行 `Assets/Scenes/GamePlay.unity`。游戏内沿用英文与 Barlow Condensed Light 字体。
 
-## 2026-10-31 核心流程统一
+## 2026-10-31 新版系统与随机事件
 
-以用户提供的《系统设计》为准：到供应者领取一个订单批次 → 选路并按整数回合移动 → 处理道路事件 → 到接收者自动交付并记录评价 → 空载前往下一单 → 全部9批交付后通关。
+以最新《系统设计》《随机事件》和事件测试图为准：11笔订单，12条货物配置（维修装置与血液合批）。恢复女巫→小熊精的干燥剂/酒标/杂物、女巫→狼人的夜宵；鲜花、维修装置与怕热/怕水/易碎标签、3/4/5回合上限均按新表同步。稳定货物索引保留，避免破坏已有剧情和资源绑定。已到收件节点即自动交付；超时或受损为 Delivery failed，订单仍完成。全部完成后只显示完成数与顺利送达数。
 
-- 保留六名角色与10件物资；同一供应者→接收者合为一批，因此为9批。女巫→吸血鬼的散热装置和血液同时领取、同时交付。一次只允许一个活动批次，不能中途取消、拆分或寄存。
-- 所有未完成批次可在 Cargo 中查看来源、目的地及目标回合；必须到供应者所在节点才能领取。已完成批次从待接清单移除。
-- 订单回合在领取时归零，移动和事件增加整数回合，空载移动和界面等待不计入订单评价。旧240分钟夜间预算不再参与规则，没有天亮提前结算。
-- 道路基础成本暂取 max(2, ceil(旧分钟成本/6))，再按载具速度向上取整。行驶动画每8秒推进一个规则回合（默认4倍播放即每现实2秒一回合），F仅跳过动画，到事件或站点停止，不代选事件、不改变成本。
-- 载具每移动一个回合消耗一个使用回合，事件可额外消耗；界面显示剩余回合。沿用原载具资源上限作为临时数值，指定节点免费恢复；跨订单保留剩余回合。
-- 使用回合耗尽后自动切换幽灵，携带完整批次继续移动；幽灵速度为0.5，不消耗载具资源。重货和容量字段不再限制接单或运输，不再推车、自动维修或判限时件失败。
-- 超过目标回合、违反货物运输条件均降低评价，但始终接受交付。每批记录实际/目标回合、是否迟到、货物条件是否违反；地图显示最近评价，通关页汇总9批记录。没有新增最终等级或分支结局。
-- 只有全部物资均为 Delivered 才能通关。失败标记、累计时间、六人交谈和抵达酒吧均不能代替全部交付。
+幽灵1边/回合、无限使用；H/W/Q载具均2边/回合、5回合额度。仅H/W/Q站点提供对应车型，领取/换车消耗1订单回合，旧车消失，新车获得完整额度。保护只属于当前载具，不再永久叠加，不再维修或解锁。环境只对对应敏感货物造成不可恢复的受损，不额外增加高温移动时间或损耗。载具最后一回合的保护保留至事件回退结算结束。
 
-目标回合暂为普通批次12、两份60分钟旧限时餐点10；同批按最严格目标。道路、目标回合与载具资源上限仍需真人调优。载具解锁内容保留；固定事件、三类环境适配及旧车消失等其余系统不在本次核心流程调整范围内。
+全部圆形节点可点击；点击远处目的地会规划路线，每次出发执行一个移动回合，到回合终点停下，可换方向或按E继续原路线。遇到NPC/H/W/Q提前停止。方向键/WASD按方向选择相邻节点，F只跳过本回合动画。跨订单保留载具剩余额度，空载移动不计订单回合。
 
-地图、暂停、教学、头像和货物抽屉沿用现有界面。Tab / Cargo 展开订单，点击或拖拽领取整批；到站自动交付，E交谈或继续行程，F快进到下一个事件或站点。
+事件只在携货结束移动、停到指定节点时判定：C/J抽取7个延误事件（+1订单回合，不耗载具），N/P/E抽取5个倒退事件（只回到最后一条边的前一节点，不加回合/额度、不连锁）。每单最多一次，未触发保留机会，目的地优先交付。`EventRules.json` 暂设35%概率，可配置概率和两类节点列表。
+
+两张复用插图位于 `Assets/Resources/NightVoyage/EventIllustrations/`：social用于街头人群/糖果/巡游，weather用于热泉/蝙蝠/风雾/滑坡；`Events.csv` 的 illustration 列控制绑定。弹窗保留暂停与确认按钮，插图不拦截点击。
+
+验证：`Tools > Night Courier > Checks > V2.4 Updated Rules and Event Art`，完成后恢复原场景并保留编辑器。纯规则入口 `CourierChecks.RunAll()`；旧版依赖9单、永久保护、行程中途必出事件的历史冒烟测试尚未迁移，请使用新版入口。截图位于 `ArtPreviews/v24-updated-map.png`、`v24-event-social.png`、`v24-event-weather.png`。
 
 ## 可编辑配置
 
 `Assets/Resources/NightVoyage/Characters.asset` 是角色配置。在 Unity 中选中它，展开对应角色，将导入为 **Sprite (2D and UI)** 的图片拖入 `Portrait` 即可替换头像；也可修改 `Display Name`、`Personality` 和 `Accent`。`Stop Id` 对应下表，数组顺序不影响角色绑定。姓名用于英文游戏界面，中文性格字段供策划记录，不自动生成台词。开场白仍在 `Stops.csv`，追加对话在 `NightCourierModel.cs`。
 
-| Stop Id | 角色 | 截图中的性格 | 占位头像 |
+| Stop Id | 角色 | 截图中的性格 | 当前头像 |
 | --- | --- | --- | --- |
-| 0 | 黑暗精灵 / Drow | 内向嘴拙妹 | drow.png |
-| 1 | 狼人 / Wolfwoman | 豪爽大姐姐 | werewolf.png |
-| 2 | 小熊精 / Little Bear | 嘟嘟囔囔、多愁善感的小妹妹 | bear.png |
-| 3 | 吸血鬼 / Vampire | 骑士语 C 姐，原型按骑士角色扮演口吻处理 | vampire.png |
-| 4 | 移民僵尸 / Granny Zombie | 呆萌老太 | zombie.png |
+| 0 | 黑暗精灵 / Drow | 内向嘴拙妹 | gamejam_portrait_drow.png |
+| 1 | 狼人 / Wolfwoman | 豪爽大姐姐 | gamejam_portrait_werewolf.png |
+| 2 | 小熊精 / Little Bear | 嘟嘟囔囔、多愁善感的小妹妹 | gameJam2026_LittleWerebear.png |
+| 3 | 吸血鬼 / Vampire | 骑士语 C 姐，原型按骑士角色扮演口吻处理 | gamejam_portrait_vampire.png |
+| 4 | 移民僵尸 / Granny Zombie | 呆萌老太 | gameJam2026_jiangshiGranny_02.png |
 | 5 | 女巫 / Witch | 控场的妈妈 | witch.png |
 
 六位角色头像位于 `Assets/Art/Sprite/Character/Portrait/`。缺失头像使用配置中的 `Fallback Portrait`；未配置回退图片时隐藏图像，保留姓名和对白。头像与姓名只在角色对话时显示，行驶及普通站点提示恢复原有字幕宽度；支持暂停、跳过文字与重开。
 
-已按本次剧情文案调整为十件物资：散热装置与血液分别配图、同批运送；狼人接收吸血鬼的毛血旺，鲜花饼沿用原来的狼人收件关系。重量、酬金和目标回合仍沿用原型数值。
+物资与回合限制按顶部新版系统说明；原有10条索引保留，新增两批使用10/11，鲜花和维修装置切换到已有的对应图标。
 
 `Tools > Night Courier > Install Character Portraits (preserve settings)` 可为已有 HUD 安装头像区域，保留已有角色配置和图片；完整重建 UI 也会安装。`CourierCharacterInstaller.InstallAndCheck` 检查六人绑定、十件物资与九批订单、全段对话排版、自定义图片替换、缺图回退、行驶隐藏和重开。
 
 `Assets/Resources/NightVoyage/` 下UTF-8 CSV在开局和重开时读取，保留列名与ID：
 
 - `Stops.csv`：六处地点名称、招牌、人物开场白、地图位置、停放载具、维修权限。
-- `Parcels.csv`：十件物资的名称、兼容重量、酬金、标签、目标回合 `target_turns`，以及新增的 `origin` / `destination` 节点ID。
+- `Parcels.csv`：12条货物的名称、兼容重量/酬金、标签（含 `heat_sensitive`）、目标回合 `target_turns`、`origin` / `destination`。
 - `Shift.csv`：旧夜间预算文件（兼容保留，当前不读取、不参与通关）。
 - `Vehicles.csv`：三辆载具的名称、能力、兼容容量、使用回合上限、速度与兼容损耗。
 - `Events.csv`：12个道路事件文案、效果与代价；包含分糖、骷髅狗、自拍少年、小蝙蝠、游行、间歇泉、浓雾、手电筒、泥石流、强风、硫磺蒸汽与花车。
 
-物资数量及默认内容、换车解锁、节点追加对话、结算规则在 `NightCourierModel.cs`。事件 `effect` 为 Wait / Detour / Retreat：等待按 `safe_turns` 增加订单回合（默认1，不耗载具）；绕路为本路段局部便道，增加 `safe_turns` 个实际移动回合（暂定2，正常耗载具）；倒退沿原路回到本段出发节点，按当前速度计移动回合，保留订单和原目的地，可重新选路或继续。每段道路中途等概率抽取一个事件，返程不再触发；事件统一为单个确认按钮。旧风险字段仅兼容保留，不再参与这些事件结算。编辑CSV后重开生效。
+默认订单、节点交互与结算规则位于 `NightCourierModel.cs`；回合移动、环境保护和节点事件位于 `CourierRoadEffects.cs`。事件 `effect` 只配置 Wait / Retreat，旧 Detour 枚举与风险字段仅兼容保留。实际延误固定+1订单回合，倒退免费回到最后一条边的前一节点；触发点、概率、每单上限见顶部。编辑CSV/JSON后重开生效。
 
 原生UI面板位于 `Assets/Resources/Panel/Courier/`，单件货物卡位于 `Assets/Prefab/UI/CourierCargoRow.prefab`。`Tools > Night Courier > Rebuild UI Prefabs (overwrite layouts)` 会覆盖布局，不覆盖已有CSV。
 
@@ -95,7 +92,7 @@ Unity **2022.3.62f3c1**。打开 `Assets/Scenes/MainMenu.unity` 开始，或运�
 
 `CourierButtonFeedback` 挂在按钮上，自动播放悬停、键盘选中、按压和点击反馈；也可通过 UnityEvent 调用它的 `Play()`。`effectPrefab` 可替换成另一个带 `CourierInteractionEffect` 的 Prefab；不指定时加载共享资源。动画使用不受游戏暂停影响的时间。
 
-`CourierIconHint.message` 是具体提示文案，同一组件支持鼠标和键盘。不可点击按钮仍可用鼠标查看具体条件：例如必须先交付当前订单、必须到供应节点取货、旧皮卡需要从酒吧送来维修装置。事件按钮提示会显示等待、绕路或返回节点的实际效果。
+`CourierIconHint.message` 是具体提示文案，同一组件支持鼠标和键盘。不可点击按钮仍可用鼠标查看具体条件：例如必须先交付当前订单、必须到供应节点取货、必须到H/W/Q换车。事件按钮提示显示延误或倒退一个节点的实际效果。
 
 `Tools > Night Courier > Install Interaction Feedback (preserve layouts)` 为现有面板和货物卡接入提示，不重建布局；已有的两个反馈 Prefab 不会被覆盖，便于保留手工调整。完整重建面板也会自动执行此接入。
 
@@ -135,7 +132,7 @@ HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定�
 
 `Tools > Night Courier > Install Map Artwork (preserve layouts)` 为现有面板安装，`CourierMapArtworkInstaller.InstallAndCheck` 验证接入。替换步骤、Anchor/Scale/Offset与分层规范见 `Assets/Art/MapPlaceholder/README_地图重绘与动效.md`。
 
-地图移动标记现复用 `VehicleIcons.asset` 的当前载具图片；途中耗尽后切换同款幽灵标识。原路线高亮、行驶进度与呼吸光晕保留，暂停时图标和光晕同时冻结，到站隐藏。`RoadMap / CourierMapArtwork` 的 `Traveler Size` 可调整图标大小。`CourierMapTravelerSmokeTest.InstallAndCheck` 验证三种车型、途中切换、暂停、到站、重开与缺图兜底。
+地图移动标记现复用 `VehicleIcons.asset` 的当前载具图片；途中耗尽后切换同款幽灵标识。原路线高亮、行驶进度与呼吸光晕保留，暂停时图标和光晕同时冻结，到站后交通工具图标留在当前节点，行驶光晕停止。`RoadMap / CourierMapArtwork` 的 `Traveler Size` 可调整图标大小。`CourierMapTravelerSmokeTest.InstallAndCheck` 验证三种车型、途中切换、暂停、到站、重开与缺图兜底。
 
 ## 剧情文案配置
 
@@ -143,6 +140,66 @@ HUD 对话使用 `CourierTextJuice` 逐字淡入、轻微上浮与弹性落定�
 
 首次对话先播放站长的信，随后进入 Drow 寄件对白。未寄出的货物触发对应寄件段落，已交付的货物触发收件段落；收件优先，每段每局只播放一次，重开后重置。最后一单先播放收件对白，再显示结算。发言人随台词切换；Goolie、Gooy 和旁白暂不显示 NPC 头像。
 
-当前货物为：录音带、松香、灰松秋蜜、鲜花酱、春蜜酒、毛血旺、鲜花饼、防潮剂、散热装置、禽畜血液。鲜花饼沿用原配置送给狼人；文案未指定新的收件人。删除文案未出现的干燥剂与标签、女巫夜宵订单。散热装置与血液仍合为一批，共9批；旧散热装置／血液资源映射已随货物索引更新，图标沿用当前资源：鲜花酱对应 `flower_jam.png`，散热装置对应 `Heat_Dissipation_Device_.png`，保留已有图片资源引用。
+订单表以顶部新版规则和 `Parcels.csv` 为准。已有剧情段落和中文原文保留；未为新增的干燥剂/酒标/杂物与夜宵虚构对白，NPC通用对话及订单列表可正常接单。
 
 `CourierStorySmokeTest.Run` 检查剧情触发、顺序、去重、64句英文排版、最后一单对白与结算，以及重开。
+
+## HUD 手绘素材
+
+当前使用手绘版29个图标与7类界面底板，共36张。运行时透明PNG位于 `Assets/Resources/NightVoyage/HUD/`，完整手绘原稿与切片坐标位于 `Assets/Art/Sprite/HUD/HandDrawn/`。旧版SVG底稿已清理。
+
+替换时覆盖同名PNG并保留 `.meta`，现有Sprite引用和九宫格边界会保留。Unity图集位于 `Assets/Art/Atlases/CourierHUD.spriteatlasv2`；重绘及重新导出方法见 `Assets/Art/Atlases/README_HUD图集.md`。`Tools > Night Courier > Install HUD Artwork (preserve layouts)` 可补齐接入，完整重建也会执行。
+
+## 地图区域与对话优先
+
+地图移除了固定的 ROUTE NETWORK 标题、分隔线和底部目的地摘要，地图扩展到顶部工具区以下的剩余空间。选中异地节点后，在地标旁显示浮动目的地卡：路线回合、载具消耗、道路警告和出发按钮；打开货物抽屉、行驶或对话时隐藏。
+
+地标悬停/键盘焦点边框跟随地标图片实际矩形，旧按钮底板高亮已关闭，名称和地标仍可点击。对话期间地图以 `CourierRoutePanel.dialogueMapAlpha`（默认0.28）显示，并锁定地图、货物、换车和维修操作；暂停与对话推进保留。对话结束后恢复，不改变路网位置或尺寸。`CourierMapPageInstaller.InstallAndCheck` 检查空间利用、浮动提示、地标边框、对话锁定与恢复，以及抽屉、行程、暂停和重开。
+
+## HUD 动效与点击特效
+
+对话底板、头像、姓名和继续按钮以 0.28 秒滑入淡入、0.18 秒滑出淡出；顶部行程信息、暂停和跳过行程按钮随状态平滑切换。退出开始即关闭对应控件的点击，快速反向切换从当前姿态接续，行程进度也会平滑追上实际值。界面过渡使用不受暂停影响的时间，字幕逐字动画仍随游戏暂停。
+
+共享 `CourierButtonFeedback` 新增短促的扩散光圈和四点火花，不需要额外贴图，也不接收射线。沿用 `CourierInteractionEffect.reducedMotion` 可关闭点击特效；HUD 的 `Reduced Motion` 可关闭滑动、进度插值及字幕逐字动画。`CourierHudMotionSmokeTest.Run` 验证显示、退出输入阻断、反向切换、位置稳定、暂停、减少动态效果及点击特效清理。
+
+地图悬停预览：停靠且无对话时，鼠标悬停在非当前节点，会用绿色显示从当前节点出发的完整路线；移开后清除预览，点击选择目的地仍保留原有浮动详情与出发操作。道路不再因与当前节点相邻而自动着色，已走过的路段恢复普通路色。到站后保留当前交通工具标记，途中耗尽时使用幽灵标记；重开恢复起始滑板车。`CourierMapTravelerSmokeTest.Run` 覆盖悬停/移开、当前节点、三种载具、幽灵切换、暂停、到站标记、旧路恢复、重开和缺图兜底。
+
+所有常规弹窗（暂停、设置、确认、制作名单、事件、货物、载具和结算）统一使用向上滑入淡入、向下滑出淡出：内容进入 0.28 秒，退出 0.18 秒，遮罩先淡入。地图主体和教学高亮保持原位并淡化；货物抽屉使用与 HUD 相同的 48 单位滑动距离和进出节奏。关闭立即停止交互与悬浮提示，退出完成后销毁，快速重新打开可从当前姿态接续。`BasePanel` 的 `Reduced Panel Motion` 可停用位移并即时完成过渡；重建快递界面时保留统一的时长配置。`PanelTransitionSmokeTest.Run` 检查 11 类面板的滑动、透明度、输入阻断、关闭打断、重新打开和减少动态效果。
+
+## HUD Sprite Atlas
+
+`Assets/Art/Atlases/CourierHUD.spriteatlasv2` 将36张 HUD 素材自动打包为1024×1024图集，保留独立源图和现有绑定。透明PNG与坐标表位于 `ArtPreviews/hud-atlas.png`、`ArtPreviews/hud-atlas.json`。可用 `Tools > Night Courier > Build HUD Sprite Atlas and Export` 重新导出；重绘与导入说明见 `Assets/Art/Atlases/README_HUD图集.md`。
+
+## V2.4 共享街口地图
+
+运行时路网定义在 `Assets/Scripts/Prototype/CourierStreetMap.cs`，按新图坐标建立 32 个节点：六个角色地点、十二个入口、十个街口及 S/H/W/Q。仅显式节点连通，线条交叉不自动生成街口；C-J 保留普通与积水两条弧线。`Assets/Art/MapPlaceholder/map_layout.json` 是这套节点及连接的核对清单，旧占位底图不再参与显示。
+
+角色地点沿用原 ID（黑暗精灵0、狼人1、小熊精2、吸血鬼3、僵尸4、女巫5），订单、角色配置和剧情绑定不变。新图上的编号为1、2、6、3、4、5。两个入口共用同一角色地点；配送只在抵达角色地点时结算，不把入口或普通街口当作收件人，也不穿过其他角色地点抄近路。
+
+所有32个节点均可选择，六名角色沿用原ID，H/W/Q使用6/7/8，其余入口与街口使用9–31。寻路同时考虑当前回合位置、载具速度、剩余额度与站点提前结束，同回合数按曲线长度择短。实际出发只执行一个移动回合；地图和动画共用曲线数据，事件规则见顶部。
+
+## 装卸货反馈
+
+`CourierCargoFeedback` 观察已经提交的货物状态变化：点击或拖拽装货后，使用对应物品图标沿弧线飞入顶部后备箱标识，带两层淡拖尾和落点光圈；到站自动交付时，从后备箱飞向收件站。批次中的物品逐件错开发出，并显示 `+N on board` / `Delivered ×N` 浮动提示；货物状态和订单计数通过 `CourierValuePulse` 短促弹跳。拖拽装货从松手位置接续，失败操作不播放，实际装货和交付立即生效。
+
+特效位于面板内、滚动裁切区域外，不拦截点击，使用不受暂停影响的时间；关闭面板、重开或启用 `Reduced Panel Motion` 会清理特效并恢复文字缩放。沿用现有到站自动卸货规则。`CourierCargoMotionSmokeTest.Run` 检查点击/拖拽、重复操作、批量、暂停、交付、减少动态效果与清理；`CourierMapPageSmokeTest.Run` 覆盖地图、装货抽屉和行程回归。
+
+### H / W / Q 功能站与路况
+
+以顶部新版系统说明为准：站点换车，不再安装永久保护；高温/积水/颠簸只检查货物标签与当前载具。
+
+## 通用界面手绘素材统一
+
+暂停、确认、通用结算、加载界面、设置滑块、货物抽屉滚动条，以及设置/制作名单的关闭按钮均接入 `NightVoyage/HUD` 手绘素材。所有面板 Prefab 已移除 Unity 内置 Sprite；不可见点击区、遮罩和焦点边线继续使用普通 Graphic。主菜单纸片、设置专用插画和制作名单底图保留其已绘制的独立素材。
+
+`Tools > Night Courier > Install Hand-drawn Shared UI (preserve layouts)` 可为通用控件补齐接入；原 HUD 安装与完整 UI 重建也会执行该步骤。`CourierSharedArtInstaller.InstallAndCheck` 检查所有面板和UI卡片的内置 Sprite、旧独立图标及 HUD 图标绑定。
+
+替换后的14张旧独立图标及其 `.meta` 已清理；仍用于主菜单/设置的 `UI_atlas_1.png`、制作名单底图、所有在用手绘素材和 `HUD/HandDrawn/` 原稿均保留。
+
+## HUD 可读性
+
+顶部载具图标增至92，状态图标48，主要状态文字32–34号，订单按钮280×76、暂停/对话继续按钮84×84；行驶进度与快进位于第二行，停靠时隐藏重复的行程状态。地图从顶部184处开始，为两行工具控件留出间距。目的地卡、出发按钮、站点标签和设施提示同步放大；设施提示会避开角色地标和文字。教学条位于放大后的工具区下方。修复滑板车图片失效的目录绑定，保留现有手绘图片。效果预览：`ArtPreviews/hud-readable.png`。
+
+## 全游戏色卡
+
+`Assets/Resources/NightVoyage/Palette.asset` 统一管理深蓝灰背景、暖纸白文字、薄荷绿操作、暖金目标、高温珊瑚红、积水雾蓝与颠簸沙金。菜单、HUD、弹窗、货物、提示和地图共用配色，保留原始手绘图片。`Tools > Night Courier > Apply Unified Game Palette` 重新应用并验证按钮文字对比度。完整色卡说明：`Assets/Art/GamePalette.md`；预览：`ArtPreviews/game-palette.png`。

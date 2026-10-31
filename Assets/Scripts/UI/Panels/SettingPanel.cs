@@ -26,7 +26,7 @@ public class SettingPanel : BasePanel
         var go=new GameObject("AudioCredits",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));
         go.transform.SetParent(transform,false);
         var text=go.GetComponent<Text>();text.font=label.font;text.fontSize=18;
-        text.alignment=TextAnchor.LowerCenter;text.color=new Color(.8f,.84f,.86f);text.raycastTarget=false;
+        text.alignment=TextAnchor.LowerCenter;text.color=NightCourier.CourierColors.Muted;text.raycastTarget=false;
         text.text=credits.text;
         var rect=text.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.right;
         rect.pivot=new Vector2(.5f,0);rect.anchoredPosition=new Vector2(0,16);rect.sizeDelta=new Vector2(-64,180);

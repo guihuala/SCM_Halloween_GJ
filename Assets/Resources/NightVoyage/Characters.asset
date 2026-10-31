@@ -30,7 +30,7 @@ MonoBehaviour:
     id: bear
     displayName: Little Werebear
     personality: "多愁善感的小妹妹，自学酿酒的酿蜜酒师"
-    portrait: {fileID: 21300000, guid: ffce6a0aa4b0f46ac982f55344a9a736, type: 3}
+    portrait: {fileID: 21300000, guid: 4c540305a1b794ad49f7a88b67737d52, type: 3}
     accent: {r: 0.8392157, g: 0.7411765, b: 0.47058824, a: 1}
   - stopId: 3
     id: vampire
@@ -42,7 +42,7 @@ MonoBehaviour:
     id: zombie
     displayName: Immigrant Jiangshi
     personality: "呆萌老太，百年前远渡重洋的移民僵尸，修护古董"
-    portrait: {fileID: 21300000, guid: 7d791f9388c034fc2a3312f833c699e3, type: 3}
+    portrait: {fileID: 21300000, guid: bc884d50ef95c4740b84cbaec42d1a06, type: 3}
     accent: {r: 0.59607846, g: 0.75686276, b: 0.68235296, a: 1}
   - stopId: 5
     id: witch

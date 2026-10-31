@@ -1,4 +1,4 @@
-﻿id,name,ability,capacity,durability,speed,wear
-0,Scooter,Standard courier; carries any order batch,3,50,1,1
-1,Bicycle,Efficient courier; carries any order batch,8,120,0.9,0.7
-2,Old Pickup,Protects fragile cargo on gravel; carries any order batch,4,80,1.25,0.75
+id,name,ability,capacity,durability,speed,wear
+0,H Heatproof,Protects heat-sensitive cargo,3,5,2,1
+1,W Amphibious,Protects cargo from water,3,5,2,1
+2,Q Suspension,Protects fragile cargo,3,5,2,1

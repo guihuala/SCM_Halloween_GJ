@@ -11,8 +11,8 @@ namespace NightCourier
         {
             titleText.text="All Orders Delivered!";
             summaryText.resizeTextForBestFit=false;summaryText.fontSize=24;summaryText.lineSpacing=1;summaryText.alignment=UnityEngine.TextAnchor.UpperLeft;
-            summaryText.text="Completed "+Run.CompletedBatches+"/"+Run.BatchCount+" orders - "+Run.Delivered+" cargo items\n\n"+
-                string.Join("\n",Run.Results.Select((r,i)=>(i+1)+". "+Run.Stops[r.Origin].Sign+" > "+Run.Stops[r.Destination].Sign+" - "+r.Turns+"/"+r.TargetTurns+" turns - "+r.Evaluation));
+            summaryText.text="Completed "+Run.CompletedBatches+"/"+Run.BatchCount+" orders\n\n"+
+                Run.Results.Count(r=>!r.Late&&!r.Damaged)+" delivered successfully.\n\nHappy Halloween!";
         }
     }
 }

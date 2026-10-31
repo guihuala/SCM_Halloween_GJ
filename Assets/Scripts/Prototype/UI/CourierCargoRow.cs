@@ -49,13 +49,19 @@ namespace NightCourier
         public Parcel Item {get{return parcel;}}
         private NightCourierPrototype owner;
         private GameObject dragVisual;
+        public Vector3? DropFeedbackOrigin { get; private set; }
         public void Bind(NightCourierPrototype prototype,Parcel item)
         {
-            owner=prototype;parcel=item;PrepareArtwork();RefreshArtwork();
+            owner=prototype;parcel=item;DropFeedbackOrigin=null;PrepareArtwork();RefreshArtwork();
             foreach(var t in GetComponentsInChildren<Text>(true))t.font=owner.UIFont;
             actionButton.onClick.AddListener(()=>{if(parcel.State==ParcelState.Loaded)owner.Run.Unload(parcel);else owner.Run.LoadParcel(parcel);});
         }
-        public bool LoadByDrop(){return owner!=null&&owner.Active&&owner.Run.LoadParcel(parcel);}
+        public bool LoadByDrop()
+        {
+            if(owner==null||!owner.Active||!owner.Run.LoadParcel(parcel))return false;
+            if(dragVisual!=null)DropFeedbackOrigin=dragVisual.transform.position;
+            return true;
+        }
         public void Refresh()
         {
             var run=owner.Run;bool loaded=parcel.State==ParcelState.Loaded;
@@ -64,7 +70,7 @@ namespace NightCourier
             nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=1;nameText.alignment=TextAnchor.UpperLeft;
             destinationText.resizeTextForBestFit=false;destinationText.fontSize=23;destinationText.lineSpacing=1;destinationText.alignment=TextAnchor.UpperLeft;
             nameText.text=string.Join(" + ",run.Batch(parcel).Select(p=>p.Name));
-            destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name;weightText.gameObject.SetActive(false);
+            destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name+"\n"+(parcel.Damaged?"DAMAGED":parcel.HeatSensitive?"Keep cool · H":parcel.Dry?"Keep dry · W":parcel.Fragile?"Fragile · Q":"No special requirements");weightText.gameObject.SetActive(false);
             var oldWeight=transform.Find("WeightIcon");if(oldWeight!=null)oldWeight.gameObject.SetActive(false);
             storyIcon.gameObject.SetActive(parcel.Critical);damagedIcon.gameObject.SetActive(parcel.Damaged);
             fragileIcon.gameObject.SetActive(parcel.Fragile&&!parcel.Damaged);heavyIcon.gameObject.SetActive(false);dryIcon.gameObject.SetActive(parcel.Dry&&!parcel.Damaged);
@@ -89,7 +95,7 @@ namespace NightCourier
             ((RectTransform)actionButton.transform).anchoredPosition=new Vector2(-64,-(height-56)/2);
             int target=run.TargetTurns(parcel);
             timeText.text=(loaded?run.OrderTurns:0)+"/"+target;
-            timeHint.message="Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, with a lower evaluation.";
+            timeHint.message="Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, rated Delivery failed.";
             actionButton.gameObject.SetActive(!loaded);actionButton.interactable=run.CanLoad(parcel);
             actionIcon.SetKind(CourierIconKind.Load);
             actionHint.message=loaded?"Complete this order before accepting another":run.State!=ShiftState.Docked?"Accept orders after arrival":run.ActiveOrder!=null?"Deliver the active order first":parcel.Origin!=run.Node?"Collect this batch at "+run.Stops[parcel.Origin].Name:"Accept the whole batch. Deliver to "+run.Stops[parcel.Destination].Name+". Click or drag into On Board.";
@@ -101,13 +107,13 @@ namespace NightCourier
             dragVisual=new GameObject("DraggedParcel",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(CanvasGroup));
             dragVisual.transform.SetParent(canvas.rootCanvas.transform,false);dragVisual.transform.SetAsLastSibling();
             var rt=dragVisual.GetComponent<RectTransform>();rt.sizeDelta=new Vector2(280,60);
-            dragVisual.GetComponent<Image>().color=new Color(.45f,.94f,.77f,.9f);dragVisual.GetComponent<Image>().raycastTarget=false;
+            dragVisual.GetComponent<Image>().color=CourierColors.Alpha(CourierColors.Mint,.9f);dragVisual.GetComponent<Image>().raycastTarget=false;
             dragVisual.GetComponent<CanvasGroup>().blocksRaycasts=false;
             var iconObject=new GameObject("CargoArtwork",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));iconObject.transform.SetParent(rt,false);
             var icon=iconObject.GetComponent<Image>();icon.sprite=cargoArtwork.sprite;icon.preserveAspect=true;icon.raycastTarget=false;
             var iconRect=icon.rectTransform;iconRect.anchorMin=iconRect.anchorMax=iconRect.pivot=new Vector2(0,.5f);iconRect.anchoredPosition=new Vector2(8,0);iconRect.sizeDelta=new Vector2(48,48);
             var label=new GameObject("Name",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));label.transform.SetParent(rt,false);
-            var text=label.GetComponent<Text>();text.font=owner.UIFont;text.fontSize=23;text.text=parcel.Name;text.color=Color.black;text.alignment=TextAnchor.MiddleCenter;text.raycastTarget=false;
+            var text=label.GetComponent<Text>();text.font=owner.UIFont;text.fontSize=23;text.text=parcel.Name;text.color=CourierColors.Night;text.alignment=TextAnchor.MiddleCenter;text.raycastTarget=false;
             var labelRect=label.GetComponent<RectTransform>();labelRect.anchorMin=Vector2.zero;labelRect.anchorMax=Vector2.one;labelRect.offsetMin=new Vector2(64,0);labelRect.offsetMax=new Vector2(-8,0);
             OnDrag(data);
         }

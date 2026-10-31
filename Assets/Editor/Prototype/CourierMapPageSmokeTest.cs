@@ -13,6 +13,7 @@ public static class CourierMapPageSmokeTest
     private const string Key="CourierMapPage.Active";
     private static int step;
     private static double next,deadline;
+    private static Vector2 dialogueMapSize;
     static CourierMapPageSmokeTest(){EditorApplication.update+=Tick;}
     public static void Run()
     {
@@ -29,8 +30,13 @@ public static class CourierMapPageSmokeTest
     {
         Canvas.ForceUpdateCanvases();
         var screen=(RectTransform)planner.transform;
+        Require(!planner.mapHeading.gameObject.activeSelf,"Retired map heading remains visible");
+        foreach(var name in new[]{"PageHeaderRule","SummaryRule"})Require(!planner.transform.Find("Window/"+name).gameObject.activeSelf,"Retired divider remains visible");
+        Require(planner.mapGraphic.rectTransform.rect.height>=screen.rect.height-220,"Map did not fill reclaimed vertical space");
+        Require(planner.destinationText.transform.parent==planner.destinationTooltip&&planner.departButton.transform.parent==planner.destinationTooltip,"Destination controls remain in fixed bottom bar");
         Require(planner.mapGraphic.rectTransform.rect.width>=screen.rect.width*.9f,"Map still reserves space for a sidebar");
         Require(planner.transform.Find("Window/GoolieIllustration")==null,"Removed portrait was restored");
+        if(!planner.vehicleArtwork.ghost.gameObject.activeSelf)Require(planner.vehicleArtwork.artwork.enabled&&planner.vehicleArtwork.artwork.sprite!=null,"Current vehicle icon is missing");
         Require(!Bounds(planner.vehicleText.rectTransform).Overlaps(Bounds(hud.timeText.rectTransform)),"Vehicle and clock overlap");
         foreach(var text in new[]{planner.objectiveText,planner.destinationText,planner.vehicleText,planner.cargoToggleText})
             if(text!=null)Require(text.preferredHeight<=text.rectTransform.rect.height,"Clipped map text: "+text.name);
@@ -61,6 +67,12 @@ public static class CourierMapPageSmokeTest
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.035f,.055f,.085f);camera.orthographic=true;camera.targetTexture=target;
             canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=camera;canvas.planeDistance=10;
             Canvas.ForceUpdateCanvases();planner.ApplyFullscreenLayout();Canvas.ForceUpdateCanvases();
+            foreach(var guide in UnityEngine.Object.FindObjectsOfType<CourierTutorialView>())guide.Refresh();
+            if(planner.destinationTooltip.gameObject.activeInHierarchy)
+            {
+                var card=Bounds(planner.destinationTooltip);var mapBounds=Bounds(planner.mapGraphic.rectTransform);
+                Require(card.xMin>=mapBounds.xMin&&card.xMax<=mapBounds.xMax&&card.yMin>=mapBounds.yMin&&card.yMax<=mapBounds.yMax,"Destination tooltip extends beyond map after resize");
+            }
             if(planner.nodePromptButton.gameObject.activeInHierarchy&&!planner.CargoOpen)
             {
                 var prompt=Bounds((RectTransform)planner.nodePromptButton.transform);
@@ -92,16 +104,39 @@ public static class CourierMapPageSmokeTest
             switch(step)
             {
                 case 0:
+                    // Use a physical vehicle to cover vehicle-icon and resource presentation.
+                    owner.Run.VehicleIndex=0;owner.Run.Durabilities[0]=owner.Run.Vehicles[0].MaxDurability;
                     Require(!planner.CargoOpen&&!planner.cargoDrawer.gameObject.activeSelf,"Cargo should start closed");
-                    hud.CompleteSubtitle();Capture("/tmp/courier-map-expanded-guide.png",planner);
+                    Require(owner.ConversationActive,"Initial conversation missing");
+                    var group=planner.mapGraphic.GetComponentInParent<CanvasGroup>();
+                    Require(group.alpha<.5f&&!group.interactable&&!group.blocksRaycasts,"Dialogue must dim and block the map");
+                    Require(planner.stopButtons.All(b=>!b.interactable)&&!planner.cargoToggleButton.interactable,"Dialogue leaves map controls active");
+                    planner.stopButtons[3].onClick.Invoke();planner.ToggleCargoDrawer();
+                    Require(!planner.CargoOpen&&!planner.destinationTooltip.gameObject.activeSelf,"Dialogue accepts map selection or cargo input");
+                    dialogueMapSize=planner.mapGraphic.rectTransform.rect.size;
+                    owner.Tutorial.Dismiss();hud.CompleteSubtitle();Capture("/tmp/courier-map-dialogue-focus.png",planner);
                     owner.Tutorial.Dismiss();while(owner.ConversationActive)owner.AdvanceDialogue();
                     planner.stopButtons[3].onClick.Invoke();break;
                 case 1:
+                    Require(planner.mapGraphic.rectTransform.rect.size==dialogueMapSize,"Dialogue completion moved the map");
+                    var restored=planner.mapGraphic.GetComponentInParent<CanvasGroup>();
+                    Require(restored.alpha==1&&restored.interactable&&restored.blocksRaycasts,"Map did not unlock after dialogue");
+                    Require(planner.destinationTooltip.gameObject.activeInHierarchy,"Selecting a destination did not open tooltip");
+                    for(int i=0;i<planner.stopButtons.Length;i++)
+                    {
+                        var feedback=planner.stopButtons[i].GetComponent<CourierButtonFeedback>();
+                        Require(feedback.feedbackTarget==planner.mapArtwork.landmarkImages[i].rectTransform,"Landmark focus follows old button bounds");
+                        Require(planner.stopButtons[i].colors.highlightedColor.a==0,"Legacy button highlight remains offset from landmark");
+                        var frame=Bounds((RectTransform)feedback.Effect.transform);var art=Bounds(feedback.feedbackTarget);
+                        Require(Vector2.Distance(frame.center,art.center)<1&&frame.width>=art.width&&frame.height>=art.height,"Landmark focus frame is offset");
+                    }
+                    Capture("/tmp/courier-map-destination-tooltip.png",planner);
                     Require(!hud.subtitleText.gameObject.activeSelf&&!hud.subtitleText.transform.parent.Find("SubtitleBar").gameObject.activeSelf,"Idle bottom prompt is still visible");
                     Require(planner.nodePromptButton.gameObject.activeInHierarchy&&planner.nodePromptText.text=="Talk  [E]","Current node talk prompt missing");
                     Capture("/tmp/courier-map-node-prompt.png",planner);Click(planner.cargoToggleButton);break;
                 case 2:
                     Require(planner.CargoOpen,"Cargo button did not open drawer");
+                    Require(!planner.destinationTooltip.gameObject.activeSelf,"Destination tooltip overlaps cargo drawer");
                     Capture("/tmp/courier-map-expanded-cargo.png",planner);
                     var row=planner.GetComponentsInChildren<CourierCargoRow>().First(x=>x.Item==owner.Run.Parcels[0]);Click(row.actionButton);break;
                 case 3:
@@ -123,9 +158,14 @@ public static class CourierMapPageSmokeTest
                 case 7:
                     planner.ToggleCargoDrawer();Require(planner.CargoOpen,"Cargo toggles while paused");GameManager.Instance.ResumeGame();owner.Run.Tick(10000);break;
                 case 8:
-                    Require(owner.Run.State==ShiftState.Encounter,"Road encounter missing");
-                    Require(!planner.nodePromptButton.gameObject.activeSelf,"Node prompt remains under encounter");
-                    owner.ResolveEncounter(true);owner.Run.Tick(10000);break;
+                    // Encounters are probabilistic in the current rules; either outcome is valid.
+                    if(owner.Run.State==ShiftState.Encounter)
+                    {
+                        Require(!planner.nodePromptButton.gameObject.activeSelf,"Node prompt remains under encounter");
+                        owner.ResolveEncounter(true);owner.Run.Tick(10000);
+                    }
+                    else Require(owner.Run.State==ShiftState.Docked,"Travel neither stopped nor opened an encounter");
+                    break;
                 case 9:
                     Require(owner.Run.State==ShiftState.Docked&&owner.Run.HasJourney,"Intermediate arrival lost journey");
                     while(owner.ConversationActive)owner.AdvanceDialogue();planner.SetCargoOpen(false);break;
@@ -137,7 +177,7 @@ public static class CourierMapPageSmokeTest
                 case 11:
                     Require(!planner.CargoOpen,"Restart did not reset drawer");
                     Require(hud.subtitleText.gameObject.activeSelf&&!planner.nodePromptButton.gameObject.activeSelf,"Restart did not restore dialogue presentation");
-                    SessionState.SetBool(Key,false);Debug.Log("COURIER_MAP_PAGE PASS: node talk and waypoint continue clicks, travel and encounter hints, hidden idle HUD, preserved dialogue, full-width map, cargo, pause and restart.");EditorApplication.Exit(0);return;
+                    SessionState.SetBool(Key,false);Debug.Log("COURIER_MAP_PAGE PASS: reclaimed map space, destination tooltip, landmark focus bounds, dialogue dim/input lock and unlock, node clicks, cargo, departure, waypoints, pause and restart.");EditorApplication.Exit(0);return;
             }
 
             step++;next=EditorApplication.timeSinceStartup+.5;

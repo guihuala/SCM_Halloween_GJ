@@ -10,6 +10,7 @@ public class TitleUIController : MonoBehaviour
 
     private void Awake()
     {
+        NightCourier.CourierTheme.Apply(gameObject);
         if (newGameButton != null) newGameButton.onClick.AddListener(OnNewGameButtonClicked);
         if (settingsButton != null) settingsButton.onClick.AddListener(OnSettingsButtonClicked);
         if (creditsButton != null) creditsButton.onClick.AddListener(OnCreditsButtonClicked);

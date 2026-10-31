@@ -1,0 +1,7 @@
+Generated with the built-in image_gen tool. Two reusable event illustrations.
+
+social.png
+Use case: illustration-story. Landscape game illustration, handmade pencil contours and muted gouache texture on parchment. A pale mint little ghost postal courier wearing a dark green peaked postal cap and satchel shares candy with Halloween children holding pumpkin buckets, a cute skeleton dog beside them. Charming spooky storybook style, charcoal outlines, muted teal and ochre. Clear simple silhouettes, no text, watermark or UI. Reusable Halloween social-delay event illustration. Save local image file.
+
+weather.png
+Use case: illustration-story. Landscape 3:2 game random-event illustration. Same cohesive charming spooky Halloween storybook art: rough charcoal pencil contours, muted gouache on textured parchment, teal shadows and ochre lanterns. A little pale mint ghost postal courier wearing dark green peaked cap and satchel braces against a curling gust of mist and a hot geyser steaming across a cobbled path; a tiny confused bat beside the cap, windblown leaves. Reusable environmental setback illustration for wind, steam, fog, thawing ground and geyser events. Clear silhouettes. No text, no UI, no watermark. Match prior social-delay illustration style.

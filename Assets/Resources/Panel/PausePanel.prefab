@@ -102,17 +102,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531568d6eefc4821aa3b79940744dc54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeInDuration: 0.3
-  fadeOutDuration: 0.2
-  fadeInEase: 6
-  fadeOutEase: 7
-  scaleAnimation: 1
+  backgroundFadeDuration: 0.08
+  fadeInDuration: 0.28
+  fadeOutDuration: 0.18
+  fadeInEase: 9
+  fadeOutEase: 8
+  scaleAnimation: 0
+  reducedPanelMotion: 0
   scaleFrom: {x: 0.95, y: 0.95}
   scaleDuration: 0.2
-  restartButton: {fileID: 230004}
   resumeButton: {fileID: 200004}
   settingsButton: {fileID: 210004}
   mainMenuButton: {fileID: 220004}
+  restartButton: {fileID: 230004}
 --- !u!1 &110000
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +193,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Paused"
+  m_Text: Paused
 --- !u!1 &140000
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +265,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: c250935d9583458291a7dc271ad9c0e8, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -366,7 +368,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -498,7 +500,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Resume"
+  m_Text: Resume
 --- !u!1 &210000
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,7 +568,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -698,7 +700,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Settings"
+  m_Text: Settings
 --- !u!1 &220000
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,7 +768,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -898,7 +900,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Main Menu"
+  m_Text: Main Menu
 --- !u!1 &230000
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,7 +968,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1098,4 +1100,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Restart"
+  m_Text: Restart

@@ -393,10 +393,10 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   backgroundFadeDuration: 0
-  fadeInDuration: 0
-  fadeOutDuration: 0
-  fadeInEase: 6
-  fadeOutEase: 5
+  fadeInDuration: 0.28
+  fadeOutDuration: 0.18
+  fadeInEase: 9
+  fadeOutEase: 8
   scaleAnimation: 0
   scaleFrom: {x: 0.8, y: 0.8}
   scaleDuration: 0.3
@@ -619,8 +619,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: d837c05025754dab87ab3de04aeab2cb, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -927,8 +927,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 4479e677cbc548f3825f9aec880abe5c, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
