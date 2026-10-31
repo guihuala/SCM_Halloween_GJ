@@ -99,13 +99,16 @@ public static class NightCourierTravelSmokeTest
                 case 8:
                     Require(owner.Run.Node==1&&owner.Run.HasJourney&&owner.ConversationActive,"Skip skipped intermediate station / dialogue");
                     if(!arrivalCaptured){ScreenCapture.CaptureScreenshot("/tmp/courier-travel-arrival.png");arrivalCaptured=true;next=EditorApplication.timeSinceStartup+.25;return;}
-                    owner.Run.Durabilities[owner.Run.VehicleIndex]=0;Require(owner.DepartTo(3)&&owner.Run.State==ShiftState.Pushing,"Push setup failed");break;
+                    owner.Run.Durabilities[owner.Run.VehicleIndex]=0;Require(owner.DepartTo(3)&&owner.Run.State==ShiftState.Driving&&owner.Run.IsGhost,"Ghost fallback setup failed");break;
                 case 9:
-                    if(!ClickAndWait(owner,hud.skipRideButton))return;break;
+                    if(owner.Run.State==ShiftState.Encounter)owner.ResolveEncounter(true);
+                    if(!ClickAndWait(owner,hud.skipRideButton))return;
+                    if(owner.Run.State==ShiftState.Encounter){owner.ResolveEncounter(true);owner.SkipRide();}
+                    break;
                 case 10:
-                    Require(owner.Run.Node==3&&owner.Run.Durability>0&&owner.Run.Parcels[0].State==ParcelState.Delivered,"Skip broke pushing / delivery");
+                    Require(owner.Run.Node==3&&owner.Run.IsGhost&&owner.Run.Parcels[0].State==ParcelState.Delivered,"Skip broke pushing / delivery");
                     Require(hud.pauseButton.GetComponent<CourierButtonFeedback>()!=null&&hud.skipRideButton.GetComponent<CourierButtonFeedback>()!=null,"Existing interaction effect missing on new buttons");
-                    SessionState.SetBool(Key,false);Debug.Log("COURIER_TRAVEL_UI PASS 11 steps: native pause in map/event, pause freezes clock and motion, skip preserves costs and choices, intermediate stops, push recovery, delivery, existing feedback.");EditorApplication.Exit(0);return;
+                    SessionState.SetBool(Key,false);Debug.Log("COURIER_TRAVEL_UI PASS 11 steps: native pause in map/event, pause freezes clock and motion, skip preserves costs and choices, intermediate stops, ghost fallback, delivery, existing feedback.");EditorApplication.Exit(0);return;
             }
             Debug.Log("COURIER_TRAVEL_UI step "+step+" passed");step++;next=EditorApplication.timeSinceStartup+.65;
         }

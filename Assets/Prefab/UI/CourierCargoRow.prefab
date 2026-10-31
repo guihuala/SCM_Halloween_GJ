@@ -519,7 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  message: Damaged - side deliveries will be refused; story continues
+  message: Cargo conditions violated - still deliverable with a lower evaluation
 --- !u!1 &3622975591093749889
 GameObject:
   m_ObjectHideFlags: 0
@@ -1051,7 +1051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  message: Heavy - requires a bicycle or pickup
+  message: All batches can be carried by a vehicle or ghost
 --- !u!1 &7786767932317889464
 GameObject:
   m_ObjectHideFlags: 0

@@ -41,7 +41,11 @@ namespace NightCourier
         public string Name;
         public int Origin,Destination,Weight,Reward;
         public bool Fragile,Heavy,Dry,Critical,Damaged;
+        // Legacy field names remain for prefab/editor compatibility; values are turns.
         public float Deadline,TimeLimit;
+        public int DeliveryTurns;
+        public bool DeliveredLate;
+        public string Evaluation { get { return (DeliveredLate ? "Late" : "On time") + (Damaged ? " / cargo conditions violated" : " / cargo safe"); } }
         public ParcelState State;
         public Parcel(string name,int origin,int destination,int weight,int reward=0,bool critical=false,bool fragile=false,bool heavy=false,bool dry=false,float timeLimit=0)
         {Name=name;Origin=origin;Destination=destination;Weight=weight;Reward=reward;Critical=critical;Fragile=fragile;Heavy=heavy;Dry=dry;TimeLimit=timeLimit;}
@@ -55,21 +59,28 @@ namespace NightCourier
         public RoadEvent(string title,string description,string safe,string risky,float time,float damage,bool fragile=false,bool wet=false)
         {Title=title;Description=description;Safe=safe;Risky=risky;SafeMinutes=time;RiskDamage=damage;BreakFragile=fragile;WetDry=wet;}
     }
+    public sealed class DeliveryResult
+    {
+        public int Origin, Destination, Turns, TargetTurns;
+        public string Cargo;
+        public bool Late, Damaged;
+        public string Evaluation { get { return (Late ? "Late" : "On time") + (Damaged ? " / cargo conditions violated" : " / cargo safe"); } }
+    }
     public sealed class CourierRun
     {
         public readonly Stop[] Stops={
-            new Stop("Abandoned Subway","DROW","Drow: Keep our world a secret. Please take my party theme tape to the vampire DJ.",0.07f,0.5f,0,false),
-            new Stop("Forest Campsite","WOLF","Wolfwoman: Humans must never learn about us. There is honey, rosin and flowers to deliver.",0.31f,0.2f,-1,true),
-            new Stop("Mead Cellar","MEAD","Bear: Too warm to sleep. Damp labels, spoiled mead... I need autumn honey and fresh supplies.",0.31f,0.8f,1,true),
-            new Stop("Abandoned Radio Tower","FM","Vampire: Tonight I play the host! If only this overheated radio would cooperate.",0.6f,0.75f,2,true),
-            new Stop("Museum Ruins","MUSEUM","Zombie: I repair antiques. Flowers for cakes. Moisture repellent for me. Please.",0.69f,0.2f,-1,true),
-            new Stop("Settlement Bar","BAR","Witch: The human parade is outside. Keep the Silence Pact, and bring the party supplies inside.",0.94f,0.5f,-1,true)
+            new Stop("Abandoned Subway","DROW","Drow: Oh... hello. I made a party tape for the vampire. Could you take it? Only if you are going that way...",0.07f,0.5f,0,false),
+            new Stop("Forest Campsite","WOLF","Wolfwoman: There you are, little courier! Honey for the bear, rosin for the drow, flowers for granny. Leave the forest to your big sister!",0.31f,0.2f,-1,true),
+            new Stop("Mead Cellar","MEAD","Bear: The honey is late, the labels are damp... Oh dear, I am rambling again. Will my mead be ready for the party?",0.31f,0.8f,1,true),
+            new Stop("Abandoned Radio Tower","FM","Vampire: Hail, brave courier! By my honor, the feast shall have music. First, I must rescue this most unchivalrous radio.",0.6f,0.75f,2,true),
+            new Stop("Museum Ruins","MUSEUM","Zombie: Oh, a visitor! Did I order flowers? Yes, for the cakes. Come in, dear... which century is it again?",0.69f,0.2f,-1,true),
+            new Stop("Settlement Bar","BAR","Witch: Right, darling, one thing at a time. Blood and repairs for our knight, supplies for the bear, then supper. I have the list.",0.94f,0.5f,-1,true)
         };
-        // 3.4.1 is authoritative; heavy eligibility follows unlock tier, not vehicle name.
+        // Capacity and wear fields remain for existing assets; they no longer gate order transport.
         public readonly Vehicle[] Vehicles={
-            new Vehicle("Scooter","Lightweight; cannot carry heavy parcels",3,50,1,1),
-            new Vehicle("Bicycle","Carries heavy parcels; largest capacity",8,120,.9f,.7f),
-            new Vehicle("Old Pickup","Carries heavy parcels; protects fragile cargo on gravel",4,80,1.25f,.75f)
+            new Vehicle("Scooter","Standard courier; carries any order batch",3,50,1,1),
+            new Vehicle("Bicycle","Efficient courier; carries any order batch",8,120,.9f,.7f),
+            new Vehicle("Old Pickup","Protects fragile cargo on gravel; carries any order batch",4,80,1.25f,.75f)
         };
         public readonly Road[] Roads={
             new Road(0,1,6,3),new Road(0,2,22,14,RoadKind.Gravel),new Road(1,2,18,8),
@@ -106,10 +117,12 @@ namespace NightCourier
         public readonly bool[] Talked=new bool[6];
         public readonly bool[] UnlockedVehicles={true,false,false};
         public readonly List<string> Journal=new List<string>();
+        // Legacy editor API only; no global deadline or early ending uses these values.
         public const float ShiftMinutes=240;
         public float NightMinutes=ShiftMinutes;
         public const float CruiseMinutesPerSecond=.3f;
         public int Node,VehicleIndex,Delivered,Earnings,EncounterIndex;
+        // Elapsed stores total integer turns for legacy callers; OrderTurns is the rating clock.
         public float Elapsed,Progress;
         public bool UsedPush;
         public ShiftState State=ShiftState.Docked;
@@ -118,15 +131,28 @@ namespace NightCourier
         public bool HasJourney {get{return PlannedDestination>=0&&PlannedDestination!=Node&&!Finished;}}
         public string Notice="";
         private int destination;
-        private bool eventTriggered,pushedThisLeg;
+        private bool eventTriggered, gravelProtected;
+        private float animationSeconds;
+        private int legTurnsRemaining, legTurnsTotal;
+        private const float SecondsPerTurn = 8f;
+        private readonly Vehicle ghost = new Vehicle("Ghost", "Carries any order; slower travel; no vehicle turns consumed", 0, 0, .5f, 0);
+        public bool IsGhost { get { return VehicleIndex < 0; } }
+        public readonly List<DeliveryResult> Results = new List<DeliveryResult>();
+        public int OrderTurns { get; private set; }
+        public int BatchCount { get { return Parcels.GroupBy(p => new { p.Origin, p.Destination }).Count(); } }
+        public int CompletedBatches { get { return Parcels.GroupBy(p => new { p.Origin, p.Destination }).Count(g => g.All(p => p.State == ParcelState.Delivered)); } }
+        public Parcel ActiveOrder { get { return Parcels.FirstOrDefault(p => p.State == ParcelState.Loaded); } }
+        public IEnumerable<Parcel> Batch(Parcel parcel) { return Parcels.Where(p => p.Origin == parcel.Origin && p.Destination == parcel.Destination); }
+        public int TargetTurns(Parcel parcel) { return (int)Batch(parcel).Min(p => p.TimeLimit > 0 ? p.TimeLimit : 12); }
+        public int RemainingTravelTurns { get { return legTurnsRemaining; } }
         private readonly Random random;
         public CourierRun(int seed=31)
-        {random=new Random(seed);Log("Halloween Eve. Keep the Silence Pact and deliver the party supplies.");}
-        public Vehicle Car {get{return Vehicles[VehicleIndex];}}
-        public float Durability {get{return Durabilities[VehicleIndex];}}
+        {random=new Random(seed);foreach(var p in Parcels)p.TimeLimit=p.TimeLimit>0?(float)Math.Ceiling(p.TimeLimit/6):12;foreach(var e in Events){e.SafeMinutes=(float)Math.Ceiling(e.SafeMinutes/6);e.RiskDamage=(float)Math.Ceiling(e.RiskDamage/6);}Log("Halloween Eve. Keep the Silence Pact and deliver the party supplies.");}
+        public Vehicle Car {get{return IsGhost?ghost:Vehicles[VehicleIndex];}}
+        public float Durability {get{return IsGhost?0:Durabilities[VehicleIndex];}}
         public int Load {get{return Parcels.Where(p=>p.State==ParcelState.Loaded).Sum(p=>p.Weight);}}
-        public bool Overloaded {get{return Load>=Car.Capacity;}}
-        public bool Late {get{return Elapsed>=NightMinutes;}}
+        public bool Overloaded {get{return false;}}
+        public bool Late {get{return ActiveOrder!=null&&OrderTurns>TargetTurns(ActiveOrder);}}
         public bool Finished {get{return State==ShiftState.EndingA||State==ShiftState.EndingB;}}
         public string ObjectiveText
         {
@@ -140,8 +166,8 @@ namespace NightCourier
                 return "Speak to the locals. The Halloween party is almost ready.";
             }
         }
-        public float TimeCost(Road r){return r.Minutes/Car.Speed*(Overloaded?1.35f:1);}
-        public float WearCost(Road r){return r.Damage*Car.Wear*(Overloaded?1.65f:1);}
+        public float TimeCost(Road r){return (float)Math.Ceiling(Math.Max(2,Math.Ceiling(r.Minutes/6))/Car.Speed);}
+        public float WearCost(Road r){return IsGhost?0:Math.Min(Durability,TimeCost(r));}
         public string RoadBlockReason(Road r)
         {
             if(r==null||!Roads.Contains(r)||!r.Connects(Node))return "Choose a connected stop";
@@ -183,26 +209,29 @@ namespace NightCourier
         }
         public bool ContinueJourney(){return HasJourney&&StartJourney(PlannedDestination);}
         public bool CanLoad(Parcel p)
-        {return State==ShiftState.Docked&&Parcels.Contains(p)&&p.State==ParcelState.Waiting&&p.Origin==Node&&(!p.Heavy||VehicleIndex>0)&&Load+p.Weight<=Car.Capacity+2;}
+        {return State==ShiftState.Docked && p!=null && Parcels.Contains(p) && p.State==ParcelState.Waiting && p.Origin==Node && ActiveOrder==null;}
         public bool LoadParcel(Parcel p)
         {
             if(!CanLoad(p))return false;
-            p.State=ParcelState.Loaded;if(p.TimeLimit>0&&p.Deadline==0)p.Deadline=Elapsed+p.TimeLimit;
-            Log("Loaded: "+p.Name+" > "+Stops[p.Destination].Name);return true;
+            OrderTurns=0;
+            foreach(var item in Batch(p)){item.State=ParcelState.Loaded;item.Deadline=0;}
+            Log("Order accepted: "+string.Join(" + ",Batch(p).Select(item=>item.Name))+" > "+Stops[p.Destination].Name+". Target: "+TargetTurns(p)+" turns.");return true;
         }
-        public bool Unload(Parcel p)
-        {
-            if(State!=ShiftState.Docked||p.State!=ParcelState.Loaded||p.Critical)return false;
-            p.State=ParcelState.Waiting;p.Origin=Node;Log("Stored: "+p.Name);return true;
-        }
+        // Active orders cannot be cancelled, split or stored at another node.
+        public bool Unload(Parcel p){return false;}
         public bool CanPossess(int v)
-        {return State==ShiftState.Docked&&v>=0&&v<Vehicles.Length&&UnlockedVehicles[v]&&Stops[Node].Vehicle==v&&Load<=Vehicles[v].Capacity+2;}
+        {return State==ShiftState.Docked&&v>=0&&v<Vehicles.Length&&UnlockedVehicles[v]&&Stops[Node].Vehicle==v;}
         public bool Possess(int v)
         {if(!CanPossess(v))return false;VehicleIndex=v;Log("Possessed: "+Car.Name);return true;}
         public bool Repair()
         {
-            if(State!=ShiftState.Docked||!Stops[Node].Repair||Durability>=Car.MaxDurability)return false;
-            Durabilities[VehicleIndex]=Car.MaxDurability;AdvanceClock(12);Log("Vehicle repaired. 12 minutes elapsed.");return true;
+            if(State!=ShiftState.Docked||IsGhost||!Stops[Node].Repair||Durability>=Car.MaxDurability)return false;
+            Durabilities[VehicleIndex]=Car.MaxDurability;Log("Vehicle turns restored. Free repair.");return true;
+        }
+        public bool UseGhost()
+        {
+            if(State!=ShiftState.Docked)return false;
+            VehicleIndex=-1;Log("Ghost transport: all cargo can still be delivered.");return true;
         }
         public string[] TalkToNpc()
         {
@@ -214,28 +243,26 @@ namespace NightCourier
             var lines=new List<string>{Stops[Node].Voice};
             switch(Node)
             {
-                case 0:lines.Add("Drow: I write and play the violin. The ranger supplies my rosin; my new tune is for tomorrow's party.");
-                    lines.Add("Halloween Eve is your busiest shift. Tab opens the map and trunk; load the tape, choose a stop, then depart.");break;
-                case 1:lines.Add("Wolfwoman: I patrol the foggy forest and lead stray children home. Tonight I could eat three suppers.");
-                    lines.Add("Wolfwoman: Fewer bees each year. Take autumn honey to the bear, rosin to the drow, and flowers to the museum.");break;
-                case 2:lines.Add("Bear: Spring mead takes months! Now the cellar is too warm, and the labels are damp. Are we going to have to move?");
-                    lines.Add("Bear: Take the mead to the witch. You may possess my bicycle; it can carry the heavy crate.");break;
-                case 3:lines.Add("Vampire: A theme tune for our grand celebration! My radiator is overloaded; the witch has the repair equipment.");
-                    lines.Add(UnlockedVehicles[2]?"Vampire: Repairs delivered! The old pickup is yours to possess. It protects glass on gravel.":"Vampire: Bring the repair equipment from the bar to unlock my old pickup. I have a hot supper for the ranger.");break;
-                case 4:lines.Add("Zombie: Came here a century ago. Still here. Still damp. The witch has moisture repellent.");
-                    lines.Add("Zombie: Forest flowers make good cakes. Take these to the ranger. Before they go stale.");break;
-                case 5:lines.Add("Witch: I trade with the humans. Blood and repair equipment for the DJ, labels for the bear, lotion for our old friend.");
-                    lines.Add("Witch: The humans parade tonight. Tomorrow is our party. Deliver what you can; we will celebrate together.");break;
+                case 0:lines.Add("Drow: The ranger brings my violin rosin. I wrote a tune for everyone... I hope they like it. Please do not tell them I am nervous.");
+                    lines.Add("Halloween Eve is your busiest shift. Tab opens cargo; load the tape, choose a stop on the map, then depart.");break;
+                case 1:lines.Add("Wolfwoman: I lead lost children out of the fog. Nothing to worry about! Though I could eat three suppers: the vampire's stew, granny's cakes, and the witch's meal.");
+                    lines.Add("Wolfwoman: Fewer bees each year, eh? We will manage. Take honey to our little bear, rosin to the shy drow, and flowers to granny.");break;
+                case 2:lines.Add("Bear: Spring mead takes months, you know. And the cellar is so warm... I need autumn honey from the wolf, desiccant and labels from the witch. Sorry, am I fussing?");
+                    lines.Add("Bear: Please take my mead to the witch. My bicycle can carry the heavy crate. Do borrow it... and mind the bottles. I would be ever so sad.");break;
+                case 3:lines.Add("Vampire: A theme tune from the drow! A worthy anthem. The witch supplies blood and repair equipment; until then, I stand guard over this fallen radio.");
+                    lines.Add(UnlockedVehicles[2]?"Vampire: Repairs delivered! By my oath, my trusty pickup is yours. It shall shield your glass cargo upon the gravel roads!":"Vampire: Bring repair equipment from the bar and my pickup shall serve you. Take this spicy blood stew to our valiant wolfwoman!");break;
+                case 4:lines.Add("Zombie: I moved here a century ago. Or was it last Tuesday? The witch sends moisture repellent. Very kind. My old bones do get damp.");
+                    lines.Add("Zombie: The wolf brings fresh flowers, and I bake her flower cakes. Take these to her, dear. Now... did I already offer you a cake?");break;
+                case 5:lines.Add("Witch: Blood and repair equipment for the vampire. Desiccant and labels for the bear. Moisture repellent for granny, supper for the wolf. Everyone gets what they need.");
+                    lines.Add("Witch: Bring the bear's honey mead here, darling. The humans parade tonight; our party is tomorrow. Eat something, watch the road, and leave the arrangements to me.");break;
             }
             return lines.ToArray();
         }
         private void CheckEnding()
         {
-            bool resolved=Parcels.All(p=>p.State==ParcelState.Delivered||p.State==ParcelState.Failed);
-            if(!resolved&&!(Late&&Talked.All(t=>t)))return;
-            bool perfect=!Late&&Parcels.All(p=>p.State==ParcelState.Delivered&&!p.Damaged);
-            State=perfect?ShiftState.EndingA:ShiftState.EndingB;PlannedDestination=-1;
-            Log(perfect?"Party Ready! Every delivery arrived safely. Ghost Courier is always with you.":"Together at Dawn. The night was difficult, but everyone is welcome at the party.");
+            if(!Parcels.All(p=>p.State==ParcelState.Delivered))return;
+            State=ShiftState.EndingA;PlannedDestination=-1;
+            Log("All "+BatchCount+" orders delivered. Halloween deliveries complete!");
         }
         public bool Depart(Road r)
         {
@@ -244,46 +271,57 @@ namespace NightCourier
         }
         private bool BeginLeg(Road r)
         {
-            ActiveRoad=r;destination=r.Other(Node);Progress=0;eventTriggered=false;pushedThisLeg=false;
-            State=ShiftState.Driving;Log("Departing for "+Stops[destination].Name);
-            if(Durability<=0)BreakDown();return true;
+            if(!IsGhost&&Durability<=0)BreakDown();
+            ActiveRoad=r;destination=r.Other(Node);Progress=0;eventTriggered=false;animationSeconds=0;
+            gravelProtected=!IsGhost&&VehicleIndex==2;
+            legTurnsRemaining=legTurnsTotal=(int)TimeCost(r);
+            State=ShiftState.Driving;Log("Departing for "+Stops[destination].Name);return true;
         }
-        // Fast-forward presentation only; never choose an event for the player.
+        // Animation only: skips stop at each event and do not change turn costs.
         public bool FastForwardTravel()
         {
-            if(State!=ShiftState.Driving&&State!=ShiftState.Pushing)return false;
-            for(int i=0;i<100000&&(State==ShiftState.Driving||State==ShiftState.Pushing);i++)Tick(.1f);
-            return true;
+            if(State!=ShiftState.Driving)return false;
+            Tick(100000);return true;
         }
         public void Tick(float seconds)
         {
-            if(seconds<=0||(State!=ShiftState.Driving&&State!=ShiftState.Pushing))return;
-            bool pushing=State==ShiftState.Pushing;
-            float limit=pushing||eventTriggered?1:.5f;
-            float delta=Math.Min(seconds*CruiseMinutesPerSecond*(pushing?.45f:1)/TimeCost(ActiveRoad),limit-Progress);
-            Progress+=delta;AdvanceClock(TimeCost(ActiveRoad)*delta*(pushing?1.8f:1));
-            if(!pushing)
+            if(seconds<=0||State!=ShiftState.Driving)return;
+            animationSeconds+=seconds;
+            while(animationSeconds>=SecondsPerTurn&&State==ShiftState.Driving)
             {
-                Durabilities[VehicleIndex]=Math.Max(0,Durability-WearCost(ActiveRoad)*delta);
-                if(Durability<=0){BreakDown();return;}
+                animationSeconds-=SecondsPerTurn;
+                AdvanceClock(1);legTurnsRemaining--;
+                Progress=1-(float)legTurnsRemaining/legTurnsTotal;
+                if(IsGhost)gravelProtected=false;
+                else
+                {
+                    Durabilities[VehicleIndex]=Math.Max(0,Durability-1);
+                    if(Durability<=0)
+                    {
+                        BreakDown();
+                        // Remaining distance takes twice as long on foot. Completed turns stay counted once.
+                        legTurnsRemaining=(int)Math.Ceiling(legTurnsRemaining*Vehicles[lastVehicle].Speed/ghost.Speed);
+                        legTurnsTotal=legTurnsRemaining==0?1:(int)Math.Ceiling(legTurnsRemaining/Math.Max(.001f,1-Progress));
+                    }
+                }
+                if(legTurnsRemaining<=0){Progress=1;Arrive();return;}
                 if(!eventTriggered&&Progress>=.5f)
                 {
                     eventTriggered=true;EncounterIndex=ActiveRoad.Kind==RoadKind.River?2:ActiveRoad.Kind==RoadKind.Fog?1:ActiveRoad.Kind==RoadKind.Storm?9:random.Next(Events.Length);
-                    State=ShiftState.Encounter;return;
+                    State=ShiftState.Encounter;animationSeconds=0;return;
                 }
             }
-            if(Progress>=1)Arrive();
         }
+        private int lastVehicle;
         private void BreakDown()
         {
-            State=ShiftState.Pushing;pushedThisLeg=true;UsedPush=true;
-            foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&p.TimeLimit>0&&!p.Critical))p.State=ParcelState.Failed;
-            Log("Broken down. You push on to the next stop. Timed side parcels expire; your story continues.");
+            lastVehicle=VehicleIndex;VehicleIndex=-1;UsedPush=true;
+            Log("Vehicle exhausted. Continue carrying the complete order as a ghost.");
         }
         public string EncounterTitle{get{return Events[EncounterIndex].Title;}}
         public string EncounterDescription{get{return Events[EncounterIndex].Description;}}
-        public string SafeChoice{get{var e=Events[EncounterIndex];return e.Safe.Split('·')[0].Trim()+" · +"+e.SafeMinutes+" min";}}
-        public string RiskChoice{get{var e=Events[EncounterIndex];return e.Risky.Split('·')[0].Trim()+" · -"+e.RiskDamage+" durability"+(e.BreakFragile?" / fragile cargo damaged":"")+(e.WetDry?" / dry cargo soaked":"");}}
+        public string SafeChoice{get{var e=Events[EncounterIndex];return e.Safe.Split('·')[0].Trim()+" · +"+e.SafeMinutes+" turns";}}
+        public string RiskChoice{get{var e=Events[EncounterIndex];return e.Risky.Split('·')[0].Trim()+" · -"+(IsGhost?0:e.RiskDamage)+" vehicle turns"+(e.BreakFragile?" / fragile cargo damaged":"")+(e.WetDry?" / dry cargo soaked":"");}}
         public void ResolveEncounter(bool safe)
         {
             if(State!=ShiftState.Encounter)return;
@@ -291,32 +329,34 @@ namespace NightCourier
             if(safe)AdvanceClock(e.SafeMinutes);
             else
             {
-                Durabilities[VehicleIndex]=Math.Max(0,Durability-e.RiskDamage);
+                if(!IsGhost){Durabilities[VehicleIndex]=Math.Max(0,Durability-e.RiskDamage);if(Durability<=0){BreakDown();legTurnsRemaining=(int)Math.Ceiling(legTurnsRemaining*Vehicles[lastVehicle].Speed/ghost.Speed);legTurnsTotal=(int)Math.Ceiling(legTurnsRemaining/Math.Max(.001f,1-Progress));}}
                 foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&((e.BreakFragile&&p.Fragile)||(e.WetDry&&p.Dry))))p.Damaged=true;
-                if(Durability<=0)BreakDown();
             }
             Log(safe?"Safe passage: "+e.Title:"Risky passage: "+e.Title);
         }
         private void Arrive()
         {
-            if(!pushedThisLeg&&ActiveRoad.Gravel&&VehicleIndex!=2)
+            if(!gravelProtected&&ActiveRoad.Gravel)
                 foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&p.Fragile))p.Damaged=true;
-            Node=destination;State=ShiftState.Docked;
+            Node=destination;State=ShiftState.Docked;animationSeconds=0;
             if(Node==PlannedDestination)PlannedDestination=-1;
-            foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&p.Destination==Node))
+            var order=ActiveOrder;
+            if(order!=null&&order.Destination==Node)
             {
-                if(p.Damaged&&!p.Critical){p.State=ParcelState.Failed;Log("Refused, damaged: "+p.Name);}
-                else {p.State=ParcelState.Delivered;Delivered++;Earnings+=p.Reward;Log("Delivered: "+p.Name);}
+                var items=Batch(order).ToArray();int target=TargetTurns(order);
+                var result=new DeliveryResult{Origin=order.Origin,Destination=Node,Turns=OrderTurns,TargetTurns=target,
+                    Cargo=string.Join(" + ",items.Select(p=>p.Name)),Late=OrderTurns>target,Damaged=items.Any(p=>p.Damaged)};
+                foreach(var p in items){p.State=ParcelState.Delivered;p.DeliveryTurns=OrderTurns;p.DeliveredLate=result.Late;Delivered++;Earnings+=p.Reward;}
+                Results.Add(result);Log("Order delivered: "+result.Cargo+". "+OrderTurns+"/"+target+" turns - "+result.Evaluation);
             }
             if(Parcels[9].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
-            if(pushedThisLeg){Durabilities[VehicleIndex]=Car.MaxDurability*.35f;Log("Pushed to the stop. Emergency repairs restore 35% durability. You can continue.");}
             CheckEnding();
         }
-        private void AdvanceClock(float minutes)
+        private void AdvanceClock(float turns)
         {
-            Elapsed+=minutes;
-            foreach(var p in Parcels.Where(p=>!p.Critical&&p.TimeLimit>0&&p.Deadline>0&&(p.State==ParcelState.Loaded||p.State==ParcelState.Waiting)&&Elapsed>p.Deadline))
-            {p.State=ParcelState.Failed;Log("Timed delivery expired: "+p.Name);}
+            int wholeTurns=(int)Math.Ceiling(turns);
+            Elapsed+=wholeTurns;
+            if(ActiveOrder!=null)OrderTurns+=wholeTurns;
         }
         private void Log(string text){Notice=text;Journal.Insert(0,text);if(Journal.Count>50)Journal.RemoveAt(50);}
     }

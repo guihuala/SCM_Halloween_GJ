@@ -28,14 +28,14 @@ namespace NightCourier
         }
         protected override void Refresh()
         {
-            capacityText.text = "Load " + Run.Load + " / " + Run.Car.Capacity + " slots";
+            capacityText.text = "Orders " + Run.CompletedBatches + " / " + Run.BatchCount;
             adviceText.gameObject.SetActive(Run.Overloaded);
-            adviceText.text = "Full load: slower travel, increased wear";
+            adviceText.text = "Deliver the active order before accepting another.";
             int waiting = 0, loaded = 0;
             for (int i = 0; i < rows.Count; i++)
             {
                 var parcel = Run.Parcels[i]; bool onboard = parcel.State == ParcelState.Loaded;
-                bool visible = onboard || parcel.State == ParcelState.Waiting && parcel.Origin == Run.Node;
+                bool visible = (onboard || parcel.State == ParcelState.Waiting) && Run.Batch(parcel).First() == parcel;
                 rows[i].gameObject.SetActive(visible);
                 if (!visible) continue;
                 var parent = onboard ? loadedContent : waitingContent;

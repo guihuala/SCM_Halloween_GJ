@@ -9,9 +9,10 @@ namespace NightCourier
         protected override void Awake(){base.Awake();restartButton.onClick.AddListener(()=>owner.RestartShift());menuButton.onClick.AddListener(()=>GameManager.Instance.ReturnToMainMenu());}
         protected override void Refresh()
         {
-            titleText.text=Run.State==ShiftState.EndingA?"Party Ready!":"Together at Dawn";
-            summaryText.text=(Run.State==ShiftState.EndingA?"The theme tune plays. Mead, flowers and warm food await.\nEvery delivery arrived safely for the Halloween party.":"Some deliveries did not make it through the night.\nThe neighbours gather anyway. There is a place for you at the party.")+
-                "\n\nGhost Courier is always with you.\nDeliveries "+Run.Parcels.Count(p=>p.State==ParcelState.Delivered)+"/"+Run.Parcels.Count+"  ·  Elapsed "+NightCourierPrototype.Minutes(Run.Elapsed);
+            titleText.text="All Orders Delivered!";
+            summaryText.resizeTextForBestFit=false;summaryText.fontSize=24;summaryText.lineSpacing=1;summaryText.alignment=UnityEngine.TextAnchor.UpperLeft;
+            summaryText.text="Completed "+Run.CompletedBatches+"/"+Run.BatchCount+" orders - "+Run.Delivered+" cargo items\n\n"+
+                string.Join("\n",Run.Results.Select((r,i)=>(i+1)+". "+Run.Stops[r.Origin].Sign+" > "+Run.Stops[r.Destination].Sign+" - "+r.Turns+"/"+r.TargetTurns+" turns - "+r.Evaluation));
         }
     }
 }

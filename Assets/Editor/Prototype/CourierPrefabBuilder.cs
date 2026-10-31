@@ -31,6 +31,9 @@ public static class CourierPrefabBuilder
         CourierFeedbackPrefabBuilder.Install();
         InstallTravelControls();
         InstallMapOnly();
+        CourierCharacterInstaller.Install();
+        CourierPresentationInstaller.Install();
+        CourierMapPageInstaller.Install();
         Debug.Log("COURIER_PREFABS PASS: cinematic HUD, unified map/trunk, event, endings and cargo card saved.");
     }
     [MenuItem("Tools/Night Courier/Add Travel Controls (preserve layouts)")]
@@ -52,7 +55,7 @@ public static class CourierPrefabBuilder
                 var hud=panel as CourierHudPanel;
                 if(hud!=null&&hud.skipRideButton==null)
                 {
-                    hud.skipRideButton=Button(root.transform.Find("HudLayout"),"SkipRideButton","Skip ride  [F]",1496,899,264,64,false);
+                    hud.skipRideButton=Button(root.transform.Find("HudLayout"),"SkipRideButton","Skip ride  [F]",1496,873,264,64,false);
                     hud.skipRideButton.GetComponentInChildren<Text>().fontSize=28;
                     hud.skipRideButton.gameObject.AddComponent<CourierIconHint>().message="Skip to the next event or stop. Time, wear and cargo effects still apply.";
                 }
@@ -102,9 +105,9 @@ public static class CourierPrefabBuilder
         const string dir="Assets/Resources/NightVoyage";Directory.CreateDirectory(dir);var run=new CourierRun();
         var vehicles=new System.Collections.Generic.List<string>{"id,name,ability,capacity,durability,speed,wear"};
         for(int i=0;i<run.Vehicles.Length;i++){var v=run.Vehicles[i];vehicles.Add(Csv(i,v.Name,v.Ability,v.Capacity,v.MaxDurability,v.Speed,v.Wear));}
-        var parcels=new System.Collections.Generic.List<string>{"id,name,weight,reward,fragile,heavy,dry,time_limit"};
-        for(int i=0;i<run.Parcels.Count;i++){var p=run.Parcels[i];parcels.Add(Csv(i,p.Name,p.Weight,p.Reward,p.Fragile?1:0,p.Heavy?1:0,p.Dry?1:0,p.TimeLimit));}
-        var events=new System.Collections.Generic.List<string>{"id,title,description,safe_action,risk_action,safe_minutes,risk_damage,fragile_damage,water_damage"};
+        var parcels=new System.Collections.Generic.List<string>{"id,name,weight,reward,fragile,heavy,dry,target_turns,origin,destination"};
+        for(int i=0;i<run.Parcels.Count;i++){var p=run.Parcels[i];parcels.Add(Csv(i,p.Name,p.Weight,p.Reward,p.Fragile?1:0,p.Heavy?1:0,p.Dry?1:0,p.TimeLimit,p.Origin,p.Destination));}
+        var events=new System.Collections.Generic.List<string>{"id,title,description,safe_action,risk_action,safe_turns,risk_turns,fragile_damage,water_damage"};
         for(int i=0;i<run.Events.Length;i++){var e=run.Events[i];events.Add(Csv(i,e.Title,e.Description,e.Safe.Split('·')[0].Trim(),e.Risky.Split('·')[0].Trim(),e.SafeMinutes,e.RiskDamage,e.BreakFragile?1:0,e.WetDry?1:0));}
         var names=new[]{"Vehicles","Parcels","Events"};var tables=new[]{vehicles,parcels,events};
         for(int i=0;i<names.Length;i++){var path=dir+"/"+names[i]+".csv";if(!File.Exists(path))File.WriteAllText(path,string.Join("\n",tables[i])+"\n",new System.Text.UTF8Encoding(true));}
@@ -177,13 +180,13 @@ public static class CourierPrefabBuilder
     }
     private static void Save(CourierPanel panel)
     {
-        if(!(panel is CourierResultPanel))
-            PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/UI/CourierTutorial.prefab"),panel.transform);
         Tooltip(panel);PrefabUtility.SaveAsPrefabAsset(panel.gameObject,Folder+"/"+panel.GetType().Name+".prefab");Object.DestroyImmediate(panel.gameObject);}
     private static void BuildTutorial()
     {
-        var root=Element("CourierTutorial",null,0,0,1920,1080);Stretch(root);
+        var root=Element("CourierTutorialPanel",null,0,0,1920,1080);Stretch(root);
         var view=root.gameObject.AddComponent<CourierTutorialView>();
+        var panel=root.gameObject.AddComponent<CourierTutorialPanel>();panel.view=view;
+        var settings=new SerializedObject(panel);settings.FindProperty("backgroundFadeDuration").floatValue=0;settings.FindProperty("fadeInDuration").floatValue=0;settings.FindProperty("fadeOutDuration").floatValue=0;settings.FindProperty("scaleAnimation").boolValue=false;settings.ApplyModifiedPropertiesWithoutUndo();
         view.focusFrames=new RectTransform[2];
         for(int i=0;i<2;i++)
         {
@@ -202,7 +205,7 @@ public static class CourierPrefabBuilder
         view.strip=strip;view.heading=Text(strip,"StepTitle","FIRST SHIFT  1/6",24,8,1140,30,22,Mint);
         view.instruction=Text(strip,"Instruction","Press E to continue your first conversation.",24,40,1140,80,26);view.instruction.alignment=TextAnchor.UpperLeft;
         view.skipButton=Button(strip,"SkipGuideButton","Skip",1200,40,80,48,false);
-        PrefabUtility.SaveAsPrefabAsset(root.gameObject,"Assets/Prefab/UI/CourierTutorial.prefab");Object.DestroyImmediate(root.gameObject);
+        PrefabUtility.SaveAsPrefabAsset(root.gameObject,Folder+"/CourierTutorialPanel.prefab");Object.DestroyImmediate(root.gameObject);
     }
     private static Image Fill(Transform parent,string name,float x,float y,float w,float h,Color color)
     {
@@ -217,8 +220,8 @@ public static class CourierPrefabBuilder
         Icon(road,"ClockIcon",CourierIconKind.Clock,205,0,36,Orange,"Time until dawn");
         p.timeText=Text(road,"TimeText","240 min",255,0,180,38,26,Orange);
         p.progressFill=Fill(road,"ProgressFill",0,51,600,5,Mint);
-        Background(Element("SubtitleBar",card,0,850,1800,150),new Color(0,0,0,.88f));p.subtitleText=Text(card,"SubtitleText","Zero Route",40,863,1600,117,26);
-        p.advanceButton=IconButton(card,"AdvanceButton",CourierIconKind.Arrow,"Continue dialogue - E",1696,899,64);
+        Background(Element("SubtitleBar",card,0,810,1800,190),new Color(0,0,0,.88f));p.subtitleText=Text(card,"SubtitleText","Zero Route",40,827,1600,153,30);
+        p.advanceButton=IconButton(card,"AdvanceButton",CourierIconKind.Arrow,"Continue dialogue - E",1696,873,64);
         Save(p);
     }
     private static void BuildRow()
@@ -231,9 +234,9 @@ public static class CourierPrefabBuilder
         var tags=Element("Tags",rt,12,92,410,32);var group=tags.gameObject.AddComponent<HorizontalLayoutGroup>();group.spacing=12;group.childControlWidth=group.childControlHeight=false;group.childForceExpandWidth=group.childForceExpandHeight=false;
         row.storyIcon=Icon(tags,"StoryIcon",CourierIconKind.Story,0,0,32,Mint,"Story parcel - cannot be left behind");
         row.fragileIcon=Icon(tags,"FragileIcon",CourierIconKind.Fragile,0,0,32,Orange,"Fragile - damaged by rough roads or risky choices");
-        row.heavyIcon=Icon(tags,"HeavyIcon",CourierIconKind.Heavy,0,0,32,Orange,"Heavy - requires a bicycle or pickup");
+        row.heavyIcon=Icon(tags,"HeavyIcon",CourierIconKind.Heavy,0,0,32,Orange,"All batches can be carried by a vehicle or ghost");
         row.dryIcon=Icon(tags,"DryIcon",CourierIconKind.Dry,0,0,32,Orange,"Keep dry - protect it during river crossings");
-        row.damagedIcon=Icon(tags,"DamagedIcon",CourierIconKind.Warning,0,0,32,Orange,"Damaged - side deliveries will be refused; story continues");
+        row.damagedIcon=Icon(tags,"DamagedIcon",CourierIconKind.Warning,0,0,32,Orange,"Cargo conditions violated - still deliverable with a lower evaluation");
         var timed=Element("Timed",tags,0,0,112,32);row.timeGroup=timed.gameObject;
         var clock=Icon(timed,"ClockIcon",CourierIconKind.Clock,0,0,32,Orange,"Timed delivery");row.timeHint=clock.GetComponent<CourierIconHint>();row.timeText=Text(timed,"TimeText","60",44,-3,62,38,28,Orange);
         row.actionButton=IconButton(rt,"LoadButton",CourierIconKind.Load,"Load into trunk",438,28,56,true);var buttonRect=(RectTransform)row.actionButton.transform;buttonRect.anchorMin=buttonRect.anchorMax=new Vector2(1,1);buttonRect.anchoredPosition=new Vector2(-64,-28);
@@ -281,15 +284,15 @@ public static class CourierPrefabBuilder
         }
         p.destinationText=Text(card,"DestinationText","Choose a destination",24,496,590,40,28);
         var costs=Element("SelectedCosts",card,24,540,580,42);p.costGroup=costs.gameObject;
-        Icon(costs,"ClockIcon",CourierIconKind.Clock,0,3,32,Muted,"Estimated travel time");p.timeCostText=Text(costs,"TimeCostText","",44,0,130,40,24);
-        Icon(costs,"WearIcon",CourierIconKind.Wrench,180,3,32,Muted,"Estimated durability loss");p.wearCostText=Text(costs,"WearCostText","",224,0,120,40,24);
+        Icon(costs,"ClockIcon",CourierIconKind.Clock,0,3,32,Muted,"Estimated travel turns");p.timeCostText=Text(costs,"TimeCostText","",44,0,130,40,24);
+        Icon(costs,"WearIcon",CourierIconKind.Wrench,180,3,32,Muted,"Estimated vehicle turns consumed");p.wearCostText=Text(costs,"WearCostText","",224,0,120,40,24);
         p.riskText=Text(card,"RoadRiskText","",24,592,590,44,20,Orange);
         p.departButton=IconButton(card,"DepartButton",CourierIconKind.Arrow,"Depart",642,540,64,true);p.departHint=p.departButton.GetComponent<CourierIconHint>();
         p.vehicleText=Text(card,"VehicleText","Scooter",756,14,440,48,28);
-        Icon(card,"DurabilityIcon",CourierIconKind.Wrench,756,72,36,Muted,"Vehicle durability");p.durabilityFill=Fill(card,"DurabilityFill",804,88,120,8,Mint);p.durabilityText=Text(card,"DurabilityText","50/50",936,72,120,36,24);
-        Icon(card,"LoadIcon",CourierIconKind.Box,1056,72,36,Muted,"Load / capacity - a full load slows you down and increases wear");p.loadText=Text(card,"LoadText","1/3",1104,72,172,36,24);
+        Icon(card,"DurabilityIcon",CourierIconKind.Wrench,756,72,36,Muted,"Remaining vehicle turns");p.durabilityFill=Fill(card,"DurabilityFill",804,88,120,8,Mint);p.durabilityText=Text(card,"DurabilityText","50/50",936,72,120,36,24);
+        Icon(card,"LoadIcon",CourierIconKind.Box,1056,72,36,Muted,"One active order batch at a time");p.loadText=Text(card,"LoadText","1/3",1104,72,172,36,24);
         p.possessButton=IconLabelButton(card,"PossessButton","Bicycle",CourierIconKind.Ghost,"Possess ",756,120,250,52);p.possessIcon=p.possessButton.GetComponentInChildren<CourierIconGraphic>();p.possessHint=p.possessButton.GetComponent<CourierIconHint>();
-        p.repairButton=IconLabelButton(card,"RepairButton","12 min",CourierIconKind.Wrench,"Repair for free; takes 12 minutes",1056,120,220,52);
+        p.repairButton=IconLabelButton(card,"RepairButton","Free",CourierIconKind.Wrench,"Restore vehicle turns for free",1056,120,220,52);
         var waiting=Element("WaitingSection",card,756,182,520,180);p.waitingSection=waiting;Text(waiting,"WaitingHeading","Pick Up",0,0,500,30,20,Muted);p.waitingContent=Scroll(waiting,"WaitingParcels",0,38,520,142);
         var loaded=Element("LoadedSection",card,756,342,520,250);p.loadedSection=loaded;Text(loaded,"TrunkHeading","On Board",0,0,500,30,20,Mint);
         p.loadedContent=Scroll(loaded,"LoadedParcels",0,38,520,220);p.loadedScroll=(RectTransform)p.loadedContent.parent.parent;p.dropZone=p.loadedScroll.gameObject.AddComponent<CourierTrunkDropZone>();
@@ -307,8 +310,8 @@ public static class CourierPrefabBuilder
     }
     private static void BuildResult()
     {
-        RectTransform card;var p=Panel<CourierResultPanel>("CourierResultPanel",true,out card,900,390);
-        p.titleText=Text(card,"ResultTitleText","Shift Complete",32,16,836,58,34,Mint);p.summaryText=Text(card,"ResultSummaryText","",32,88,836,172,24);
-        p.restartButton=IconButton(card,"RestartButton",CourierIconKind.Restart,"Another Shift",712,296,64,true);p.menuButton=IconButton(card,"MainMenuButton",CourierIconKind.Home,"Main Menu",804,296,64);Save(p);
+        RectTransform card;var p=Panel<CourierResultPanel>("CourierResultPanel",true,out card,1100,720);
+        p.titleText=Text(card,"ResultTitleText","Shift Complete",32,16,1036,58,34,Mint);p.summaryText=Text(card,"ResultSummaryText","",32,88,1036,510,24);
+        p.restartButton=IconButton(card,"RestartButton",CourierIconKind.Restart,"Another Shift",912,624,64,true);p.menuButton=IconButton(card,"MainMenuButton",CourierIconKind.Home,"Main Menu",1004,624,64);Save(p);
     }
 }

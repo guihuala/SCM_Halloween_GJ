@@ -14,7 +14,7 @@ namespace NightCourier
             var safeHint=safeButton.GetComponent<CourierIconHint>();var riskHint=riskButton.GetComponent<CourierIconHint>();
             if(safeHint!=null)safeHint.message="Take the safe option\n"+Run.SafeChoice+". Protects cargo from this event.";
             if(riskHint!=null)riskHint.message="Take the risky option\n"+Run.RiskChoice;
-            safeCostText.text="+"+e.SafeMinutes+" min";riskCostText.text="-"+e.RiskDamage;
+            safeCostText.text="+"+e.SafeMinutes+" turns";riskCostText.text=Run.IsGhost?"0": "-"+e.RiskDamage;
             fragileRisk.gameObject.SetActive(e.BreakFragile);dryRisk.gameObject.SetActive(e.WetDry);
         }
     }

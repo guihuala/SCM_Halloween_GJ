@@ -11,11 +11,10 @@ namespace NightCourier
         public Button skipButton;
         public RectTransform[] focusFrames;
         private NightCourierPrototype owner;
-        private CourierPanel host;
         private readonly Vector3[] corners = new Vector3[4];
-        public void Bind(NightCourierPrototype prototype, CourierPanel panel)
+        public void Bind(NightCourierPrototype prototype)
         {
-            owner = prototype; host = panel;
+            owner = prototype;
             skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(() => { owner.Tutorial.Dismiss(); Refresh(); });
             Refresh();
@@ -26,16 +25,21 @@ namespace NightCourier
             var run = owner.Run; var guide = owner.Tutorial;
             int step = guide.Step(run, owner.ConversationActive);
             bool visible = owner.Active && !guide.Finished && !run.Finished;
-            if (host is CourierHudPanel) visible &= !owner.HasPlanner && run.State != ShiftState.Encounter;
-            if (host is CourierEventPanel) visible &= run.State == ShiftState.Encounter;
-            if (host is CourierRoutePanel) visible &= run.State != ShiftState.Encounter;
             strip.gameObject.SetActive(visible);
             foreach (var frame in focusFrames) frame.gameObject.SetActive(false);
             if (!visible) return;
-            strip.anchoredPosition = new Vector2(0,-64);
+            strip.anchoredPosition = new Vector2(0,-120);
+            float width=Mathf.Min(1300,((RectTransform)transform).rect.width-64);
+            strip.sizeDelta=new Vector2(width,104);
+            heading.rectTransform.sizeDelta=new Vector2(width-152,30);
+            instruction.rectTransform.sizeDelta=new Vector2(width-152,60);
+            ((RectTransform)skipButton.transform).anchoredPosition=new Vector2(width-96,-28);
             skipButton.GetComponentInChildren<Text>().text = step == 6 ? "Done" : "Skip";
             string title, body; RectTransform first = null, second = null;
-            var hud = host as CourierHudPanel; var planner = host as CourierRoutePanel; var encounter = host as CourierEventPanel;
+            var ui=UIManager.Instance;
+            var hud=ui.GetPanel("CourierHudPanel") as CourierHudPanel;
+            var planner=ui.GetPanel("CourierRoutePanel") as CourierRoutePanel;
+            var encounter=ui.GetPanel("CourierEventPanel") as CourierEventPanel;
             switch (step)
             {
                 case 0:
@@ -45,15 +49,16 @@ namespace NightCourier
                     break;
                 case 1:
                     title = "Open your map";
-                    body = "Your map and cargo are already open. Choose a stop or load a parcel. Planning does not use time.";
+                    body = "Your map is always open. Press Tab or click Cargo to manage parcels. Planning does not use time.";
                     break;
                 case 2:
                     title = "Load your first delivery";
-                    body = "Load Party Theme Tape from Pick Up: click its box arrow, or drag the card into On Board. Watch your load / capacity.";
+                    body = "Load Party Theme Tape from Pick Up: click its box arrow, or drag the card into On Board. One batch at a time; all items with the same sender and recipient travel together.";
                     if (planner != null)
                     {
                         var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item == run.Parcels[0]);
-                        if (row != null) first = (RectTransform)row.actionButton.transform;
+                        if(!planner.CargoOpen){first=planner.cargoToggleButton.transform as RectTransform;body="Open Cargo with Tab or the top button. Then load the Party Theme Tape from Pick Up.";}
+                        else if (row != null) first = (RectTransform)row.actionButton.transform;
                     }
                     break;
                 case 3:
@@ -63,13 +68,13 @@ namespace NightCourier
                     break;
                 case 4:
                     title = guide.Departed ? "On the road" : "Ready to depart";
-                    body = guide.Departed ? "Driving uses time and durability. Press F to skip to the next event or stop; choices remain yours."
-                        : "Check the time and wrench costs, then press the green arrow. A full load means slower travel and more wear.";
+                    body = guide.Departed ? "Moving uses whole order turns and vehicle turns. Press F to skip to the next event or stop; choices remain yours."
+                        : "Check the turn costs, then press the green arrow. Exhausted vehicles switch to ghost transport.";
                     if (!guide.Departed && planner != null) first = (RectTransform)planner.departButton.transform;
                     break;
                 case 5:
                     title = run.State == ShiftState.Encounter ? "Make a road choice" : "Almost there";
-                    body = run.State == ShiftState.Encounter ? "Clock = extra time. Wrench = durability loss. Glass and umbrella icons warn of cargo damage. Choose either option."
+                    body = run.State == ShiftState.Encounter ? "Clock = extra order turns. Wrench = vehicle turns lost. Glass and umbrella icons warn of cargo damage. Choose either option."
                         : "Keep going. Parcels for the next stop will be delivered automatically when you arrive.";
                     if (encounter != null) { first = (RectTransform)encounter.safeButton.transform; second = (RectTransform)encounter.riskButton.transform; }
                     break;
@@ -79,7 +84,7 @@ namespace NightCourier
                     if (hud != null && owner.ConversationActive) first = (RectTransform)hud.advanceButton.transform;
                     break;
             }
-            if (run.State == ShiftState.Pushing) body = "Broken down? No Game Over: your ghost pushes to the next stop. Timed side parcels expire, but the story continues.";
+            if (run.State == ShiftState.Pushing) body = "Your ghost carries the full order at a slower pace. Late or damaged orders are still accepted.";
             if (!owner.HasPlanner && run.State == ShiftState.Docked && step >= 2 && step <= 4)
             { body = "Choose a stop on the map and manage your cargo on the right. You can explore freely or skip this guide."; first = null; }
             heading.text = "FIRST SHIFT  " + Mathf.Max(1,step) + "/6  -  " + title;
@@ -93,6 +98,9 @@ namespace NightCourier
             var parent = (RectTransform)transform;
             var min = parent.InverseTransformPoint(corners[0]); var max = parent.InverseTransformPoint(corners[2]);
             var frame = focusFrames[index];
+            frame.anchorMin=frame.anchorMax=new Vector2(0,1);
+            frame.pivot=new Vector2(0,1);
+            min-=new Vector3(parent.rect.xMin,parent.rect.yMax,0);max-=new Vector3(parent.rect.xMin,parent.rect.yMax,0);
             frame.anchoredPosition = new Vector2(min.x - 6, max.y + 6);
             frame.sizeDelta = new Vector2(max.x - min.x + 12, max.y - min.y + 12);
             frame.gameObject.SetActive(true);

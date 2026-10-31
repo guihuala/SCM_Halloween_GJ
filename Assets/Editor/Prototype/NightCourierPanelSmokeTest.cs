@@ -23,8 +23,8 @@ public static class NightCourierPanelSmokeTest
         Debug.Log("COURIER_RULES PASS "+CourierChecks.RunAll());
         var configured=new CourierRun();CourierContentOverrides.Apply(configured);
         Require(configured.Stops[0].Name=="Abandoned Subway"&&configured.Stops[3].Vehicle==2,"New stop CSV not loaded");
-        Require(configured.Parcels.Count==12&&configured.Parcels[0].Destination==3&&configured.Parcels[11].TimeLimit==90,"New parcel CSV not loaded");
-        Require(configured.NightMinutes==240,"Shift CSV not loaded");
+        Require(configured.Parcels.Count==12&&configured.Parcels[0].Destination==3&&configured.Parcels[11].TimeLimit==15,"New parcel CSV not loaded");
+        Require(configured.BatchCount==11,"Batch grouping incorrect");
         foreach(var name in new[]{"CourierHudPanel","CourierRoutePanel","CourierEventPanel","CourierResultPanel"})
             Require(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resources/Panel/Courier/"+name+".prefab")!=null,"Missing prefab "+name);
         SessionState.SetBool(Key,true);EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
@@ -33,7 +33,7 @@ public static class NightCourierPanelSmokeTest
     private static void Require(bool ok,string error){if(!ok)throw new Exception(error);}
     private static T Panel<T>(string name)where T:BasePanel{var p=UIManager.Instance.GetPanel(name)as T;Require(p!=null,"Missing panel "+name);return p;}
     private static CourierRoutePanel Planner{get{return Panel<CourierRoutePanel>("CourierRoutePanel");}}
-    private static void Shot(string name){if(!Application.isBatchMode)ScreenCapture.CaptureScreenshot("/tmp/courier-v2-"+name+".png");}
+    private static void Shot(string name){if(SystemInfo.graphicsDeviceType!=UnityEngine.Rendering.GraphicsDeviceType.Null)ScreenCapture.CaptureScreenshot("/tmp/courier-v2-"+name+".png");}
     private static void ClickMapLabel(int node)
     {
         var label=Planner.stopLabels[node].rectTransform;
@@ -74,9 +74,10 @@ public static class NightCourierPanelSmokeTest
                 case 6:Require(owner.HasPlanner&&!Planner.departButton.gameObject.activeSelf&&Planner.stopButtons.All(b=>!b.interactable),"Map actions active in transit");Require(owner.Run.State==ShiftState.Encounter,"Road encounter missing");Shot("event");owner.ResolveEncounter(true);owner.Run.Tick(10000);break;
                 case 7:Require(owner.Run.Node==1&&owner.Run.HasJourney,"Intermediate stop lost journey");owner.ClosePlanner();CourierChecks.Go(owner.Run,3);Require(owner.Run.Parcels[0].State==ParcelState.Delivered,"Tape not delivered to vampire");CourierChecks.Go(owner.Run,2);owner.BeginConversation();owner.ShowPlanner("CourierRoutePanel");break;
                 case 8:Planner.possessButton.onClick.Invoke();Require(owner.Run.VehicleIndex==1,"Bear bicycle UI possession failed");Row("Spring Mead").actionButton.onClick.Invoke();Require(owner.Run.Load==4,"Heavy mead UI loading failed");Shot("mead");owner.ClosePlanner();CourierChecks.Go(owner.Run,5);break;
-                case 9:Require(!owner.Run.Finished,"Bar still triggers lighthouse ending");owner.Run.Elapsed=CourierRun.ShiftMinutes;foreach(int node in new[]{0,1,2,3,4,5}){if(owner.Run.Finished)break;CourierChecks.Go(owner.Run,node);}break;
-                case 10:Require(Panel<CourierResultPanel>("CourierResultPanel").titleText.text=="Together at Dawn","Party result missing");Shot("party");Panel<CourierResultPanel>("CourierResultPanel").restartButton.onClick.Invoke();break;
-                case 11:Require(owner.Run.Node==0&&owner.Run.Load==0&&!owner.Run.Finished,"Restart did not reset delivery shift");SessionState.SetBool(Key,false);Debug.Log("COURIER_UI PASS 12 steps: new map, tape, intermediate route, pause, event, bicycle, heavy mead, party and restart.");EditorApplication.Exit(0);return;
+                case 9:Require(!owner.Run.Finished,"Bar still triggers lighthouse ending");owner.Run.Elapsed=10000;owner.Run.TalkToNpc();Require(!owner.Run.Finished,"Global time still ends game");CourierChecks.CompleteAll(owner.Run);break;
+                case 10:Require(Panel<CourierResultPanel>("CourierResultPanel").titleText.text=="All Orders Delivered!","Party result missing");var result=Panel<CourierResultPanel>("CourierResultPanel");Require(result.summaryText.text.Contains("11.")&&result.summaryText.preferredHeight<=result.summaryText.rectTransform.rect.height,"Order evaluation summary is clipped: preferred="+result.summaryText.preferredHeight+", available="+result.summaryText.rectTransform.rect.height+", count="+owner.Run.Results.Count);Shot("party");break;
+                case 11:Panel<CourierResultPanel>("CourierResultPanel").restartButton.onClick.Invoke();break;
+                case 12:Require(owner.Run.Node==0&&owner.Run.Load==0&&!owner.Run.Finished,"Restart did not reset delivery shift");SessionState.SetBool(Key,false);Debug.Log("COURIER_UI PASS 13 steps: order pickup, turn costs, pause, events, delivery, no global cutoff, all-order evaluations, completion and restart.");EditorApplication.Exit(0);return;
             }
             Debug.Log("COURIER_V2_UI step "+step+" passed");step++;next=EditorApplication.timeSinceStartup+.65;
         }

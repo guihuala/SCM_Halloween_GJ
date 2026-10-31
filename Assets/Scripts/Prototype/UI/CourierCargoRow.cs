@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -24,21 +25,35 @@ namespace NightCourier
         public void Refresh()
         {
             var run=owner.Run;bool loaded=parcel.State==ParcelState.Loaded;
-            nameText.text=parcel.Name;
-            destinationText.text=run.Stops[parcel.Destination].Name;weightText.text=parcel.Weight.ToString();
+            timeText.rectTransform.sizeDelta=new Vector2(96,38);
+            ((RectTransform)timeGroup.transform).sizeDelta=new Vector2(144,32);
+            nameText.resizeTextForBestFit=true;nameText.resizeTextMinSize=22;nameText.resizeTextMaxSize=32;
+            destinationText.resizeTextForBestFit=true;destinationText.resizeTextMinSize=20;destinationText.resizeTextMaxSize=28;
+            nameText.text=string.Join(" + ",run.Batch(parcel).Select(p=>p.Name));
+            destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name;weightText.gameObject.SetActive(false);
+            var oldWeight=transform.Find("WeightIcon");if(oldWeight!=null)oldWeight.gameObject.SetActive(false);
             storyIcon.gameObject.SetActive(parcel.Critical);damagedIcon.gameObject.SetActive(parcel.Damaged);
-            fragileIcon.gameObject.SetActive(parcel.Fragile&&!parcel.Damaged);heavyIcon.gameObject.SetActive(parcel.Heavy&&!parcel.Damaged);dryIcon.gameObject.SetActive(parcel.Dry&&!parcel.Damaged);
-            timeGroup.SetActive(parcel.TimeLimit>0&&!parcel.Damaged);
+            fragileIcon.gameObject.SetActive(parcel.Fragile&&!parcel.Damaged);heavyIcon.gameObject.SetActive(false);dryIcon.gameObject.SetActive(parcel.Dry&&!parcel.Damaged);
+            timeGroup.SetActive(true);
             // Plain parcels need no reserved tag row.
             bool hasTags=parcel.Critical||parcel.Damaged||parcel.Fragile||parcel.Heavy||parcel.Dry||parcel.TimeLimit>0;
             var layout=GetComponent<LayoutElement>();float height=hasTags?132:92;
+            float width=((RectTransform)transform).rect.width;
+            if(width>300)
+            {
+                nameText.rectTransform.sizeDelta=new Vector2(width-100,nameText.rectTransform.sizeDelta.y);
+                destinationText.rectTransform.sizeDelta=new Vector2(width-108,destinationText.rectTransform.sizeDelta.y);
+                weightText.rectTransform.anchoredPosition=new Vector2(width-118,-44);
+                var weightIcon=transform.Find("WeightIcon") as RectTransform;if(weightIcon!=null)weightIcon.anchoredPosition=new Vector2(width-154,-50);
+            }
             if(layout.preferredHeight!=height){layout.preferredHeight=height;layout.minHeight=height;}
             ((RectTransform)actionButton.transform).anchoredPosition=new Vector2(-64,-(height-56)/2);
-            float remaining=parcel.Deadline>0?parcel.Deadline-run.Elapsed:parcel.TimeLimit;
-            timeText.text=Mathf.CeilToInt(Mathf.Max(0,remaining)).ToString();timeHint.message=parcel.Deadline>0?"Time left: "+timeText.text+" min":"Deliver within "+timeText.text+" min of loading";
-            actionButton.gameObject.SetActive(!loaded||!parcel.Critical);actionButton.interactable=run.State==ShiftState.Docked&&(loaded?!parcel.Critical:run.CanLoad(parcel));
-            actionIcon.SetKind(loaded?CourierIconKind.Store:CourierIconKind.Load);
-            actionHint.message=run.State!=ShiftState.Docked?"Cargo can be changed after arrival":loaded?"Store "+parcel.Name+"\nLeave it at "+run.Stops[run.Node].Name+"; collect it here later.":parcel.Heavy&&run.VehicleIndex==0?"Heavy cargo\nPossess the bicycle at Mead Cellar or the old pickup at the radio tower.":run.CanLoad(parcel)?"Load "+parcel.Name+"\nDeliver to "+run.Stops[parcel.Destination].Name+". Click or drag into On Board.":"Trunk full\nStore another parcel or switch to a vehicle with more capacity.";
+            int target=run.TargetTurns(parcel);
+            timeText.text=(loaded?run.OrderTurns:0)+"/"+target;
+            timeHint.message="Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, with a lower evaluation.";
+            actionButton.gameObject.SetActive(!loaded);actionButton.interactable=run.CanLoad(parcel);
+            actionIcon.SetKind(CourierIconKind.Load);
+            actionHint.message=loaded?"Complete this order before accepting another":run.State!=ShiftState.Docked?"Accept orders after arrival":run.ActiveOrder!=null?"Deliver the active order first":parcel.Origin!=run.Node?"Collect this batch at "+run.Stops[parcel.Origin].Name:"Accept the whole batch. Deliver to "+run.Stops[parcel.Destination].Name+". Click or drag into On Board.";
         }
         public void OnBeginDrag(PointerEventData data)
         {

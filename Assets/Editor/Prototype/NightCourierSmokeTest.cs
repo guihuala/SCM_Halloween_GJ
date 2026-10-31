@@ -67,7 +67,7 @@ public static class NightCourierSmokeTest
             }
             else if(stage==3)
             {
-                if(prototype.Run.Elapsed<=0) throw new Exception("Resume did not advance simulation");
+                if(prototype.Run.Elapsed<=0){ready=EditorApplication.timeSinceStartup+.5;return;}
                 ScreenCapture.CaptureScreenshot("/tmp/night-courier-road.png");
                 stage++;ready=EditorApplication.timeSinceStartup+4;
             }

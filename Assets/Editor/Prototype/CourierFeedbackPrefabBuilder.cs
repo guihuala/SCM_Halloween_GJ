@@ -18,7 +18,7 @@ public static class CourierFeedbackPrefabBuilder
         var hint=AssetDatabase.LoadAssetAtPath<CourierHintView>(Folder+"/CourierHint.prefab");
         var effect=AssetDatabase.LoadAssetAtPath<CourierInteractionEffect>(Folder+"/CourierInteractionEffect.prefab");
         var paths=Directory.GetFiles("Assets/Resources/Panel/Courier","*.prefab")
-            .Concat(new[]{"Assets/Prefab/UI/CourierCargoRow.prefab","Assets/Prefab/UI/CourierTutorial.prefab"});
+            .Concat(new[]{"Assets/Prefab/UI/CourierCargoRow.prefab"});
         foreach(var path in paths)
         {
             var root=PrefabUtility.LoadPrefabContents(path);

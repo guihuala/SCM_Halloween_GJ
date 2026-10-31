@@ -20,6 +20,7 @@ namespace NightCourier
         public bool HasPlanner { get { return planner != null; } }
         private CourierPanel planner, forcedPanel;
         private CourierHudPanel hud;
+        private CourierTutorialPanel tutorialPanel;
         private ShiftState lastState;
         private float visualTime;
         private string[] dialogue = new string[0];
@@ -42,6 +43,8 @@ namespace NightCourier
         }
         public void AdvanceDialogue()
         {
+            if(!Active)return;
+            if(ConversationActive&&hud!=null&&hud.CompleteSubtitle())return;
             if (ConversationActive) { dialogueIndex++; if(!ConversationActive)Tutorial.OpenMap(); }
             else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active)DepartTo(Run.PlannedDestination);
         }
@@ -62,7 +65,21 @@ namespace NightCourier
             hud = Open<CourierHudPanel>("CourierHudPanel", UIPanelLayer.Normal);
             lastState = Run.State;
             BeginConversation();
+            SyncTutorialPanel();
             gameObject.AddComponent<CourierSoundscape>().Initialize(this, radioMusic);
+        }
+        private void SyncTutorialPanel()
+        {
+            if(Tutorial.Finished||Run.Finished)
+            {
+                if(tutorialPanel!=null){UIManager.Instance.ClosePanel("CourierTutorialPanel");tutorialPanel=null;}
+                return;
+            }
+            if(tutorialPanel==null&&Active)
+            {
+                tutorialPanel=UIManager.Instance.OpenPanel("CourierTutorialPanel",null,UIPanelLayer.Top) as CourierTutorialPanel;
+                if(tutorialPanel!=null)tutorialPanel.Bind(this);
+            }
         }
         private T Open<T>(string name, UIPanelLayer layer) where T : CourierPanel
         {
@@ -75,13 +92,15 @@ namespace NightCourier
             if(!Active)return;
             Tutorial.Observe(Run);if(!ConversationActive)Tutorial.OpenMap();
             if(planner==null)planner=Open<CourierPanel>("CourierRoutePanel",UIPanelLayer.Bottom);
+            var routePanel=planner as CourierRoutePanel;if(routePanel!=null)routePanel.SetCargoOpen(true);
         }
         // The map is the main play surface, so Esc now goes straight to pause.
         public bool ClosePlanner(){return false;}
         public void ToggleCar()
         {
             if (Run.State != ShiftState.Docked || !Active) return;
-            InCar = !InCar;
+            if(!Run.UseGhost())return;
+            InCar = false;
             if (!InCar) GhostPosition = new Vector2(395, 330);
         }
         public bool PossessParkedVehicle()
@@ -95,11 +114,11 @@ namespace NightCourier
         {
             if(!Run.StartJourney(destination))return false;
             Tutorial.Observe(Run); Tutorial.Leave();
-            InCar=true;ClosePlanner();return true;
+            InCar=!Run.IsGhost;ClosePlanner();return true;
         }
         public bool Depart(Road road)
         {
-            if (!InCar) ToggleCar();
+            // Transport mode is owned by the run, including ghost fallback.
             if (!Run.Depart(road)) return false;
             Tutorial.Observe(Run); Tutorial.Leave();
             ClosePlanner();
@@ -135,6 +154,7 @@ namespace NightCourier
         }
         private void Update()
         {
+            SyncTutorialPanel();
             if (!Active) return;
             visualTime += Time.deltaTime;
             bool moving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
@@ -144,8 +164,9 @@ namespace NightCourier
             if(moving&&Input.GetKeyDown(KeyCode.F)){SkipRide();return;}
             Run.Tick(Time.deltaTime*cruisePlaybackSpeed);
             SyncState();
+            if(Input.GetKeyDown(KeyCode.Tab)){var routePanel=planner as CourierRoutePanel;if(routePanel!=null)routePanel.ToggleCargoDrawer();}
             if (Run.State != ShiftState.Docked) return;
-            if(Input.GetKeyDown(KeyCode.Tab)||Input.GetKeyDown(KeyCode.M))ShowPlanner("CourierRoutePanel");
+            if(Input.GetKeyDown(KeyCode.M))ShowPlanner("CourierRoutePanel");
             if(Input.GetKeyDown(KeyCode.E))
             {
                 if(ConversationActive||Run.HasJourney)AdvanceDialogue();else BeginConversation();
@@ -153,9 +174,10 @@ namespace NightCourier
         }
         private void SyncState()
         {
+            InCar=!Run.IsGhost;
             if (Run.State != lastState)
             {
-                if (Run.State == ShiftState.Docked) { InCar = true; GhostPosition = new Vector2(395, 330); BeginConversation(); }
+                if (Run.State == ShiftState.Docked) { InCar = !Run.IsGhost; GhostPosition = new Vector2(395, 330); BeginConversation(); }
                 if (Run.State == ShiftState.Encounter)
                 { ClosePlanner(); forcedPanel = Open<CourierEventPanel>("CourierEventPanel", UIPanelLayer.Popup); }
                 if (Run.Finished)
@@ -167,6 +189,6 @@ namespace NightCourier
         {
             if (Current == this) Current = null;
         }
-        public static string Minutes(float value) { return Mathf.CeilToInt(Mathf.Max(0, value)) + " min"; }
+        public static string Minutes(float value) { return Mathf.CeilToInt(Mathf.Max(0, value)) + " turns"; }
     }
 }

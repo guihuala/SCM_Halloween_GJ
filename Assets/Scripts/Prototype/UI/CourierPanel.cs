@@ -13,7 +13,6 @@ namespace NightCourier
         private Vector2 windowHome;
         private Tween entrance;
         protected NightCourierPrototype owner;
-        private CourierTutorialView tutorialView;
         protected CourierRun Run { get { return owner.Run; } }
         protected override void Awake()
         {
@@ -28,18 +27,16 @@ namespace NightCourier
             if (owner.UIFont != null)
                 foreach (var text in GetComponentsInChildren<Text>(true)) text.font = owner.UIFont;
             Refresh();
-            tutorialView=GetComponentInChildren<CourierTutorialView>(true);
-            if(tutorialView!=null)tutorialView.Bind(owner,this);
         }
         protected virtual void Update() { if (owner != null) {
             if(pauseButton!=null)pauseButton.gameObject.SetActive(owner.Active&&!Run.Finished&&(!(this is CourierHudPanel)||(!owner.HasPlanner&&Run.State!=ShiftState.Encounter)));
-            Refresh(); if(tutorialView!=null)tutorialView.Refresh(); } }
+            Refresh(); } }
         protected abstract void Refresh();
         protected static void Caption(Button button, string text) { button.GetComponentInChildren<Text>().text = text; }
         public override void OpenPanel(string name)
         {
             base.OpenPanel(name);
-            if(window!=null){entrance?.Kill();window.anchoredPosition=windowHome+new Vector2(0,-18);entrance=window.DOAnchorPos(windowHome,.18f).SetEase(Ease.OutCubic).SetUpdate(true);}
+            if(window!=null&&!(this is CourierRoutePanel)){entrance?.Kill();window.anchoredPosition=windowHome+new Vector2(0,-18);entrance=window.DOAnchorPos(windowHome,.18f).SetEase(Ease.OutCubic).SetUpdate(true);}
             var first = GetComponentInChildren<Button>();
             if (first != null && EventSystem.current != null) EventSystem.current.SetSelectedGameObject(first.gameObject);
         }

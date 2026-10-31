@@ -10,7 +10,6 @@ namespace NightCourier
     {
         public static void Apply(CourierRun run)
         {
-            Apply("Shift",(id,row)=>{if(id==0)run.NightMinutes=Number(row[1],run.NightMinutes,60,1440);});
             Apply("Stops",(id,row)=>{
                 if(id<0||id>=run.Stops.Length)return;var stop=run.Stops[id];
                 stop.Name=row[1];stop.Sign=row[2];stop.Voice=row[3];
@@ -19,7 +18,7 @@ namespace NightCourier
             });
             Apply("Vehicles",(id,row)=>{
                 if(id<0||id>=run.Vehicles.Length)return;var v=run.Vehicles[id];
-                v.Name=row[1];v.Ability=row[2];v.Capacity=Int(row[3],v.Capacity,1,12);v.MaxDurability=Number(row[4],v.MaxDurability,1,200);
+                v.Name=row[1];v.Ability=row[2];v.Capacity=Int(row[3],v.Capacity,1,12);v.MaxDurability=(float)Math.Ceiling(Number(row[4],v.MaxDurability,1,200));
                 v.Speed=Number(row[5],v.Speed,.25f,3);v.Wear=Number(row[6],v.Wear,.1f,3);run.Durabilities[id]=v.MaxDurability;
             });
             Apply("Parcels",(id,row)=>{
@@ -27,12 +26,12 @@ namespace NightCourier
                 p.Name=row[1];p.Weight=Int(row[2],p.Weight,1,4);p.Reward=Int(row[3],p.Reward,0,1000);
                 p.Fragile=row[4]=="1";p.Heavy=row[5]=="1";p.Dry=row[6]=="1";
                 if(row.Count>=10){p.Origin=Int(row[8],p.Origin,0,run.Stops.Length-1);p.Destination=Int(row[9],p.Destination,0,run.Stops.Length-1);}
-                if(!p.Critical)p.TimeLimit=Number(row[7],p.TimeLimit,0,240);
+                p.TimeLimit=(float)Math.Ceiling(Number(row[7],p.TimeLimit,1,240));
             });
             Apply("Events",(id,row)=>{
                 if(id<0||id>=run.Events.Length)return;var e=run.Events[id];
-                e.Title=row[1];e.Description=row[2];e.Safe=row[3];e.Risky=row[4];e.SafeMinutes=Number(row[5],e.SafeMinutes,0,30);
-                e.RiskDamage=Number(row[6],e.RiskDamage,0,100);e.BreakFragile=row[7]=="1";e.WetDry=row[8]=="1";
+                e.Title=row[1];e.Description=row[2];e.Safe=row[3];e.Risky=row[4];e.SafeMinutes=(float)Math.Ceiling(Number(row[5],e.SafeMinutes,0,30));
+                e.RiskDamage=(float)Math.Ceiling(Number(row[6],e.RiskDamage,0,100));e.BreakFragile=row[7]=="1";e.WetDry=row[8]=="1";
             });
         }
         private static void Apply(string name,Action<int,List<string>> apply)

@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  message: Repair - 12 min
+  message: Repair - free
 --- !u!1 &1564382582545793153
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,7 +685,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: Repair - 12 min
+  m_Text: Repair - free
 --- !u!1 &3663289999222469722
 GameObject:
   m_ObjectHideFlags: 0

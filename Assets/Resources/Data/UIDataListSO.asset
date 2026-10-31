@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b60abcc9a1fbf4a239349beb709d1785, type: 3}
   m_Name: UIDataListSO
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   uiDataList:
   - uiName: SettingPanel
     uiPath: Panel/SettingPanel
@@ -31,3 +31,5 @@ MonoBehaviour:
     uiPath: Panel/Courier/CourierEventPanel
   - uiName: CourierResultPanel
     uiPath: Panel/Courier/CourierResultPanel
+  - uiName: CourierTutorialPanel
+    uiPath: Panel/Courier/CourierTutorialPanel
