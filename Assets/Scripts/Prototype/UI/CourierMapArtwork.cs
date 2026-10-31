@@ -9,6 +9,7 @@ namespace NightCourier
     {
         public CourierMapArtCatalog catalog;
         public Image terrainImage;
+        public Image routeImage;
         public RectTransform landmarkLayer;
         public Image[] landmarkImages=new Image[0];
         public Image[] landmarkHitAreas=new Image[0];
@@ -18,6 +19,8 @@ namespace NightCourier
         private CourierRouteGraphic primary;
         private Color originalIdle,originalAdjacent,originalSelected;
         private bool capturedColors;
+        private bool originalDrawRegions;
+        private bool originalBaseRoads,originalBaseNodes;
         private static readonly CourierRun Preview=new CourierRun();
 
         public void Apply(CourierRoutePanel panel,Stop[] stops=null)
@@ -27,12 +30,23 @@ namespace NightCourier
             var map=(RectTransform)transform;
             primary=panel.mapGraphic;
             if(!capturedColors)
-            {originalIdle=primary.idleRoadColor;originalAdjacent=primary.adjacentRoadColor;originalSelected=primary.selectedRoadColor;capturedColors=true;}
+            {originalIdle=primary.idleRoadColor;originalAdjacent=primary.adjacentRoadColor;originalSelected=primary.selectedRoadColor;originalDrawRegions=primary.drawRegions;originalBaseRoads=primary.drawBaseRoads;originalBaseNodes=primary.drawBaseNodes;capturedColors=true;}
             EnsureLayers(panel);
             terrainImage.sprite=catalog!=null?catalog.terrain:null;
             terrainImage.color=catalog!=null?catalog.terrainTint:Color.white;
-            terrainImage.gameObject.SetActive(false); // V2.4 regions/roads are drawn from the live street graph.
-            terrainImage.preserveAspect=false; // Organic terrain stretches; landmarks below preserve their proportions.
+            bool hasTerrain=terrainImage.sprite!=null;
+            terrainImage.gameObject.SetActive(hasTerrain);
+            // Fit the *map canvas*, not the sprite's aspect, so pixels and graph coordinates
+            // share exactly the same letterboxing at every window size.
+            FitMapImage(terrainImage,map.rect.size);
+            routeImage.sprite=catalog!=null?catalog.routeArtwork:null;
+            routeImage.color=Color.white;
+            bool hasRouteArtwork=routeImage.sprite!=null;
+            routeImage.gameObject.SetActive(hasRouteArtwork);
+            FitMapImage(routeImage,map.rect.size);
+            primary.drawBaseRoads=!hasRouteArtwork;
+            primary.drawBaseNodes=!hasRouteArtwork;
+            primary.drawRegions=!hasTerrain;
             primary.drawTravel=false;
             if(catalog!=null)
             {primary.idleRoadColor=CourierColors.Road;primary.adjacentRoadColor=CourierColors.Road;primary.selectedRoadColor=CourierColors.Gold;primary.previewRoadColor=CourierColors.Mint;}
@@ -157,13 +171,13 @@ namespace NightCourier
                 for(int i=0;i<3;i++)
                 {
                     int target=6+i;var rect=CreateRect(landmarkLayer,"StationButton_"+target);
-                    var image=GetOrAdd<Image>(rect.gameObject);image.color=CourierColors.Alpha(CourierColors.Raised,.98f);
+                    var image=GetOrAdd<Image>(rect.gameObject);image.color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.10f);
                     var outline=GetOrAdd<Outline>(rect.gameObject);outline.effectColor=CourierColors.Road;outline.effectDistance=new Vector2(1,-1);
                     var button=GetOrAdd<Button>(rect.gameObject);button.targetGraphic=image;
                     button.onClick.AddListener(()=>panel.Select(target));
                     var hover=GetOrAdd<CourierMapNodeHover>(rect.gameObject);hover.panel=panel;hover.node=target;
                     var textRect=CreateRect(rect,"Label");Stretch(textRect);
-                    var text=GetOrAdd<Text>(textRect.gameObject);text.font=panel.stopLabels[0].font;text.fontSize=22;text.alignment=TextAnchor.MiddleCenter;text.color=CourierColors.Paper;text.raycastTarget=false;
+                    var text=GetOrAdd<Text>(textRect.gameObject);text.font=panel.stopLabels[0].font;text.fontSize=22;text.alignment=TextAnchor.MiddleCenter;text.color=CourierColors.Night;text.raycastTarget=false;
                     stationButtons[i]=button;
                 }
                 var statusRect=CreateRect(transform,"ProtectionStatus");protectionStatus=GetOrAdd<Text>(statusRect.gameObject);
@@ -203,21 +217,24 @@ namespace NightCourier
         {
             if(terrainImage==null)terrainImage=EnsureImage(transform,"TerrainArtwork");
             Stretch(terrainImage.rectTransform);terrainImage.raycastTarget=false;terrainImage.transform.SetAsFirstSibling();
-            panel.mapGraphic.transform.SetSiblingIndex(1);
+            if(routeImage==null)routeImage=EnsureImage(transform,"RouteArtwork");
+            routeImage.raycastTarget=false;routeImage.transform.SetSiblingIndex(1);
+            panel.mapGraphic.transform.SetSiblingIndex(2);
             if(landmarkLayer==null)
             {
                 var old=transform.Find("LandmarkArtwork");
                 landmarkLayer=old!=null?(RectTransform)old:CreateRect(transform,"LandmarkArtwork");
             }
-            Stretch(landmarkLayer);landmarkLayer.SetSiblingIndex(2);
+            Stretch(landmarkLayer);landmarkLayer.SetSiblingIndex(3);
             if(travelOverlay==null)
             {
                 var old=transform.Find("TravelOverlay");
                 var rect=old!=null?(RectTransform)old:CreateRect(transform,"TravelOverlay");
                 travelOverlay=rect.GetComponent<CourierRouteGraphic>()??rect.gameObject.AddComponent<CourierRouteGraphic>();
             }
-            Stretch(travelOverlay.rectTransform);travelOverlay.raycastTarget=false;travelOverlay.transform.SetSiblingIndex(3);
+            Stretch(travelOverlay.rectTransform);travelOverlay.raycastTarget=false;travelOverlay.transform.SetSiblingIndex(4);
             if(travelerIcon==null)travelerIcon=CourierVehicleIconView.Ensure(travelOverlay.transform,"TravelerIcon",Vector2.zero,Vector2.one*Mathf.Max(24,travelerSize));
+            if(travelerIcon.ghostArtwork==null)travelerIcon.ghostArtwork=Resources.Load<Sprite>("NightVoyage/VehicleIcons/Ghost_");
             travelerIcon.artwork.raycastTarget=false;travelerIcon.ghost.raycastTarget=false;
             if(landmarkImages.Length!=panel.stopButtons.Length)landmarkImages=new Image[panel.stopButtons.Length];
             if(landmarkHitAreas.Length!=panel.stopButtons.Length)landmarkHitAreas=new Image[panel.stopButtons.Length];
@@ -245,11 +262,19 @@ namespace NightCourier
         }
         private static void Stretch(RectTransform rect)
         {rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=rect.offsetMax=Vector2.zero;}
+        private static void FitMapImage(Image image,Vector2 size)
+        {
+            var rect=image.rectTransform;
+            rect.anchorMin=rect.anchorMax=rect.pivot=Vector2.one*.5f;
+            rect.anchoredPosition=Vector2.zero;rect.sizeDelta=CourierRouteGraphic.MapBounds(size).size;
+            image.preserveAspect=false;
+        }
         private void OnDisable()
         {
             if(primary!=null)
-            {primary.drawTravel=true;if(capturedColors){primary.idleRoadColor=originalIdle;primary.adjacentRoadColor=originalAdjacent;primary.selectedRoadColor=originalSelected;}primary.SetVerticesDirty();}
+            {primary.drawTravel=true;if(capturedColors){primary.idleRoadColor=originalIdle;primary.adjacentRoadColor=originalAdjacent;primary.selectedRoadColor=originalSelected;primary.drawRegions=originalDrawRegions;primary.drawBaseRoads=originalBaseRoads;primary.drawBaseNodes=originalBaseNodes;}primary.SetVerticesDirty();}
             if(terrainImage!=null)terrainImage.gameObject.SetActive(false);
+            if(routeImage!=null)routeImage.gameObject.SetActive(false);
             if(landmarkLayer!=null)landmarkLayer.gameObject.SetActive(false);
             if(travelOverlay!=null)travelOverlay.gameObject.SetActive(false);
             foreach(var hit in landmarkHitAreas)if(hit!=null)hit.gameObject.SetActive(false);

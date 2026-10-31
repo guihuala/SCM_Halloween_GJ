@@ -115,7 +115,7 @@ namespace NightCourier
             public string Key {get{return Node.Id+":"+Used+":"+Fuel;}}
         }
         // Dijkstra over turn position and remaining vehicle uses, including early station stops.
-        public static List<StreetEdge> FindMovementPath(int from,int to,int speed,int fuel)
+        public static List<StreetEdge> FindMovementPath(int from,int to,int speed,int fuel,Func<StreetEdge,bool,bool> canTraverse=null)
         {
             var start=Nodes.First(n=>n.StopId==from);var goal=Nodes.First(n=>n.StopId==to);
             var initial=new RouteState{Node=start,Fuel=fuel};
@@ -132,6 +132,9 @@ namespace NightCourier
                 foreach(var edge in Edges.Where(e=>e.A==state.Node||e.B==state.Node))
                 {
                     var next=edge.Other(state.Node);if(next.StopId<6&&next!=goal)continue;
+                    // Fuel is consumed when a turn starts; its protection lasts both edges.
+                    bool protectedTurn=state.Fuel>0||state.Used>0;
+                    if(canTraverse!=null&&!canTraverse(edge,protectedTurn))continue;
                     bool newTurn=state.Used==0;
                     int effectiveSpeed=newTurn&&state.Fuel<=0?1:speed;
                     int used=state.Used+1;if(used>=effectiveSpeed||next.StopId<9)used=0;

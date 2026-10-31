@@ -15,7 +15,8 @@ namespace NightCourier
             if (Finished) return;
             CargoLoaded |= System.Linq.Enumerable.Any(run.Parcels, p => p.State == ParcelState.Loaded || p.State == ParcelState.Delivered);
             Departed |= run.State == ShiftState.Driving || run.State == ShiftState.Encounter || run.State == ShiftState.Pushing;
-            Arrived |= run.Node != 0;
+            // Junctions and vehicle stations are waypoints, not the first delivery.
+            Arrived |= run.CompletedBatches > 0;
             if (run.Finished) Finished = true;
         }
         public void OpenMap() { if (Arrived) Finished = true; MapOpened = true; }

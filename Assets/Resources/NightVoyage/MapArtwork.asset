@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   terrain: {fileID: 21300000, guid: db9443ce540a4adf9ce141009acd5f62, type: 3}
   terrainTint: {r: 1, g: 1, b: 1, a: 1}
+  routeArtwork: {fileID: 21300000, guid: 5f52c5db6dce4588906882cb14aa775e, type: 3}
   landmarkHeightFraction: 0.28
   maximumLandmarkSize: 160
   idleRoadColor: {r: 0.49019608, g: 0.59607846, b: 0.5686275, a: 1}
@@ -21,32 +22,32 @@ MonoBehaviour:
   selectedRoadColor: {r: 0.9137255, g: 0.7058824, b: 0.42352942, a: 1}
   landmarks:
   - stopId: 0
-    sprite: {fileID: 21300000, guid: 81899f634a054641a6f64eeb8b7f6500, type: 3}
+    sprite: {fileID: 181821164, guid: 2c3995cd2fa7449d78396e11084e3c1f, type: 3}
     anchor: {x: 0.5, y: 0.15625}
     offset: {x: 0, y: 0}
     scale: 1
   - stopId: 1
-    sprite: {fileID: 21300000, guid: ef4a60a7f31747ecad252068924aaa6c, type: 3}
+    sprite: {fileID: -1995007073, guid: 2c3995cd2fa7449d78396e11084e3c1f, type: 3}
     anchor: {x: 0.5, y: 0.15625}
     offset: {x: 0, y: 0}
     scale: 1
   - stopId: 2
-    sprite: {fileID: 21300000, guid: 3a5dfe916dbe48ef8bbf651716f05aed, type: 3}
+    sprite: {fileID: 87185538, guid: 2c3995cd2fa7449d78396e11084e3c1f, type: 3}
     anchor: {x: 0.5, y: 0.15625}
     offset: {x: 0, y: 0}
     scale: 1
   - stopId: 3
-    sprite: {fileID: 21300000, guid: 8d56a7d1173c47e39e422cfe7be89133, type: 3}
+    sprite: {fileID: -1615489476, guid: 2c3995cd2fa7449d78396e11084e3c1f, type: 3}
     anchor: {x: 0.5, y: 0.15625}
     offset: {x: 0, y: 0}
     scale: 1
   - stopId: 4
-    sprite: {fileID: 21300000, guid: 087420c3ab924cfaae7cd61e69de02f6, type: 3}
+    sprite: {fileID: -79395487, guid: 2c3995cd2fa7449d78396e11084e3c1f, type: 3}
     anchor: {x: 0.5, y: 0.15625}
     offset: {x: 0, y: 0}
     scale: 1
   - stopId: 5
-    sprite: {fileID: 21300000, guid: c536630f995f48268888482b1b635fd2, type: 3}
+    sprite: {fileID: -279391181, guid: 2c3995cd2fa7449d78396e11084e3c1f, type: 3}
     anchor: {x: 0.5, y: 0.15625}
     offset: {x: 0, y: 0}
     scale: 1

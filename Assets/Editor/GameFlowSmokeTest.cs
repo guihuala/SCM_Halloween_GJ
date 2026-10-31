@@ -83,6 +83,8 @@ public static class GameFlowSmokeTest
         if (EditorApplication.timeSinceStartup > deadline) { Finish(false, "Timed out at step " + step); return; }
         if (EditorApplication.timeSinceStartup < next) return;
         if (SceneLoader.Instance == null || SceneLoader.Instance.IsLoading()) return;
+        var menuMotion = UnityEngine.Object.FindObjectOfType<MainMenuMotion>();
+        if (menuMotion != null && menuMotion.IsExiting) return;
         try
         {
             var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Art/Fonts/BarlowCondensed-Light.ttf");

@@ -93,6 +93,7 @@ namespace NightCourier
             foreach(var n in CourierStreetMap.Nodes)foreach(var to in CourierStreetMap.Nodes)
                 if(n!=to)Require(CourierStreetMap.FindPath(n.StopId,to.StopId).Count>0,"Disconnected street node");
             CheckEvents();
+            CheckPlanningAndTutorial();
             r=new CourierRun();r.Node=5;r.LoadParcel(r.Parcels[9]);
             Require(r.Parcels[8].State==ParcelState.Loaded&&!r.LoadParcel(r.Parcels[10])&&!r.Unload(r.Parcels[9]),"Batch exclusivity violated");
             Go(r,3);Require(r.Results.Count==1,"Combined batch not delivered");
@@ -108,6 +109,37 @@ namespace NightCourier
             for(int seed=0;seed<10;seed++)
             {r=new CourierRun(seed);CompleteAll(r);Require(r.Results.Count==11&&r.Delivered==12&&r.CompletedBatches==11,"Not all orders completable as ghost");}
             return assertions+" assertions passed; "+CourierRoadEffectsChecks.RunAll();
+        }
+        private static void CheckPlanningAndTutorial()
+        {
+            var run=new CourierRun();run.Node=2;run.VehicleIndex=0;run.EventProbability=0;
+            Require(run.LoadParcel(run.Parcels[4]),"Cannot load route comparison fixture");
+            var safe=run.FindRoute(5).Single();
+            Require(run.TimeCost(safe)==4&&!safe.StreetPath.Any(e=>e.Surface==StreetSurface.Bumpy),"Safe route ignored fragile cargo");
+            run.PreferSafeRoutes=false;var fast=run.FindRoute(5).Single();
+            Require(run.TimeCost(fast)==3&&fast.StreetPath.Any(e=>e.Surface==StreetSurface.Bumpy),"Fastest route unavailable after switching modes");
+            Require(run.RouteWarnings(new[]{fast}).Contains("Will damage: Spring Mead"),"Cargo-specific warning missing");
+            run.PreferSafeRoutes=true;Go(run,5);
+            Require(!run.Results.Single().Damaged&&!run.Results.Single().Late,"Safe route cannot be followed to a successful delivery");
+
+            // Filtering must use the vehicle for each turn, not its starting protection.
+            foreach(int fuel in new[]{1,2,5})
+            {
+                run=new CourierRun();run.Node=1;run.VehicleIndex=0;run.Durabilities[0]=fuel;run.EventProbability=0;run.LoadParcel(run.Parcels[1]);
+                var route=run.FindRoute(0);string forecast=run.RouteWarnings(route);Go(run,0);
+                Require(forecast.Contains("Will damage:")==run.Results.Single().Damaged,"Forecast disagrees with protection after exhaustion");
+            }
+            run=new CourierRun();run.Node=2;run.VehicleIndex=0;run.EventProbability=0;run.PreferSafeRoutes=false;run.LoadParcel(run.Parcels[4]);Go(run,5);
+            Require(run.Results.Single().OutcomeDetail.Contains("bumps"),"Result lost cargo damage cause");
+
+            var guide=new CourierTutorial();run=new CourierRun();run.EventProbability=0;
+            guide.OpenMap();run.LoadParcel(run.Parcels[0]);guide.ChooseRoute();run.StartJourney(3);guide.Observe(run);run.FastForwardTravel();guide.Observe(run);
+            Require(run.Node!=0&&run.Node!=3&&!guide.Arrived&&guide.Step(run,false)==4,"Waypoint ended first-delivery tutorial");
+            guide.Leave();Require(!guide.Finished,"Continuing at waypoint dismissed tutorial");Go(run,3);guide.Observe(run);
+            Require(guide.Arrived&&guide.Step(run,false)==6,"First delivery did not complete tutorial arrival step");
+            guide.OpenMap();Require(guide.Finished,"Tutorial could not finish after delivery");
+            run=new CourierRun();run.StartJourney(3);run.Tick(4);
+            Require(Math.Abs(run.DisplayProgress-.5f)<.001f,"Continuous travel progress missing");
         }
     }
 }

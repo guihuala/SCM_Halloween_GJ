@@ -29,6 +29,8 @@ public static class CourierMapPageSmokeTest
     private static void CheckLayout(CourierRoutePanel planner,CourierHudPanel hud)
     {
         Canvas.ForceUpdateCanvases();
+        var customGhost=Resources.Load<Sprite>("NightVoyage/VehicleIcons/Ghost_");
+        Require(planner.mapArtwork.travelerIcon.ghostArtwork==customGhost&&customGhost!=null,"Map ghost does not use requested custom art");
         var screen=(RectTransform)planner.transform;
         Require(!planner.mapHeading.gameObject.activeSelf,"Retired map heading remains visible");
         foreach(var name in new[]{"PageHeaderRule","SummaryRule"})Require(!planner.transform.Find("Window/"+name).gameObject.activeSelf,"Retired divider remains visible");

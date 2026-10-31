@@ -81,7 +81,7 @@ public static class CourierPaletteInstaller
     private static void ExportCard()
     {
         var names=new[]{"Night","Panel","Raised","Paper","Muted","Mint","Gold","Heat","Water","Rough","Lavender","Road"};
-        var roles=new[]{"Main background","Dialogs / tooltips","Cards / secondary buttons","Body text / paper artwork","Secondary text","Actions / hover route","Destination / notices","High heat","Water / crossing","Rough road","Character accent","Ordinary roads"};
+        var roles=new[]{"Main background","Dark UI dividers","Dark menu / tracks","Light dialogs / paper / text","Secondary text","Actions / hover route","Destination / notices","High heat","Water / crossing","Rough road","Character accent","Ordinary roads"};
         var colors=new[]{CourierColors.Night,CourierColors.Panel,CourierColors.Raised,CourierColors.Paper,CourierColors.Muted,CourierColors.Mint,CourierColors.Gold,CourierColors.Heat,CourierColors.Water,CourierColors.Rough,CourierColors.Lavender,CourierColors.Road};
         var s=new StringBuilder("<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='690' viewBox='0 0 1200 690'>");
         s.Append("<rect width='1200' height='690' fill='#"+ColorUtility.ToHtmlStringRGB(CourierColors.Night)+"'/><g font-family='sans-serif'><text x='36' y='56' fill='#F1E7D2' font-size='28'>NIGHT COURIER / SHARED PALETTE</text><text x='36' y='88' fill='#B5C3BA' font-size='16'>Hand-drawn paper, quiet night, clear route and interaction colors</text>");

@@ -105,6 +105,8 @@ public static class MainMenuArtInstaller
         var buttonGroup=buttons.GetComponent<CanvasGroup>();if(buttonGroup==null)buttonGroup=buttons.gameObject.AddComponent<CanvasGroup>();
         layers.Add(new MainMenuMotion.Layer{rect=buttons,group=buttonGroup,origin=buttons.anchoredPosition,delay=.4f,interactive=true});
         motion.layers=layers.ToArray();
+        motion.background=board.Find("mainmenu_background").GetComponent<Image>();
+        motion.background.material=AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/UI/Materials/MainMenuAtmosphere.mat");
         EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
     }
 

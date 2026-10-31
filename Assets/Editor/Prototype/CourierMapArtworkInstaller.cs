@@ -48,7 +48,8 @@ public static class CourierMapArtworkSmokeTest
     {
         var art=panel.mapArtwork;var map=(RectTransform)art.transform;map.ForceUpdateRectTransforms();
         Require(art.terrainImage.sprite==art.catalog.terrain&&!art.terrainImage.raycastTarget,"Terrain missing or intercepts input");
-        Require(Vector2.Distance(art.terrainImage.rectTransform.rect.size,map.rect.size)<.1f,"Terrain does not fill map");
+        Require(art.terrainImage.gameObject.activeSelf&&!panel.mapGraphic.drawRegions,"Background not visible or procedural regions cover it");
+        Require(Vector2.Distance(art.terrainImage.rectTransform.rect.size,CourierRouteGraphic.MapBounds(map.rect.size).size)<.1f,"Terrain does not match route canvas");
         Require(panel.mapGraphic.transform.GetSiblingIndex()<art.landmarkLayer.GetSiblingIndex()&&art.landmarkLayer.GetSiblingIndex()<art.travelOverlay.transform.GetSiblingIndex(),"Road/landmark/motion draw order wrong");
         Require(!panel.mapGraphic.drawTravel&&art.travelOverlay.drawTravel&&!art.travelOverlay.drawRoads&&!art.travelOverlay.raycastTarget,"Travel overlay duplicates roads or blocks input");
         for(int i=0;i<6;i++)

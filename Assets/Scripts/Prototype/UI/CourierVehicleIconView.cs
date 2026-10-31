@@ -8,13 +8,14 @@ namespace NightCourier
         public CourierVehicleIconCatalog catalog;
         public Image artwork;
         public CourierIconGraphic ghost;
+        public Sprite ghostArtwork;
         public void SetVehicle(int id)
         {
             if(catalog==null)catalog=Resources.Load<CourierVehicleIconCatalog>("NightVoyage/VehicleIcons");
             if(artwork==null)artwork=GetComponent<Image>();
-            artwork.sprite=catalog!=null?catalog.ForVehicle(id):null;
+            artwork.sprite=id<0?ghostArtwork:catalog!=null?catalog.ForVehicle(id):null;
             artwork.enabled=artwork.sprite!=null;artwork.preserveAspect=true;artwork.raycastTarget=false;
-            if(ghost!=null)ghost.gameObject.SetActive(id<0);
+            if(ghost!=null)ghost.gameObject.SetActive(id<0&&artwork.sprite==null);
         }
         public static CourierVehicleIconView Ensure(Transform parent,string name,Vector2 position,Vector2 size)
         {

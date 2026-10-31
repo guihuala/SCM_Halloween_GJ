@@ -7,6 +7,9 @@ public class TitleUIController : MonoBehaviour
     public Button settingsButton;
     public Button exitButton;
     public Button creditsButton;
+    private bool enteringGame;
+
+    private void OnEnable() => enteringGame = false;
 
     private void Awake()
     {
@@ -19,8 +22,13 @@ public class TitleUIController : MonoBehaviour
 
     public void OnNewGameButtonClicked()
     {
-        if (SceneLoader.Instance == null || SceneLoader.Instance.IsLoading()) return;
-        SceneLoader.Instance.LoadScene(GameScene.Gameplay);
+        if (enteringGame || SceneLoader.Instance == null || SceneLoader.Instance.IsLoading()) return;
+        enteringGame = true;
+        var motion = GetComponent<MainMenuMotion>();
+        if (motion != null && motion.isActiveAndEnabled)
+            motion.BeginExit(() => SceneLoader.Instance.LoadScene(GameScene.Gameplay));
+        else
+            SceneLoader.Instance.LoadScene(GameScene.Gameplay);
     }
 
     public void OnSettingsButtonClicked() => UIManager.Instance.OpenPanel("SettingPanel");

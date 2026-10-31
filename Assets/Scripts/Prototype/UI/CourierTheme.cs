@@ -21,22 +21,23 @@ namespace NightCourier
                 bool paper=IsPaper(image);
                 var button=image.GetComponent<Button>();
                 if(paper)color=CourierColors.Paper;
+                else if(name.StartsWith("StationButton_",StringComparison.Ordinal))color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.10f);
                 else if(button!=null&&(button.name=="back"||button.name=="BackButton"))color=CourierColors.Paper;
-                else if(button!=null)color=IsPrimary(button.name)?CourierColors.Mint:CourierColors.Raised;
+                else if(button!=null)color=IsPrimary(button.name)?CourierColors.Mint:HasPaperAncestor(button.transform)?Color.Lerp(CourierColors.Paper,CourierColors.Muted,.22f):CourierColors.Raised;
                 else if(name=="HandDrawnCloseIcon"||name=="Handle"&&image.GetComponentInParent<Slider>()!=null)color=CourierColors.Night;
                 else if(sprite=="ProgressFill"||name=="Content"&&root.name.StartsWith("LoadingScreen",StringComparison.Ordinal))color=CourierColors.Mint;
                 else if(sprite=="ProgressTrack"||name=="Scrollbar"||name=="Progress")color=CourierColors.Raised;
-                else if(sprite=="Card")color=CourierColors.Raised;
-                else if(sprite=="Dialogue")color=CourierColors.Night;
+                else if(sprite=="Card")color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.08f);
+                else if(sprite=="Dialogue")color=CourierColors.Paper;
                 else if(name=="Window"&&root.name.StartsWith("CourierRoutePanel",StringComparison.Ordinal))color=CourierColors.Night;
-                else if(sprite=="Panel"||name=="ContentPanel"||name=="Dialog"||name=="Window")color=CourierColors.Panel;
+                else if(sprite=="Panel"||name=="ContentPanel"||name=="Dialog"||name=="Window"||name=="CourierHint"||name=="IconTooltip")color=CourierColors.Paper;
                 else if(name=="Bg"||name=="Loading"||image.transform==root.transform)color=CourierColors.Night;
                 else if(name=="SpeakerAccent")continue;
                 else color=Tone(image.color);
-                image.color=CourierColors.Alpha(color,alpha);
+                image.color=CourierColors.Alpha(color,IsLightSurface(image)?1:alpha);
             }
             foreach(var icon in root.GetComponentsInChildren<CourierIconGraphic>(true))
-                icon.color=CourierColors.Alpha(Tone(icon.color),icon.color.a);
+                icon.color=CourierColors.Alpha(HasPaperAncestor(icon.transform)?CourierColors.Night:Tone(icon.color),icon.color.a);
             foreach(var label in root.GetComponentsInChildren<Text>(true))
             {
                 var button=label.GetComponentInParent<Button>();
@@ -68,6 +69,7 @@ namespace NightCourier
             {effect.focusColor=CourierColors.Mint;effect.blockedColor=CourierColors.Gold;}
             foreach(var hud in root.GetComponentsInChildren<CourierHudPanel>(true))hud.ApplyReadingColors();
             foreach(var guide in root.GetComponentsInChildren<CourierTutorialView>(true))guide.ApplyReadingColors();
+            foreach(var hint in root.GetComponentsInChildren<CourierHintView>(true))hint.ApplyReadingStyle();
         }
         private static bool IsPrimary(string name)=>name=="ResumeButton"||name=="ConfirmButton"||name=="DepartButton"||name=="LoadButton"||name=="SafeButton"||name=="NewGame"||name=="AdvanceButton";
         private static bool IsPaper(Image image)
@@ -75,15 +77,21 @@ namespace NightCourier
             string sprite=image.sprite!=null?image.sprite.name:"";
             return sprite.StartsWith("UI_atlas_1_",StringComparison.Ordinal)||sprite=="Credits_panel"||sprite.StartsWith("mainmenu_",StringComparison.Ordinal);
         }
+        private static bool IsLightSurface(Image image)
+        {
+            if(image.name=="Window"&&image.GetComponentInParent<CourierRoutePanel>()!=null)return false;
+            string sprite=image.sprite!=null?image.sprite.name:"";
+            return sprite=="Card"||sprite=="Panel"||sprite=="Dialogue"||image.name=="CourierHint"||image.name=="IconTooltip"||image.name=="ContentPanel"||image.name=="Dialog"||image.name.StartsWith("StationButton_",StringComparison.Ordinal);
+        }
         private static bool IsIllustration(Image image)
         {
             string name=image.name;
-            return name.Contains("Portrait")||name.Contains("VehicleArtwork")||name=="TravelerIcon"||name.Contains("CargoArtwork")||name.StartsWith("Landmark_",StringComparison.Ordinal)||name=="TerrainArtwork";
+            return name.Contains("Portrait")||name.Contains("VehicleArtwork")||name=="TravelerIcon"||name.Contains("CargoArtwork")||name.StartsWith("Landmark_",StringComparison.Ordinal)||name=="TerrainArtwork"||name=="RouteArtwork";
         }
         private static bool HasPaperAncestor(Transform target)
         {
             for(var parent=target.parent;parent!=null;parent=parent.parent)
-            {var image=parent.GetComponent<Image>();if(image!=null&&IsPaper(image))return true;}
+            {var image=parent.GetComponent<Image>();if(image!=null&&(IsPaper(image)||IsLightSurface(image)))return true;}
             return false;
         }
         private static Color Tone(Color old)

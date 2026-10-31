@@ -7,9 +7,7 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private RectMask2D progressMask;
     [SerializeField] private Text progressText;
     [SerializeField, Min(0f)] private float progressAnimationDuration = 0.25f;
-    [SerializeField] private RectTransform courier;
     [SerializeField] private Text statusText;
-    [SerializeField] private bool animateCourier = true;
 
     private void Awake(){NightCourier.CourierTheme.Apply(gameObject);}
 
@@ -51,13 +49,6 @@ public class LoadingScreen : MonoBehaviour
             if (progressMask.padding != padding) progressMask.padding = padding;
         }
         if (progressText != null) progressText.text = $"{displayedProgress * 100:0}%";
-        if (courier != null)
-        {
-            courier.anchoredPosition = new Vector2(Mathf.Lerp(-330f, 330f, displayedProgress),
-                4f + (animateCourier ? Mathf.Sin(Time.unscaledTime * 3f) * 3f : 0f));
-            courier.localRotation = Quaternion.Euler(0f, 0f,
-                animateCourier ? Mathf.Sin(Time.unscaledTime * 3f) * 1.2f : 0f);
-        }
         if (statusText != null)
         {
             string status = displayedProgress >= 1f ? "Your next stop is ready." : "Preparing your next stop...";

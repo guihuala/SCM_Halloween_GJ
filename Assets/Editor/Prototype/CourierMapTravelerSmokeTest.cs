@@ -35,7 +35,7 @@ public static class CourierMapTravelerSmokeTest
         var art=page.mapArtwork;var marker=art.travelerIcon;var graphic=art.travelOverlay;
         Require(marker!=null&&marker.gameObject.activeInHierarchy,"Travel icon not visible");
         Require(!marker.artwork.raycastTarget&&!marker.ghost.raycastTarget,"Travel icon intercepts map input");
-        if(id<0)Require(marker.artwork.sprite==null&&!marker.artwork.enabled&&marker.ghost.gameObject.activeInHierarchy,"Exhausted vehicle did not become a ghost icon");
+        if(id<0)Require(marker.artwork.sprite==marker.ghostArtwork&&marker.artwork.enabled&&!marker.ghost.gameObject.activeSelf,"Exhausted vehicle did not become a ghost icon");
         else Require(marker.artwork.enabled&&marker.artwork.sprite==marker.catalog.ForVehicle(id)&&!marker.ghost.gameObject.activeSelf,"Wrong moving vehicle sprite "+id);
         Require(!graphic.drawTravelDot,"Legacy center dot duplicates moving icon");
         var run=owner.Run;var r=graphic.rectTransform.rect;
@@ -53,7 +53,7 @@ public static class CourierMapTravelerSmokeTest
     {
         var marker=page.mapArtwork.travelerIcon;
         Require(marker.gameObject.activeInHierarchy,"Arrival vehicle marker disappeared");
-        if(id<0)Require(marker.ghost.gameObject.activeInHierarchy,"Arriving ghost marker missing");
+        if(id<0)Require(marker.artwork.sprite==marker.ghostArtwork&&marker.artwork.enabled&&!marker.ghost.gameObject.activeSelf,"Arriving custom ghost marker missing");
         else Require(marker.artwork.sprite==marker.catalog.ForVehicle(id)&&marker.artwork.enabled&&!marker.ghost.gameObject.activeSelf,"Parked marker retained previous vehicle");
         var rect=page.mapGraphic.rectTransform;var point=CourierRouteGraphic.NodePoint(owner.Run.Stops[owner.Run.Node],rect.rect.size);
         var expected=rect.TransformPoint(new Vector3(rect.rect.xMin+point.x,rect.rect.yMax-point.y,0));

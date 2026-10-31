@@ -20,11 +20,21 @@ namespace NightCourier
         }
         public int EdgeTurns(StreetEdge edge){return 1;}
         private readonly Dictionary<string,Road> streetRoutes=new Dictionary<string,Road>();
+        private int CargoRiskMask
+        {
+            get { int mask=0;foreach(var p in Parcels)if(p.State==ParcelState.Loaded&&!p.Damaged)mask|=(p.HeatSensitive?1:0)|(p.Dry?2:0)|(p.Fragile?4:0);return mask; }
+        }
+        private static bool SurfaceDamages(StreetSurface surface,int mask,int vehicle)
+        {return surface==StreetSurface.Heat&&(mask&1)!=0&&vehicle!=0||surface==StreetSurface.Water&&(mask&2)!=0&&vehicle!=1||surface==StreetSurface.Bumpy&&(mask&4)!=0&&vehicle!=2;}
         private Road StreetRoute(int target)
         {
-            string key=Node+":"+target+":"+VehicleIndex+":"+Durability;
+            string key=Node+":"+target+":"+VehicleIndex+":"+Durability+":"+PreferSafeRoutes+":"+CargoRiskMask;
             Road route;if(streetRoutes.TryGetValue(key,out route))return route;
-            var path=CourierStreetMap.FindMovementPath(Node,target,IsGhost?1:(int)Car.Speed,(int)Durability);
+            int mask=CargoRiskMask;
+            var path=PreferSafeRoutes&&mask!=0?CourierStreetMap.FindMovementPath(Node,target,IsGhost?1:(int)Car.Speed,(int)Durability,
+                (edge,protectedTurn)=>!SurfaceDamages(edge.Surface,mask,protectedTurn?VehicleIndex:-1)):null;
+            // Keep all destinations reachable even when cargo cannot be protected.
+            if(path==null||path.Count==0)path=CourierStreetMap.FindMovementPath(Node,target,IsGhost?1:(int)Car.Speed,(int)Durability);
             if(path.Count==0)return null;
             route=new Road(Node,target,path.Count*6,0){StreetPath=path.ToArray()};
             streetRoutes[key]=route;return route;
@@ -57,13 +67,32 @@ namespace NightCourier
         }
         public string RouteWarnings(IEnumerable<Road> route)
         {
-            var edges=route.Where(r=>r.StreetPath!=null).SelectMany(r=>r.StreetPath).ToArray();var warnings=new List<string>();
-            if(edges.Any(e=>e.Surface==StreetSurface.Heat))warnings.Add(HeatShield?"Heat protected this turn":"Heat: H protects heat-sensitive cargo");
-            if(edges.Any(e=>e.Surface==StreetSurface.Water))warnings.Add(Waterproof?"Water protected this turn":"Water: W protects dry cargo");
-            if(edges.Any(e=>e.Surface==StreetSurface.Bumpy))warnings.Add(Suspension?"Bumps protected this turn":"Bumps: Q protects fragile cargo");
-            if(!IsGhost&&route.Any()&&TimeCost(route.First())>Durability)warnings.Add("Vehicle will expire en route; remaining travel as ghost");
-            return string.Join(" · ",warnings);
+            var roads=route.ToArray();var edges=roads.Where(r=>r.StreetPath!=null).SelectMany(r=>r.A==Node?r.StreetPath:r.StreetPath.Reverse()).ToArray();
+            if(edges.Length==0)return "";
+            var warnings=new List<string>();var cargo=Parcels.Where(p=>p.State==ParcelState.Loaded).ToArray();
+            var damage=new HashSet<string>();var node=CourierStreetMap.Nodes.First(n=>n.StopId==Node);
+            int fuel=IsGhost?0:(int)Durability,used=0,turns=0,eventStops=0;bool vehicleTurn=false;
+            foreach(var edge in edges)
+            {
+                if(used==0){vehicleTurn=!IsGhost&&fuel>0;if(vehicleTurn)fuel--;turns++;}
+                foreach(var p in cargo)
+                    if(!p.Damaged&&SurfaceDamages(edge.Surface,(p.HeatSensitive?1:0)|(p.Dry?2:0)|(p.Fragile?4:0),vehicleTurn?VehicleIndex:-1))
+                        damage.Add(p.Name+" ("+SurfaceReason(edge.Surface)+")");
+                node=edge.Other(node);used++;
+                if(used>=(vehicleTurn?(int)Car.Speed:1)||node.StopId<9){used=0;if(DelayEventNodes.Contains(node.Id)||RetreatEventNodes.Contains(node.Id))eventStops++;}
+            }
+            var order=ActiveOrder;
+            warnings.Add(order==null?turns+" travel turns; no order clock":"Estimated order: "+(OrderTurns+turns)+"/"+TargetTurns(order)+" turns"+(node.StopId==order.Destination?" at delivery":" at waypoint"));
+            if(order!=null&&OrderTurns+turns>TargetTurns(order))warnings.Add("Will exceed the order target");
+            if(damage.Count>0)warnings.Add((PreferSafeRoutes?"No intact route available. ":"")+"Will damage: "+string.Join(", ",damage));
+            else if(cargo.Length>0)warnings.Add(cargo.Any(p=>p.Damaged)?"Cargo already damaged; damage cannot be repaired":"Cargo intact on this route");
+            if(!IsGhost&&turns>Durability)warnings.Add("Vehicle expires after "+(int)Durability+" turn(s); then ghost, without protection");
+            if(order!=null&&!OrderEventTriggered&&eventStops>0&&EventProbability>0)warnings.Add("Event risk: "+Math.Round(EventProbability*100)+"% per eligible stop; may add turns");
+            warnings.Add("Estimate excludes random events");
+            return string.Join("\n",warnings);
         }
+        private static string SurfaceReason(StreetSurface surface)
+        {return surface==StreetSurface.Heat?"heat":surface==StreetSurface.Water?"water":"bumps";}
         private StreetEdge[] travelEdges;
         private void ResetStreetTravel()
         {
@@ -77,7 +106,7 @@ namespace NightCourier
             var surface=travelEdges[index].Surface;
             foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded&&!p.Damaged))
                 if(surface==StreetSurface.Heat&&p.HeatSensitive&&!HeatShield||surface==StreetSurface.Water&&p.Dry&&!Waterproof||surface==StreetSurface.Bumpy&&p.Fragile&&!Suspension)
-                {p.Damaged=true;EmitAudio("damage");Log(p.Name+": cargo conditions violated.");}
+                {p.Damaged=true;p.DamageReason=SurfaceReason(surface);EmitAudio("damage");Log(p.Name+": damaged by "+p.DamageReason+".");}
             return 0;
         }
         private void CompleteStreetTurn()

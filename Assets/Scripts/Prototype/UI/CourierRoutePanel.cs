@@ -44,12 +44,34 @@ namespace NightCourier
         public Text nodePromptText;
         [Header("Destination Tooltip")]
         public RectTransform destinationTooltip;
+        public Button routeModeButton;
         [Range(0,1)] public float dialogueMapAlpha=.28f;
         private CanvasGroup mapInteraction;
         private readonly CourierHudMotion drawerMotion = new CourierHudMotion();
         private CourierCargoFeedback cargoFeedback;
         public bool CargoOpen { get; private set; }
         private bool tutorialCargoLoaded;
+        private bool presentationReady;
+        private long presentationStamp;
+        private Vector2 presentationSize;
+        private long PresentationStamp()
+        {
+            unchecked
+            {
+                long value=Run.Node;
+                value=value*31+(int)Run.State;value=value*31+Run.VehicleIndex;value=value*31+(int)Run.Durability;
+                value=value*31+Run.OrderTurns;value=value*31+selected;value=value*31+Run.PlannedDestination;
+                value=value*31+(owner.Active?1:0);value=value*31+(owner.ConversationActive?1:0);
+                value=value*31+(CargoOpen?1:0);value=value*31+(Run.PreferSafeRoutes?1:0);
+                value=value*31+(owner.Tutorial.CargoLoaded?1:0);value=value*31+(owner.Tutorial.Finished?1:0);
+                value=value*31+(Run.OrderEventTriggered?1:0);value=value*31+Run.Results.Count;
+                value=value*31+(mapArtwork!=null&&mapArtwork.isActiveAndEnabled?1:0);
+                value=value*31+Mathf.RoundToInt(((RectTransform)waitingContent).rect.width);
+                value=value*31+Mathf.RoundToInt(((RectTransform)loadedContent).rect.width);
+                foreach(var p in Run.Parcels){value=value*31+(int)p.State;value=value*31+(p.Damaged?1:0);}
+                return value;
+            }
+        }
         public void SetCargoOpen(bool open)
         {
             if(open&&owner!=null&&owner.ConversationActive)return;
@@ -173,9 +195,20 @@ namespace NightCourier
                 var image=destinationTooltip.GetComponent<Image>();
                 if(image==null)image=destinationTooltip.gameObject.AddComponent<Image>();
                 image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Panel");image.type=Image.Type.Sliced;
-                image.color=CourierColors.Alpha(CourierColors.Panel,.98f);image.raycastTarget=true;
+                image.color=CourierColors.Paper;image.raycastTarget=true;
                 foreach(var element in new Transform[]{destinationText.transform,costGroup.transform,riskText.transform,departButton.transform})element.SetParent(destinationTooltip,false);
                 destinationTooltip.gameObject.SetActive(false);
+            }
+            if(routeModeButton==null)
+            {
+                var go=new GameObject("RouteModeButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button));
+                go.transform.SetParent(destinationTooltip,false);routeModeButton=go.GetComponent<Button>();
+                var image=go.GetComponent<Image>();image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Panel");image.type=Image.Type.Sliced;image.color=CourierColors.Mint;
+                routeModeButton.targetGraphic=image;
+                var labelObject=new GameObject("Label",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));labelObject.transform.SetParent(go.transform,false);
+                var label=labelObject.GetComponent<Text>();label.font=destinationText.font;label.fontSize=24;label.alignment=TextAnchor.MiddleCenter;label.color=CourierColors.Night;label.raycastTarget=false;
+                label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;label.rectTransform.offsetMin=new Vector2(8,0);label.rectTransform.offsetMax=new Vector2(-8,0);
+                routeModeButton.onClick.AddListener(()=>{if(owner==null||!owner.Active||owner.ConversationActive||Run.State!=ShiftState.Docked)return;Run.PreferSafeRoutes=!Run.PreferSafeRoutes;Refresh();});
             }
         }
         private void RefreshDestinationTooltip()
@@ -184,7 +217,10 @@ namespace NightCourier
             bool show=selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!CargoOpen;
             destinationTooltip.gameObject.SetActive(show);
             if(!show)return;
-            float width=Mathf.Min(480,map.rect.width-24),height=260;
+            float width=Mathf.Min(600,map.rect.width-24);
+            riskText.fontSize=24;riskText.resizeTextForBestFit=false;
+            riskText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,width-32);
+            float height=Mathf.Min(Mathf.Max(320,232+riskText.preferredHeight),map.rect.height-24);
             var target=selected>=6?mapArtwork.NodeTarget(selected):mapArtwork!=null&&selected<mapArtwork.landmarkImages.Length?mapArtwork.landmarkImages[selected].rectTransform:(RectTransform)stopButtons[selected].transform;
             target.GetWorldCorners(dialogueCorners);
             var lo=map.InverseTransformPoint(dialogueCorners[0]);var hi=map.InverseTransformPoint(dialogueCorners[2]);
@@ -195,11 +231,16 @@ namespace NightCourier
             Place(destinationText.rectTransform,16,12,width-128,72);destinationText.fontSize=30;
             Place((RectTransform)departButton.transform,width-96,16,80,80);ResizeIconButton(departButton,80);
             Place((RectTransform)costGroup.transform,16,100,width-32,48);
+            Place((RectTransform)routeModeButton.transform,16,156,width-32,48);
+            Caption(routeModeButton,Run.PreferSafeRoutes?"Safe route  |  Switch to fastest":"Fastest route  |  Switch to safe");
+            routeModeButton.interactable=owner.Active&&!owner.ConversationActive;
             timeCostText.fontSize=wearCostText.fontSize=28;
             Place(timeCostText.rectTransform,56,0,130,48);Place(wearCostText.rectTransform,256,0,120,48);
             var timeIcon=costGroup.transform.Find("ClockIcon") as RectTransform;var wearIcon=costGroup.transform.Find("WearIcon") as RectTransform;
             if(timeIcon!=null)Place(timeIcon,0,4,40,40);if(wearIcon!=null)Place(wearIcon,200,4,40,40);
-            Place(riskText.rectTransform,16,156,width-32,92);riskText.fontSize=24;
+            Place(riskText.rectTransform,16,216,width-32,Mathf.Max(64,height-232));riskText.fontSize=24;
+            riskText.alignment=TextAnchor.UpperLeft;
+            riskText.resizeTextForBestFit=true;riskText.resizeTextMinSize=18;riskText.resizeTextMaxSize=24;
             destinationTooltip.SetAsLastSibling();
         }
         private void RefreshDialogueFocus()
@@ -296,6 +337,7 @@ namespace NightCourier
         }
         public override void Bind(NightCourierPrototype prototype)
         {
+            presentationReady=false;tutorialCargoLoaded=false;
             mapGraphic.Owner=prototype;dropZone.Owner=prototype;SetCargoOpen(false);
             foreach(var row in rows)Destroy(row.gameObject);rows.Clear();
             foreach(var p in prototype.Run.Parcels){var row=Instantiate(rowPrefab,waitingContent);row.Bind(prototype,p);rows.Add(row);}
@@ -312,8 +354,19 @@ namespace NightCourier
         public void Select(int node){if(!owner.Active||owner.ConversationActive||Run.State!=ShiftState.Docked)return;if(node==Run.Node){owner.BeginConversation();return;}selected=node;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();}
         protected override void Refresh()
         {
-            ApplyFullscreenLayout();
             if(cargoFeedback!=null)cargoFeedback.Observe(reducedPanelMotion);
+            var window=transform.Find("Window") as RectTransform;
+            Vector2 size=window!=null?window.rect.size:((RectTransform)transform).rect.size;
+            long stamp=PresentationStamp();
+            if(presentationReady&&presentationStamp==stamp&&presentationSize==size)
+            {
+                if(Run.State!=ShiftState.Docked&&!Run.Finished&&objectiveText!=null)
+                    objectiveText.text=(Run.State==ShiftState.Encounter?"Road event":"In transit")+" - "+Mathf.RoundToInt(Run.DisplayProgress*100)+"%";
+                if(mapGraphic.drawTravel&&Run.State==ShiftState.Driving)mapGraphic.SetVerticesDirty();
+                return;
+            }
+            presentationReady=true;presentationStamp=stamp;presentationSize=size;
+            ApplyFullscreenLayout();
             bool docked=Run.State==ShiftState.Docked;
             if(objectiveText!=null)objectiveText.text=Run.HasJourney?"Waypoint stop - Destination: "+Run.Stops[Run.PlannedDestination].Name:Run.ObjectiveText;
             route=Run.FindRoute(selected);mapGraphic.SelectedRoute=route;RefreshRoutePreview();
@@ -368,7 +421,7 @@ namespace NightCourier
             departButton.gameObject.SetActive(docked);
             if(!docked&&Run.ActiveRoad!=null)
             {
-                if(objectiveText!=null)objectiveText.text=(Run.State==ShiftState.Encounter?"Road event":Run.IsReturning?"Returning to previous stop":Run.State==ShiftState.Pushing?"Pushing to next stop":"In transit")+" - "+Mathf.RoundToInt(Run.Progress*100)+"%";
+                if(objectiveText!=null)objectiveText.text=(Run.State==ShiftState.Encounter?"Road event":Run.IsReturning?"Returning to previous stop":Run.State==ShiftState.Pushing?"Pushing to next stop":"In transit")+" - "+Mathf.RoundToInt(Run.DisplayProgress*100)+"%";
                 destinationText.text="Next: "+Run.Stops[Run.TravelDestination].Name;
                 costGroup.SetActive(true);timeCostText.text=Run.RemainingTravelTurns+" turns";
                 wearCostText.text="-"+Mathf.Min(Mathf.CeilToInt(Run.Durability),Run.RemainingTravelTurns);riskText.text=(Run.IsGhost?"Ghost transport - ":"")+"F: skip animation to the next event or stop";return;
@@ -383,6 +436,7 @@ namespace NightCourier
             riskText.text=blocked!=""?blocked:warning;
             int at=Run.Node;var stops=new List<string>();foreach(var road in route){at=road.Other(at);stops.Add(Run.Stops[at].Name);}
             departButton.interactable=blocked==""&&!owner.ConversationActive;departHint.message=owner.ConversationActive?"Finish the conversation before departing.":blocked!=""?blocked:"Depart > "+string.Join(" > ",stops)+"\nMove one turn (1 edge as ghost, up to 2 by vehicle). Stops at junctions let you change direction. E continues the route.";
+            RefreshDestinationTooltip();
         }
     }
 }

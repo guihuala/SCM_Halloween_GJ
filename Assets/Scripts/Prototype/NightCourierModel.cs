@@ -46,6 +46,7 @@ namespace NightCourier
         public float Deadline,TimeLimit;
         public int DeliveryTurns;
         public bool DeliveredLate;
+        public string DamageReason;
         public string Evaluation { get { return (DeliveredLate || Damaged ? "Delivery failed" : "Delivered successfully"); } }
         public ParcelState State;
         public Parcel(string name,int origin,int destination,int weight,int reward=0,bool critical=false,bool fragile=false,bool heavy=false,bool dry=false,float timeLimit=0)
@@ -70,6 +71,8 @@ namespace NightCourier
         public int Origin, Destination, Turns, TargetTurns;
         public string Cargo;
         public bool Late, Damaged;
+        public string DamageReason;
+        public string OutcomeDetail { get { return string.Join("; ",new[]{Late?"Late by "+Math.Max(0,Turns-TargetTurns)+" turn(s)":null,Damaged?"Damaged: "+(string.IsNullOrEmpty(DamageReason)?"cargo conditions violated":DamageReason):null}.Where(s=>s!=null).DefaultIfEmpty("On time; cargo intact")); } }
         public string Evaluation { get { return (Late || Damaged ? "Delivery failed" : "Delivered successfully"); } }
     }
     public sealed partial class CourierRun
@@ -150,6 +153,7 @@ namespace NightCourier
         public bool IsGhost { get { return VehicleIndex < 0; } }
         public readonly List<DeliveryResult> Results = new List<DeliveryResult>();
         public int OrderTurns { get; private set; }
+        public bool PreferSafeRoutes = true;
         public int BatchCount { get { return Parcels.GroupBy(p => new { p.Origin, p.Destination }).Count(); } }
         public int CompletedBatches { get { return Parcels.GroupBy(p => new { p.Origin, p.Destination }).Count(g => g.All(p => p.State == ParcelState.Delivered)); } }
         public Parcel ActiveOrder { get { return Parcels.FirstOrDefault(p => p.State == ParcelState.Loaded); } }
@@ -335,7 +339,8 @@ namespace NightCourier
             {
                 var items=Batch(order).ToArray();int target=TargetTurns(order);
                 var result=new DeliveryResult{Origin=order.Origin,Destination=Node,Turns=OrderTurns,TargetTurns=target,
-                    Cargo=string.Join(" + ",items.Select(p=>p.Name)),Late=OrderTurns>target,Damaged=items.Any(p=>p.Damaged)};
+                    Cargo=string.Join(" + ",items.Select(p=>p.Name)),Late=OrderTurns>target,Damaged=items.Any(p=>p.Damaged),
+                    DamageReason=string.Join(", ",items.Where(p=>p.Damaged).Select(p=>p.Name+" ("+(p.DamageReason??"cargo conditions violated")+")"))};
                 foreach(var p in items){p.State=ParcelState.Delivered;p.DeliveryTurns=OrderTurns;p.DeliveredLate=result.Late;Delivered++;Earnings+=p.Reward;}
                 Results.Add(result);Log("Order delivered: "+result.Cargo+". "+OrderTurns+"/"+target+" turns - "+result.Evaluation);
             }

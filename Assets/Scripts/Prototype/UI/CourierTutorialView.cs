@@ -21,6 +21,13 @@ namespace NightCourier
         }
         public void ApplyReadingColors()
         {
+            float rootWidth=((RectTransform)transform).rect.width;
+            float width=Mathf.Min(1440,(rootWidth<100?1920:rootWidth)-64);
+            strip.anchoredPosition=new Vector2(0,-192);strip.sizeDelta=new Vector2(width,152);
+            heading.rectTransform.anchoredPosition=new Vector2(24,-12);heading.rectTransform.sizeDelta=new Vector2(width-200,42);heading.fontSize=30;
+            instruction.rectTransform.anchoredPosition=new Vector2(24,-60);instruction.rectTransform.sizeDelta=new Vector2(width-200,80);instruction.fontSize=28;
+            ((RectTransform)skipButton.transform).anchoredPosition=new Vector2(width-144,-42);((RectTransform)skipButton.transform).sizeDelta=new Vector2(120,68);
+            skipButton.GetComponentInChildren<Text>(true).fontSize=28;
             var background=strip.GetComponent<Image>();
             if(background!=null)background.color=CourierColors.Alpha(Color.Lerp(CourierColors.Paper,CourierColors.Mint,.10f),1);
             heading.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.18f);
@@ -40,11 +47,15 @@ namespace NightCourier
             foreach (var frame in focusFrames) frame.gameObject.SetActive(false);
             if (!visible) return;
             strip.anchoredPosition = new Vector2(0,-192);
-            float width=Mathf.Min(1300,((RectTransform)transform).rect.width-64);
-            strip.sizeDelta=new Vector2(width,104);
-            heading.rectTransform.sizeDelta=new Vector2(width-152,30);
-            instruction.rectTransform.sizeDelta=new Vector2(width-152,60);
-            ((RectTransform)skipButton.transform).anchoredPosition=new Vector2(width-96,-28);
+            float width=Mathf.Min(1440,((RectTransform)transform).rect.width-64);
+            strip.sizeDelta=new Vector2(width,152);
+            heading.rectTransform.anchoredPosition=new Vector2(24,-12);heading.rectTransform.sizeDelta=new Vector2(width-200,42);heading.fontSize=30;
+            instruction.rectTransform.anchoredPosition=new Vector2(24,-60);instruction.rectTransform.sizeDelta=new Vector2(width-200,80);instruction.fontSize=28;
+            ((RectTransform)skipButton.transform).anchoredPosition=new Vector2(width-144,-42);
+            ((RectTransform)skipButton.transform).sizeDelta=new Vector2(120,68);
+            skipButton.GetComponentInChildren<Text>().fontSize=28;
+            var mapPage=UIManager.Instance.GetPanel("CourierRoutePanel") as CourierRoutePanel;
+            if(step>=3&&step<=5&&(mapPage==null||!mapPage.CargoOpen))strip.anchoredPosition=new Vector2(0,-Mathf.Max(192,((RectTransform)transform).rect.height-168));
             skipButton.GetComponentInChildren<Text>().text = step == 6 ? "Done" : "Skip";
             string title, body; RectTransform first = null, second = null;
             var ui=UIManager.Instance;
@@ -74,19 +85,20 @@ namespace NightCourier
                     break;
                 case 3:
                     title = "Choose a destination";
-                    body = "Take the tape to Abandoned TV Tower. You can choose any open stop; orange lines show the full route.";
+                    body = "Take the tape to Abandoned TV Tower. Orange lines show the route. Safe routes avoid cargo damage; switch to Fastest to compare.";
                     if (planner != null) first = planner.stopLabels[3].rectTransform;
                     break;
                 case 4:
                     title = guide.Departed ? "On the road" : "Ready to depart";
-                    body = guide.Departed ? "Moving uses whole order turns and vehicle turns. Press F to skip to the next event or stop; choices remain yours."
+                    body = guide.Departed ? (run.State==ShiftState.Docked ? "This is a waypoint, not your delivery stop. Press E or Continue to follow the route to Abandoned TV Tower. You can also change direction here." : "Moving uses whole order turns and vehicle turns. Press F to skip to the next event or stop; choices remain yours.")
                         : "Check the turn costs, then press the green arrow. Exhausted vehicles switch to ghost transport.";
                     if (!guide.Departed && planner != null) first = (RectTransform)planner.departButton.transform;
+                    else if (run.State==ShiftState.Docked&&planner!=null) first=planner.nodePromptButton.transform as RectTransform;
                     break;
                 case 5:
                     title = run.State == ShiftState.Encounter ? "A road event" : "Almost there";
-                    body = run.State == ShiftState.Encounter ? "Events make you wait one turn, take a detour, or return to the previous stop. Read the outcome, then confirm to continue."
-                        : "Keep going. Parcels for the next stop will be delivered automatically when you arrive.";
+                    body = run.State == ShiftState.Encounter ? "Events make you wait one turn or fall back one node. Read the outcome, then confirm to continue."
+                        : "Continue toward Abandoned TV Tower with E at each waypoint. Delivery happens automatically at the recipient.";
                     if (encounter != null) { first = (RectTransform)encounter.safeButton.transform; }
                     break;
                 default:

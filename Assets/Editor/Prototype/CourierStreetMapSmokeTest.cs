@@ -60,7 +60,7 @@ public static class CourierStreetMapSmokeTest
             if(step==1)
             {
                 Require(page.stopButtons.Length==6&&owner.Run.Parcels.Count==10,"Stable customer/order bindings changed");
-                Require(!page.mapArtwork.terrainImage.gameObject.activeSelf,"Old terrain still visible");
+                Require(page.mapArtwork.terrainImage.gameObject.activeSelf&&!page.mapGraphic.drawRegions,"Background missing or covered by procedural regions");
                 Require(page.mapArtwork.landmarkLayer.Find("StreetLabel_1a")!=null&&page.mapArtwork.landmarkLayer.Find("StreetLabel_6b")!=null,"Dual entrance labels missing");
                 Canvas.ForceUpdateCanvases();
                 var hit=page.mapArtwork.landmarkHitAreas[3].rectTransform;

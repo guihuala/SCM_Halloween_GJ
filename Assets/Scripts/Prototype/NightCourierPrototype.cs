@@ -32,7 +32,13 @@ namespace NightCourier
         {
             get
             {
-                if (ConversationActive && (Run.State == ShiftState.Docked || Run.Finished)) return dialogue[dialogueIndex];
+                if (ConversationActive && (Run.State == ShiftState.Docked || Run.Finished))
+                {
+                    // The speaker is shown separately in the dialogue header.
+                    var line = dialogue[dialogueIndex];
+                    int colon = line.IndexOf(':');
+                    return colon > 0 ? line.Substring(colon + 1).TrimStart() : line;
+                }
                 if (Run.State == ShiftState.Docked) return Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":(Run.Node>=6?Run.StationDescription(Run.Node):"Click this stop or press E to talk."));
                 if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
                 if (Run.State == ShiftState.Driving && Run.IsReturning) return "Returning to " + Run.Stops[Run.TravelDestination].Name;
@@ -151,6 +157,8 @@ namespace NightCourier
             ClosePlanner(); CloseForced();
             Run = new CourierRun(System.Environment.TickCount);
             CourierContentOverrides.Apply(Run);
+            Tutorial = new CourierTutorial();
+            if(tutorialPanel!=null)tutorialPanel.Bind(this);
             InCar = true; GhostPosition = new Vector2(395, 330); lastState = Run.State;
             DriveBlend=RoadMotionTime=PossessionGlow=0;
             if (hud != null) hud.Bind(this);

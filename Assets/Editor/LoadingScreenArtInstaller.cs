@@ -66,7 +66,6 @@ public static class LoadingScreenArtInstaller
             Art("Parcel", horizon, "NightVoyage/HUD/Box", new Vector2(-402,-42), new Vector2(45,45), Cream);
             for(int n=0;n<19;n++)
                 Art("RoadDash"+n, horizon, "NightVoyage/HUD/ProgressFill", new Vector2(-350+n*38,-76), new Vector2(19,4), new Color(.35f,.51f,.49f));
-            var truck = Art("Courier", horizon, "NightVoyage/VehicleIcons/old_pickup", new Vector2(-330,4), new Vector2(215,215), Color.white).rectTransform;
             Art("GhostCompanion", art, "NightVoyage/HUD/Ghost", new Vector2(-265,124), new Vector2(38,45), new Color(.45f,.65f,.62f,.65f));
             var progress = loading.Find("Progress").GetComponent<RectTransform>();
             Place(progress, new Vector2(0,-220), new Vector2(820,30));
@@ -84,7 +83,6 @@ public static class LoadingScreenArtInstaller
             Label("Tip", art, "Pick up a batch at its sender. Deliver it together at the next stop.", new Vector2(0,-353), new Vector2(1120,44), 27, new Color(.68f,.77f,.73f));
             Label("Footer", art, "HANDLE WITH CARE  /  EVEN AFTER DARK", new Vector2(0,-443), new Vector2(1000,30), 19, new Color(.39f,.56f,.54f));
             var data = new SerializedObject(root.GetComponent<LoadingScreen>());
-            data.FindProperty("courier").objectReferenceValue=truck;
             data.FindProperty("statusText").objectReferenceValue=status;
             data.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(root,Path);

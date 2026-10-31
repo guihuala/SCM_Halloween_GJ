@@ -19,8 +19,14 @@ namespace NightCourier
     [CreateAssetMenu(menuName="Night Courier/Map Art Catalog")]
     public sealed class CourierMapArtCatalog : ScriptableObject
     {
+        [Header("Background artwork (1200 x 820 canvas, or 2400 x 1640)")]
+        [Tooltip("Replace this sprite to change the map background. Draw terrain/decorations only; roads, nodes, landmarks and the ghost are separate live layers. Use the Export Map Art Guide menu for alignment.")]
         public Sprite terrain;
+        [Tooltip("White preserves the original artwork colors.")]
         public Color terrainTint=Color.white;
+        [Header("Hand-drawn routes (same full canvas as the background)")]
+        [Tooltip("Optional transparent PNG containing base roads and node dots. Selected/hover routes, events and the traveler remain dynamic. Clear this field to restore procedural base roads.")]
+        public Sprite routeArtwork;
         [Range(.1f,.4f)] public float landmarkHeightFraction=.28f;
         [Min(32)] public float maximumLandmarkSize=160;
         public Color idleRoadColor=new Color(.40f,.51f,.48f);

@@ -19,6 +19,7 @@ namespace NightCourier
         private readonly CourierHudMotion motion = new CourierHudMotion();
         private bool progressReady;
         private int progressLeg = -1;
+        private Road progressRoad;
         private void Show(GameObject target, bool visible, Vector2 offset) { motion.Present(target, visible, offset, reducedMotion); }
         public void ApplyReadableLayout()
         {
@@ -68,12 +69,14 @@ namespace NightCourier
             if(portraitFrame!=null){if(show)portraitFrame.color=character.accent;}
             if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
-            if(bar!=null){bar.anchoredPosition=new Vector2(0,-810);bar.sizeDelta=new Vector2(1800,190);}
-            subtitleText.rectTransform.anchoredPosition=new Vector2(416,-867);
-            subtitleText.rectTransform.sizeDelta=new Vector2(1224,110);
-            subtitleText.fontSize=30;
+            if(bar!=null){bar.anchoredPosition=new Vector2(-20,-740);bar.sizeDelta=new Vector2(1840,260);}
+            subtitleText.rectTransform.anchoredPosition=new Vector2(show?416:48,-808);
+            subtitleText.rectTransform.sizeDelta=new Vector2(show?1224:1580,176);
+            subtitleText.fontSize=36;
             var advanceRect=(RectTransform)advanceButton.transform;
-            advanceRect.anchoredPosition=new Vector2(advanceRect.anchoredPosition.x,-873);
+            advanceRect.anchoredPosition=new Vector2(advanceRect.anchoredPosition.x,-840);advanceRect.sizeDelta=Vector2.one*96;
+            var advanceIcon=advanceButton.GetComponentInChildren<CourierIconGraphic>(true);if(advanceIcon!=null)advanceIcon.rectTransform.sizeDelta=Vector2.one*60;
+            if(speakerName!=null){speakerName.rectTransform.anchoredPosition=new Vector2(show?416:48,-752);speakerName.rectTransform.sizeDelta=new Vector2(show?1224:1580,48);speakerName.fontSize=36;}
             var slide = new Vector2(0, -48);
             if(bar!=null)Show(bar.gameObject,talking,slide);
             Show(subtitleText.gameObject,talking,slide);
@@ -123,10 +126,11 @@ namespace NightCourier
             if(pauseButton!=null)Show(pauseButton.gameObject,owner.Active&&!Run.Finished&&!owner.HasPlanner&&Run.State!=ShiftState.Encounter,new Vector2(0,32));
             timeText.text=Run.ActiveOrder==null?"No active order":"Order "+Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder)+" turns";
             // A new journey starts at its own progress rather than draining the previous bar.
-            if(!progressReady||!travelling||progressLeg!=Run.PlannedDestination||reducedMotion)
-                progressFill.fillAmount=Run.Progress;
-            else progressFill.fillAmount=Mathf.Lerp(progressFill.fillAmount,Run.Progress,1-Mathf.Exp(-12*Time.unscaledDeltaTime));
+            if(!progressReady||!travelling||progressLeg!=Run.PlannedDestination||progressRoad!=Run.ActiveRoad||reducedMotion)
+                progressFill.fillAmount=Run.DisplayProgress;
+            else progressFill.fillAmount=Mathf.Lerp(progressFill.fillAmount,Run.DisplayProgress,1-Mathf.Exp(-12*Time.unscaledDeltaTime));
             progressReady=travelling;progressLeg=Run.PlannedDestination;
+            progressRoad=Run.ActiveRoad;
             PresentSubtitle();
             advanceButton.GetComponent<CourierIconHint>().message=owner.ConversationActive?"Continue dialogue - E":"Continue to "+(Run.HasJourney?Run.Stops[Run.PlannedDestination].Name:"")+" · E";
         }
