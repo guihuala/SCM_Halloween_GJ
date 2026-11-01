@@ -194,10 +194,10 @@ namespace NightCourier
             var end=CourierStreetMap.Nodes.First(n=>n.StopId==destination);
             bool delay=DelayEventNodes.Contains(end.Id);
             bool retreat=RetreatEventNodes.Contains(end.Id);
-            if(orders.Length>0&&orders.All(p=>!p.EventTriggered)&&!ActiveOrders.Any(p=>p.Destination==destination)&&(delay||retreat)&&random.NextDouble()<EventProbability)
+            if(orders.Length>0&&orders.All(p=>!p.EventTriggered)&&!ActiveOrders.Any(p=>p.Destination==destination)&&(delay||retreat)&&NextEventRoll()<EventProbability)
             {
                 var pool=Events.Select((e,i)=>new {e,i}).Where(x=>x.e.Effect==(delay?RoadEventEffect.Wait:RoadEventEffect.Retreat)).ToArray();
-                if(pool.Length>0){EncounterIndex=pool[random.Next(pool.Length)].i;foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded))p.EventTriggered=true;State=ShiftState.Encounter;EmitAudio(Events[EncounterIndex].SoundCue);return;}
+                if(pool.Length>0){EncounterIndex=pool[(int)(NextEventRoll()*pool.Length)].i;foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded))p.EventTriggered=true;State=ShiftState.Encounter;EmitAudio(Events[EncounterIndex].SoundCue);return;}
             }
             CompleteStreetTurn();
         }

@@ -249,7 +249,7 @@ namespace NightCourier
         public bool StartJourney(int target)
         {
             if(State!=ShiftState.Docked||DestinationBlockReason(target)!="")return false;
-            var route=FindRoute(target);PlannedDestination=target;return BeginLeg(MovementLeg(route[0]));
+            var route=FindRoute(target);RememberMovement();PlannedDestination=target;return BeginLeg(MovementLeg(route[0]));
         }
         public bool ContinueJourney(){return HasJourney&&StartJourney(PlannedDestination);}
         public bool CanLoad(Parcel p)
@@ -291,7 +291,7 @@ namespace NightCourier
         public bool Depart(Road r)
         {
             if(State!=ShiftState.Docked||RoadBlockReason(r)!="")return false;
-            PlannedDestination=r.Other(Node);return BeginLeg(MovementLeg(r));
+            RememberMovement();PlannedDestination=r.Other(Node);return BeginLeg(MovementLeg(r));
         }
         private bool BeginLeg(Road r)
         {

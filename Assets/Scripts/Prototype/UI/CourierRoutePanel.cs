@@ -70,6 +70,7 @@ namespace NightCourier
         private bool tutorialCargoLoaded;
         private bool presentationReady;
         private Button informationButton;
+        public Button UndoButton { get; private set; }
         private Text activeRecipientLabel;
         private long presentationStamp;
         private Vector2 presentationSize;
@@ -85,6 +86,7 @@ namespace NightCourier
                 value=value*31+(owner.GuideOpen?1:0);value=value*31+(CargoOpen?1:0);value=value*31+(Run.PreferSafeRoutes?1:0);
                 value=value*31+(owner.Tutorial.CargoLoaded?1:0);value=value*31+(owner.Tutorial.Finished?1:0);
                 value=value*31+(Run.OrderEventTriggered?1:0);value=value*31+Run.Results.Count;
+                value=value*31+Run.UndoMovementCount;
                 value=value*31+(mapArtwork!=null&&mapArtwork.isActiveAndEnabled?1:0);
                 value=value*31+Mathf.RoundToInt(((RectTransform)waitingContent).rect.width);
                 value=value*31+Mathf.RoundToInt(((RectTransform)loadedContent).rect.width);
@@ -209,7 +211,7 @@ namespace NightCourier
                 SizeElement("DurabilityFillBackground",224,48,140,12);SizeElement("DurabilityFill",224,48,140,12);
                 Place(durabilityText.rectTransform,384,24,96,56);durabilityText.fontSize=32;
                 SizeElement("LoadIcon",512,28,48,48);Place(loadText.rectTransform,576,24,180,56);loadText.fontSize=32;
-                SizeElement("PossessButton",32,104,80,64);SizeElement("RepairButton",128,104,80,64);
+                SizeElement("PossessButton",32,104,320,80);SizeElement("RepairButton",368,112,80,64);
                 foreach(var button in new[]{possessButton,repairButton}){var label=button.GetComponentInChildren<Text>(true);if(label!=null)label.fontSize=28;}
                 if(cargoToggleButton!=null){Place((RectTransform)cargoToggleButton.transform,size.x-332,24,172,76);cargoToggleText.fontSize=32;}
                 if(pauseButton!=null)ResizeIconButton(pauseButton,84);
@@ -298,6 +300,7 @@ namespace NightCourier
                 !line.Contains("Estimate excludes random events")).ToArray();
             // Protection loss must be visible before the individual cargo consequences.
             details.InsertRange(1,extra.Where(line=>line.Contains("Vehicle expires")));
+            if(warnings.Contains("No intact route available."))details.Insert(1,"No intact route available. ");
             details.AddRange(extra.Where(line=>!line.Contains("Vehicle expires")));
             string detailSource=string.Join("\n",details);
             PrepareRouteDetails();
@@ -308,8 +311,9 @@ namespace NightCourier
             riskText.verticalOverflow=VerticalWrapMode.Overflow;
             riskText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,width-56);
             float contentHeight=Mathf.Ceil(riskText.preferredHeight)+8;
-            float height=Mathf.Min(220+contentHeight,page.rect.height-136);
+            float height=Mathf.Min(220+contentHeight,Mathf.Min(560,page.rect.height-136));
             float detailHeight=Mathf.Max(28,height-220);
+            if(contentHeight>detailHeight+1)detailHeight=Mathf.Max(28,detailHeight-24);
             var target=selected>=6?mapArtwork.NodeTarget(selected):mapArtwork!=null&&selected<mapArtwork.landmarkImages.Length?mapArtwork.landmarkImages[selected].rectTransform:(RectTransform)stopButtons[selected].transform;
             target.GetWorldCorners(dialogueCorners);
             var lo=page.InverseTransformPoint(dialogueCorners[0]);var hi=page.InverseTransformPoint(dialogueCorners[2]);
@@ -337,8 +341,8 @@ namespace NightCourier
             riskText.rectTransform.sizeDelta=new Vector2(width-56,contentHeight);
             if(changed){routeDetailsScroll.StopMovement();riskText.rectTransform.anchoredPosition=Vector2.zero;}
             routeDetailsScroll.vertical=contentHeight>detailHeight+1;
-            var scrollHint=MetricLabel("RouteScrollHint","Scroll for details",24,height-91,CourierColors.Night);
-            scrollHint.fontSize=16;scrollHint.gameObject.SetActive(routeDetailsScroll.vertical);
+            var scrollHint=MetricLabel("RouteScrollHint","Scroll for details",24,height-94,CourierColors.Night);
+            scrollHint.fontSize=16;scrollHint.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,20);scrollHint.gameObject.SetActive(routeDetailsScroll.vertical);
             var oldSummary=destinationTooltip.Find("RouteSummary");if(oldSummary!=null)oldSummary.gameObject.SetActive(false);
             MetricLabel("TravelLabel","TURNS",72,120,Color.Lerp(CourierColors.Night,CourierColors.Mint,.32f));
             MetricLabel("WearLabel","WEAR",width*.5f+52,120,wearCostText.color).gameObject.SetActive(!Run.IsGhost);
@@ -407,6 +411,7 @@ namespace NightCourier
             if(!visible)return;
             bool pickup=docked&&Run.Parcels.Any(p=>Run.CanLoad(p));
             bool pending=docked&&Run.Story!=null&&Run.Story.HasPending(Run);
+            if(docked&&Run.Stops[Run.Node].Vehicle>=0&&!pending){nodePromptButton.gameObject.SetActive(false);return;}
             if(!docked||(!pickup&&!pending&&!Run.HasJourney)){nodePromptButton.gameObject.SetActive(false);return;}
             // An explicitly opened route card already contains the departure action.
             if(!pickup&&!pending&&routeDetailsRequested&&selected>=0&&selected!=Run.Node){nodePromptButton.gameObject.SetActive(false);return;}
@@ -427,6 +432,7 @@ namespace NightCourier
         }
         private void RefreshKeyInformation()
         {
+            RefreshUndoButton();
             if(informationButton==null)
             {
                 var go=new GameObject("InformationButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button),typeof(ButtonAudioFeedback));
@@ -457,6 +463,32 @@ namespace NightCourier
                 var symbol=loadIcon.GetComponent<CourierIconGraphic>();if(symbol!=null)symbol.SetKind(active?CourierIconKind.Clock:CourierIconKind.Box);
                 CourierSymbolUI.Hint(loadIcon,active?CourierInformation.Order(Run,order):"No active order · visit a sender and accept a batch in Orders (Tab)");
             }
+        }
+        private void RefreshUndoButton()
+        {
+            if(UndoButton==null)
+            {
+                var go=new GameObject("UndoMovementButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button),typeof(ButtonAudioFeedback));
+                go.transform.SetParent(page,false);UndoButton=go.GetComponent<Button>();
+                var image=go.GetComponent<Image>();image.color=Color.clear;UndoButton.targetGraphic=image;
+                UndoButton.onClick.AddListener(()=>owner.UndoMovement());
+                var labelObject=new GameObject("Label",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));
+                labelObject.transform.SetParent(go.transform,false);
+                var label=labelObject.GetComponent<Text>();label.font=CourierTypography.Body;label.fontSize=20;
+                label.alignment=TextAnchor.MiddleCenter;label.raycastTarget=false;
+                Place(label.rectTransform,0,44,96,32);
+            }
+            Place((RectTransform)UndoButton.transform,pageSize.x-548,24,96,76);
+            UndoButton.interactable=owner.CanUndoMovement;
+            string description=Run.CanUndoMovement?"Undo last move · Z\nRestore position, turns, vehicle and cargo to before departure. Actions after departure are also undone.":"No move to undo yet";
+            var ink=UndoButton.interactable?CourierColors.Mint:CourierColors.Muted;
+            var icon=CourierSymbolUI.Icon(UndoButton.transform,"UndoArrow",CourierIconKind.Arrow,30,4,36,ink);
+            icon.rectTransform.pivot=Vector2.one*.5f;icon.rectTransform.anchoredPosition=new Vector2(48,-24);
+            icon.rectTransform.localRotation=Quaternion.Euler(0,0,180);icon.raycastTarget=false;
+            var text=UndoButton.GetComponentInChildren<Text>();text.color=ink;
+            CourierLocalization.Set(text,"Undo · Z");
+            CourierSymbolUI.Hint(UndoButton.transform,description);
+            UndoButton.GetComponent<CourierIconHint>().showOnClick=false;
         }
         protected override void Awake()
         {
@@ -586,7 +618,19 @@ namespace NightCourier
             CourierSymbolUI.Hint(loadText.transform,Run.ActiveOrder==null?"No active order":CourierInformation.Order(Run,Run.ActiveOrder));loadText.raycastTarget=true;
             var emptyLoaded=CourierSymbolUI.Icon(loadedSection,"EmptySymbol",CourierIconKind.Box,12,72,48,CourierColors.Muted,"No active order");emptyLoaded.gameObject.SetActive(loadedCount==0);
             var emptyWaiting=CourierSymbolUI.Icon(waitingSection,"EmptySymbol",CourierIconKind.Check,12,72,48,CourierColors.Muted,"All orders collected");emptyWaiting.gameObject.SetActive(waiting==0);
-            if(parked){parkedVehicleArtwork.gameObject.SetActive(false);CourierSymbolUI.Button(possessButton,v==0?CourierIconKind.Heat:v==1?CourierIconKind.Dry:CourierIconKind.Fragile,CourierInformation.Station(Run,Run.Node));}
+            if(parked)
+            {
+                parkedVehicleArtwork.gameObject.SetActive(false);
+                CourierSymbolUI.Button(possessButton,v==0?CourierIconKind.Heat:v==1?CourierIconKind.Dry:CourierIconKind.Fragile,CourierInformation.Station(Run,Run.Node));
+                var symbol=possessButton.transform.Find("ActionSymbol") as RectTransform;
+                symbol.anchoredPosition=new Vector2(-128,0);symbol.GetComponent<CourierIconGraphic>().color=CourierColors.Night;
+                var backing=possessButton.targetGraphic as Image;if(backing!=null)backing.color=CourierColors.Mint;
+                var label=possessButton.GetComponentInChildren<Text>(true);
+                label.enabled=true;label.color=CourierColors.Night;label.fontSize=24;label.alignment=TextAnchor.MiddleCenter;
+                label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;
+                label.rectTransform.offsetMin=new Vector2(60,4);label.rectTransform.offsetMax=new Vector2(-8,-4);
+                CourierLocalization.Set(label,"Swap vehicle  [E]\n+1 order turn · 5 vehicle turns");
+            }
             CourierSymbolUI.Button(repairButton,CourierIconKind.Wrench,"Repair vehicle");
             bool controls=parked||repair;
             if(objectiveText!=null)

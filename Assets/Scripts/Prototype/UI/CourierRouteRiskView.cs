@@ -64,7 +64,7 @@ namespace NightCourier
                         var paper = badge.transform.parent.GetComponent<Image>();
                         paper.color = danger ? Color.Lerp(CourierColors.Paper,CourierColors.Gold,.45f) : selected ? Color.Lerp(CourierColors.Paper,CourierColors.Mint,.25f) : CourierColors.Paper;
                         var label = badge.transform.parent.GetComponentInChildren<Text>();
-                        CourierLocalization.Set(label,CourierRun.SurfaceLabel(edge.Surface));
+                        CourierLocalization.SetFormatted(label,CourierRun.SurfaceLabel(edge.Surface),source=>CourierLocalization.T(source).Replace("路段",""));
                         badge.color = label.color = CourierColors.Night;
                         var hint = badge.transform.parent.GetComponent<CourierIconHint>();
                         hint.message = CourierRun.SurfaceLabel(edge.Surface) + "\n" + CourierRun.SurfaceRule(edge.Surface);

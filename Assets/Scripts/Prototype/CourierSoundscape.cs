@@ -79,6 +79,11 @@ namespace NightCourier
             if(clip==null)Debug.LogWarning("Missing courier ambience: "+name);
             return clip;
         }
+        public void ClearQueuedCues()
+        {
+            pending.Clear();nextCue=0;
+            if(cues!=null)cues.Stop();
+        }
         // Deterministic model signals are drained once, including an entire skipped turn.
         private void LateUpdate()
         {

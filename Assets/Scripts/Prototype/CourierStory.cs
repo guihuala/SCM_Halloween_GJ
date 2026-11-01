@@ -49,6 +49,12 @@ namespace NightCourier
             return false; // Send scenes are consumed only by a successful pickup.
         }
         public bool WasPlayed(string id) { return played.Contains(id); }
+        internal string[] CaptureProgress() { return played.ToArray(); }
+        internal void RestoreProgress(string[] progress)
+        {
+            played.Clear();
+            foreach (var id in progress) played.Add(id);
+        }
         public string[] ReadPickup(CourierRun run, Parcel parcel)
         {
             var ids=run.Pickup(parcel).Select(p=>run.Parcels.IndexOf(p)).ToArray();

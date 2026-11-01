@@ -108,7 +108,7 @@ namespace NightCourier
             }
             for(int seed=0;seed<10;seed++)
             {r=new CourierRun(seed);CompleteAll(r);Require(r.Results.Count==8&&r.Delivered==9&&r.CompletedBatches==8,"Not all orders completable as ghost");}
-            return assertions+" assertions passed; "+CourierRoadEffectsChecks.RunAll();
+            return assertions+" assertions passed; "+CourierRoadEffectsChecks.RunAll()+"; "+CourierMovementUndoChecks.RunAll();
         }
         private static void CheckPlanningAndTutorial()
         {

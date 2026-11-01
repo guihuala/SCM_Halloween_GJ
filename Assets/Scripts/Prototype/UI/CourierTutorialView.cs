@@ -201,7 +201,7 @@ namespace NightCourier
             float footerY=(row+gap)*3+4;
             GuideLabel(content,"ControlsHeading",margin,footerY,width-margin*2,32,24,"QUICK CONTROLS",true);
             GuideLabel(content,"Controls",margin,footerY+38,width-margin*2,64,24,
-                "<b>WASD / arrows</b>  Move     <b>E</b>  Collect / continue     <b>F</b>  Skip travel     <b>Esc</b>  Pause\nHover map and cargo icons for details.");
+                "<b>WASD / arrows</b>  Move     <b>E</b>  Collect / continue     <b>F</b>  Skip travel     <b>Esc</b>  Pause\n<b>Z</b>  Undo last move. Hover map and cargo icons for details.");
         }
         private RectTransform GuideRect(Transform parent,string name,float x,float y,float width,float height)
         {

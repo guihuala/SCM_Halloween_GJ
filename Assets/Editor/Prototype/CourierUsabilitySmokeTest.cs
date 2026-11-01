@@ -65,7 +65,7 @@ public static class CourierUsabilitySmokeTest
                     Check(Math.Abs(page.cargoDrawer.anchoredPosition.y+184)<2,"Orders drifted off screen");
                     Check(page.cargoDrawer.rect.height>page.cargoDrawer.rect.width*.8f,"Orders still too flat");
                     foreach(var label in page.stopLabels)Check(label.preferredHeight<=label.rectTransform.rect.height+.5f,"Map name clipped: "+label.text);
-                    foreach(var station in page.mapArtwork.stationButtons){var label=station.GetComponentInChildren<Text>();Check(!label.enabled&&station.transform.Find("ActionSymbol")!=null&&station.GetComponent<CourierIconHint>()!=null,"Station symbol or explanation missing");}
+                    foreach(var station in page.mapArtwork.stationButtons){var label=station.GetComponentInChildren<Text>();Check(label.enabled&&station.transform.Find("ActionSymbol")!=null&&station.GetComponent<CourierIconHint>()!=null,"Station symbol or explanation missing");}
                     Check(!page.objectiveText.enabled&&!page.vehicleText.enabled,"Redundant HUD text still shown");
                     Check(page.cargoToggleText.text=="0/11"&&page.cargoToggleButton.transform.Find("ActionSymbol")!=null,"Orders icon/counter missing");
                     Check(!page.cargoCloseButton.GetComponentInChildren<Text>().enabled,"Close label still shown");
@@ -105,7 +105,7 @@ public static class CourierUsabilitySmokeTest
                 case 10:
                     page.Select(3);break;
                 case 11:
-                    Check(page.destinationTooltip.gameObject.activeSelf&&!page.riskText.enabled,"Route preview should use risk symbol");
+                    Check(page.destinationTooltip.gameObject.activeSelf&&page.riskText.enabled&&page.riskText.text.Length>0,"Route preview should show road conditions directly");
                     bool wasSafe=run.PreferSafeRoutes;page.routeModeButton.onClick.Invoke();Check(run.PreferSafeRoutes!=wasSafe,"Route symbol does not switch mode");
                     ScreenCapture.CaptureScreenshot("ArtPreviews/usability-route-symbols.png");break;
                 case 12:

@@ -52,10 +52,10 @@ public static class CourierTravelStatusSmokeTest
                     page.Select(2);
                     break;
                 case 1:
-                    Require(page.destinationTooltip.gameObject.activeInHierarchy && page.destinationTooltip.rect.height <= 220,
+                    Require(page.destinationTooltip.gameObject.activeInHierarchy && page.destinationTooltip.rect.height <= ((RectTransform)page.destinationTooltip.parent).rect.height-136,
                         "Explicit route preview is missing or still oversized");
                     Require(page.destinationTooltip.GetComponent<CanvasGroup>().alpha > .99f, "Route preview is still transparent");
-                    Require(!page.wearCostText.gameObject.activeSelf && !page.destinationTooltip.Find("RouteSummary").gameObject.activeSelf &&
+                    Require(!page.wearCostText.gameObject.activeSelf && page.riskText.enabled &&
                         !page.destinationTooltip.Find("RouteWarningSymbol").gameObject.activeSelf, "Empty ghost route repeats wear/cost text or shows a false warning");
                     Capture("/private/tmp/courier-route-card-clean.png", 1280, 720);
                     Require(owner.Run.StartJourney(2), "Cannot start journey");
@@ -112,8 +112,8 @@ public static class CourierTravelStatusSmokeTest
                     page.Select(2);
                     break;
                 case 8:
-                    Require(page.destinationTooltip.gameObject.activeInHierarchy && page.destinationTooltip.rect.height == 280 &&
-                        page.destinationTooltip.Find("RouteSummary").gameObject.activeSelf &&
+                    Require(page.destinationTooltip.gameObject.activeInHierarchy && page.destinationTooltip.rect.height <= ((RectTransform)page.destinationTooltip.parent).rect.height-136 &&
+                        page.riskText.enabled &&
                         page.destinationTooltip.Find("RouteWarningSymbol").gameObject.activeSelf && page.wearCostText.gameObject.activeSelf,
                         "Compact route card removed meaningful risk or vehicle-wear information");
                     Require(owner.Run.StartJourney(2),"Cannot start loaded control fixture");

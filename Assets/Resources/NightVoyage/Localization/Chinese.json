@@ -1,6 +1,42 @@
 {
   "entries": [
     {
+      "en": "Swap vehicle  [E]\n+1 order turn · 5 vehicle turns",
+      "zhHans": "换载具  [E]\n订单 +1 回合 · 载具可用 5 回合",
+      "zhHant": "換載具  [E]\n訂單 +1 回合 · 載具可用 5 回合",
+      "fragment": false
+    },
+    {
+      "en": "Swap · E",
+      "zhHans": "换车 · E",
+      "zhHant": "換車 · E",
+      "fragment": false
+    },
+    {
+      "en": "Undo · Z",
+      "zhHans": "撤回 · Z",
+      "zhHant": "撤回 · Z",
+      "fragment": false
+    },
+    {
+      "en": "Undo last move · Z\nRestore position, turns, vehicle and cargo to before departure. Actions after departure are also undone.",
+      "zhHans": "撤回上一步 · Z\n恢复出发前的位置、回合、车辆和货物。出发后的接单、交付等操作也会一起撤回。",
+      "zhHant": "撤回上一步 · Z\n恢復出發前的位置、回合、車輛和貨物。出發後的接單、交付等操作也會一起撤回。",
+      "fragment": false
+    },
+    {
+      "en": "No move to undo yet",
+      "zhHans": "暂时没有可以撤回的移动",
+      "zhHant": "暫時沒有可以撤回的移動",
+      "fragment": false
+    },
+    {
+      "en": "Z: undo last move, including actions since departure.",
+      "zhHans": "Z：撤回上一步，包括出发后的操作。",
+      "zhHant": "Z：撤回上一步，包括出發後的操作。",
+      "fragment": true
+    },
+    {
       "en": "Audio Settings",
       "zhHans": "设置",
       "zhHant": "設定",
@@ -739,9 +775,9 @@
       "fragment": true
     },
     {
-      "en": "WASD/arrows: move. E: collect/continue. F: skip travel. Esc: pause. Hover icons for details.",
-      "zhHans": "WASD / 方向键：移动。E：取件 / 继续。F：跳过行驶。Esc：暂停。悬停图标可看详情。",
-      "zhHant": "WASD / 方向鍵：移動。E：取件 / 繼續。F：跳過行駛。Esc：暫停。懸停圖標可看詳情。",
+      "en": "WASD/arrows: move. E: collect/continue. F: skip travel. Z: undo last move, including actions since departure. Esc: pause. Hover icons for details.",
+      "zhHans": "WASD / 方向键：移动。E：取件 / 继续。F：跳过行驶。Z：撤回上一步，包括出发后的操作。Esc：暂停。悬停图标可看详情。",
+      "zhHant": "WASD / 方向鍵：移動。E：取件 / 繼續。F：跳過行駛。Z：撤回上一步，包括出發後的操作。Esc：暫停。懸停圖標可看詳情。",
       "fragment": true
     },
     {
@@ -3385,9 +3421,9 @@
       "fragment": false
     },
     {
-      "en": "<b>WASD / arrows</b>  Move     <b>E</b>  Collect / continue     <b>F</b>  Skip travel     <b>Esc</b>  Pause\nHover map and cargo icons for details.",
-      "zhHans": "<b>WASD / 方向键</b>  移动     <b>E</b>  取件 / 继续     <b>F</b>  跳过行驶     <b>Esc</b>  暂停\n悬停地图与货物图标，可查看详情。",
-      "zhHant": "<b>WASD / 方向鍵</b>  移動     <b>E</b>  取件 / 繼續     <b>F</b>  跳過行駛     <b>Esc</b>  暫停\n懸停地圖與貨物圖標，可查看詳情。",
+      "en": "<b>WASD / arrows</b>  Move     <b>E</b>  Collect / continue     <b>F</b>  Skip travel     <b>Esc</b>  Pause\n<b>Z</b>  Undo last move. Hover map and cargo icons for details.",
+      "zhHans": "<b>WASD / 方向键</b>  移动     <b>E</b>  取件 / 继续     <b>F</b>  跳过行驶     <b>Esc</b>  暂停\n<b>Z</b>  撤回上一步。悬停地图与货物图标，可查看详情。",
+      "zhHant": "<b>WASD / 方向鍵</b>  移動     <b>E</b>  取件 / 繼續     <b>F</b>  跳過行駛     <b>Esc</b>  暫停\n<b>Z</b>  撤回上一步。懸停地圖與貨物圖標，可查看詳情。",
       "fragment": false
     },
     {

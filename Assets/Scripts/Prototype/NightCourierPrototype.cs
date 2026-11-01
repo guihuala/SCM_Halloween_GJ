@@ -51,6 +51,7 @@ namespace NightCourier
         {
             if(!Active||ConversationActive||GuideOpen||Run.State!=ShiftState.Docked)return;
             if(Run.Story!=null&&Run.Story.HasPending(Run)){BeginConversation();return;}
+            if(Run.Stops[Run.Node].Vehicle>=0){PossessParkedVehicle();return;}
             if(System.Linq.Enumerable.Any(Run.Parcels,p=>Run.CanLoad(p))){ShowPlanner("CourierRoutePanel");return;}
             if(Run.HasJourney)AdvanceDialogue();
         }
@@ -180,6 +181,21 @@ namespace NightCourier
             if(!Active||!Run.FastForwardTravel())return false;
             SyncState();return true;
         }
+        public bool CanUndoMovement => Active && !GuideOpen && Run.CanUndoMovement;
+        public bool UndoMovement()
+        {
+            if(!CanUndoMovement||!Run.UndoMovement())return false;
+            CloseForced();
+            dialogue=new string[0];dialogueIndex=0;dialogueNode=-1;
+            openingConversationPending=false;
+            InCar=!Run.IsGhost;GhostPosition=new Vector2(395,330);lastState=Run.State;
+            DriveBlend=RoadMotionTime=PossessionGlow=0;
+            var soundscape=GetComponent<CourierSoundscape>();if(soundscape!=null)soundscape.ClearQueuedCues();
+            if(planner!=null)planner.Bind(this);
+            if(hud!=null)hud.Bind(this);
+            SyncTutorialPanel();
+            return true;
+        }
         public void ResolveEncounter(bool safe)
         {
             if(Run.State==ShiftState.Encounter) Tutorial.ResolveEvent();
@@ -213,6 +229,7 @@ namespace NightCourier
             if (!Active || GuideOpen) return;
             // Retry once gameplay and its entrance transition are ready.
             BeginOpeningConversation();
+            if(Input.GetKeyDown(KeyCode.Z)){UndoMovement();return;}
             visualTime += Time.deltaTime;
             bool moving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
             DriveBlend=Mathf.MoveTowards(DriveBlend,moving?1:0,Time.deltaTime*3);
