@@ -167,7 +167,7 @@ public static class CourierFullFlowRecording
             if(Owner.Run.State==ShiftState.Encounter)
             {
                 var eventPanel=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
-                Check(eventPanel!=null&&(eventPanel.illustration==null||!eventPanel.illustration.gameObject.activeInHierarchy),"Event image should be absent");
+                Check(eventPanel!=null&&(eventPanel.illustration!=null&&eventPanel.illustration.gameObject.activeInHierarchy&&eventPanel.illustration.sprite!=null),"Event silhouette missing");
                 File.AppendAllText(Path.Combine(output,"natural-events.txt"),Owner.Run.EncounterTitle+"\n");
                 yield return Wait(1.2f);Click(eventPanel.safeButton);yield return Wait(.2f);
             }
@@ -303,7 +303,7 @@ public static class CourierFullFlowRecording
             Check(Owner.Depart(run.Roads[0]),"Branch departure failed");yield return Wait(.35f);Owner.SkipRide();
             Check(run.State==ShiftState.Encounter,"Forced event not reached");run.EncounterIndex=eventIndex;yield return Wait(.4f);
             var panel=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
-            Check(panel!=null&&(panel.illustration==null||!panel.illustration.gameObject.activeInHierarchy),"Event image should be absent");
+            Check(panel!=null&&(panel.illustration!=null&&panel.illustration.gameObject.activeInHierarchy&&panel.illustration.sprite!=null),"Event silhouette missing");
             Check(panel.descriptionText.preferredHeight<=panel.descriptionText.rectTransform.rect.height+.5f,"Event text clipped "+eventIndex);
             int turns=run.OrderTurns;float fuel=run.Durability;yield return Wait(1.1f);Click(panel.safeButton);yield return Wait(.3f);
             Check(run.State==ShiftState.Docked&&run.OrderTurns==turns+(delay?1:0)&&run.Durability==fuel,"Wrong event cost");

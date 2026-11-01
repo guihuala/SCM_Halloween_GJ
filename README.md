@@ -89,7 +89,7 @@
 ## 音画资源
 
 - 主菜单：`Assets/Art/Sprite/UI/Mainmenu/`。
-- 事件页面：纯文字纵向布局，不显示插图或占位块；标题、正文和底部事件影响统一左对齐。左右内边距 40px，标题 40 号、正文 28 号、事件影响 26 号，弹窗高度随文字调整。已移除不再使用的旧事件占位插图。
+- 事件页面：标题独占上方，主体采用左侧大幅手绘剪影、右侧事件正文，底部为事件影响和确认按钮；弹窗高度随文字调整。图集为 `Assets/Resources/NightVoyage/EventArtwork/event_silhouettes_atlas.png`，1536×1024透明PNG，3列×2行，每格512×512。上排：糖果小鬼、骷髅狗、帽子蝙蝠；下排：花车、蒸汽、风雾。替换同尺寸PNG并保留 `.meta` 即可更新，`Events.csv` 的 `illustration` 列对应 `event_00`～`event_05`。
 - HUD手绘素材：`Assets/Resources/NightVoyage/HUD/`；保留 `.meta` 可直接替换同名素材。
 - 音效：`Assets/Resources/Audio/Courier/`；新增事件短音效位于 `Events/`，配置与替换方法见 [音效说明](Assets/Audio/README.md)。
 - 音乐与既有录音署名见 `Assets/Resources/Audio/Courier/AudioCredits.txt`、`Assets/StreamingAssets/AudioCredits.txt` 和 `Assets/Audio/Licenses/`，发布时保留。
@@ -152,7 +152,7 @@ Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels 
 | Brewing Cellar | Spring Mead | The Tavern |
 | Abandoned TV Tower | Spicy Blood Stew（夜宵） | Foggy Woods |
 | The Tavern | Moisture Absorber | Museum Ruins |
-| The Tavern | Supply Care Package（Cooling Repair Kit + Livestock Blood） | Abandoned TV Tower |
+| The Tavern | Supply Care Package（Radiator + Livestock Blood） | Abandoned TV Tower |
 
 Museum Ruins 没有寄件任务。旧 Flower Cakes、杂货、独立 Late-night Snack 任务已停用，不显示、不计入通关。蜂蜜与花酱在待领取列表合并显示，接取后在 On board 分为两个目的地；领取同时启动两件物品各自的计时，到站只交付对应物品并播放对应收件对白。
 

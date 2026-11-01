@@ -89,7 +89,7 @@ namespace NightCourier
         private static bool IsIllustration(Image image)
         {
             string name=image.name;
-            return name.Contains("Portrait")||name.Contains("VehicleArtwork")||name=="TravelerIcon"||name.Contains("CargoArtwork")||name.StartsWith("Landmark_",StringComparison.Ordinal)||name=="TerrainArtwork"||name=="RouteArtwork";
+            return name=="EventIllustration"||name.Contains("Portrait")||name.Contains("VehicleArtwork")||name=="TravelerIcon"||name.Contains("CargoArtwork")||name.StartsWith("Landmark_",StringComparison.Ordinal)||name=="TerrainArtwork"||name=="RouteArtwork";
         }
         private static bool HasPaperAncestor(Transform target)
         {

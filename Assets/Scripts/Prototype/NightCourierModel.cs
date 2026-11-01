@@ -190,15 +190,15 @@ namespace NightCourier
             Stops[6].Vehicle=0;Stops[7].Vehicle=1;Stops[8].Vehicle=2;
             int[] limits={7,10,7,13,10,7,10,7,8,8};
             for(int i=0;i<Parcels.Count;i++){var p=Parcels[i];p.TimeLimit=limits[i];p.Heavy=false;p.Dry=i==0||i==6||i==7;p.HeatSensitive=i==1||i==3||i==8||i==9;}
-            Parcels[0].Name="Cassette Tape";Parcels[2].Name="Ashpine Autumn Honey";Parcels[3].Name="Flower Jam";Parcels[7].Name="Moisture Absorber";Parcels[8].Name="Cooling Repair Kit";
+            Parcels[0].Name="Cassette Tape";Parcels[2].Name="Ashpine Autumn Honey";Parcels[3].Name="Flower Jam";Parcels[7].Name="Moisture Absorber";Parcels[8].Name="Radiator";
             Parcels.Add(new Parcel("Desiccant, Labels and Sundries",5,2,1,timeLimit:9));
             Parcels.Add(new Parcel("Late-night Snack",5,1,1,timeLimit:8));
             // Retain legacy IDs for artwork and story references; these three are not tasks in the source flow.
             foreach(int id in new[]{6,10,11}){Parcels[id].Enabled=false;Parcels[id].State=ParcelState.Unavailable;}
             Parcels[2].PickupGroup=Parcels[3].PickupGroup=2;
             Parcels[8].PickupGroup=Parcels[9].PickupGroup=8;
-            foreach(int id in new[]{3,5,8,9,10})Events[id].Illustration="weather";
-            Events[6].Illustration="weather";
+            string[] eventArt={"event_00","event_01","event_00","event_02","event_03","event_04","event_05","event_00","event_05","event_05","event_04","event_03"};
+            for(int i=0;i<Events.Length;i++)Events[i].Illustration=eventArt[i];
             Log("Halloween Eve. Choose an order at its sender and plan your route.");
         }
         public Vehicle Car {get{return IsGhost?ghost:Vehicles[VehicleIndex];}}

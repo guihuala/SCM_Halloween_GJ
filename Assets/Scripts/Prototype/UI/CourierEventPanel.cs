@@ -9,15 +9,19 @@ namespace NightCourier
         public CourierIconGraphic fragileRisk,dryRisk;
         public Image illustration;
         private Text impactText;
+        private Sprite[] eventArtwork;
         protected override void Awake()
         {
             base.Awake();safeButton.onClick.AddListener(()=>owner.ResolveEncounter(true));riskButton.onClick.AddListener(()=>owner.ResolveEncounter(false));
-            // Keep compatibility with older prefabs without reserving an art slot.
-            if(illustration!=null)
+            eventArtwork=Resources.LoadAll<Sprite>("NightVoyage/EventArtwork/event_silhouettes_atlas");
+            if(illustration==null)
             {
-                illustration.sprite=null;illustration.overrideSprite=null;
-                illustration.gameObject.SetActive(false);
+                var art=new GameObject("EventIllustration",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));
+                art.transform.SetParent(descriptionText.transform.parent,false);
+                illustration=art.GetComponent<Image>();
             }
+            illustration.raycastTarget=false;illustration.preserveAspect=true;
+            illustration.color=Color.white;illustration.overrideSprite=null;
             impactText=Instantiate(descriptionText,descriptionText.transform.parent);
             impactText.name="EventImpactText";impactText.raycastTarget=false;
         }
@@ -29,17 +33,28 @@ namespace NightCourier
         protected override void Refresh()
         {
             var e=Run.Events[Run.EncounterIndex];NightCourier.CourierLocalization.Set(titleText, e.Title);
-            // Text flows vertically on one shared alignment, with no reserved art space.
-            Place(titleText.rectTransform,40,32,800,56);
+            Sprite artwork=null;
+            if(eventArtwork!=null)foreach(var sprite in eventArtwork)if(sprite.name==e.Illustration){artwork=sprite;break;}
+            illustration.sprite=artwork;illustration.gameObject.SetActive(artwork!=null);
+            // Give the illustration a full body column, balanced against the story text.
+            float titleWidth=800;
+            Place(titleText.rectTransform,40,32,titleWidth,56);
             titleText.fontSize=40;titleText.alignment=TextAnchor.UpperLeft;
             titleText.color=CourierColors.Night;
-            Place(descriptionText.rectTransform,40,112,800,64);
+            float titleHeight=Mathf.Max(56,Mathf.Ceil(titleText.preferredHeight/8)*8);
+            titleText.rectTransform.sizeDelta=new Vector2(titleWidth,titleHeight);
+            float bodyY=Mathf.Max(112,32+titleHeight+24);
+            float textX=artwork!=null?304:40;
+            float textWidth=artwork!=null?536:800;
+            Place(descriptionText.rectTransform,textX,bodyY,textWidth,64);
             descriptionText.fontSize=28;descriptionText.alignment=TextAnchor.UpperLeft;
             descriptionText.lineSpacing=1.12f;descriptionText.color=CourierColors.Night;
             NightCourier.CourierLocalization.Set(descriptionText, e.Description);
             float contentHeight=Mathf.Max(64,Mathf.Ceil(descriptionText.preferredHeight/8)*8);
-            descriptionText.rectTransform.sizeDelta=new Vector2(800,contentHeight);
-            float buttonY=112+contentHeight+44;
+            float bodyHeight=Mathf.Max(artwork!=null?232:64,contentHeight);
+            Place(descriptionText.rectTransform,textX,bodyY+(bodyHeight-contentHeight)*.5f,textWidth,contentHeight);
+            Place(illustration.rectTransform,40,bodyY+(bodyHeight-232)*.5f,232,232);
+            float buttonY=bodyY+bodyHeight+24;
             impactText.font=CourierTypography.Body;impactText.fontSize=26;
             impactText.alignment=TextAnchor.MiddleLeft;impactText.lineSpacing=1.1f;
             impactText.color=Color.Lerp(CourierColors.Night,CourierColors.Paper,.22f);

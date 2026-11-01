@@ -907,9 +907,9 @@
       "fragment": true
     },
     {
-      "en": "Cooling Repair Kit",
-      "zhHans": "散热维修包",
-      "zhHant": "散熱維修包",
+      "en": "Radiator",
+      "zhHans": "散热器",
+      "zhHant": "散熱器",
       "fragment": true
     },
     {
@@ -1831,9 +1831,9 @@
       "fragment": false
     },
     {
-      "en": "\"And here's the cooling repair kit for Miss Vampire. I truly cannot picture such an elegant lady rolling up her sleeves to fix heavy machinery... Plus some fresh livestock blood—tell her to enjoy her meal.\"",
-      "zhHans": "这些是给Vampire女士的维修装置，我无法想象她这样的优雅鬼士是如何维修那些大型机械的；还有这些禽畜血，祝她吃得开心",
-      "zhHant": "這些是給Vampire女士的維修裝置，我無法想象她這樣的優雅鬼士是如何維修那些大型機械的；還有這些禽畜血，祝她吃得開心",
+      "en": "\"And here's the radiator for Miss Vampire. I truly cannot picture such an elegant lady rolling up her sleeves to fix heavy machinery... Plus some fresh livestock blood—tell her to enjoy her meal.\"",
+      "zhHans": "这是给Vampire女士的散热器，我无法想象她这样的优雅鬼士是如何维修那些大型机械的；还有这些禽畜血，祝她吃得开心",
+      "zhHant": "這是給Vampire女士的散熱器，我無法想象她這樣的優雅鬼士是如何維修那些大型機械的；還有這些禽畜血，祝她吃得開心",
       "fragment": false
     },
     {
@@ -3211,9 +3211,9 @@
       "fragment": false
     },
     {
-      "en": "\"And here's the cooling repair kit for Miss Vampire.\"",
-      "zhHans": "这些是给Vampire女士的维修装置。",
-      "zhHant": "這些是給Vampire女士的維修裝置。",
+      "en": "\"And here's the radiator for Miss Vampire.\"",
+      "zhHans": "这是给Vampire女士的散热器。",
+      "zhHant": "這是給Vampire女士的散熱器。",
       "fragment": false
     },
     {

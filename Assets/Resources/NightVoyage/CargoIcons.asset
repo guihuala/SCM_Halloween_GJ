@@ -38,8 +38,8 @@ MonoBehaviour:
     displayName: moisture_repellent
     sprite: {fileID: 21300000, guid: 85400b2198e143bf98940ecda4943fee, type: 3}
   - parcelId: 8
-    displayName: repair_equipment
-    sprite: {fileID: 21300000, guid: b1f83305981a4ebd8ae31c1bc9962cc8, type: 3}
+    displayName: Heat_Dissipation_Device_
+    sprite: {fileID: 21300000, guid: 24463988c85b24b8e813ca96f0a1f4fd, type: 3}
   - parcelId: 9
     displayName: livestock_blood
     sprite: {fileID: 21300000, guid: 5d5cfc3276164693bcbdf0e426bec6bd, type: 3}

@@ -82,11 +82,14 @@ public static class CourierV24RulesSmokeTest
                     Check(run.State==ShiftState.Encounter,"Event panel not reached");run.EncounterIndex=0;break;
                 case 4:
                     var panel=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
-                    Check(panel!=null&&(panel.illustration==null||!panel.illustration.gameObject.activeInHierarchy),"Event image should be absent");
+                    Check(panel!=null&&(panel.illustration!=null&&panel.illustration.gameObject.activeInHierarchy&&panel.illustration.sprite!=null),"Event silhouette missing");
                     int previousEvent=run.EncounterIndex;
                     for(int i=0;i<run.Events.Length;i++)
                     {
                         run.EncounterIndex=i;panel.Bind(owner);
+                        Check(panel.illustration.sprite!=null&&panel.illustration.sprite.name==run.Events[i].Illustration,"Wrong event silhouette: "+i);
+                        Check(panel.illustration.preserveAspect&&!panel.illustration.raycastTarget,"Event silhouette stretches or blocks clicks");
+                        Check(panel.descriptionText.rectTransform.anchoredPosition.x>=panel.illustration.rectTransform.anchoredPosition.x+panel.illustration.rectTransform.rect.width+24,"Event illustration overlaps story text");
                         foreach(var text in panel.GetComponentsInChildren<Text>().Where(t=>t==panel.titleText||t==panel.descriptionText||t.name=="EventImpactText"))
                             Check(text.preferredHeight<=text.rectTransform.rect.height,"Event text overflows: "+run.Events[i].Title+" / "+text.name);
                     }
@@ -99,7 +102,7 @@ public static class CourierV24RulesSmokeTest
                     var eventPanel=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
                     int turns=run.OrderTurns;Click(eventPanel.safeButton);
                     Check(run.State==ShiftState.Docked&&run.OrderTurns==turns+1,"Event confirm UI failed");break;
-                default:Finish(true,"Rules, configured data, street-node raycast, station exchange, text-only event layout, text fit and event confirmation.");return;
+                default:Finish(true,"Rules, configured data, street-node raycast, station exchange, event silhouette layout, text fit and event confirmation.");return;
             }
             step++;
         }
