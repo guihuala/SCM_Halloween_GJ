@@ -15,7 +15,7 @@ public static class CourierV24RulesSmokeTest
     private static int step;
     private static double next;
     static CourierV24RulesSmokeTest(){EditorApplication.update+=Attach;}
-    [MenuItem("Tools/Night Courier/Checks/V2.4 Updated Rules and Event Art")]
+    [MenuItem("Tools/Night Courier/Checks/V2.4 Updated Rules and Event Layout")]
     public static void Run()
     {
         File.WriteAllText("/tmp/courier-v24-check.txt","Running\n");
@@ -30,7 +30,6 @@ public static class CourierV24RulesSmokeTest
             Check(configured.Events.Count(e=>e.Effect==RoadEventEffect.Wait)==7,"Configured event pool differs");
             Check(configured.Parcels[1].HeatSensitive&&!configured.Parcels[1].Dry&&configured.Parcels[6].Dry,"Configured tags differ");
             Check(Math.Abs(configured.EventProbability-.35f)<.001f,"Event probability override missing");
-            foreach(string name in new[]{"social","weather"})Check(Resources.Load<Sprite>("NightVoyage/EventIllustrations/"+name)!=null,"Missing event sprite "+name);
             SessionState.SetString(Key+".Scene",EditorSceneManager.GetActiveScene().path);
             EditorSceneManager.OpenScene("Assets/Scenes/GamePlay.unity");
             step=0;next=0;SessionState.SetBool(Key,true);Application.runInBackground=true;EditorApplication.isPlaying=true;
@@ -83,12 +82,15 @@ public static class CourierV24RulesSmokeTest
                     Check(run.State==ShiftState.Encounter,"Event panel not reached");run.EncounterIndex=0;break;
                 case 4:
                     var panel=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
-                    Check(panel!=null&&panel.illustration.sprite!=null&&panel.illustration.gameObject.activeInHierarchy,"Event illustration missing");
-                    foreach(var entry in run.Events)
+                    Check(panel!=null&&(panel.illustration==null||!panel.illustration.gameObject.activeInHierarchy),"Event image should be absent");
+                    int previousEvent=run.EncounterIndex;
+                    for(int i=0;i<run.Events.Length;i++)
                     {
-                        string old=panel.descriptionText.text;panel.descriptionText.text=entry.Description+"\n\nFall back one node; no extra turn or vehicle use.";
-                        Check(panel.descriptionText.preferredHeight<=panel.descriptionText.rectTransform.rect.height,"Event description overflows: "+entry.Title);panel.descriptionText.text=old;
+                        run.EncounterIndex=i;panel.Bind(owner);
+                        foreach(var text in panel.GetComponentsInChildren<Text>().Where(t=>t==panel.titleText||t==panel.descriptionText||t.name=="EventImpactText"))
+                            Check(text.preferredHeight<=text.rectTransform.rect.height,"Event text overflows: "+run.Events[i].Title+" / "+text.name);
                     }
+                    run.EncounterIndex=previousEvent;panel.Bind(owner);
                     ScreenCapture.CaptureScreenshot("ArtPreviews/v24-event-social.png");break;
                 case 5:run.EncounterIndex=5;break;
                 case 6:
@@ -97,7 +99,7 @@ public static class CourierV24RulesSmokeTest
                     var eventPanel=UIManager.Instance.GetPanel("CourierEventPanel") as CourierEventPanel;
                     int turns=run.OrderTurns;Click(eventPanel.safeButton);
                     Check(run.State==ShiftState.Docked&&run.OrderTurns==turns+1,"Event confirm UI failed");break;
-                default:Finish(true,"Rules, configured data, street-node raycast, station exchange, event artwork, text fit and event confirmation.");return;
+                default:Finish(true,"Rules, configured data, street-node raycast, station exchange, text-only event layout, text fit and event confirmation.");return;
             }
             step++;
         }

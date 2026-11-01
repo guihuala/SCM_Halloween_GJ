@@ -1,5 +1,5 @@
 {
-  "probability": 0.35,
+  "probability": 0.65,
   "delayNodes": [
     "C",
     "J"

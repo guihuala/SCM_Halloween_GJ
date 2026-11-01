@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NightCourier
 {
-    public enum ParcelState { Waiting, Loaded, Delivered, Failed }
+    public enum ParcelState { Waiting, Loaded, Delivered, Failed, Unavailable }
     public enum ShiftState { Docked, Driving, Encounter, Pushing, EndingA, EndingB }
     public enum RoadKind { Asphalt, Gravel, Fog, River, Storm }
     public sealed class Stop
@@ -44,7 +44,10 @@ namespace NightCourier
         public bool Fragile,Heavy,Dry,HeatSensitive,Critical,Damaged;
         // Legacy field names remain for prefab/editor compatibility; values are turns.
         public float Deadline,TimeLimit;
-        public int DeliveryTurns;
+        public int DeliveryTurns, CarriedTurns;
+        public bool Enabled=true;
+        public int PickupGroup=-1;
+        public bool EventTriggered;
         public bool DeliveredLate;
         public string DamageReason;
         public string Evaluation { get { return (DeliveredLate || Damaged ? "Delivery failed" : "Delivered successfully"); } }
@@ -83,12 +86,12 @@ namespace NightCourier
         private void EmitAudio(string cue){if(!string.IsNullOrEmpty(cue))AudioCues.Enqueue(cue);}
 
         public readonly Stop[] Stops={
-            new Stop("Abandoned Subway","SUBWAY","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
-            new Stop("Fog Forest","FOREST","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
-            new Stop("Mead Cellar","MEAD","Little Werebear: The cellar feels warm again... I hope I can sleep this winter.",0.31f,0.8f,1,true),
-            new Stop("Abandoned TV Tower","TOWER","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
-            new Stop("Museum Ruins","MUSEUM","Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69f,0.2f,-1,true),
-            new Stop("Settlement Bar","BAR","Witch: One thing at a time, darling. I have the list.",0.94f,0.5f,-1,true),
+            new Stop("Mountain Train Tunnel","Mountain Train Tunnel","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
+            new Stop("Foggy Woods","Foggy Woods","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
+            new Stop("Brewing Cellar","Brewing Cellar","Little Werebear: The cellar feels warm again... I hope I can sleep this winter.",0.31f,0.8f,1,true),
+            new Stop("Abandoned TV Tower","Abandoned TV Tower","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
+            new Stop("Museum Ruins","Museum Ruins","Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69f,0.2f,-1,true),
+            new Stop("The Tavern","The Tavern","Witch: One thing at a time, darling. I have the list.",0.94f,0.5f,-1,true),
             new Stop("Heat Shield Station","H","",0,0),
             new Stop("Waterproofing Station","W","",0,0),
             new Stop("Suspension Station","Q","",0,0)
@@ -135,8 +138,8 @@ namespace NightCourier
         public float NightMinutes=ShiftMinutes;
         public const float CruiseMinutesPerSecond=.3f;
         public int Node,VehicleIndex=-1,Delivered,Earnings,EncounterIndex;
-        public float EventProbability=.35f;
-        public bool OrderEventTriggered {get;private set;}
+        public float EventProbability=.65f;
+        public bool OrderEventTriggered {get{return Parcels.Any(p=>p.State==ParcelState.Loaded&&p.EventTriggered);}}
         // Elapsed stores total integer turns for legacy callers; OrderTurns is the rating clock.
         public float Elapsed,Progress;
         public bool UsedPush;
@@ -152,12 +155,22 @@ namespace NightCourier
         private readonly Vehicle ghost = new Vehicle("Ghost", "Carries any order; slower travel; no vehicle turns consumed", 0, 0, 1, 0);
         public bool IsGhost { get { return VehicleIndex < 0; } }
         public readonly List<DeliveryResult> Results = new List<DeliveryResult>();
-        public int OrderTurns { get; private set; }
+        private int lastOrderTurns;
+        public int OrderTurns { get { return ActiveOrder!=null?ActiveOrder.CarriedTurns:lastOrderTurns; } }
+        public int TurnsFor(Parcel parcel) { return parcel.State==ParcelState.Delivered?parcel.DeliveryTurns:parcel.CarriedTurns; }
+        public IEnumerable<Parcel> ActiveOrders { get { return Parcels.Where(p=>p.State==ParcelState.Loaded&&Batch(p).First()==p); } }
         public bool PreferSafeRoutes = true;
-        public int BatchCount { get { return Parcels.GroupBy(p => new { p.Origin, p.Destination }).Count(); } }
-        public int CompletedBatches { get { return Parcels.GroupBy(p => new { p.Origin, p.Destination }).Count(g => g.All(p => p.State == ParcelState.Delivered)); } }
-        public Parcel ActiveOrder { get { return Parcels.FirstOrDefault(p => p.State == ParcelState.Loaded); } }
+        public int BatchCount { get { return Parcels.Where(p=>p.Enabled).GroupBy(p => new { p.Origin, p.Destination }).Count(); } }
+        public int CompletedBatches { get { return Parcels.Where(p=>p.Enabled).GroupBy(p => new { p.Origin, p.Destination }).Count(g => g.All(p => p.State == ParcelState.Delivered)); } }
+        public Parcel ActiveOrder { get { return Parcels.Where(p=>p.State==ParcelState.Loaded).OrderBy(p=>TargetTurns(p)-p.CarriedTurns).FirstOrDefault(); } }
         public IEnumerable<Parcel> Batch(Parcel parcel) { return Parcels.Where(p => p.Origin == parcel.Origin && p.Destination == parcel.Destination); }
+        // Pickup groups are independent of delivery batches: Woods gives two destinations at once.
+        public IEnumerable<Parcel> Pickup(Parcel parcel)
+        { return parcel.PickupGroup>=0?Parcels.Where(p=>p.Enabled&&p.PickupGroup==parcel.PickupGroup):Batch(parcel); }
+        public IEnumerable<Parcel> CargoRowItems(Parcel parcel)
+        { return parcel.State==ParcelState.Waiting&&parcel.Enabled?Pickup(parcel):Batch(parcel); }
+        public bool IsCargoRow(Parcel parcel)
+        { return parcel.Enabled&&(parcel.State==ParcelState.Waiting||parcel.State==ParcelState.Loaded)&&CargoRowItems(parcel).First()==parcel; }
         public int TargetTurns(Parcel parcel) { return (int)Batch(parcel).Min(p => p.TimeLimit > 0 ? p.TimeLimit : 12); }
         public bool IsReturning { get { return returning; } }
         public int TravelDestination { get { return destination; } }
@@ -175,11 +188,15 @@ namespace NightCourier
             Stops[CourierStreetMap.Node("S").StopId].Sign="DEPOT";
             foreach(var stop in Stops){stop.Vehicle=-1;stop.Repair=false;}
             Stops[6].Vehicle=0;Stops[7].Vehicle=1;Stops[8].Vehicle=2;
-            int[] limits={4,3,4,5,4,4,4,4,4,4};
+            int[] limits={7,10,7,13,10,7,10,7,8,8};
             for(int i=0;i<Parcels.Count;i++){var p=Parcels[i];p.TimeLimit=limits[i];p.Heavy=false;p.Dry=i==0||i==6||i==7;p.HeatSensitive=i==1||i==3||i==8||i==9;}
-            Parcels[3].Name="Flowers";Parcels[8].Name="Repair Device";
-            Parcels.Add(new Parcel("Desiccant, Labels and Sundries",5,2,1,timeLimit:4));
-            Parcels.Add(new Parcel("Late-night Snack",5,1,1,timeLimit:4));
+            Parcels[0].Name="Cassette Tape";Parcels[2].Name="Ashpine Autumn Honey";Parcels[3].Name="Flower Jam";Parcels[7].Name="Moisture Absorber";Parcels[8].Name="Cooling Repair Kit";
+            Parcels.Add(new Parcel("Desiccant, Labels and Sundries",5,2,1,timeLimit:9));
+            Parcels.Add(new Parcel("Late-night Snack",5,1,1,timeLimit:8));
+            // Retain legacy IDs for artwork and story references; these three are not tasks in the source flow.
+            foreach(int id in new[]{6,10,11}){Parcels[id].Enabled=false;Parcels[id].State=ParcelState.Unavailable;}
+            Parcels[2].PickupGroup=Parcels[3].PickupGroup=2;
+            Parcels[8].PickupGroup=Parcels[9].PickupGroup=8;
             foreach(int id in new[]{4,5,7}){Events[id].Effect=RoadEventEffect.Wait;Events[id].SafeMinutes=1;Events[id].Safe="Wait for the road to clear";}
             foreach(int id in new[]{6,8}){Events[id].Effect=RoadEventEffect.Retreat;Events[id].SafeMinutes=0;Events[id].Safe="Fall back one node";}
             Events[3].Description="A lost bat is splashed by a geyser and crashes, dizzy, into Goolie's postal cap.";
@@ -239,13 +256,13 @@ namespace NightCourier
         }
         public bool ContinueJourney(){return HasJourney&&StartJourney(PlannedDestination);}
         public bool CanLoad(Parcel p)
-        {return State==ShiftState.Docked && p!=null && Parcels.Contains(p) && p.State==ParcelState.Waiting && p.Origin==Node && ActiveOrder==null;}
+        {return State==ShiftState.Docked && p!=null && p.Enabled && Parcels.Contains(p) && p.State==ParcelState.Waiting && p.Origin==Node && Pickup(p).All(item=>item.Enabled&&item.State==ParcelState.Waiting&&item.Origin==Node);}
         public bool LoadParcel(Parcel p)
         {
             if(!CanLoad(p))return false;
-            OrderTurns=0;OrderEventTriggered=false;EmitAudio("cargo");
-            foreach(var item in Batch(p)){item.State=ParcelState.Loaded;item.Deadline=0;}
-            Log("Order accepted: "+string.Join(" + ",Batch(p).Select(item=>item.Name))+" > "+Stops[p.Destination].Name+". Target: "+TargetTurns(p)+" turns.");return true;
+            EmitAudio("cargo");
+            foreach(var item in Pickup(p)){item.State=ParcelState.Loaded;item.Deadline=0;item.CarriedTurns=0;item.EventTriggered=false;}
+            Log("Order accepted: "+string.Join(" + ",Pickup(p).Select(item=>item.Name))+" > "+string.Join(" / ",Pickup(p).Select(item=>Stops[item.Destination].Name).Distinct())+". Target: "+TargetTurns(p)+" turns.");return true;
         }
         // Active orders cannot be cancelled, split or stored at another node.
         public bool Unload(Parcel p){return false;}
@@ -268,7 +285,7 @@ namespace NightCourier
         }
         private void CheckEnding()
         {
-            if(!Parcels.All(p=>p.State==ParcelState.Delivered))return;
+            if(!Parcels.Where(p=>p.Enabled).All(p=>p.State==ParcelState.Delivered))return;
             State=ShiftState.EndingA;PlannedDestination=-1;EmitAudio("ending");
             Log("All "+BatchCount+" orders delivered. Halloween deliveries complete!");
         }
@@ -335,16 +352,16 @@ namespace NightCourier
             Node=destination;State=ShiftState.Docked;animationSeconds=0;
 
             if(Node==PlannedDestination)PlannedDestination=-1;
-            var order=ActiveOrder;
-            EmitAudio(order!=null&&order.Destination==Node?"delivered":"arrival");
-            if(order!=null&&order.Destination==Node)
+            var deliveries=ActiveOrders.Where(p=>p.Destination==Node).ToArray();
+            EmitAudio(deliveries.Length>0?"delivered":"arrival");
+            foreach(var order in deliveries)
             {
-                var items=Batch(order).ToArray();int target=TargetTurns(order);
-                var result=new DeliveryResult{Origin=order.Origin,Destination=Node,Turns=OrderTurns,TargetTurns=target,
-                    Cargo=string.Join(" + ",items.Select(p=>p.Name)),Late=OrderTurns>target,Damaged=items.Any(p=>p.Damaged),
+                var items=Batch(order).ToArray();int target=TargetTurns(order);int turns=TurnsFor(order);lastOrderTurns=turns;
+                var result=new DeliveryResult{Origin=order.Origin,Destination=Node,Turns=turns,TargetTurns=target,
+                    Cargo=string.Join(" + ",items.Select(p=>p.Name)),Late=turns>target,Damaged=items.Any(p=>p.Damaged),
                     DamageReason=string.Join(", ",items.Where(p=>p.Damaged).Select(p=>p.Name+" ("+(p.DamageReason??"cargo conditions violated")+")"))};
-                foreach(var p in items){p.State=ParcelState.Delivered;p.DeliveryTurns=OrderTurns;p.DeliveredLate=result.Late;Delivered++;Earnings+=p.Reward;}
-                Results.Add(result);Log("Order delivered: "+result.Cargo+". "+OrderTurns+"/"+target+" turns - "+result.Evaluation);
+                foreach(var p in items){p.State=ParcelState.Delivered;p.DeliveryTurns=turns;p.DeliveredLate=result.Late;Delivered++;Earnings+=p.Reward;}
+                Results.Add(result);Log("Order delivered: "+result.Cargo+". "+turns+"/"+target+" turns - "+result.Evaluation);
             }
             if(Parcels[8].State==ParcelState.Delivered)UnlockedVehicles[2]=true;
             CheckEnding();
@@ -353,7 +370,7 @@ namespace NightCourier
         {
             int wholeTurns=(int)Math.Ceiling(turns);
             Elapsed+=wholeTurns;
-            if(ActiveOrder!=null)OrderTurns+=wholeTurns;
+            foreach(var parcel in Parcels.Where(p=>p.State==ParcelState.Loaded))parcel.CarriedTurns+=wholeTurns;
         }
         private void Log(string text){Notice=text;Journal.Insert(0,text);if(Journal.Count>50)Journal.RemoveAt(50);}
     }

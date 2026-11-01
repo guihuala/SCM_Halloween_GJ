@@ -34,12 +34,12 @@ namespace NightCourier
             if(cargoFeedback!=null)cargoFeedback.Observe(reducedPanelMotion);
             capacityText.text = "Orders " + Run.CompletedBatches + " / " + Run.BatchCount;
             adviceText.gameObject.SetActive(Run.Overloaded);
-            adviceText.text = "Deliver the active order before accepting another.";
+            adviceText.text = "Every on-board order has its own delivery timer.";
             int waiting = 0, loaded = 0;
             for (int i = 0; i < rows.Count; i++)
             {
                 var parcel = Run.Parcels[i]; bool onboard = parcel.State == ParcelState.Loaded;
-                bool visible = (onboard || parcel.State == ParcelState.Waiting) && Run.Batch(parcel).First() == parcel;
+                bool visible = Run.IsCargoRow(parcel);
                 rows[i].gameObject.SetActive(visible);
                 if (!visible) continue;
                 var parent = onboard ? loadedContent : waitingContent;

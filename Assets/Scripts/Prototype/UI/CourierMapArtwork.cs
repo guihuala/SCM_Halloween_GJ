@@ -89,13 +89,13 @@ namespace NightCourier
                 landmarkHitAreas[i].raycastTarget=true;
                 EnsureNodeHit(button,new Vector2(point.x,-point.y)-button.anchoredPosition);
                 var label=panel.stopLabels[i];var lr=label.rectTransform;
-                float labelHeight=52;
+                float labelHeight=88;
                 float labelTop=Mathf.Clamp(point.y+12,4,Mathf.Max(4,map.rect.height-labelHeight-4));
-                lr.anchoredPosition=new Vector2(point.x-112-button.anchoredPosition.x,-labelTop-button.anchoredPosition.y);
-                lr.sizeDelta=new Vector2(224,labelHeight);label.alignment=TextAnchor.UpperCenter;label.fontSize=28;label.raycastTarget=true;
+                lr.anchoredPosition=new Vector2(point.x+(i==2?30:-150)-button.anchoredPosition.x,-labelTop-button.anchoredPosition.y);
+                lr.sizeDelta=new Vector2(300,labelHeight);label.alignment=TextAnchor.UpperCenter;label.fontSize=28;label.raycastTarget=true;
                 var counts=panel.stopCounts[i].rectTransform;
                 counts.anchorMin=counts.anchorMax=counts.pivot=new Vector2(0,1);
-                counts.anchoredPosition=new Vector2(point.x-112-button.anchoredPosition.x,-labelTop-labelHeight-4-button.anchoredPosition.y);
+                counts.anchoredPosition=new Vector2(point.x-150-button.anchoredPosition.x,-labelTop-labelHeight-4-button.anchoredPosition.y);
                 counts.sizeDelta=new Vector2(224,40);panel.stopCounts[i].alignment=TextAnchor.UpperCenter;
                 if(labelTop+labelHeight+44>map.rect.height)
                 {

@@ -40,7 +40,7 @@ namespace NightCourier
         private void RefreshArtwork()
         {
             if(cargoArtwork==null||secondaryArtwork==null)PrepareArtwork();
-            var items=owner.Run.Batch(parcel).ToArray();
+            var items=owner.Run.CargoRowItems(parcel).ToArray();
             cargoArtwork.sprite=iconCatalog!=null?iconCatalog.ForParcel(owner.Run.Parcels.IndexOf(parcel)):null;
             cargoArtwork.gameObject.SetActive(cargoArtwork.sprite!=null);
             secondaryArtwork.sprite=items.Length>1&&iconCatalog!=null?iconCatalog.ForParcel(owner.Run.Parcels.IndexOf(items[1])):null;
@@ -49,16 +49,18 @@ namespace NightCourier
         public Parcel Item {get{return parcel;}}
         private NightCourierPrototype owner;
         private GameObject dragVisual;
+        public bool CanDrag => owner != null && owner.Active && !owner.ConversationActive && !owner.GuideOpen && parcel != null && owner.Run.CanLoad(parcel);
+        public bool IsDragging => dragVisual != null;
         public Vector3? DropFeedbackOrigin { get; private set; }
         public void Bind(NightCourierPrototype prototype,Parcel item)
         {
             owner=prototype;parcel=item;DropFeedbackOrigin=null;PrepareArtwork();RefreshArtwork();
             CourierTypography.Apply(gameObject);
-            actionButton.onClick.AddListener(()=>{if(parcel.State==ParcelState.Loaded)owner.Run.Unload(parcel);else owner.Run.LoadParcel(parcel);});
+            actionButton.onClick.AddListener(()=>{if(parcel.State==ParcelState.Loaded)owner.Run.Unload(parcel);else owner.AcceptParcel(parcel);});
         }
         public bool LoadByDrop()
         {
-            if(owner==null||!owner.Active||!owner.Run.LoadParcel(parcel))return false;
+            if(owner==null||!owner.Active||!owner.AcceptParcel(parcel))return false;
             if(dragVisual!=null)DropFeedbackOrigin=dragVisual.transform.position;
             return true;
         }
@@ -69,10 +71,10 @@ namespace NightCourier
             ((RectTransform)timeGroup.transform).sizeDelta=new Vector2(132,48);
             nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=1.08f;nameText.alignment=TextAnchor.UpperLeft;
             destinationText.resizeTextForBestFit=false;destinationText.fontSize=26;destinationText.lineSpacing=1.12f;destinationText.alignment=TextAnchor.UpperLeft;
-            nameText.text=string.Join(" + ",run.Batch(parcel).Select(p=>p.Name));
-            destinationText.text=run.Stops[parcel.Origin].Name+" > "+run.Stops[parcel.Destination].Name;weightText.gameObject.SetActive(false);
+            nameText.text=string.Join(" + ",run.CargoRowItems(parcel).Select(p=>p.Name));
+            destinationText.text=run.Stops[parcel.Origin].Name+" > "+string.Join(" / ",run.CargoRowItems(parcel).Select(p=>run.Stops[p.Destination].Name).Distinct());weightText.gameObject.SetActive(false);
             var oldWeight=transform.Find("WeightIcon");if(oldWeight!=null)oldWeight.gameObject.SetActive(false);
-            var batch=run.Batch(parcel).ToArray();
+            var batch=run.CargoRowItems(parcel).ToArray();
             storyIcon.gameObject.SetActive(parcel.Critical);damagedIcon.gameObject.SetActive(batch.Any(p=>p.Damaged));
             fragileIcon.gameObject.SetActive(batch.Any(p=>p.Fragile)&&!batch.Any(p=>p.Damaged));heavyIcon.gameObject.SetActive(false);dryIcon.gameObject.SetActive(batch.Any(p=>p.Dry)&&!batch.Any(p=>p.Damaged));
             timeGroup.SetActive(true);
@@ -109,15 +111,16 @@ namespace NightCourier
                 rect.anchoredPosition=new Vector2(rect.anchoredPosition.x,-10);
             }
             int target=run.TargetTurns(parcel);
-            timeText.text=(loaded?run.OrderTurns:0)+"/"+target;
-            timeHint.message="Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, rated Delivery failed.";
-            actionButton.gameObject.SetActive(!loaded);actionButton.interactable=run.CanLoad(parcel);
+            bool splitPickup=!loaded&&batch.Select(p=>p.Destination).Distinct().Count()>1;
+            timeText.text=splitPickup?"2 stops":(loaded?run.TurnsFor(parcel):0)+"/"+target;
+            timeHint.message=splitPickup?CourierInformation.Order(run,parcel):"Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, rated Delivery failed.";
+            actionButton.gameObject.SetActive(!loaded);actionButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen&&run.CanLoad(parcel);
             actionIcon.SetKind(CourierIconKind.Load);
-            actionHint.message=loaded?"Complete this order before accepting another":run.State!=ShiftState.Docked?"Accept orders after arrival":run.ActiveOrder!=null?"Deliver the active order first":parcel.Origin!=run.Node?"Collect this batch at "+run.Stops[parcel.Origin].Name:"Accept the whole batch. Deliver to "+run.Stops[parcel.Destination].Name+". Click or drag into On Board.";
+            actionHint.message=loaded?"On board · visit the recipient to deliver":run.State!=ShiftState.Docked?"Accept orders after arrival":parcel.Origin!=run.Node?"Collect this batch at "+run.Stops[parcel.Origin].Name:"Collect together: "+string.Join(" + ",batch.Select(p=>p.Name))+". Deliver to "+string.Join(" / ",batch.Select(p=>run.Stops[p.Destination].Name).Distinct())+". Click or drag into On Board.";
         }
         public void OnBeginDrag(PointerEventData data)
         {
-            if(owner==null||!owner.Active||!owner.Run.CanLoad(parcel))return;
+            if(!CanDrag)return;
             var canvas=GetComponentInParent<Canvas>();
             dragVisual=new GameObject("DraggedParcel",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(CanvasGroup));
             dragVisual.transform.SetParent(canvas.rootCanvas.transform,false);dragVisual.transform.SetAsLastSibling();

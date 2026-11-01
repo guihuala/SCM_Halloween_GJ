@@ -21,7 +21,7 @@ namespace NightCourier
             view.Refresh();
             // Modal encounters are created after this panel; keep the guide above them.
             // During pause all guide graphics are hidden, leaving the pause UI in control.
-            if(owner.Active&&!owner.Tutorial.Finished&&!owner.Run.Finished&&transform.GetSiblingIndex()!=transform.parent.childCount-1)
+            if(owner.Active&&(!owner.Tutorial.Finished||owner.GuideOpen)&&!owner.Run.Finished&&transform.GetSiblingIndex()!=transform.parent.childCount-1)
                 transform.SetAsLastSibling();
         }
     }

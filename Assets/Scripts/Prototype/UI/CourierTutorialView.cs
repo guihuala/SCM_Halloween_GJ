@@ -11,6 +11,7 @@ namespace NightCourier
         public Button skipButton;
         public RectTransform[] focusFrames;
         private NightCourierPrototype owner;
+        private Image guideBackdrop;
         private readonly Vector3[] corners = new Vector3[4];
         public void Bind(NightCourierPrototype prototype)
         {
@@ -50,7 +51,14 @@ namespace NightCourier
             ApplyReadingColors();
             var run = owner.Run; var guide = owner.Tutorial;
             int step = guide.Step(run, owner.ConversationActive);
-            bool visible = owner.Active && !guide.Finished && !run.Finished;
+            bool visible = owner.Active && (!guide.Finished||guide.GuideOpen) && !run.Finished && !owner.ConversationActive;
+            if(guideBackdrop==null)
+            {
+                var go=new GameObject("GuideBackdrop",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));go.transform.SetParent(transform,false);go.transform.SetAsFirstSibling();
+                guideBackdrop=go.GetComponent<Image>();guideBackdrop.color=new Color(.03f,.05f,.08f,.8f);guideBackdrop.raycastTarget=true;
+                var rect=guideBackdrop.rectTransform;rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=rect.offsetMax=Vector2.zero;
+            }
+            guideBackdrop.gameObject.SetActive(visible&&guide.GuideOpen);
             strip.gameObject.SetActive(visible);
             foreach (var frame in focusFrames) frame.gameObject.SetActive(false);
             if (!visible) return;
@@ -77,12 +85,12 @@ namespace NightCourier
                     if (hud != null) first = (RectTransform)hud.advanceButton.transform;
                     break;
                 case 1:
-                    title = "Start at the Parcel Depot";
-                    body = "Open Orders [Tab], choose any sender, then click their map stop and the green departure arrow. Empty travel has no order timer.";
+                    title = "Visit the Mountain Train Tunnel";
+                    body = "Visit the Mountain Train Tunnel to read Gooy's letter. Open Orders [Tab] to compare deliveries. Empty travel has no order timer.";
                     break;
                 case 2:
                     title = "Choose your first order";
-                    body = "Visit any sender shown in Orders. At their stop, accept a batch with the box arrow or drag it into On Board. Choose any order; carry one batch at a time.";
+                    body = "Visit any sender shown in Orders. At their stop, accept a batch with the box arrow or drag it into On Board. Collect more orders here after each conversation. Every order has its own clock.";
                     if (planner != null)
                     {
                         var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item.Origin == run.Node && r.Item.State == ParcelState.Waiting);
@@ -119,14 +127,32 @@ namespace NightCourier
             { body = "Choose a stop on the map and manage your cargo on the right. You can explore freely or skip this guide."; first = null; }
             heading.text = "FIRST SHIFT  " + Mathf.Max(1,step) + "/6  -  " + title;
             instruction.text = body;
-            CompactGuide(step,title,body);
+            if(guide.GuideOpen)FullGuide();else CompactGuide(step,title,body);
             Focus(0, first); Focus(1, second);
+        }
+        private void FullGuide()
+        {
+            var size=((RectTransform)transform).rect.size;
+            float width=Mathf.Min(1440,size.x-80),height=Mathf.Min(880,size.y-64);
+            strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.one*.5f;strip.anchoredPosition=Vector2.zero;strip.sizeDelta=new Vector2(width,height);
+            heading.enabled=instruction.enabled=true;
+            heading.text="YOUR HALLOWEEN DELIVERY GUIDE";heading.alignment=TextAnchor.UpperLeft;heading.fontSize=34;
+            heading.rectTransform.anchoredPosition=new Vector2(40,-32);heading.rectTransform.sizeDelta=new Vector2(width-160,64);
+            instruction.text=CourierInformation.Rules(owner.Run).Replace("DELIVERY GUIDE\n","").Replace("\n","\n\n");
+            instruction.fontSize=28;instruction.alignment=TextAnchor.UpperLeft;
+            instruction.rectTransform.anchoredPosition=new Vector2(40,-112);instruction.rectTransform.sizeDelta=new Vector2(width-80,height-144);
+            instruction.resizeTextForBestFit=true;instruction.resizeTextMinSize=20;instruction.resizeTextMaxSize=28;
+            var compact=strip.Find("GuideSymbol");if(compact!=null)compact.gameObject.SetActive(false);
+            var close=(RectTransform)skipButton.transform;close.anchorMin=close.anchorMax=close.pivot=new Vector2(0,1);
+            close.anchoredPosition=new Vector2(width-96,-24);close.sizeDelta=Vector2.one*64;
+            CourierSymbolUI.Button(skipButton,CourierIconKind.Close,"Close guide · reopen with the information button");
+            var image=skipButton.targetGraphic as Image;if(image!=null)image.color=CourierColors.Mint;
         }
         private void CompactGuide(int step,string title,string body)
         {
             strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.zero;
             strip.anchoredPosition=new Vector2(24,32);strip.sizeDelta=new Vector2(248,80);
-            instruction.enabled=false;heading.enabled=true;heading.text=Mathf.Max(1,step)+"/6";
+            instruction.resizeTextForBestFit=false;instruction.enabled=false;heading.enabled=true;heading.text=Mathf.Max(1,step)+"/6";
             heading.rectTransform.anchoredPosition=new Vector2(80,-16);heading.rectTransform.sizeDelta=new Vector2(72,48);heading.alignment=TextAnchor.MiddleCenter;
             var kind=step==0?CourierIconKind.Talk:step<=2?CourierIconKind.Box:step==3?CourierIconKind.Route:step==5?CourierIconKind.Warning:step==6?CourierIconKind.Check:CourierIconKind.Arrow;
             CourierSymbolUI.Icon(strip,"GuideSymbol",kind,16,16,48,CourierColors.Night,title+"\n"+body);

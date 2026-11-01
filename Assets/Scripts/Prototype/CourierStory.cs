@@ -46,7 +46,16 @@ namespace NightCourier
             if (scene.parcels == null || scene.parcels.Length == 0) return false;
             if (scene.trigger == "receive")
                 return scene.parcels.All(id => run.Parcels[id].State == ParcelState.Delivered);
-            return scene.trigger == "send" && scene.parcels.Any(id => run.Parcels[id].State == ParcelState.Waiting);
+            return false; // Send scenes are consumed only by a successful pickup.
+        }
+        public bool WasPlayed(string id) { return played.Contains(id); }
+        public string[] ReadPickup(CourierRun run, Parcel parcel)
+        {
+            var ids=run.Pickup(parcel).Select(p=>run.Parcels.IndexOf(p)).ToArray();
+            var scenes=Data.scenes.Where(s=>s.trigger=="send"&&s.node==run.Node&&!played.Contains(s.id)&&s.parcels!=null&&s.parcels.All(id=>ids.Contains(id)&&run.Parcels[id].State==ParcelState.Loaded)).ToArray();
+            var lines=new List<string>();
+            foreach(var scene in scenes){played.Add(scene.id);lines.AddRange(scene.lines.Select(line=>line.Render(Data.language=="zh")));}
+            return lines.ToArray();
         }
         public bool HasPending(CourierRun run) { return Data.scenes.Any(scene => Ready(scene, run)); }
         public string[] Read(CourierRun run)
@@ -54,7 +63,7 @@ namespace NightCourier
             // The letter is its own scene; delivery reactions precede outgoing parcels.
             var available = Data.scenes.Where(scene => Ready(scene, run))
                 .OrderBy(scene => scene.trigger == "intro" ? 0 : scene.trigger == "receive" ? 1 : scene.trigger == "ending" ? 3 : 2).ToArray();
-            if (available.Length == 0) return new[] { run.Stops[run.Node].Voice };
+            if (available.Length == 0) return new string[0];
             var selected = available[0].trigger == "intro" ? available.Take(1) : available;
             var lines = new List<string>();
             foreach (var scene in selected)

@@ -1,6 +1,6 @@
 # No Spooky, Just Parcels
 
-万圣夜，幽灵快递员 Goolie 在六位怪物邻居之间运送包裹。通过规划路线、换车和应对随机事件，完成全部 **11 笔订单**。
+万圣夜，幽灵快递员 Goolie 在六位怪物邻居之间运送包裹。通过规划路线、换车和应对随机事件，完成全部 **7 次接取、8 笔配送（9 件物品）**。
 
 ## 运行
 
@@ -23,7 +23,7 @@
 
 从 **S · Parcel Depot（快递站）** 开始。打开 Orders 查看任意订单，自行选择供应者、配送顺序和路线；空载赶路不启动订单计时。首次配送教学会持续到实际交付，中间路口会提示按 E 继续。通关后以配送相册展示成绩：货物插画、收件人头像、配送结果和实际／目标回合；滚动查看全部订单，悬停卡片查看路线及详细受损原因。重开会重新提供教学。
 
-只能在供应者所在地接单，同时持有一笔订单，接单后不可取消。抵达收件节点自动交付；空载移动不计订单回合。
+只能在供应者所在地接单，可同时持有多笔订单，各订单从接取时独立计时，接单后不可取消。抵达收件节点自动交付；空载移动不计订单回合。
 
 ## 当前规则
 
@@ -31,7 +31,7 @@
 - 幽灵每回合移动1边，无使用额度；H耐热、W防水、Q减震载具每回合最多移动2边，各有5回合额度，遇NPC或载具站提前停止。
 - 在H/W/Q站领取或更换对应载具，消耗1订单回合；旧车消失，新车获得完整额度。跨订单保留剩余额度，耗尽后切换幽灵。
 - 高温、积水、颠簸分别影响怕热、怕水、易碎货物；当前对应车型提供保护。受损不可恢复，环境不额外增加移动回合。
-- 携货结束移动后，C/J可能触发延误（+1订单回合），N/P/E可能触发倒退（退回刚经过的前一节点）。默认概率35%，每单最多一次；未触发不消耗机会，目的地优先交付。
+- 携货结束移动后，C/J可能触发延误（+1订单回合），N/P/E可能触发倒退（退回刚经过的前一节点）。默认概率65%，每单最多一次；未触发不消耗机会，目的地优先交付。
 - 事件不额外消耗载具额度，回退沿用刚结束回合的保护。超时或受损记为配送失败，但仍可交付并完成该单。
 - 全部订单完成后显示简单结束画面与顺利送达数量，不设最终星级或奖励。
 
@@ -41,7 +41,7 @@
 
 | 文件 | 内容 |
 | --- | --- |
-| `Parcels.csv` | 12条货物配置、供应者/收件人、标签及回合上限；相同供收双方合为一单 |
+| `Parcels.csv` | 9条启用货物配置（另保留3条停用的旧ID）、供应者/收件人、标签及回合上限；enabled 控制是否启用，pickup_group 控制一起接取；相同供收双方为一笔配送 |
 | `Vehicles.csv`、`Stops.csv` | 载具参数、角色地点名称和开场白 |
 | `Events.csv`、`EventRules.json` | 12个事件的文案、效果、插图、`sound_cue`，以及触发概率和节点 |
 | `AudioCues.json` | 音效键、Resources资源路径、单独音量（0–1） |
@@ -89,7 +89,7 @@
 ## 音画资源
 
 - 主菜单：`Assets/Art/Sprite/UI/Mainmenu/`。
-- 事件插图：`Assets/Resources/NightVoyage/EventIllustrations/`，social与weather两张复用；生成记录保存在同目录。
+- 事件页面：纯文字纵向布局，不显示插图或占位块；标题、正文和底部事件影响统一左对齐。左右内边距 40px，标题 40 号、正文 28 号、事件影响 26 号，弹窗高度随文字调整。旧插图保留在 `Assets/Resources/NightVoyage/EventIllustrations/`。
 - HUD手绘素材：`Assets/Resources/NightVoyage/HUD/`；保留 `.meta` 可直接替换同名素材。
 - 音效：`Assets/Resources/Audio/Courier/`；新增事件短音效位于 `Events/`，配置与替换方法见 [音效说明](Assets/Audio/README.md)。
 - 音乐与既有录音署名见 `Assets/Resources/Audio/Courier/AudioCredits.txt`、`Assets/StreamingAssets/AudioCredits.txt` 和 `Assets/Audio/Licenses/`，发布时保留。
@@ -97,7 +97,7 @@
 ## 验证与维护
 
 - `Tools > Night Courier > Run Rule Checks`：订单、移动、环境、事件和通关规则。
-- `Tools > Night Courier > Checks > V2.4 Updated Rules and Event Art`：配置、地图点击、换车、事件插图与确认。
+- `Tools > Night Courier > Checks > V2.4 Updated Rules and Event Layout`：配置、地图点击、换车、事件纯文字布局、文字排版与确认。
 - `Tools > Night Courier > Checks > Audio (keep editor open)`：新音效导入、快进、并发提示、换车、载具行驶声、暂停和重开。
 - 检查完成后恢复原场景；预览输出到 `ArtPreviews/`。
 - 旧版依赖9单与永久保护的历史检查不再作为当前版本验收入口。
@@ -107,9 +107,9 @@
 
 ## 可用性修正
 
-Orders 使用右侧竖栏，待领取与已装载上下排列；Talk / Continue 固定在地图上方。地点标牌使用场所名称（SUBWAY / FOREST / MEAD / TOWER / MUSEUM / BAR）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用易读的手写字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
+Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels / Continue 固定在地图上方。地点标牌使用场所名称（Mountain Train Tunnel / Foggy Woods / Brewing Cellar / Abandoned TV Tower / Museum Ruins / The Tavern）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用易读的手写字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
 
-事件保留每个合资格路口 35% 的概率，每单最多一次，空载不触发；不同路口的机会累计，因此经过 2 个合资格路口至少遇到一次的概率为 57.75%。每次新开局与重开使用新的随机种子。验收入口：`Tools > Night Courier > Checks > Usability and Depot Start`。
+事件使用每个合资格路口 65% 的概率，每单最多一次，空载不触发；不同路口的机会累计，因此经过 2 个合资格路口至少遇到一次的概率为 87.75%。每次新开局与重开使用新的随机种子。验收入口：`Tools > Night Courier > Checks > Feedback Revision`。
 
 ## 界面字体
 
@@ -120,3 +120,39 @@ Orders 使用右侧竖栏，待领取与已装载上下排列；Talk / Continue 
 常驻界面仅保留剧情、地点名、订单名和关键数字。订单开关、关闭、对话、继续、路线模式、换车、快进、事件确认与结算操作使用现有手绘图标；详情与快捷键通过悬停或键盘焦点提示查看。火焰／雨伞／高脚杯分别表示怕热、防水、易碎保护，订单数字旁的时钟表示当前／目标回合。教学改为左下角步骤图标与进度，悬停查看当前说明，关闭图标结束指引。
 
 关键信息入口：携货时顶部图钉直接显示收件地点，时钟显示已用／目标回合，警告图标显示损坏或超时状态。悬停订单名称／插画可查看整批货物的全部限制、供收地点、回合目标与失败状态；载具及站点可查询保护、速度、使用额度、换车代价和耗尽后果。顶部 i 可悬停或点击查看图标说明、订单规则、事件概率与次数上限、快捷键；教学步骤图标也可悬停读取。路线时钟在携货时显示预计累计／目标回合，风险图标列出损坏、超时、耗尽和事件风险。
+
+## 鼠标指针
+
+菜单和游戏共用七种指针：默认箭头、可点击手指、按下、可拖拽手掌、拖拽握手、禁用标记、说明查看。地图空白可拖动时显示手掌，订单可领取时显示可拖拽状态；弹窗使用最上层命中结果，避免穿透到地图。拖拽状态跟随实际地图／订单拖拽，松开或窗口失焦后恢复。
+
+- SVG 源文件：`Assets/Art/Cursors/`，48×48 透明画布。
+- Unity 运行纹理：`Assets/Resources/NightVoyage/Cursors/`，由 SVG 导出；导入器自动设置为可读、无压缩 Cursor 纹理。
+- 修改 SVG 后，在项目根目录运行 `node Tools/RenderCourierCursors.js`（需要 `sharp`，可通过 `NODE_PATH` 指定其所在目录），更新全部 PNG 与 `ArtPreviews/Cursors/cursor-states.png` 预览。
+- `CourierCursor` 自动跨场景启动，无须修改场景或预制体。热点位于箭头尖端、食指尖或手掌中心。
+- 验证入口：`Tools > Night Courier > Checks > SVG Cursors`。
+
+## 本轮反馈修正
+
+- Gooy 的信仍在 subway（节点0，Mountain Train Tunnel）首次到达时播放，快递站开局不播放。读完信弹出大屏配送指引；关闭后可点右上角信息按钮重看。
+- 英文剧情逐段采用《文案最新版.docx》，使用 Ashpine Vale、Ghost Express、Shadow Society、Code of Silence；地图名称和货物名称同步。蜂蜜／花酱一次接取两件，播放一次文档中的完整共用对白，再分别配送到 Brewing Cellar 和 Museum Ruins。
+- 到达地点不再播放尚未接取货物的寄件对白。点击主屏 Collect parcels 或按 E 打开订单；每次接取播放对应对白，结束后可在原地继续接取。文档未包含专属剧情的订单显示领取确认。
+- Orders 中逐项列出所有已接订单、目的地、货物要求和各自回合。多单时扩大 On board 区域，列表可滚动；主屏显示携带订单数，计时优先显示最紧迫订单，路线预览列出各单预测。
+- 随机事件概率由35%调至65%，每单最多经历一次；新接订单不会重置旧单的事件记录。回合上限按实际幽灵路线校准，至少保留3回合事件余量（普通单7～10回合，花酱13回合），给延误、倒退后重新赶路留出余量。
+- Witch 当前资源为旧占位头像，保留 `Characters.asset` 的可替换绑定，等待正式素材。
+- 验收入口：`Tools > Night Courier > Checks > Feedback Revision`。
+
+## 任务接取与交付对照
+
+| 寄件点 | 一次接取的物品 | 收件点 |
+| --- | --- | --- |
+| Mountain Train Tunnel | Cassette Tape | Abandoned TV Tower |
+| Foggy Woods | Violin Rosin | Mountain Train Tunnel |
+| Foggy Woods | Autumn Honey + Flower Jam（一起领取、一次对白） | 分别送到 Brewing Cellar / Museum Ruins |
+| Brewing Cellar | Spring Mead | The Tavern |
+| Abandoned TV Tower | Spicy Blood Stew（夜宵） | Foggy Woods |
+| The Tavern | Moisture Absorber | Museum Ruins |
+| The Tavern | Supply Care Package（Cooling Repair Kit + Livestock Blood） | Abandoned TV Tower |
+
+Museum Ruins 没有寄件任务。旧 Flower Cakes、杂货、独立 Late-night Snack 任务已停用，不显示、不计入通关。蜂蜜与花酱在待领取列表合并显示，接取后在 On board 分为两个目的地；领取同时启动两件物品各自的计时，到站只交付对应物品并播放对应收件对白。
+
+蜂蜜／花酱一起领取后，按 Woods → Cellar → Museum 的幽灵路线实测需要4／10回合；对应上限为7／13回合，包含途中先送蜂蜜的时间及3回合事件余量。

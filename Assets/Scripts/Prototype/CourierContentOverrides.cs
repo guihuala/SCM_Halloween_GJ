@@ -6,7 +6,7 @@ using UnityEngine;
 namespace NightCourier
 {
     // Stable IDs preserve story logic; CSVs expose text and balance fields to designers.
-    [Serializable] public sealed class CourierEventRules { public float probability=.35f; public string[] delayNodes,retreatNodes; }
+    [Serializable] public sealed class CourierEventRules { public float probability=.65f; public string[] delayNodes,retreatNodes; }
     public static class CourierContentOverrides
     {
         public static void Apply(CourierRun run)
@@ -32,6 +32,8 @@ namespace NightCourier
                 p.HeatSensitive=row.Count>10&&row[10]=="1";p.Fragile=row[4]=="1";p.Heavy=row[5]=="1";p.Dry=row[6]=="1";
                 if(row.Count>=10){p.Origin=Int(row[8],p.Origin,0,5);p.Destination=Int(row[9],p.Destination,0,5);}
                 p.TimeLimit=(float)Math.Ceiling(Number(row[7],p.TimeLimit,1,240));
+                if(row.Count>11){p.Enabled=row[11]!="0";p.State=p.Enabled?ParcelState.Waiting:ParcelState.Unavailable;}
+                if(row.Count>12)p.PickupGroup=Int(row[12],p.PickupGroup,-1,100);
             });
             Apply("Events",(id,row)=>{
                 if(id<0||id>=run.Events.Length)return;var e=run.Events[id];

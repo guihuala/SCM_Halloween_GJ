@@ -19,6 +19,7 @@ namespace NightCourier
                 return target == 1 ? "Click to talk" : target == 2 ? "Click vehicle to plan a route" : "Tab: Map  /  E: Interact";
             }
         }
+        public bool CanInteractAt(Vector2 screen) => Owner != null && Owner.Active && !Owner.HasPlanner && Owner.Run.State == ShiftState.Docked && TargetAt(screen) != 0;
         private int TargetAt(Vector2 screen)
         {
             Vector2 local;

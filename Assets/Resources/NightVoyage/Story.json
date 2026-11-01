@@ -10,38 +10,23 @@
       "lines": [
         {
           "speaker": "Gooy",
-          "text": "Dear Goolie, the hot springs in Cangsong Valley have been erupting more often. This old ghost cannot take the heat. I am off to the snowy mountains for a rest.",
+          "text": "Dear Goolie, The hot springs around Ashpine Vale have been erupting way too often lately. This old ghost really can't take the heat anymore, so I'm heading up the snow peak to cool off for a while. I'm leaving this Halloween in your hands—hang in there, little ghost!",
           "sourceChinese": "亲爱的Goolie：苍松谷最近的热泉喷发越来越频繁啦，我这个老幽灵有点受不住了，得去雪山上休息一段时间。"
         },
         {
-          "speaker": "Gooy",
-          "text": "Halloween is in your hands this year. You can do it, little ghost!",
+          "speaker": "Goolie",
+          "text": "\"Wait, I only got transferred to the Ashpine Vale station a week ago! What am I supposed to do?!\"",
           "sourceChinese": "这次的万圣节就交给你吧，加油吧小幽灵！"
         },
         {
-          "speaker": "Goolie",
-          "text": "But I only arrived at the Cangsong Valley post station a week ago! What am I going to do?",
+          "speaker": "Narrator",
+          "text": "The rookie courier ghost stares at their postman cap and lets out a helpless sigh.",
           "sourceChinese": "可是我才刚刚到苍松谷快递站一周诶，这可怎么办？"
         },
         {
-          "speaker": "Narrator",
-          "text": "The new courier ghost looks down at their postal cap and sighs.",
+          "speaker": "Goolie",
+          "text": "\"I've never worked a Halloween shift before! All the seniors say it's the biggest night of the year for the Shadow Society. It's the only night humans can actually see us, AND we have to strictly follow the Code of Silence so we don't blow our cover... Talk about tough! Plus, there are way too many humans wandering around town tonight—even kids running down the street in short sleeves and plastic capes... Ugh, whatever! Time to hit the road!\"",
           "sourceChinese": "新人快递幽灵看了看自己的邮差帽，不由得叹气。"
-        },
-        {
-          "speaker": "Goolie",
-          "text": "I have never experienced Halloween. The senior couriers say it is a huge event for the dark society.",
-          "sourceChinese": "我从来没有经历过万圣节，前辈都说这是暗影社会的大事件。"
-        },
-        {
-          "speaker": "Goolie",
-          "text": "It is the one night humans can see us, but we still have to obey the Rule of Silence: never reveal the dark society to humans. That sounds hard!",
-          "sourceChinese": "这是人类唯一能看到我们的机会，还得遵守缄默法则，不被人类发现，这可真难！"
-        },
-        {
-          "speaker": "Goolie",
-          "text": "There seem to be more humans out tonight, too. Even children in short sleeves and plastic capes are running around... Well, off I go!",
-          "sourceChinese": "而且今晚镇上晃荡的人类好像格外多，连穿短袖套塑料披风的小孩都在街上跑……不管了，先出发吧！"
         }
       ]
     },
@@ -55,22 +40,22 @@
       "lines": [
         {
           "speaker": "Drow",
-          "text": "[Tilts her head toward Goolie and whispers.] ...Thank you.",
+          "text": "(Tilts her head toward Goolie, whispering) \"...Thank you.\"",
           "sourceChinese": "（歪头看向Goolie，小声）……谢谢。"
         },
         {
           "speaker": "Goolie",
-          "text": "You are welcome! But why is water dripping through this mountain tunnel? There are puddles under the railway sleepers!",
+          "text": "\"You're very welcome! Say, why is it dripping so much inside this mountain tunnel? Even the gravel under the railroad ties is pooling with water!\"",
           "sourceChinese": "不客气！不过这穿山隧道里怎么滴答滴答的，连铁轨枕木底下都积水啦？"
         },
         {
           "speaker": "Drow",
-          "text": "[Brushes a fingertip over her damp violin bow and lowers her red eyes.] ...The rock walls have been seeping lately. The strings are slippery. A little rosin... will help.",
+          "text": "(Gently rubs her damp violin bow with her fingertips, lowering her crimson eyes) \"...The rock walls keep seeping water lately. My strings got slippery... A little rosin... will fix it.\"",
           "sourceChinese": "（用指尖轻轻蹭了蹭有些发潮的琴弓，垂下红眼睛低声说）……最近岩壁总在渗水，弦有点滑。擦了松香……就好了。"
         },
         {
           "speaker": "Goolie",
-          "text": "I see. And thank you for choosing Ghost Post! We hope to deliver for you again. Goodbye!",
+          "text": "\"Oh, I see! Well, thank you for using Ghost Express! Hope to serve you again soon—bye now!\"",
           "sourceChinese": "原来是这样，也谢谢你对幽灵快递的支持，希望以后继续选择我们，再见！"
         }
       ]
@@ -85,28 +70,23 @@
       "lines": [
         {
           "speaker": "Drow",
-          "text": "[Silently holds out a recording tape.]",
+          "text": "(Says nothing, simply holding out a cassette tape with both hands.)",
           "sourceChinese": "（不说话，只是递过录音带。）"
         },
         {
           "speaker": "Goolie",
-          "text": "Of course! This is the tape for Ms. Vampire, right? Gooy said your new song will be at tomorrow's party. I cannot wait to hear it!",
+          "text": "\"Got it, got it! This must be the tape Miss Vampire asked for. The boss told me you're debuting a new song at tomorrow's party—I'm so curious! Thank you for everything you do for Ashpine Vale's night community!\"",
           "sourceChinese": "好的好的，这是Vampire姐姐需要的录音带吧。听店长说，明天的party会有你的新歌，我太好奇了。"
         },
         {
-          "speaker": "Goolie",
-          "text": "Thank you for all you do for the dark society of Cangsong Valley!",
+          "speaker": "Drow",
+          "text": "(The tips of her ears twitch slightly as she offers a shy smile.)",
           "sourceChinese": "谢谢你为苍松谷暗夜社会作出的贡献！"
         },
         {
-          "speaker": "Drow",
-          "text": "[Her pointed ears twitch ever so slightly. She smiles.]",
-          "sourceChinese": "（耳朵尖微微动了一下，微笑。）"
-        },
-        {
           "speaker": "Goolie",
-          "text": "I will leave you to your practice. Goodbye, our artist!",
-          "sourceChinese": "那我不打扰你练琴啦，艺术家再见！"
+          "text": "\"I'll leave you to your practice then. Bye, Miss Artist!\"",
+          "sourceChinese": "（耳朵尖微微动了一下，微笑。）"
         }
       ]
     },
@@ -120,17 +100,17 @@
       "lines": [
         {
           "speaker": "Wolfwoman",
-          "text": "Just in time! A block of rosin for our great artist, Miss Drow. Give her my regards!",
+          "text": "\"Right on time! Here's the block of rosin for our great artist, Miss Drow. Give her my best, will ya?\"",
           "sourceChinese": "来得正好！这是我们的伟大艺术家，Miss Drow的松香块，请代我向她问好。"
         },
         {
           "speaker": "Goolie",
-          "text": "I hear she plays the violin. The rosin is for taking care of it, right?",
+          "text": "\"I heard she plays the violin! Rosin is used for maintaining the bow, right?\"",
           "sourceChinese": "我听说这位艺术家会拉小提琴，松香是用于养护小提琴的吧？"
         },
         {
           "speaker": "Wolfwoman",
-          "text": "What a knowledgeable little ghost! See you around!",
+          "text": "\"Aren't you a sharp little ghost! Catch ya later!\"",
           "sourceChinese": "真是位博学的小幽灵，回见！"
         }
       ]
@@ -145,23 +125,18 @@
       "lines": [
         {
           "speaker": "Wolfwoman",
-          "text": "Oh, Goolie! That fresh scent of blood... It must be Ms. Vampire's signature maoxuewang!",
+          "text": "\"Oh, Goolie! That rich, fresh scent of blood—must be Miss Vampire's signature Spicy Blood Stew, huh?\"",
           "sourceChinese": "哦，Goolie，这新鲜的血的气息，想必是Vampire女士的拿手好菜毛血旺吧。"
         },
         {
           "speaker": "Goolie",
-          "text": "Yes, and it is still piping hot. You can count on Ghost Post!",
+          "text": "\"Yep! Still piping hot. Ghost Express never lets you down!\"",
           "sourceChinese": "是的，还是滚烫的，幽灵快递您放心！"
         },
         {
           "speaker": "Wolfwoman",
-          "text": "Wonderful! I spent all day chasing human children who wandered into the woods because of this warm weather. My bones are falling apart! I really cannot stand dealing with humans. I do not know how Witch puts up with them.",
+          "text": "\"Awesome! I spent the whole day chasing off human brats who wandered into the woods just 'cause the weather's warm—my bones are practically falling apart. I really can't stand dealing with humans; no idea how Witch puts up with 'em. Still, getting a bite of this on a chaotic Halloween Eve instantly turns my mood around!\"",
           "sourceChinese": "太棒了，今天我在林子里撵了一整天趁着天暖和乱跑的人类小孩，骨头都快散架了。我是真不爱跟人类打交道，不知道女巫怎么忍受得了。"
-        },
-        {
-          "speaker": "Wolfwoman",
-          "text": "Still, a bite of this on a troublesome Halloween night makes everything feel better!",
-          "sourceChinese": "不过万圣夜这种糟心时间能吃上这一口，心情瞬间好起来了！"
         }
       ]
     },
@@ -176,23 +151,18 @@
       "lines": [
         {
           "speaker": "Wolfwoman",
-          "text": "This is gray-pine autumn honey for Little Werebear. Usually, the bees can only find honeydew seeping from the gray pines at this time of year.",
+          "text": "\"These jars of Ashpine autumn honey are for Little Bear. Normally this time of year, the bees only gather honeydew seeping from the pines, but lately some wild roses have been blooming out of season. Didn't feel like using 'em for honey, so I boiled 'em into jam for Grandma Jiangshi to bake flower cakes. We've got a party to throw tomorrow, after all!\"",
           "sourceChinese": "这些是给小熊的灰松秋蜜，本来这个季节的蜜蜂只能找到灰松上渗出的甘露酿蜜。"
         },
         {
-          "speaker": "Wolfwoman",
-          "text": "But some roses have bloomed out of season. I did not use them for honey. I made flower jam for Mrs. Jiangshi's cakes instead. Our party is tomorrow, after all!",
+          "speaker": "Goolie",
+          "text": "\"Totally agree! I heard about Mrs. Jiangshi's rose pastries even before I moved to Ashpine Vale. I'd love to try one!\"",
           "sourceChinese": "可是最近还有一些反季重开的玫瑰花。不过我没打算用来酿蜜，还是熬成酱交给Jiangshi老太太做鲜花饼吃吧，毕竟明天我们要开派对了。"
         },
         {
-          "speaker": "Goolie",
-          "text": "I agree! I heard about Mrs. Jiangshi's flower cakes before I even came to the valley. I would love to try one.",
-          "sourceChinese": "我赞同，我还没来灰松谷就听说过IJ太太的鲜花饼呢，真想试一试呀。"
-        },
-        {
           "speaker": "Wolfwoman",
-          "text": "That lady is a wonderful cook. Enjoy yourself tomorrow!",
-          "sourceChinese": "那老太太手艺好着呢，明天尽情享受吧！"
+          "text": "\"That old lady's got magic hands in the kitchen. Eat your fill tomorrow!\"",
+          "sourceChinese": "我赞同，我还没来灰松谷就听说过IJ太太的鲜花饼呢，真想试一试呀。"
         }
       ]
     },
@@ -206,28 +176,23 @@
       "lines": [
         {
           "speaker": "Little Werebear",
-          "text": "Hello, little ghost. I started this light spring mead in April and May, and it has been aging ever since. Please take it to Ms. Witch.",
+          "text": "\"Hello there, little ghost. This is a light spring mead I started brewing back in April and May, aged right up until now. Could you please take it to Miss Witch for me?\"",
           "sourceChinese": "你好呀小幽灵，这些是今年四五月春天就开始酿造、一直陈酿到现在的轻度蜂蜜酒，请你帮我送给女巫女士。"
         },
         {
           "speaker": "Goolie",
-          "text": "Hello, little bear! It looks so golden. Even the droplets on the bottles seem to glow!",
+          "text": "\"Hi, Little Bear! Wow, this mead looks so golden and bright—even the water droplets on the bottles are glowing!\"",
           "sourceChinese": "小熊你好，这些酒看起来金灿灿的，连瓶身上的水珠都在发光呢。"
         },
         {
           "speaker": "Little Werebear",
-          "text": "Yes. Spring honey usually comes from flowers. Autumn honey comes from pine honeydew and looks more like amber.",
+          "text": "\"Mhm! Spring honey comes from wildflowers, while autumn honey comes from pine honeydew, which looks more like deep amber. Though... usually the cellar is nice and chilly by late October, just right for storing wine. This year, I had to push all the barrels into the deepest corner just to keep them cool.\"",
           "sourceChinese": "对哦，春蜜一般是花蜜，而秋蜜是松树甘露蜜，会更像琥珀一些。"
         },
         {
-          "speaker": "Little Werebear",
-          "text": "The cellar is usually chilly enough for storage by now. This year I had to move the barrels to the deepest corner.",
-          "sourceChinese": "说起来，往年这时候地窖里冷飕飕的正好存酒，今年我却得把酒桶挪到最深处的墙角才行呢。"
-        },
-        {
           "speaker": "Goolie",
-          "text": "That sounds like hard work. I will get it there safely. Have a lovely time tomorrow!",
-          "sourceChinese": "辛苦你啦，我一定稳稳当当地送到，祝你明天玩得开心！"
+          "text": "\"Thanks for your hard work! I'll deliver them safe and sound. Have fun tomorrow!\"",
+          "sourceChinese": "说起来，往年这时候地窖里冷飕飕的正好存酒，今年我却得把酒桶挪到最深处的墙角才行呢。"
         }
       ]
     },
@@ -241,22 +206,22 @@
       "lines": [
         {
           "speaker": "Goolie",
-          "text": "Look! Autumn honey from Wolfwoman. It smells so fresh. She says it is warm enough for flowers to bloom out of season, and sent flower jam to Mrs. Jiangshi.",
+          "text": "\"Look! Big Sis Wolfwoman sent over this autumn honey—it smells so fresh and piney! She also said it's gotten so warm that flowers are blooming out of season, and asked me to bring some flower jam to Mrs. Jiangshi.\"",
           "sourceChinese": "请看，这些是狼人姐姐给的秋蜜，闻起来很清新呢。她还说，现在太热了，已经有反季花盛开了，托我给Jiangshi太太送过去。"
         },
         {
           "speaker": "Little Werebear",
-          "text": "[Hugs the honey jar, yawns, then rubs her eyes.] No wonder I keep hearing water trickling under the cellar. Even the soil is warm.",
+          "text": "(Hugs the honey jar tightly, letting out a tiny yawn before rubbing her eyes) \"No wonder I've been hearing water trickling underneath the cellar floor these past few days... Even the soil feels warm.\"",
           "sourceChinese": "（抱紧蜜罐，打了个小小的哈欠却又揉了揉眼睛）难怪这两天总听到地窖底下有淅淅沥沥的流水声，连土都是温的。"
         },
         {
           "speaker": "Goolie",
-          "text": "Oh! Will that affect your hibernation?",
+          "text": "\"Huh? Is that gonna mess with your hibernation?\"",
           "sourceChinese": "诶？那会影响你冬眠吗？"
         },
         {
           "speaker": "Little Werebear",
-          "text": "It will... This winter is going to be warm. I might not be able to sleep.",
+          "text": "\"Yeah... It's definitely going to be a warm winter this year. I think I'm going to have insomnia.\"",
           "sourceChinese": "会呀……今年一定会有个暖冬，我可能要失眠了。"
         }
       ]
@@ -271,23 +236,13 @@
       "lines": [
         {
           "speaker": "Vampire",
-          "text": "[Plays the tape and taps along with the melody.] I think I understand the feeling behind this piece. Miss Drow must have woven in the sound of glacial meltwater.",
+          "text": "(Pops the cassette into the deck for a quick listen, her fingers tapping the desk to the melody) \"Hmm, I can feel the emotion pouring through this track. Miss Drow must have woven the sound of melting glaciers into the melody—it's so ethereal and lovely. She truly has a gift for storytelling through music; even before we met, she was recording the sights and sounds of all the places she wandered... Little ghost, our ears are in for a real treat at the party.\"",
           "sourceChinese": "（将磁带放进机器试听，手指随着旋律轻敲桌面）我大概能领会到这首曲子的感情，Drow小姐肯定融入了冰川融水的声音。"
         },
         {
-          "speaker": "Vampire",
-          "text": "It is so ethereal and beautiful. She really knows how to tell stories through music. Long before I met her, she was already capturing the sights and sounds of many places in her songs...",
-          "sourceChinese": "这实在是空灵而美妙。她真的很擅长用音乐讲故事呢，在我认识她以前，她就用音乐记录过许多地方的风物……"
-        },
-        {
-          "speaker": "Vampire",
-          "text": "Little ghost, our ears are in for a treat at this party!",
-          "sourceChinese": "小幽灵，这次派对要大饱耳福啦。"
-        },
-        {
           "speaker": "Goolie",
-          "text": "Wonderful! I cannot wait!",
-          "sourceChinese": "太好了！真期待呢。"
+          "text": "\"Hooray! I can't wait!\"",
+          "sourceChinese": "这实在是空灵而美妙。她真的很擅长用音乐讲故事呢，在我认识她以前，她就用音乐记录过许多地方的风物……"
         }
       ]
     },
@@ -302,23 +257,18 @@
       "lines": [
         {
           "speaker": "Goolie",
-          "text": "Ms. Vampire, here is the cooling unit and fresh livestock blood you asked Ms. Witch to buy.",
+          "text": "\"Miss Vampire, here's the cooling unit and the fresh livestock blood you asked Miss Witch to pick up.\"",
           "sourceChinese": "Vampire女士，这是您托Witch女士购买的散热装置还有禽畜的新鲜血液。"
         },
         {
           "speaker": "Vampire",
-          "text": "What a devoted little ghost! My old radiator overloaded while I was adjusting the equipment. My night radio broadcast went off the air.",
+          "text": "\"Always so conscientious, little ghost! My old radiator suddenly overloaded and quit while I was testing the gear earlier, forcing my late-night broadcast off the air. Now I can finally get the studio back to a comfortable temperature.\" (She leans in and plants a gentle kiss on the little ghost's cheek.)",
           "sourceChinese": "真是尽职呢小幽灵！刚才调试设备的时候，老散热器突然过载罢工，害得我的夜间电台都停播了。"
         },
         {
-          "speaker": "Vampire",
-          "text": "Now I can make it comfortable here again. [Gives the little ghost a kiss.]",
-          "sourceChinese": "这下又可以恢复到舒适的温度啦。（说完亲了小幽灵一口。）"
-        },
-        {
           "speaker": "Goolie",
-          "text": "[Blushes.] Ms. Vampire... Please do not tease me!",
-          "sourceChinese": "（一下子脸红）Vampire女士……不要戏弄我啦。"
+          "text": "(Instantly turns bright pink) \"W-Whoa! Miss Vampire... please don't tease me!\"",
+          "sourceChinese": "这下又可以恢复到舒适的温度啦。（说完亲了小幽灵一口。）"
         }
       ]
     },
@@ -332,12 +282,12 @@
       "lines": [
         {
           "speaker": "Vampire",
-          "text": "Here, some maoxuewang I just made. Before the studio cools down, hurry and take it to Wolfwoman. She must be starving after her patrol.",
+          "text": "\"Here you go, darling—a fresh batch of Spicy Blood Stew I just whipped up. Hurry and take it to Sister Wolfwoman before the studio cools down; she must be starving after patrolling the woods all day.\"",
           "sourceChinese": "喏，这是我刚刚做好的毛血旺哟，趁着播音室里还没凉下来，小幽灵快去送给狼人姐姐吃吧，她巡林肯定饿坏了。"
         },
         {
           "speaker": "Goolie",
-          "text": "Consider it delivered!",
+          "text": "\"Mission accepted!\"",
           "sourceChinese": "使命必达！"
         }
       ]
@@ -352,28 +302,18 @@
       "lines": [
         {
           "speaker": "Immigrant Jiangshi",
-          "text": "[Sniffs the jar and smiles.] Oh? Flowers out of season? I have lived here for over a century. That never used to happen.",
+          "text": "(Takes the jar and gives it a sniff, her eyes crinkling into a warm smile) \"Oh my? Out-of-season roses? I've lived here for over a century, and I've never seen anything like it. It keeps getting warmer and warmer... When I got up this evening for my skincare routine and looked up at the peaks, even the snowcap had shrunk...\"",
           "sourceChinese": "（接过罐子闻了闻，眯起眼睛笑起来）哦？反季花，我在这里生活上百年了，以前哪有这样的事哦。"
         },
         {
-          "speaker": "Immigrant Jiangshi",
-          "text": "It is getting warmer and warmer. When I get up at dusk for my daily care, I can see the snowy mountain caps shrinking.",
+          "speaker": "Goolie",
+          "text": "\"Oh no, what are we gonna do?\"",
           "sourceChinese": "现在越来越暖和了，我傍晚起来做保养的时候往山上看，连雪山的雪顶都变少了……"
         },
         {
-          "speaker": "Goolie",
-          "text": "What are we going to do?",
+          "speaker": "Immigrant Jiangshi",
+          "text": "\"Who knows, maybe this whole valley will flood one day... My room full of antiques certainly can't handle a soaking, and I'd hate to leave this place behind. Come, lend an old lady a hand lighting the stove—I'll bake a fresh batch of flower cakes tonight!\"",
           "sourceChinese": "那可怎么办呀？"
-        },
-        {
-          "speaker": "Immigrant Jiangshi",
-          "text": "Perhaps the valley will be flooded someday. My roomful of antiques could never survive that. I would hate to leave this place.",
-          "sourceChinese": "说不定以后这片山谷会被淹没……我这一屋子的老古董可经不起泡水，真是舍不得这里呀。"
-        },
-        {
-          "speaker": "Immigrant Jiangshi",
-          "text": "Come, help me light the stove. This old lady will bake the flower cakes tonight!",
-          "sourceChinese": "来，帮我搭把手生个炉子，老太太我今晚就把鲜花饼烤出来！"
         }
       ]
     },
@@ -387,23 +327,18 @@
       "lines": [
         {
           "speaker": "Immigrant Jiangshi",
-          "text": "What a thoughtful little ghost. You have saved these old bones! I chose the museum ruins because the remaining climate controller kept the temperature and humidity just right.",
+          "text": "\"You're such a sweetheart, little ghost—you've saved these old bones of mine! The whole reason I settled down in these museum ruins was for the leftover climate-control machines; the temperature and humidity suited me wonderfully. Alas, dampness keeps seeping up between the floor tiles lately, and the old machines just can't keep up. It's even muggier than when I crossed the ocean all those years ago! I have to slather on two extra layers of desiccant like body lotion during my daily routine!\"",
           "sourceChinese": "你真是个贴心的小幽灵，拯救了我这把老骨头。我当年选择住在博物馆遗迹里，就是因为这里还有剩余的环境调节器，温度和湿度都很适合我。"
         },
         {
-          "speaker": "Immigrant Jiangshi",
-          "text": "But damp keeps coming through the floor tiles, and the old machine is no use now. It is even damper than when I crossed the ocean! I have to brush on two extra coats of moisture-repellent body lotion every day!",
+          "speaker": "Goolie",
+          "text": "\"Mrs. Jiangshi, will you keep living here in the future?\"",
           "sourceChinese": "可惜最近地砖缝里总往外返潮气，老机器也不中用啦，简直比我以前远渡重洋的时候还潮呢，我每天做日常护理都得把防潮剂当身体乳往身上多刷两层呢！"
         },
         {
-          "speaker": "Goolie",
-          "text": "Mrs. Jiangshi, will you keep living here?",
-          "sourceChinese": "IJ太太，您以后会继续住在这里吗？"
-        },
-        {
           "speaker": "Immigrant Jiangshi",
-          "text": "I cannot say. Perhaps I will move farther north. This constant warming is not a good thing.",
-          "sourceChinese": "我可说不好，或许迁去更北的地方？这样的持续变暖可真不是好事呀。"
+          "text": "\"Hard to say, dear. Maybe I'll pack up and move further north? This endless warming certainly doesn't bode well for us.\"",
+          "sourceChinese": "IJ太太，您以后会继续住在这里吗？"
         }
       ]
     },
@@ -417,22 +352,22 @@
       "lines": [
         {
           "speaker": "Goolie",
-          "text": "Hello, Ms. Witch. This mead is from Little Werebear.",
+          "text": "\"Hello, Miss Witch! Here's the mead sent over by Little Bear.\"",
           "sourceChinese": "Witch女士您好，这是小熊送来的蜜酒。"
         },
         {
           "speaker": "Witch",
-          "text": "Just looking at this mead, I can see spring flowers filling the forest and smell the rich fragrance of herbs and blossoms. This mead is a notebook of the seasons.",
+          "text": "\"Just looking at this mead, I can almost see spring blossoms blanketing the woods and smell the rich aroma of wildflowers. Good wine truly is a journal of the seasons.\"",
           "sourceChinese": "只是看着这些蜜酒，我仿佛能看到春花开遍森林，嗅到馥郁的花草香，这些酒是季节的记事本。"
         },
         {
           "speaker": "Goolie",
-          "text": "Ms. Witch, you are so cultured!",
+          "text": "\"Wow, Miss Witch, you talk just like a poet!\"",
           "sourceChinese": "Witch女士您实在是太有文化了。"
         },
         {
           "speaker": "Witch",
-          "text": "[Chuckles.] Perhaps it comes from living among humans.",
+          "text": "(Chuckles softly) \"Perhaps that's what happens when you live among humans for so long.\"",
           "sourceChinese": "（咯咯笑）或许因为我一直和人类生活在一起吧。"
         }
       ]
@@ -447,12 +382,12 @@
       "lines": [
         {
           "speaker": "Witch",
-          "text": "Keep this safe. It is moisture repellent for Mrs. Jiangshi. I hear groundwater has seeped into her basement. I hope she is all right.",
+          "text": "\"Tuck this away safely, dear—it's the moisture absorber for Mrs. Jiangshi. I heard groundwater has started seeping into her basement. I do hope she's holding up alright.\"",
           "sourceChinese": "收好哦，这是给IJ太太的防潮剂。听说她那里地下水渗入地下室了，希望她一切平安。"
         },
         {
           "speaker": "Goolie",
-          "text": "Of course, madam.",
+          "text": "\"Got it, ma'am!\"",
           "sourceChinese": "好的女士。"
         }
       ]
@@ -468,18 +403,13 @@
       "lines": [
         {
           "speaker": "Witch",
-          "text": "This is the cooling unit for Ms. Vampire. I cannot imagine how such an elegant lady repairs those enormous machines.",
+          "text": "\"And here's the cooling repair kit for Miss Vampire. I truly cannot picture such an elegant lady rolling up her sleeves to fix heavy machinery... Plus some fresh livestock blood—tell her to enjoy her meal.\"",
           "sourceChinese": "这些是给Vampire女士的维修装置，我无法想象她这样的优雅鬼士是如何维修那些大型机械的。"
         },
         {
-          "speaker": "Witch",
-          "text": "And here is some livestock blood. I hope she enjoys her meal.",
-          "sourceChinese": "还有这些禽畜血，祝她吃得开心。"
-        },
-        {
           "speaker": "Goolie",
-          "text": "I am sure she will handle it beautifully!",
-          "sourceChinese": "我相信Vampire大姐姐肯定可以完美解决的。"
+          "text": "\"I'm sure Big Sis Vampire will handle it without a hitch!\"",
+          "sourceChinese": "还有这些禽畜血，祝她吃得开心。"
         }
       ]
     },
@@ -491,18 +421,8 @@
       "lines": [
         {
           "speaker": "Narrator",
-          "text": "The human parade has finally come to an end—now, the real holiday for monsters begins.",
+          "text": "The human parade has finally come to an end—now, the real holiday for monsters begins. With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, we are together. As for tomorrow, tomorrow is another night.",
           "sourceChinese": "人类的巡游终于落幕，接下来，就是属于鬼怪们的节日了。"
-        },
-        {
-          "speaker": "Narrator",
-          "text": "With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, we are together.",
-          "sourceChinese": "琴声响起，蜜酒斟满，虽然苍松谷的大家以后可能会分道扬镳，但至少在此刻，我们依然团聚在一起。"
-        },
-        {
-          "speaker": "Narrator",
-          "text": "<i>As for tomorrow, tomorrow is another night.</i>",
-          "sourceChinese": "至于明天，明天又是新的一天了。"
         }
       ]
     }
@@ -535,5 +455,6 @@
       "description": "A maternal organizer, bar owner and bartender living among humans. Buys cooling equipment and livestock blood in the human settlement and needs mead for the party."
     }
   ],
-  "worldBackground": "The Rule of Silence: dark creatures agree never to reveal their society to humans. They live long lives but have short active periods and spend much of their time asleep, so their society is quiet."
+  "worldBackground": "The Rule of Silence: dark creatures agree never to reveal their society to humans. They live long lives but have short active periods and spend much of their time asleep, so their society is quiet.",
+  "sourceEnglishDocument": "文案最新版.docx"
 }

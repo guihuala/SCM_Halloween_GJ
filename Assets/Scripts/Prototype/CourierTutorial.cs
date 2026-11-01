@@ -4,6 +4,10 @@ namespace NightCourier
     public sealed class CourierTutorial
     {
         public bool Finished { get; private set; }
+        public bool GuideOpen { get; private set; }
+        private bool letterGuideShown;
+        public void AfterLetter() { if(letterGuideShown)return;letterGuideShown=true;GuideOpen=true; }
+        public void ShowGuide() { GuideOpen=true; }
         public bool MapOpened { get; private set; }
         public bool CargoLoaded { get; private set; }
         public bool RouteChosen { get; private set; }
@@ -23,7 +27,7 @@ namespace NightCourier
         public void ChooseRoute() { RouteChosen = true; }
         public void Leave() { if (Arrived) Finished = true; Departed = true; }
         public void ResolveEvent() { EventResolved = true; }
-        public void Dismiss() { Finished = true; }
+        public void Dismiss() { GuideOpen=false; Finished = true; }
         public int Step(CourierRun run, bool conversation)
         {
             Observe(run);

@@ -59,7 +59,7 @@ namespace NightCourier
         public bool MapReducedMotion => reducedPanelMotion;
         public int HoveredMapNode => hoveredNode;
         public int SelectedMapNode => selected;
-        public bool CanNavigateMap => owner!=null&&owner.Active&&!owner.ConversationActive&&!CargoOpen&&!Run.Finished;
+        public bool CanNavigateMap => owner!=null&&owner.Active&&!owner.ConversationActive&&!owner.GuideOpen&&!CargoOpen&&!Run.Finished;
         private CourierCargoFeedback cargoFeedback;
         public bool CargoOpen { get; private set; }
         private bool tutorialCargoLoaded;
@@ -76,7 +76,7 @@ namespace NightCourier
                 value=value*31+(int)Run.State;value=value*31+Run.VehicleIndex;value=value*31+(int)Run.Durability;
                 value=value*31+Run.OrderTurns;value=value*31+selected;value=value*31+Run.PlannedDestination;
                 value=value*31+(owner.Active?1:0);value=value*31+(owner.ConversationActive?1:0);
-                value=value*31+(CargoOpen?1:0);value=value*31+(Run.PreferSafeRoutes?1:0);
+                value=value*31+(owner.GuideOpen?1:0);value=value*31+(CargoOpen?1:0);value=value*31+(Run.PreferSafeRoutes?1:0);
                 value=value*31+(owner.Tutorial.CargoLoaded?1:0);value=value*31+(owner.Tutorial.Finished?1:0);
                 value=value*31+(Run.OrderEventTriggered?1:0);value=value*31+Run.Results.Count;
                 value=value*31+(mapArtwork!=null&&mapArtwork.isActiveAndEnabled?1:0);
@@ -109,14 +109,14 @@ namespace NightCourier
                 destinationMotion.Present(destinationTooltip.gameObject,destinationVisible,new Vector2(0,-12),reducedPanelMotion);
             }
         }
-        public void ToggleCargoDrawer(){if(owner!=null&&owner.Active&&!owner.ConversationActive)SetCargoOpen(!CargoOpen);}
+        public void ToggleCargoDrawer(){if(owner!=null&&owner.Active&&!owner.ConversationActive&&!owner.GuideOpen)SetCargoOpen(!CargoOpen);}
         private readonly List<CourierCargoRow> rows=new List<CourierCargoRow>();
         private int selected=-1;
         private int hoveredNode=-1;
         public void PreviewRoute(int node)
         {
             if(owner==null)return;
-            if(!owner.Active||owner.ConversationActive||CargoOpen||Run.State!=ShiftState.Docked||node==Run.Node){hoveredNode=-1;RefreshRoutePreview();return;}
+            if(!owner.Active||owner.ConversationActive||owner.GuideOpen||CargoOpen||Run.State!=ShiftState.Docked||node==Run.Node){hoveredNode=-1;RefreshRoutePreview();return;}
             hoveredNode=node;RefreshRoutePreview();
         }
         public void ClearRoutePreview(int node)
@@ -127,7 +127,7 @@ namespace NightCourier
         private void RefreshRoutePreview()
         {
             if(owner==null)return;
-            if(!owner.Active||owner.ConversationActive||CargoOpen||Run.State!=ShiftState.Docked||hoveredNode==Run.Node)hoveredNode=-1;
+            if(!owner.Active||owner.ConversationActive||owner.GuideOpen||CargoOpen||Run.State!=ShiftState.Docked||hoveredNode==Run.Node)hoveredNode=-1;
             mapGraphic.PreviewRoute=Run.FindRoute(hoveredNode);
             mapGraphic.SetVerticesDirty();
         }
@@ -135,6 +135,7 @@ namespace NightCourier
         private RectTransform page,map;
         private Vector2 pageSize;
         private float layoutBottom;
+        private int layoutLoadedCount=-1;
         private readonly Vector3[] dialogueCorners=new Vector3[4];
         private float sidebarX=756,contentBottom=620;
         public void ApplyFullscreenLayout()
@@ -186,9 +187,9 @@ namespace NightCourier
             if(mapHeading!=null)mapHeading.gameObject.SetActive(false);
             foreach(var name in new[]{"PageHeaderRule","SummaryRule"})
             {var decoration=page.Find(name);if(decoration!=null)decoration.gameObject.SetActive(false);}
-            if(pageSize!=size||Mathf.Abs(layoutBottom-contentBottom)>.5f)
+            if(pageSize!=size||Mathf.Abs(layoutBottom-contentBottom)>.5f||layoutLoadedCount!=(owner!=null?Run.ActiveOrders.Count():0))
             {
-                pageSize=size;layoutBottom=contentBottom;
+                pageSize=size;layoutBottom=contentBottom;layoutLoadedCount=owner!=null?Run.ActiveOrders.Count():0;
                 if(pageTitle!=null)pageTitle.gameObject.SetActive(false);
                 Place(map,mapX,0,mapWidth,mapHeight);mapCanvas.ApplyLayout();
                 var edges=mapGraphic.rectTransform;edges.anchorMin=Vector2.zero;edges.anchorMax=Vector2.one;edges.offsetMin=edges.offsetMax=Vector2.zero;
@@ -205,7 +206,7 @@ namespace NightCourier
                 if(cargoDrawer!=null)
                 {
                     float height=Mathf.Max(360,contentBottom-184),drawerWidth=Mathf.Min(820,size.x-64),column=drawerWidth-48;
-                    float waitingHeight=(height-144)*.64f,loadedHeight=height-144-waitingHeight;
+                    float waitingHeight=(height-144)*(owner!=null&&Run.ActiveOrders.Count()>1?.40f:.64f),loadedHeight=height-144-waitingHeight;
                     Place(cargoDrawer,size.x-drawerWidth-32,184,drawerWidth,height);
                     if(cargoHeading!=null)Place(cargoHeading.rectTransform,28,20,drawerWidth-280,52);
                     if(cargoCloseButton!=null)Place((RectTransform)cargoCloseButton.transform,drawerWidth-84,16,56,56);
@@ -221,8 +222,8 @@ namespace NightCourier
                     Place(loadedScroll,0,56,column,loadedHeight-56);
                     foreach(var section in new[]{waitingSection,loadedSection})
                     {
-                        var title=section.GetComponentInChildren<Text>(true);if(title!=null){title.enabled=false;title.rectTransform.sizeDelta=new Vector2(column,44);}
-                        CourierSymbolUI.Icon(section,"SectionSymbol",section==waitingSection?CourierIconKind.Store:CourierIconKind.Box,0,0,40,CourierColors.Night,section==waitingSection?"Available orders · visit the sender to collect":"On board · deliver this batch first");
+                        var title=section.GetComponentInChildren<Text>(true);if(title!=null){title.enabled=true;title.color=CourierColors.Night;title.fontSize=26;Place(title.rectTransform,52,0,column-60,44);}
+                        CourierSymbolUI.Icon(section,"SectionSymbol",section==waitingSection?CourierIconKind.Store:CourierIconKind.Box,0,0,40,CourierColors.Night,section==waitingSection?"Available orders · visit the sender to collect":"On board · each order has its own clock");
                     }
                     if(waitingEmptyText!=null)Place(waitingEmptyText.rectTransform,0,64,column,56);
                     if(loadedEmptyText!=null)Place(loadedEmptyText.rectTransform,0,64,column,56);
@@ -265,13 +266,13 @@ namespace NightCourier
                 var labelObject=new GameObject("Label",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));labelObject.transform.SetParent(go.transform,false);
                 var label=labelObject.GetComponent<Text>();label.font=CourierTypography.Display;label.fontSize=24;label.alignment=TextAnchor.MiddleCenter;label.color=CourierColors.Night;label.raycastTarget=false;
                 label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;label.rectTransform.offsetMin=new Vector2(8,0);label.rectTransform.offsetMax=new Vector2(-8,0);
-                routeModeButton.onClick.AddListener(()=>{if(owner==null||!owner.Active||owner.ConversationActive||Run.State!=ShiftState.Docked)return;Run.PreferSafeRoutes=!Run.PreferSafeRoutes;Refresh();});
+                routeModeButton.onClick.AddListener(()=>{if(owner==null||!owner.Active||owner.ConversationActive||owner.GuideOpen||Run.State!=ShiftState.Docked)return;Run.PreferSafeRoutes=!Run.PreferSafeRoutes;Refresh();});
             }
         }
         private void RefreshDestinationTooltip()
         {
             if(destinationTooltip==null)return;
-            destinationVisible=selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!CargoOpen;
+            destinationVisible=selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!owner.GuideOpen&&!CargoOpen;
             if(!destinationVisible)return;
             float width=Mathf.Min(600,page.rect.width-24);
             riskText.fontSize=24;riskText.resizeTextForBestFit=false;
@@ -290,7 +291,7 @@ namespace NightCourier
             Place((RectTransform)routeModeButton.transform,20,268,72,64);
             Caption(routeModeButton,Run.PreferSafeRoutes?"Safe route  |  Switch to fastest":"Fastest route  |  Switch to safe");
             CourierSymbolUI.Button(routeModeButton,Run.PreferSafeRoutes?CourierIconKind.Check:CourierIconKind.FastForward,Run.PreferSafeRoutes?"Safe route · click for fastest route":"Fastest route · click for safe route");
-            routeModeButton.interactable=owner.Active&&!owner.ConversationActive;
+            routeModeButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen;
             timeCostText.fontSize=wearCostText.fontSize=32;
             wearCostText.color=Color.Lerp(CourierColors.Night,CourierColors.Gold,.38f);
             Place(timeCostText.rectTransform,56,0,130,48);Place(wearCostText.rectTransform,256,0,120,48);
@@ -354,18 +355,23 @@ namespace NightCourier
             if(nodePromptButton==null||nodePromptText==null)return;
             bool docked=Run.State==ShiftState.Docked;
             bool moving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
-            bool visible=!Run.Finished&&(moving||(docked&&!owner.ConversationActive));
+            bool visible=!Run.Finished&&(moving||(docked&&!owner.ConversationActive&&!owner.GuideOpen));
             nodePromptButton.gameObject.SetActive(visible);
             if(!visible)return;
-            int node=moving&&Run.ActiveRoad!=null?Run.TravelDestination:Run.Node;
-            nodePromptText.text=docked?(Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E]":"Talk  [E]")
-                :Run.State==ShiftState.Pushing?"Pushing to this stop":"Heading to this stop";
-            nodePromptButton.interactable=docked&&owner.Active;
-            nodePromptText.fontSize=30;
-            if(node>=6&&(!docked||!Run.HasJourney)){nodePromptButton.gameObject.SetActive(false);return;}
-            nodePromptText.text=docked?(Run.HasJourney?"Continue route  [E]":"Talk  [E]"):"Travelling";
-            Place((RectTransform)nodePromptButton.transform,pageSize.x-112,104,80,64);
-            CourierSymbolUI.Button(nodePromptButton,Run.HasJourney?CourierIconKind.Arrow:CourierIconKind.Talk,Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+" · E":"Talk · E");
+            bool pickup=docked&&Run.Parcels.Any(p=>Run.CanLoad(p));
+            bool pending=docked&&Run.Story!=null&&Run.Story.HasPending(Run);
+            if(!docked||(!pickup&&!pending&&!Run.HasJourney)){nodePromptButton.gameObject.SetActive(false);return;}
+            nodePromptButton.interactable=owner.Active&&!owner.GuideOpen;
+            string label=pickup?"Collect parcels  [E]":pending?"Read letter  [E]":"Continue route  [E]";
+            // Keep the action readable on the main map, including when several orders are available.
+            Place((RectTransform)nodePromptButton.transform,pageSize.x-372,112,340,64);
+            CourierSymbolUI.Button(nodePromptButton,pickup?CourierIconKind.Load:pending?CourierIconKind.Talk:CourierIconKind.Arrow,label);
+            var symbol=nodePromptButton.transform.Find("ActionSymbol") as RectTransform;
+            if(symbol!=null)symbol.anchoredPosition=new Vector2(-134,0);
+            nodePromptText.enabled=true;nodePromptText.text=label;nodePromptText.color=CourierColors.Night;
+            nodePromptText.fontSize=26;nodePromptText.alignment=TextAnchor.MiddleCenter;
+            nodePromptText.rectTransform.anchorMin=Vector2.zero;nodePromptText.rectTransform.anchorMax=Vector2.one;
+            nodePromptText.rectTransform.offsetMin=new Vector2(52,0);nodePromptText.rectTransform.offsetMax=new Vector2(-8,0);
 
         }
         private void RefreshKeyInformation()
@@ -374,11 +380,11 @@ namespace NightCourier
             {
                 var go=new GameObject("InformationButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button));
                 go.transform.SetParent(page,false);informationButton=go.GetComponent<Button>();
-                var image=go.GetComponent<Image>();image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");image.type=Image.Type.Sliced;image.color=CourierColors.Raised;informationButton.targetGraphic=image;
+                var image=go.GetComponent<Image>();image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");image.type=Image.Type.Sliced;image.color=CourierColors.Raised;informationButton.targetGraphic=image;informationButton.onClick.AddListener(()=>owner.ShowGuide());
             }
             Place((RectTransform)informationButton.transform,pageSize.x-436,24,80,76);
             CourierSymbolUI.Button(informationButton,CourierIconKind.Info,CourierInformation.Rules(Run));
-            informationButton.GetComponent<CourierIconHint>().showOnClick=true;
+            informationButton.GetComponent<CourierIconHint>().showOnClick=false;
             if(activeRecipientLabel==null)
             {
                 var go=new GameObject("ActiveRecipientLabel",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));go.transform.SetParent(page,false);
@@ -391,8 +397,8 @@ namespace NightCourier
             var state=CourierSymbolUI.Icon(page,"ActiveOrderStateSymbol",damaged||Run.Late?CourierIconKind.Warning:CourierIconKind.Check,760,28,44,damaged||Run.Late?CourierColors.Gold:CourierColors.Mint,active?CourierInformation.Order(Run,order):"");state.gameObject.SetActive(active);
             if(active)
             {
-                activeRecipientLabel.text=Run.Stops[order.Destination].Name;Place(activeRecipientLabel.rectTransform,884,24,480,56);
-                CourierSymbolUI.Hint(activeRecipientLabel.transform,CourierInformation.Order(Run,order));activeRecipientLabel.raycastTarget=true;
+                activeRecipientLabel.text=Run.ActiveOrders.Count()>1?Run.ActiveOrders.Count()+" orders on board · Tab":Run.Stops[order.Destination].Name;Place(activeRecipientLabel.rectTransform,884,24,480,56);
+                CourierSymbolUI.Hint(activeRecipientLabel.transform,string.Join("\n\n",Run.ActiveOrders.Select(p=>CourierInformation.Order(Run,p))));activeRecipientLabel.raycastTarget=true;
             }
             var loadIcon=loadText.transform.parent.Find("LoadIcon");
             if(loadIcon!=null)
@@ -406,7 +412,7 @@ namespace NightCourier
             base.Awake();PrepareVehicleArtwork();
             if(cargoToggleButton!=null)cargoToggleButton.onClick.AddListener(ToggleCargoDrawer);
             if(cargoCloseButton!=null)cargoCloseButton.onClick.AddListener(()=>SetCargoOpen(false));
-            if(nodePromptButton!=null)nodePromptButton.onClick.AddListener(()=>{if(owner==null||!owner.Active||owner.ConversationActive||Run.State!=ShiftState.Docked)return;if(Run.HasJourney)owner.AdvanceDialogue();else owner.BeginConversation();});
+            if(nodePromptButton!=null)nodePromptButton.onClick.AddListener(()=>{if(owner==null||!owner.Active||owner.ConversationActive||owner.GuideOpen||Run.State!=ShiftState.Docked)return;owner.InteractAtNode();});
             for(int i=0;i<stopButtons.Length;i++)
             {
                 int node=i;stopButtons[i].onClick.AddListener(()=>Select(node));
@@ -415,7 +421,7 @@ namespace NightCourier
                 hover.panel=this;hover.node=node;
             }
             departButton.onClick.AddListener(()=>{if(selected>=0)owner.DepartTo(selected);});
-            possessButton.onClick.AddListener(()=>owner.PossessParkedVehicle());repairButton.onClick.AddListener(()=>{if(owner.Active&&!owner.ConversationActive)Run.Repair();});
+            possessButton.onClick.AddListener(()=>owner.PossessParkedVehicle());repairButton.onClick.AddListener(()=>{if(owner.Active&&!owner.ConversationActive&&!owner.GuideOpen)Run.Repair();});
         }
         public override void Bind(NightCourierPrototype prototype)
         {
@@ -433,7 +439,7 @@ namespace NightCourier
                 loadText,cargoToggleText);
             base.Bind(prototype);
         }
-        public void Select(int node){if(!owner.Active||owner.ConversationActive||Run.State!=ShiftState.Docked)return;if(node==Run.Node){owner.BeginConversation();return;}selected=node;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();if(mapMotion!=null)mapMotion.PlaySelection(node);}
+        public void Select(int node){if(!owner.Active||owner.ConversationActive||owner.GuideOpen||Run.State!=ShiftState.Docked)return;if(node==Run.Node){owner.InteractAtNode();return;}selected=node;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();if(mapMotion!=null)mapMotion.PlaySelection(node);}
         public void ClearDestination()
         {
             if(!CanNavigateMap)return;
@@ -464,7 +470,7 @@ namespace NightCourier
                 var parcels=Run.Parcels.Where(p=>p.State==ParcelState.Loaded&&p.Destination==i).ToArray();
                 var pending=Run.Parcels.Where(p=>p.State==ParcelState.Waiting&&p.Origin==i).GroupBy(p=>p.Destination).ToArray();
                 bool current=i==Run.Node,locked=false;
-                stopButtons[i].interactable=docked&&owner.Active&&!owner.ConversationActive;
+                stopButtons[i].interactable=docked&&owner.Active&&!owner.ConversationActive&&!owner.GuideOpen;
                 stopLabels[i].text=Run.Stops[i].Sign;stopCounts[i].text="";stopCounts[i].enabled=false;
                 stopIcons[i].gameObject.SetActive(!(current&&docked&&mapArtwork!=null&&mapArtwork.travelerIcon!=null));
                 stopIcons[i].SetKind(locked?CourierIconKind.Lock:parcels.Length>0?CourierIconKind.Box:current&&docked?CourierIconKind.Pin:CourierIconKind.Dot);
@@ -484,20 +490,22 @@ namespace NightCourier
             parkedVehicleArtwork.gameObject.SetActive(parked&&Run.UnlockedVehicles[v]);
             possessIcon.gameObject.SetActive(parked&&!Run.UnlockedVehicles[v]);
             if(parked)parkedVehicleArtwork.SetVehicle(v);
-            if(parked){possessButton.interactable=owner.Active&&!owner.ConversationActive&&Run.CanPossess(v);Caption(possessButton,Run.Vehicles[v].Name);possessIcon.SetKind(Run.UnlockedVehicles[v]?CourierIconKind.Ghost:CourierIconKind.Lock);possessHint.message=!Run.UnlockedVehicles[v]?"Old pickup locked\nDeliver the Cooling Unit from Settlement Bar to the vampire DJ.":Run.CanPossess(v)?"Possess "+Run.Vehicles[v].Name:"Vehicle unavailable at this stop.";}
-            bool repair=docked&&!Run.IsGhost&&Run.Stops[Run.Node].Repair&&Run.Durability<Run.Car.MaxDurability;repairButton.gameObject.SetActive(repair);repairButton.interactable=owner.Active&&!owner.ConversationActive&&Run.Durability<Run.Car.MaxDurability;
+            if(parked){possessButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen&&Run.CanPossess(v);Caption(possessButton,Run.Vehicles[v].Name);possessIcon.SetKind(Run.UnlockedVehicles[v]?CourierIconKind.Ghost:CourierIconKind.Lock);possessHint.message=!Run.UnlockedVehicles[v]?"Old pickup locked\nDeliver the Cooling Unit from Settlement Bar to the vampire DJ.":Run.CanPossess(v)?"Possess "+Run.Vehicles[v].Name:"Vehicle unavailable at this stop.";}
+            bool repair=docked&&!Run.IsGhost&&Run.Stops[Run.Node].Repair&&Run.Durability<Run.Car.MaxDurability;repairButton.gameObject.SetActive(repair);repairButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen&&Run.Durability<Run.Car.MaxDurability;
             int waiting=0,loadedCount=0;
             for(int i=0;i<rows.Count;i++)
             {
-                var p=Run.Parcels[i];bool show=(p.State==ParcelState.Loaded||p.State==ParcelState.Waiting)&&Run.Batch(p).First()==p;
+                var p=Run.Parcels[i];bool show=Run.IsCargoRow(p);
                 rows[i].gameObject.SetActive(show);
                 if(show){var parent=p.State==ParcelState.Loaded?loadedContent:waitingContent;if(rows[i].transform.parent!=parent)rows[i].transform.SetParent(parent,false);rows[i].Refresh();if(p.State==ParcelState.Waiting)waiting++;else loadedCount++;}
             }
             waitingSection.gameObject.SetActive(true);
+            var availableTitle=waitingSection.GetComponentInChildren<Text>(true);if(availableTitle!=null)availableTitle.text="Available · "+waiting;
+            var onboardTitle=loadedSection.GetComponentInChildren<Text>(true);if(onboardTitle!=null)onboardTitle.text="On board · "+loadedCount;
             if(waitingEmptyText!=null)waitingEmptyText.gameObject.SetActive(waiting==0);
             if(loadedEmptyText!=null)loadedEmptyText.gameObject.SetActive(loadedCount==0);
             if(cargoToggleText!=null)cargoToggleText.text=Run.CompletedBatches+"/"+Run.BatchCount;
-            if(cargoToggleButton!=null)cargoToggleButton.interactable=owner.Active&&!owner.ConversationActive&&!Run.Finished;
+            if(cargoToggleButton!=null)cargoToggleButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen&&!Run.Finished;
             if(!owner.Tutorial.Finished&&owner.Tutorial.CargoLoaded&&!tutorialCargoLoaded)SetCargoOpen(false);
             tutorialCargoLoaded=owner.Tutorial.CargoLoaded;
             RefreshKeyInformation();
@@ -547,7 +555,7 @@ namespace NightCourier
             if(selected>=6&&selected<=8)warning=Run.StationDescription(selected)+(warning!=""?" · "+warning:"");
             riskText.text=blocked!=""?blocked:warning;
             int at=Run.Node;var stops=new List<string>();foreach(var road in route){at=road.Other(at);stops.Add(Run.Stops[at].Name);}
-            departButton.interactable=blocked==""&&!owner.ConversationActive;departHint.message=owner.ConversationActive?"Finish the conversation before departing.":blocked!=""?blocked:"Depart > "+string.Join(" > ",stops)+"\nMove one turn (1 edge as ghost, up to 2 by vehicle). Stops at junctions let you change direction. E continues the route.";
+            departButton.interactable=blocked==""&&!owner.ConversationActive&&!owner.GuideOpen;departHint.message=owner.ConversationActive?"Finish the conversation before departing.":blocked!=""?blocked:"Depart > "+string.Join(" > ",stops)+"\nMove one turn (1 edge as ghost, up to 2 by vehicle). Stops at junctions let you change direction. E continues the route.";
             RefreshDestinationTooltip();
         }
     }

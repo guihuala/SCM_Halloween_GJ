@@ -82,8 +82,12 @@ namespace NightCourier
                 if(used>=(vehicleTurn?(int)Car.Speed:1)||node.StopId<9){used=0;if(DelayEventNodes.Contains(node.Id)||RetreatEventNodes.Contains(node.Id))eventStops++;}
             }
             var order=ActiveOrder;
-            warnings.Add(order==null?turns+" travel turns; no order clock":"Estimated order: "+(OrderTurns+turns)+"/"+TargetTurns(order)+" turns"+(node.StopId==order.Destination?" at delivery":" at waypoint"));
-            if(order!=null&&OrderTurns+turns>TargetTurns(order))warnings.Add("Will exceed the order target");
+            if(order==null)warnings.Add(turns+" travel turns; no order clock");
+            foreach(var carried in ActiveOrders)
+            {
+                int projected=TurnsFor(carried)+turns;
+                warnings.Add(carried.Name+": "+projected+"/"+TargetTurns(carried)+" turns"+(node.StopId==carried.Destination?" at delivery":" at waypoint")+(projected>TargetTurns(carried)?" · will exceed target":""));
+            }
             if(damage.Count>0)warnings.Add((PreferSafeRoutes?"No intact route available. ":"")+"Will damage: "+string.Join(", ",damage));
             else if(cargo.Length>0)warnings.Add(cargo.Any(p=>p.Damaged)?"Cargo already damaged; damage cannot be repaired":"Cargo intact on this route");
             if(!IsGhost&&turns>Durability)warnings.Add("Vehicle expires after "+(int)Durability+" turn(s); then ghost, without protection");
@@ -123,15 +127,15 @@ namespace NightCourier
             for(int i=0;i<travelEdges.Length;i++)ApplyStreetSurface(i);
             AdvanceClock(1);Progress=1;animationSeconds=0;
             if(!IsGhost)Durabilities[VehicleIndex]=Math.Max(0,Durability-1);
-            var order=ActiveOrder;
+            var orders=ActiveOrders.ToArray();
             // Delivery has priority; failed probability rolls do not spend the order's event opportunity.
             var end=CourierStreetMap.Nodes.First(n=>n.StopId==destination);
             bool delay=DelayEventNodes.Contains(end.Id);
             bool retreat=RetreatEventNodes.Contains(end.Id);
-            if(order!=null&&order.Destination!=destination&&!OrderEventTriggered&&(delay||retreat)&&random.NextDouble()<EventProbability)
+            if(orders.Length>0&&orders.All(p=>!p.EventTriggered)&&!ActiveOrders.Any(p=>p.Destination==destination)&&(delay||retreat)&&random.NextDouble()<EventProbability)
             {
                 var pool=Events.Select((e,i)=>new {e,i}).Where(x=>x.e.Effect==(delay?RoadEventEffect.Wait:RoadEventEffect.Retreat)).ToArray();
-                if(pool.Length>0){EncounterIndex=pool[random.Next(pool.Length)].i;OrderEventTriggered=true;State=ShiftState.Encounter;EmitAudio(Events[EncounterIndex].SoundCue);return;}
+                if(pool.Length>0){EncounterIndex=pool[random.Next(pool.Length)].i;foreach(var p in Parcels.Where(p=>p.State==ParcelState.Loaded))p.EventTriggered=true;State=ShiftState.Encounter;EmitAudio(Events[EncounterIndex].SoundCue);return;}
             }
             CompleteStreetTurn();
         }

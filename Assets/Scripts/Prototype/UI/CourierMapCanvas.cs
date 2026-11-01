@@ -14,6 +14,7 @@ namespace NightCourier
         private Vector2 size;
         private float renderedZoom, lastDragTime;
         private bool dragging, initialized;
+        public bool IsDragging => dragging && panel != null && panel.CanNavigateMap;
         private RectTransform Viewport => (RectTransform)transform;
         private bool ReducedMotion => panel!=null&&panel.MapReducedMotion;
         public void ApplyLayout()

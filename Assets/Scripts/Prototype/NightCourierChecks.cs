@@ -87,7 +87,7 @@ namespace NightCourier
         public static string RunAll()
         {
             assertions=0;var r=new CourierRun();
-            Require(r.BatchCount==11&&r.Parcels.Count==12,"Expected 11 orders / 12 cargo entries");
+            Require(r.BatchCount==8&&r.Parcels.Count(p=>p.Enabled)==9,"Expected 8 deliveries / 9 active cargo entries");
             Require(r.Events.Count(e=>e.Effect==RoadEventEffect.Wait)==7&&r.Events.Count(e=>e.Effect==RoadEventEffect.Retreat)==5,"Expected 7 delays and 5 retreats");
             Require(CourierStreetMap.Nodes.Length==32&&CourierStreetMap.Nodes.Select(n=>n.StopId).Distinct().Count()==32,"Street IDs invalid");
             foreach(var n in CourierStreetMap.Nodes)foreach(var to in CourierStreetMap.Nodes)
@@ -95,7 +95,7 @@ namespace NightCourier
             CheckEvents();
             CheckPlanningAndTutorial();
             r=new CourierRun();r.Node=5;r.LoadParcel(r.Parcels[9]);
-            Require(r.Parcels[8].State==ParcelState.Loaded&&!r.LoadParcel(r.Parcels[10])&&!r.Unload(r.Parcels[9]),"Batch exclusivity violated");
+            Require(r.Parcels[8].State==ParcelState.Loaded&&!r.LoadParcel(r.Parcels[10])&&r.LoadParcel(r.Parcels[7])&&!r.Unload(r.Parcels[9]),"Multiple pickup or batch grouping failed");
             Go(r,3);Require(r.Results.Count==1,"Combined batch not delivered");
             r=new CourierRun();r.LoadParcel(r.Parcels[0]);r.Parcels[0].Damaged=true;r.Parcels[0].TimeLimit=1;Go(r,3);
             Require(r.Results[0].Late&&r.Results[0].Damaged&&r.Results[0].Evaluation=="Delivery failed","Binary evaluation wrong");
@@ -107,7 +107,7 @@ namespace NightCourier
                 Require(fast.Node==slow.Node&&fast.OrderTurns==slow.OrderTurns&&fast.VehicleIndex==slow.VehicleIndex,"Frame size changed turn outcome");
             }
             for(int seed=0;seed<10;seed++)
-            {r=new CourierRun(seed);CompleteAll(r);Require(r.Results.Count==11&&r.Delivered==12&&r.CompletedBatches==11,"Not all orders completable as ghost");}
+            {r=new CourierRun(seed);CompleteAll(r);Require(r.Results.Count==8&&r.Delivered==9&&r.CompletedBatches==8,"Not all orders completable as ghost");}
             return assertions+" assertions passed; "+CourierRoadEffectsChecks.RunAll();
         }
         private static void CheckPlanningAndTutorial()
