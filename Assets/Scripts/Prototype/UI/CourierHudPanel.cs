@@ -129,7 +129,12 @@ namespace NightCourier
         public override void Bind(NightCourierPrototype prototype){if(stageGraphic!=null){stageGraphic.gameObject.SetActive(false);stageGraphic.Owner=prototype;}base.Bind(prototype);}
         protected override void Refresh()
         {
-            if(backgroundScroll!=null)backgroundScroll.reducedMotion=reducedMotion;
+            if(backgroundScroll!=null)
+            {
+                backgroundScroll.reducedMotion=reducedMotion;
+                var pattern=backgroundScroll.GetComponent<Image>();
+                if(pattern!=null)pattern.color=CourierColors.Alpha(Color.white,owner.HasPlanner?.2f:1);
+            }
             NightCourier.CourierLocalization.Set(timeText, Run.ActiveOrder==null?"—":Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder));
             motion.RestoreLayout();ApplyReadableLayout();
             bool driving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;

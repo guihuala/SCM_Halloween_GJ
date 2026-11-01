@@ -50,7 +50,7 @@
         },
         {
           "speaker": "Goolie",
-          "text": "\"And we have to strictly follow the <color=#944B43><b>Code of Silence</b></color> so we don't blow our cover... Talk about tough!\"",
+          "text": "\"And we have to strictly follow the <color=#944B43><b>omertà</b></color> so we don't blow our cover... Talk about tough!\"",
           "sourceChinese": "还得遵守<color=#944B43><b>缄默法则</b></color>，不被人类发现，这可真难！"
         },
         {
@@ -700,6 +700,6 @@
       "description": "A maternal organizer, bar owner and bartender living among humans. Buys cooling equipment and livestock blood in the human settlement and needs mead for the party."
     }
   ],
-  "worldBackground": "The Rule of Silence: dark creatures agree never to reveal their society to humans. They live long lives but have short active periods and spend much of their time asleep, so their society is quiet.",
+  "worldBackground": "omertà: dark creatures agree never to reveal their society to humans. They live long lives but have short active periods and spend much of their time asleep, so their society is quiet.",
   "sourceEnglishDocument": "文案最新版.docx"
 }

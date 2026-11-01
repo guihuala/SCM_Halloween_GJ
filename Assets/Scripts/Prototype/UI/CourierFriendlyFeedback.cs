@@ -29,7 +29,9 @@ namespace NightCourier
         public int ActiveNotes => notes.Count;
         public void Initialize(CourierRoutePanel page, NightCourierPrototype prototype)
         {
-            Clear(); panel = page; owner = prototype; observed = null; warned.Clear();
+            Clear(); panel = page; owner = prototype; observed = prototype.Run; warned.Clear();
+            order = observed.ActiveOrder; turns = order != null ? observed.TurnsFor(order) : 0;
+            vehicle = observed.VehicleIndex; durability = observed.Durability;
             if (overlay == null)
             {
                 overlay = new GameObject("FriendlyFeedback", typeof(RectTransform), typeof(CanvasGroup)).GetComponent<RectTransform>();
@@ -50,6 +52,25 @@ namespace NightCourier
             if (target == null || panel.MapReducedMotion) return;
             var pulse = target.GetComponent<CourierValuePulse>() ?? target.gameObject.AddComponent<CourierValuePulse>();
             pulse.Play();
+        }
+        public void VehicleExchanged()
+        {
+            if (owner == null || panel == null) return;
+            // Replace earlier notes so repeated exchanges cannot stack over the player.
+            Clear();
+            string message = "Vehicle exchanged: " + owner.Run.Car.Name;
+            var hud = panel.vehicleArtwork != null ? (RectTransform)panel.vehicleArtwork.transform : panel.durabilityText.rectTransform;
+            var noteAnchor = panel.possessButton != null && panel.possessButton.gameObject.activeInHierarchy
+                ? (RectTransform)panel.possessButton.transform : hud;
+            Show(noteAnchor, message + "\nVehicle turns remaining: " + Mathf.CeilToInt(owner.Run.Durability), CourierIconKind.Check, 2.6f, false);
+            Pulse(hud); Pulse(panel.durabilityText.rectTransform);
+            var marker = panel.mapArtwork != null ? panel.mapArtwork.travelerIcon : null;
+            if (marker != null)
+            {
+                var target = (RectTransform)marker.transform;
+                Show(target, message, CourierIconKind.Check, 2.6f, false);
+                Pulse(target);
+            }
         }
         public void Show(RectTransform target, string text, CourierIconKind icon, float lifetime = 1.2f, bool drift = true)
         {
@@ -126,7 +147,7 @@ namespace NightCourier
                     if (notes[i].target == notes[j].target)
                     { var p = notes[i].rect.anchoredPosition; p.y = Mathf.Max(overlay.rect.yMin + 12, notes[j].rect.anchoredPosition.y - notes[i].rect.rect.height - 8); notes[i].rect.anchoredPosition = p; }
         }
-        public void Clear() { foreach (var note in notes) if (note.rect != null) Destroy(note.rect.gameObject); notes.Clear(); }
+        public void Clear() { foreach (var note in notes) if (note.rect != null) { note.rect.gameObject.SetActive(false); Destroy(note.rect.gameObject); } notes.Clear(); }
         private void OnEnable() { CourierLocalization.Changed += ResizeNotes; }
         private void ResizeNotes()
         {

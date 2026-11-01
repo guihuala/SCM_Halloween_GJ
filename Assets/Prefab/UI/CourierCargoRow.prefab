@@ -825,7 +825,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: Abandoned Radio Tower
+  m_Text: Tower
 --- !u!1 &5979931658254677571
 GameObject:
   m_ObjectHideFlags: 0

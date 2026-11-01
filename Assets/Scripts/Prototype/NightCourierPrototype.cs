@@ -68,7 +68,7 @@ namespace NightCourier
                     int colon = line.IndexOf(':');
                     return colon > 0 ? line.Substring(colon + 1).TrimStart() : line;
                 }
-                if (Run.State == ShiftState.Docked) return Run.Stops[Run.Node].Name + " | " + (Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":(Run.Node>=6?Run.StationDescription(Run.Node):"Click this stop or press E to talk."));
+                if (Run.State == ShiftState.Docked) return Run.Stops[Run.Node].Name + " | " + (Run.Stops[Run.Node].Vehicle>=0?Run.StationDescription(Run.Node)+"  [E: Swap vehicle]":Run.HasJourney?"Continue to "+Run.Stops[Run.PlannedDestination].Name+"  [E: Continue]":Run.Node>=6?Run.StationDescription(Run.Node):"Click this stop or press E to talk.");
                 if (Run.State == ShiftState.Pushing) return "Broken down. You are pushing to the next stop. The journey continues.";
                 if (Run.State == ShiftState.Driving && Run.IsReturning) return "Returning to " + Run.Stops[Run.TravelDestination].Name;
                 if (Run.State == ShiftState.Driving) return "Heading to " + Run.Stops[Run.HasJourney?Run.PlannedDestination:Run.TravelDestination].Name+(Run.HasJourney&&Run.TravelDestination!=Run.PlannedDestination?" - Next stop: "+Run.Stops[Run.TravelDestination].Name:"");
@@ -158,6 +158,8 @@ namespace NightCourier
             int vehicle = Run.Stops[Run.Node].Vehicle;
             if (vehicle < 0 || !Run.Possess(vehicle)) return false;
             InCar = true; PossessionGlow=1;
+            var route = planner as CourierRoutePanel;
+            if(route!=null)route.PresentVehicleExchange();
             return true;
         }
         public bool DepartTo(int destination)

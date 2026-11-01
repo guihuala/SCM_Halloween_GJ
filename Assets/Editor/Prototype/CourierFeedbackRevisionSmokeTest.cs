@@ -181,7 +181,7 @@ public static class CourierFeedbackRevisionSmokeTest
                     Check(waitingRows.Count(row=>row.Item==r.Parcels[2])==1&&!waitingRows.Any(row=>row.Item==r.Parcels[3]),"Woods pickup should have one row");
                     var combinedRow=waitingRows.Single(row=>row.Item==r.Parcels[2]);
                     Check(combinedRow.nameText.text.Contains("Honey")&&combinedRow.nameText.text.Contains("Jam")&&combinedRow.secondaryArtwork.gameObject.activeSelf,"Combined pickup artwork/title missing");
-                    Check(combinedRow.destinationText.text.Contains("Brewing Cellar")&&combinedRow.destinationText.text.Contains("Museum Ruins"),"Pickup omitted one destination");
+                    Check(combinedRow.destinationText.text.Contains("Cellar")&&combinedRow.destinationText.text.Contains("Museum"),"Pickup omitted one destination");
                     ScreenCapture.CaptureScreenshot("/tmp/courier-task-flow-pickup.png");break;
                 case 7:
                     var pickupRow=page.waitingContent.GetComponentsInChildren<CourierCargoRow>().Single(row=>row.Item==r.Parcels[2]);

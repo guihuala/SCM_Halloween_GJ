@@ -45,7 +45,7 @@ namespace NightCourier
             FitMapImage(terrainImage,map.rect.size);
             ConfigureTerrainEdge();
             routeImage.sprite=catalog!=null?catalog.routeArtwork:null;
-            routeImage.color=Color.white;
+            routeImage.color=new Color(1,1,1,.68f);
             bool hasRouteArtwork=routeImage.sprite!=null;
             routeImage.gameObject.SetActive(hasRouteArtwork);
             FitMapImage(routeImage,map.rect.size);
@@ -113,7 +113,33 @@ namespace NightCourier
             primary.SetVerticesDirty();
         }
         // Follow the final turn/progress state after the simulation's Update, including mid-road exhaustion.
-        private void LateUpdate(){RefreshTraveler();}
+        private void LateUpdate()
+        {
+            RefreshTraveler();
+            RefreshHierarchy();
+        }
+        private void RefreshHierarchy()
+        {
+            if(primary==null||primary.Owner==null)return;
+            var panel=primary.Owner.HasPlanner?GetComponentInParent<CourierRoutePanel>():null;
+            if(panel==null)return;
+            var run=primary.Owner.Run;
+            for(int i=0;i<landmarkImages.Length;i++)
+            {
+                bool focus=i==run.Node||i==panel.SelectedMapNode||i==panel.HoveredMapNode||panel.LegendHighlightsNode(i);
+                if(landmarkImages[i]!=null)landmarkImages[i].color=focus?Color.white:new Color(.84f,.88f,.86f,1);
+                panel.stopLabels[i].color=i==run.Node||i==panel.SelectedMapNode?CourierColors.Gold:
+                    i==panel.HoveredMapNode?CourierColors.Paper:
+                    run.Parcels.Any(p=>p.State==ParcelState.Loaded&&p.Destination==i)?CourierColors.Mint:CourierColors.Muted;
+            }
+            if(streetLabels==null)return;
+            for(int i=0;i<streetLabels.Length;i++)
+            {
+                int id=CourierStreetMap.Nodes[i].StopId;
+                bool focus=id==run.Node||id==panel.SelectedMapNode||id==panel.HoveredMapNode||panel.LegendHighlightsNode(id);
+                streetLabels[i].color=focus?CourierColors.Paper:CourierColors.Alpha(CourierColors.Muted,.68f);
+            }
+        }
         private void RefreshTraveler()
         {
             if(travelOverlay==null||travelerIcon==null)return;
@@ -141,7 +167,7 @@ namespace NightCourier
         private readonly Vector3[] stationCorners=new Vector3[4];
         private Vector2 stationLayoutSize;
         private readonly Vector2[] stationCenters=new Vector2[3];
-        private static readonly Vector2 StationSize=new Vector2(96,96);
+        private static readonly Vector2 StationSize=new Vector2(80,88);
         // Cache the search: roads and landmarks stay fixed until the map canvas changes size.
         private void LayoutStations(CourierRoutePanel panel,Vector2 size)
         {
@@ -150,7 +176,8 @@ namespace NightCourier
             var occupied=new List<Rect>();
             foreach(var graphic in panel.stopLabels.Cast<Graphic>().Concat(panel.stopCounts.Cast<Graphic>()).Concat(landmarkImages.Cast<Graphic>()).Concat(streetLabels.Cast<Graphic>()))
             {
-                if(!graphic.gameObject.activeInHierarchy)continue;
+                if(!graphic.gameObject.activeInHierarchy||!graphic.enabled)continue;
+                var text=graphic as Text;if(text!=null&&string.IsNullOrWhiteSpace(text.text))continue;
                 graphic.rectTransform.GetWorldCorners(stationCorners);
                 var lo=transform.InverseTransformPoint(stationCorners[0]);var hi=transform.InverseTransformPoint(stationCorners[2]);var mapRect=((RectTransform)transform).rect;
                 occupied.Add(Rect.MinMaxRect(lo.x-mapRect.xMin,mapRect.yMax-hi.y,hi.x-mapRect.xMin,mapRect.yMax-lo.y));
@@ -161,15 +188,16 @@ namespace NightCourier
                 var node=CourierRouteGraphic.MapPoint(CourierStreetMap.Nodes.First(n=>n.StopId==station+6).Point,size);
                 float best=float.PositiveInfinity;Vector2 chosen=node;
                 // Prefer nearby empty space; include every road, not just this station's incident edges.
-                for(int radius=80;radius<=240;radius+=16)for(int direction=0;direction<24;direction++)
+                for(int radius=80;radius<=288;radius+=16)for(int direction=0;direction<24;direction++)
                 {
                     float angle=direction*Mathf.PI/12;
                     var center=node+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*radius;
-                    var bounds=new Rect(center-StationSize*.5f-Vector2.one*12,StationSize+Vector2.one*24);
+                    var bounds=new Rect(center-StationSize*.5f-Vector2.one*10,StationSize+Vector2.one*20);
                     if(bounds.xMin<8||bounds.yMin<8||bounds.xMax>size.x-8||bounds.yMax>size.y-8)continue;
+                    if(roadPoints.Any(point=>bounds.Contains(point)))continue;
                     float score=radius+direction*.01f;
-                    foreach(var other in occupied)if(bounds.Overlaps(other))score+=10000;
-                    foreach(var point in roadPoints)if(bounds.Contains(point))score+=1000;
+                    foreach(var other in occupied)if(bounds.Overlaps(other))score+=400;
+
                     if(score<best){best=score;chosen=center;}
                 }
                 stationCenters[station]=chosen;
@@ -186,7 +214,7 @@ namespace NightCourier
                     var rect=CreateRect(landmarkLayer,"StreetLabel_"+CourierStreetMap.Nodes[i].Id);
                     var label=GetOrAdd<Text>(rect.gameObject);label.font=panel.stopLabels[0].font;
                     label.alignment=TextAnchor.MiddleCenter;label.raycastTarget=false;
-                    label.color=CourierColors.Muted;label.fontSize=24;
+                    label.color=CourierColors.Muted;label.fontSize=20;
                     var outline=GetOrAdd<Outline>(rect.gameObject);outline.effectColor=CourierColors.Night;outline.effectDistance=new Vector2(1,-1);
                     if(CourierStreetMap.Nodes[i].StopId>=9)
                     {
@@ -250,7 +278,7 @@ namespace NightCourier
                 var center=stationCenters[i];rect.anchoredPosition=new Vector2(center.x,-center.y);rect.sizeDelta=StationSize;
                 // A thin, non-interactive leader links the displaced facility to its exact road node.
                 var leader=CreateRect(rect,"StationLeader");leader.SetAsFirstSibling();
-                var line=GetOrAdd<Image>(leader.gameObject);line.color=CourierColors.Alpha(CourierColors.Paper,.45f);line.raycastTarget=false;
+                var line=GetOrAdd<Image>(leader.gameObject);line.color=CourierColors.Alpha(CourierColors.Muted,.28f);line.raycastTarget=false;
                 var delta=new Vector2(point.x-center.x,center.y-point.y);
                 leader.anchorMin=leader.anchorMax=Vector2.one*.5f;leader.pivot=new Vector2(0,.5f);
                 leader.anchoredPosition=Vector2.zero;leader.sizeDelta=new Vector2(delta.magnitude,2);
@@ -262,14 +290,14 @@ namespace NightCourier
                 NightCourier.CourierLocalization.Set(stationLabel, title+"\n"+"Swap · +1 turn");
                 CourierSymbolUI.Button(button,i==0?CourierIconKind.Heat:i==1?CourierIconKind.Dry:CourierIconKind.Fragile,CourierInformation.Station(run,target));
                 stationLabel.enabled=true;stationLabel.fontSize=20;stationLabel.alignment=TextAnchor.LowerCenter;
-                CourierLocalization.Set(stationLabel,run.Node==target?"Swap · E":i==0?"H · Heat":i==1?"W · Water":"Q · Suspension");
+                CourierLocalization.Set(stationLabel,run.Node==target?"Swap · E":i==0?"H":i==1?"W":"Q");
                 var oldSymbol=button.transform.Find("ActionSymbol");if(oldSymbol!=null)oldSymbol.GetComponent<CourierIconGraphic>().enabled=false;
                 var vehicle=CourierVehicleIconView.Ensure(button.transform,"StationVehicleArtwork",Vector2.zero,Vector2.one*56);
                 vehicle.SetVehicle(i);var vehicleRect=(RectTransform)vehicle.transform;vehicleRect.anchorMin=vehicleRect.anchorMax=vehicleRect.pivot=Vector2.one*.5f;vehicleRect.anchoredPosition=new Vector2(0,12);
                 var background=button.targetGraphic as Image;
                 if(background!=null){background.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");background.type=Image.Type.Sliced;background.color=CourierColors.Paper;}
                 foreach(var border in button.GetComponents<Outline>())border.enabled=false;
-                stationLabel.rectTransform.offsetMin=new Vector2(2,4);stationLabel.rectTransform.offsetMax=new Vector2(-2,-66);
+                stationLabel.rectTransform.offsetMin=new Vector2(2,4);stationLabel.rectTransform.offsetMax=new Vector2(-2,-62);
                 var colors=button.colors;colors.normalColor=run.HasProtection(target)?CourierColors.Mint:Color.white;colors.highlightedColor=CourierColors.Hover;button.colors=colors;
                 var stationHint=button.GetComponent<CourierIconHint>();if(stationHint!=null)stationHint.showOnClick=false;
             }

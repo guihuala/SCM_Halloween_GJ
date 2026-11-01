@@ -110,7 +110,7 @@
 
 ## 可用性修正
 
-Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels / Continue 固定在地图上方。地点标牌使用场所名称（Mountain Train Tunnel / Foggy Woods / Brewing Cellar / Abandoned TV Tower / Museum Ruins / The Tavern）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用易读的手写字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
+Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels / Continue 固定在地图上方。地点标牌使用场所名称（Tunnel / Woods / Cellar / Tower / Museum / Tavern）。地图圆点、文字和地标共用选路交互；提示框优先显示在控件上方或下方，避开右侧数值。正文使用易读的手写字体，地图与订单字号增大；Goolie 对话复用现有幽灵立绘作为头像。
 
 事件使用每个合资格路口 65% 的概率，每单最多一次，空载不触发；不同路口的机会累计，因此经过 2 个合资格路口至少遇到一次的概率为 87.75%。每次新开局与重开使用新的随机种子。验收入口：`Tools > Night Courier > Checks > Feedback Revision`。
 
@@ -137,8 +137,8 @@ Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels 
 
 ## 本轮反馈修正
 
-- Gooy 的信在快递站开局自动播放，重开后重新播放；到达 subway（节点0，Mountain Train Tunnel）不会重复触发。配送指引可通过右上角信息按钮查看。
-- 英文剧情逐段采用《文案最新版.docx》，使用 Ashpine Vale、Ghost Express、Shadow Society、Code of Silence；地图名称和货物名称同步。蜂蜜／花酱一次接取两件，播放一次文档中的完整共用对白，再分别配送到 Brewing Cellar 和 Museum Ruins。
+- Gooy 的信在快递站开局自动播放，重开后重新播放；到达 subway（节点0，Tunnel）不会重复触发。配送指引可通过右上角信息按钮查看。
+- 英文剧情逐段采用《文案最新版.docx》，使用 Ashpine Vale、Ghost Express、Shadow Society、omertà；地图名称和货物名称同步。蜂蜜／花酱一次接取两件，播放一次文档中的完整共用对白，再分别配送到 Cellar 和 Museum。
 - 到达地点不再播放尚未接取货物的寄件对白。点击主屏 Collect parcels 或按 E 打开订单；每次接取播放对应对白，结束后可在原地继续接取。文档未包含专属剧情的订单显示领取确认。
 - Orders 中逐项列出所有已接订单、目的地、货物要求和各自回合。多单时扩大 On board 区域，列表可滚动；主屏显示携带订单数，计时优先显示最紧迫订单，路线预览列出各单预测。
 - 随机事件概率由35%调至65%，每单最多经历一次；新接订单不会重置旧单的事件记录。回合上限按实际幽灵路线校准，至少保留3回合事件余量（普通单7～10回合，花酱13回合），给延误、倒退后重新赶路留出余量。
@@ -149,14 +149,14 @@ Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels 
 
 | 寄件点 | 一次接取的物品 | 收件点 |
 | --- | --- | --- |
-| Mountain Train Tunnel | Cassette Tape | Abandoned TV Tower |
-| Foggy Woods | Violin Rosin | Mountain Train Tunnel |
-| Foggy Woods | Autumn Honey + Flower Jam（一起领取、一次对白） | 分别送到 Brewing Cellar / Museum Ruins |
-| Brewing Cellar | Spring Mead | The Tavern |
-| Abandoned TV Tower | Spicy Blood Stew（夜宵） | Foggy Woods |
-| The Tavern | Moisture Absorber | Museum Ruins |
-| The Tavern | Supply Care Package（Radiator + Livestock Blood） | Abandoned TV Tower |
+| Tunnel | Cassette Tape | Tower |
+| Woods | Violin Rosin | Tunnel |
+| Woods | Autumn Honey + Flower Jam（一起领取、一次对白） | 分别送到 Cellar / Museum |
+| Cellar | Spring Mead | Tavern |
+| Tower | Spicy Blood Stew（夜宵） | Woods |
+| Tavern | Moisture Absorber | Museum |
+| Tavern | Supply Care Package（Radiator + Livestock Blood） | Tower |
 
-Museum Ruins 没有寄件任务。旧 Flower Cakes、杂货、独立 Late-night Snack 任务已停用，不显示、不计入通关。蜂蜜与花酱在待领取列表合并显示，接取后在 On board 分为两个目的地；领取同时启动两件物品各自的计时，到站只交付对应物品并播放对应收件对白。
+Museum 没有寄件任务。旧 Flower Cakes、杂货、独立 Late-night Snack 任务已停用，不显示、不计入通关。蜂蜜与花酱在待领取列表合并显示，接取后在 On board 分为两个目的地；领取同时启动两件物品各自的计时，到站只交付对应物品并播放对应收件对白。
 
 蜂蜜／花酱一起领取后，按 Woods → Cellar → Museum 的幽灵路线实测需要4／10回合；对应上限为7／13回合，包含途中先送蜂蜜的时间及3回合事件余量。

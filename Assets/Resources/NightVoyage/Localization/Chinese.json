@@ -1,9 +1,21 @@
 {
   "entries": [
     {
-      "en": "Swap vehicle  [E]\n+1 order turn · 5 vehicle turns",
-      "zhHans": "换载具  [E]\n订单 +1 回合 · 载具可用 5 回合",
-      "zhHant": "換載具  [E]\n訂單 +1 回合 · 載具可用 5 回合",
+      "en": "  [E: Swap vehicle]",
+      "zhHans": "  [E：换载具]",
+      "zhHant": "  [E：換載具]",
+      "fragment": true
+    },
+    {
+      "en": "At this station: press E or click again to swap.",
+      "zhHans": "到站后：按 E 或再次点击本站图标换载具。",
+      "zhHant": "到站後：按 E 或再次點擊本站圖示換載具。",
+      "fragment": true
+    },
+    {
+      "en": "Swap vehicle  [E]\n+1 turn · 5 uses",
+      "zhHans": "换载具  [E]\n+1 回合 · 可用 5 回合",
+      "zhHant": "換載具  [E]\n+1 回合 · 可用 5 回合",
       "fragment": false
     },
     {
@@ -643,7 +655,7 @@
       "fragment": true
     },
     {
-      "en": "Visit the Mountain Train Tunnel to read Gooy's letter. Open Orders [Tab] to compare deliveries. Empty travel has no order timer.",
+      "en": "Visit the Tunnel to read Gooy's letter. Open Orders [Tab] to compare deliveries. Empty travel has no order timer.",
       "zhHans": "前往穿山隧道阅读 Gooy 的信。按 Tab 查看订单，空载赶路不计时。",
       "zhHant": "前往穿山隧道閱讀 Gooy 的信。按 Tab 查看訂單，空載趕路不計時。",
       "fragment": true
@@ -781,37 +793,37 @@
       "fragment": true
     },
     {
-      "en": "Mountain Train Tunnel",
+      "en": "Tunnel",
       "zhHans": "穿山隧道",
       "zhHant": "穿山隧道",
       "fragment": true
     },
     {
-      "en": "Foggy Woods",
+      "en": "Woods",
       "zhHans": "浓雾森林",
       "zhHant": "濃霧森林",
       "fragment": true
     },
     {
-      "en": "Brewing Cellar",
+      "en": "Cellar",
       "zhHans": "酿酒地窖",
       "zhHant": "釀酒地窖",
       "fragment": true
     },
     {
-      "en": "Abandoned TV Tower",
+      "en": "Tower",
       "zhHans": "废弃电视塔",
       "zhHant": "廢棄電視塔",
       "fragment": true
     },
     {
-      "en": "Museum Ruins",
+      "en": "Museum",
       "zhHans": "博物馆遗迹",
       "zhHant": "博物館遺跡",
       "fragment": true
     },
     {
-      "en": "The Tavern",
+      "en": "Tavern",
       "zhHans": "酒馆",
       "zhHant": "酒館",
       "fragment": true
@@ -1597,7 +1609,7 @@
       "fragment": false
     },
     {
-      "en": "\"I've never worked a Halloween shift before! All the seniors say it's the biggest night of the year for the Shadow Society. It's the only night humans can actually see us, AND we have to strictly follow the Code of Silence so we don't blow our cover... Talk about tough! Plus, there are way too many humans wandering around town tonight—even kids running down the street in short sleeves and plastic capes... Ugh, whatever! Time to hit the road!\"",
+      "en": "\"I've never worked a Halloween shift before! All the seniors say it's the biggest night of the year for the Shadow Society. It's the only night humans can actually see us, AND we have to strictly follow the omertà so we don't blow our cover... Talk about tough! Plus, there are way too many humans wandering around town tonight—even kids running down the street in short sleeves and plastic capes... Ugh, whatever! Time to hit the road!\"",
       "zhHans": "我从来没有经历过万圣节，前辈都说这是暗影社会的大事件，这是人类唯一能看到我们的机会，还得遵守缄默法则，不被人类发现，这可真难！而且今晚镇上晃荡的人类好像格外多，连穿短袖套塑料披风的小孩都在街上跑……不管了，先出发吧！",
       "zhHant": "我從來沒有經歷過萬聖節，前輩都說這是暗影社會的大事件，這是人類唯一能看到我們的機會，還得遵守緘默法則，不被人類發現，這可真難！而且今晚鎮上晃蕩的人類好像格外多，連穿短袖套塑料披風的小孩都在街上跑……不管了，先出發吧！",
       "fragment": false
@@ -3277,7 +3289,7 @@
       "fragment": false
     },
     {
-      "en": "\"And we have to strictly follow the <color=#944B43><b>Code of Silence</b></color> so we don't blow our cover... Talk about tough!\"",
+      "en": "\"And we have to strictly follow the <color=#944B43><b>omertà</b></color> so we don't blow our cover... Talk about tough!\"",
       "zhHans": "还得遵守<color=#944B43><b>缄默法则</b></color>，不被人类发现，这可真难！",
       "zhHant": "還得遵守<color=#944B43><b>緘默法則</b></color>，不被人類發現，這可真難！",
       "fragment": false

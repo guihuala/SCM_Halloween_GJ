@@ -3088,7 +3088,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: Abandoned Radio Tower
+  m_Text: Tower
 --- !u!114 &3323831248092283096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5190,7 +5190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  message: Abandoned Radio Tower
+  message: Tower
 --- !u!114 &91249371867200209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7340,7 +7340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf30b74a1ba4ea38528ca8cfc2fe265, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  message: Midnight Radio Tower
+  message: Tower
 --- !u!114 &7317261795528727546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7434,7 +7434,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.18
-  m_Text: Midnight Radio Tower
+  m_Text: Tower
 --- !u!114 &5806959583424266337
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -539,6 +539,13 @@ namespace NightCourier
             var events=UnityEngine.EventSystems.EventSystem.current;if(events!=null)events.SetSelectedGameObject(null);
             Refresh();
         }
+        public void PresentVehicleExchange()
+        {
+            // Confirm the action itself: exchanging for the same vehicle also refills it.
+            presentationReady=false;
+            Refresh();
+            if(FriendlyFeedback!=null)FriendlyFeedback.VehicleExchanged();
+        }
         protected override void Refresh()
         {
             if(Run.State!=ShiftState.Docked)routeDetailsRequested=false;
@@ -629,7 +636,7 @@ namespace NightCourier
                 label.enabled=true;label.color=CourierColors.Night;label.fontSize=24;label.alignment=TextAnchor.MiddleCenter;
                 label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;
                 label.rectTransform.offsetMin=new Vector2(60,4);label.rectTransform.offsetMax=new Vector2(-8,-4);
-                CourierLocalization.Set(label,"Swap vehicle  [E]\n+1 order turn · 5 vehicle turns");
+                CourierLocalization.Set(label,"Swap vehicle  [E]\n+1 turn · 5 uses");
             }
             CourierSymbolUI.Button(repairButton,CourierIconKind.Wrench,"Repair vehicle");
             bool controls=parked||repair;

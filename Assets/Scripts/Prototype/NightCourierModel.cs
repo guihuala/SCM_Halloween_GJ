@@ -86,12 +86,12 @@ namespace NightCourier
         private void EmitAudio(string cue){if(!string.IsNullOrEmpty(cue))AudioCues.Enqueue(cue);}
 
         public readonly Stop[] Stops={
-            new Stop("Mountain Train Tunnel","Mountain Train Tunnel","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
-            new Stop("Foggy Woods","Foggy Woods","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
-            new Stop("Brewing Cellar","Brewing Cellar","Little Werebear: The cellar feels warm again... I hope I can sleep this winter.",0.31f,0.8f,1,true),
-            new Stop("Abandoned TV Tower","Abandoned TV Tower","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
-            new Stop("Museum Ruins","Museum Ruins","Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69f,0.2f,-1,true),
-            new Stop("The Tavern","The Tavern","Witch: One thing at a time, darling. I have the list.",0.94f,0.5f,-1,true),
+            new Stop("Tunnel","Tunnel","Drow: ...Hello. I hope the violin sounds all right in this damp tunnel.",0.07f,0.5f,0,false),
+            new Stop("Woods","Woods","Wolfwoman: Good to see you, little ghost! Take care out there in the fog.",0.31f,0.2f,-1,true),
+            new Stop("Cellar","Cellar","Little Werebear: The cellar feels warm again... I hope I can sleep this winter.",0.31f,0.8f,1,true),
+            new Stop("Tower","Tower","Vampire: Hello, little ghost. Come in and rest your ears a moment.",0.6f,0.75f,2,true),
+            new Stop("Museum","Museum","Immigrant Jiangshi: Come in, dear. I am looking after my antiques.",0.69f,0.2f,-1,true),
+            new Stop("Tavern","Tavern","Witch: One thing at a time, darling. I have the list.",0.94f,0.5f,-1,true),
             new Stop("Heat Shield Station","H","",0,0),
             new Stop("Waterproofing Station","W","",0,0),
             new Stop("Suspension Station","Q","",0,0)

@@ -105,6 +105,27 @@ namespace NightCourier
                     }
                 }
             }
+            // Keep the player and destination legible above the quieter painted junctions.
+            if(drawRoads&&Owner!=null&&run.State==ShiftState.Docked)
+            {
+                var panel=GetComponentInParent<CourierRoutePanel>();
+                int destination=panel!=null?panel.SelectedMapNode:-1;
+                foreach(var node in CourierStreetMap.Nodes)
+                {
+                    bool current=node.StopId==run.Node;
+                    if(!current&&node.StopId!=destination)continue;
+                    var point=MapPoint(node.Point,rectTransform.rect.size);
+                    Color ink=current?CourierColors.Mint:CourierColors.Gold;
+                    Circle(vh,point,17,CourierColors.Alpha(CourierColors.Night,.92f));
+                    for(int i=0;i<32;i++)
+                    {
+                        float a=i*Mathf.PI/16,b=(i+1)*Mathf.PI/16;
+                        Segment(vh,point+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*14,
+                            point+new Vector2(Mathf.Cos(b),Mathf.Sin(b))*14,ink,1.8f);
+                    }
+                    Circle(vh,point,5,ink);
+                }
+            }
             if(Legend!=null)
                 foreach(var node in CourierStreetMap.Nodes)
                 {
@@ -146,8 +167,9 @@ namespace NightCourier
                         float distance=StreetPoint.Distance(start,end);if(distance<=.0001f)continue;
                         float fraction=Mathf.Clamp01(budget/distance);
                         var a=MapPoint(start,rectTransform.rect.size);var b=MapPoint(StreetPoint.Lerp(start,end,fraction),rectTransform.rect.size);
-                        Segment(mesh,a,b,CourierColors.Alpha(tint,tint.a*.16f),5);
-                        Segment(mesh,a,b,tint,2.3f);
+                        Segment(mesh,a,b,CourierColors.Alpha(CourierColors.Night,tint.a*.9f),6);
+                        Segment(mesh,a,b,CourierColors.Alpha(tint,tint.a*.2f),5);
+                        Segment(mesh,a,b,tint,3.2f);
                         budget-=distance;
                         if(budget<=0){if(highlightProgress<1)Circle(mesh,b,3.2f,CourierColors.Paper);return;}
                     }
