@@ -43,7 +43,7 @@ namespace NightCourier
             impactText.font=CourierTypography.Body;impactText.fontSize=26;
             impactText.alignment=TextAnchor.MiddleLeft;impactText.lineSpacing=1.1f;
             impactText.color=Color.Lerp(CourierColors.Night,CourierColors.Paper,.22f);
-            NightCourier.CourierLocalization.Set(impactText, Run.EventCost+".");
+            NightCourier.CourierLocalization.Set(impactText, e.Safe);
             Place(impactText.rectTransform,40,buttonY,688,64);
             float footerHeight=Mathf.Max(64,Mathf.Ceil(impactText.preferredHeight/8)*8);
             impactText.rectTransform.sizeDelta=new Vector2(688,footerHeight);

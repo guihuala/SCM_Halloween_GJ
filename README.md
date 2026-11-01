@@ -89,7 +89,7 @@
 ## 音画资源
 
 - 主菜单：`Assets/Art/Sprite/UI/Mainmenu/`。
-- 事件页面：纯文字纵向布局，不显示插图或占位块；标题、正文和底部事件影响统一左对齐。左右内边距 40px，标题 40 号、正文 28 号、事件影响 26 号，弹窗高度随文字调整。旧插图保留在 `Assets/Resources/NightVoyage/EventIllustrations/`。
+- 事件页面：纯文字纵向布局，不显示插图或占位块；标题、正文和底部事件影响统一左对齐。左右内边距 40px，标题 40 号、正文 28 号、事件影响 26 号，弹窗高度随文字调整。已移除不再使用的旧事件占位插图。
 - HUD手绘素材：`Assets/Resources/NightVoyage/HUD/`；保留 `.meta` 可直接替换同名素材。
 - 音效：`Assets/Resources/Audio/Courier/`；新增事件短音效位于 `Events/`，配置与替换方法见 [音效说明](Assets/Audio/README.md)。
 - 音乐与既有录音署名见 `Assets/Resources/Audio/Courier/AudioCredits.txt`、`Assets/StreamingAssets/AudioCredits.txt` 和 `Assets/Audio/Licenses/`，发布时保留。

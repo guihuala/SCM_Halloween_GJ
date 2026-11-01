@@ -48,6 +48,11 @@ public class UIManager : SingletonPersistent<UIManager>
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void OnApplicationFocus(bool focused)
+    {
+        if (focused) NightCourier.CourierLocalization.RefreshSystemLanguage();
+    }
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;

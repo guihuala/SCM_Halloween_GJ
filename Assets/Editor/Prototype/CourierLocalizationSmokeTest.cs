@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using NightCourier;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -43,6 +44,7 @@ public static class CourierLocalizationSmokeTest
             Require(owner != null && hud != null, "Gameplay did not initialize");
             if (step == 0)
             {
+                VerifySystemDefault();
                 VerifyMissingReferenceRecovery();
                 VerifyFormattedSwitching();
                 owner.Run.Node = 0; owner.BeginConversation();
@@ -80,7 +82,13 @@ public static class CourierLocalizationSmokeTest
                 Capture("/tmp/courier-settings-hant.png");
                 var center = settings.transform.Find("BG/LanguageSelector/CurrentLanguage");
                 center.GetComponent<CourierLanguageSelector>().OnMove(new AxisEventData(EventSystem.current) { moveDir = MoveDirection.Right });
-                Require(CourierLocalization.Language == CourierLanguage.English, "Keyboard right did not wrap");
+                Require(CourierLocalization.Selection == CourierLanguage.SystemDefault, "Keyboard right did not wrap to system default");
+                Require(!PlayerPrefs.HasKey(CourierLocalization.PreferenceKey), "System default retained a manual override");
+                var value = center.GetComponentInChildren<Text>();
+                Require(value.text == CourierLocalization.T("Follow system"), "System default label is missing");
+                Require(value.preferredWidth <= value.rectTransform.rect.width + 1, "System default label does not fit");
+                center.GetComponent<CourierLanguageSelector>().OnMove(new AxisEventData(EventSystem.current) { moveDir = MoveDirection.Right });
+                Require(CourierLocalization.Selection == CourierLanguage.English, "Keyboard right did not select English");
             }
             else if (step == 3)
             {
@@ -88,7 +96,9 @@ public static class CourierLocalizationSmokeTest
                 Require(hud.subtitleText.font != CourierTypography.Chinese, "English font was not restored");
                 var center = settings.transform.Find("BG/LanguageSelector/CurrentLanguage");
                 center.GetComponent<CourierLanguageSelector>().OnMove(new AxisEventData(EventSystem.current) { moveDir = MoveDirection.Left });
-                Require(CourierLocalization.Language == CourierLanguage.TraditionalChinese, "Keyboard left did not wrap");
+                Require(CourierLocalization.Selection == CourierLanguage.SystemDefault, "Keyboard left did not select system default");
+                center.GetComponent<CourierLanguageSelector>().OnMove(new AxisEventData(EventSystem.current) { moveDir = MoveDirection.Left });
+                Require(CourierLocalization.Selection == CourierLanguage.TraditionalChinese, "Keyboard left did not wrap");
                 Click(settings.transform.Find("BG/LanguageSelector/PreviousLanguage").GetComponent<Button>());
                 Require(CourierLocalization.Language == CourierLanguage.SimplifiedChinese, "Left button did not cycle");
                 UIManager.Instance.ClosePanel("SettingPanel"); GameManager.Instance.ResumeGame();
@@ -105,12 +115,48 @@ public static class CourierLocalizationSmokeTest
             else if (step == 6)
             {
                 CourierLocalization.SetLanguage(CourierLanguage.English);
-                Debug.Log("COURIER_LOCALIZATION PASS: full story, glyph coverage, live dialogue, paused settings, both arrows, keyboard, wrap, persistence and font restoration.");
+                Debug.Log("COURIER_LOCALIZATION PASS: system defaults, saved-language migration, four-option cycle, full story, glyph coverage, live dialogue, pointer/keyboard controls, persistence and font restoration.");
                 Finish(0); return;
             }
             step++; next = EditorApplication.timeSinceStartup + 1;
         }
         catch (Exception error) { Debug.LogException(error); Finish(1); }
+    }
+    private static void VerifySystemDefault()
+    {
+        var original = CourierLocalization.Selection;
+        Require(CourierLocalization.ResolveLanguage(CourierLanguage.SystemDefault, SystemLanguage.ChineseSimplified) == CourierLanguage.SimplifiedChinese, "Simplified system language was not recognized");
+        Require(CourierLocalization.ResolveLanguage(CourierLanguage.SystemDefault, SystemLanguage.ChineseTraditional) == CourierLanguage.TraditionalChinese, "Traditional system language was not recognized");
+        Require(CourierLocalization.ResolveLanguage(CourierLanguage.SystemDefault, SystemLanguage.Chinese) == CourierLanguage.SimplifiedChinese, "Generic Chinese was not recognized");
+        foreach (var system in new[] { SystemLanguage.English, SystemLanguage.French, SystemLanguage.Unknown })
+            Require(CourierLocalization.ResolveLanguage(CourierLanguage.SystemDefault, system) == CourierLanguage.English, "Unsupported system language must fall back to English");
+        Require(CourierLocalization.ResolveLanguage(CourierLanguage.English, SystemLanguage.ChineseTraditional) == CourierLanguage.English, "Manual language was overridden");
+        var flags = BindingFlags.NonPublic | BindingFlags.Static;
+        PlayerPrefs.DeleteKey(CourierLocalization.PreferenceKey);
+        typeof(CourierLocalization).GetField("selection", flags).SetValue(null, null);
+        typeof(CourierLocalization).GetField("language", flags).SetValue(null, null);
+        Require(CourierLocalization.FollowsSystem, "Fresh install did not follow the system");
+        Require(CourierLocalization.Language == CourierLocalization.ResolveLanguage(CourierLanguage.SystemDefault, Application.systemLanguage), "Fresh install resolved the wrong language");
+        foreach (var saved in new[] { CourierLanguage.English, CourierLanguage.SimplifiedChinese, CourierLanguage.TraditionalChinese })
+        {
+            PlayerPrefs.SetInt(CourierLocalization.PreferenceKey, (int)saved);
+            typeof(CourierLocalization).GetField("selection", flags).SetValue(null, null);
+            typeof(CourierLocalization).GetField("language", flags).SetValue(null, null);
+            Require(CourierLocalization.Selection == saved && CourierLocalization.Language == saved, "Existing saved language changed");
+            CourierLocalization.RefreshSystemLanguage();
+            Require(CourierLocalization.Language == saved, "Focus refresh overrode manual language");
+        }
+        PlayerPrefs.SetInt(CourierLocalization.PreferenceKey, 999);
+        typeof(CourierLocalization).GetField("selection", flags).SetValue(null, null);
+        typeof(CourierLocalization).GetField("language", flags).SetValue(null, null);
+        Require(CourierLocalization.FollowsSystem, "Invalid saved preference did not fall back to system default");
+        CourierLocalization.SetLanguage(CourierLanguage.SystemDefault);
+        Require(!PlayerPrefs.HasKey(CourierLocalization.PreferenceKey), "Returning to system default did not remove manual preference");
+        foreach (var next in new[] { CourierLanguage.English, CourierLanguage.SimplifiedChinese, CourierLanguage.TraditionalChinese, CourierLanguage.SystemDefault })
+        { CourierLocalization.Cycle(1); Require(CourierLocalization.Selection == next, "Four-option language cycle is wrong"); }
+        CourierLocalization.Cycle(-1);
+        Require(CourierLocalization.Selection == CourierLanguage.TraditionalChinese, "Left wrap is wrong");
+        CourierLocalization.SetLanguage(original);
     }
     private static void VerifyFormattedSwitching()
     {
@@ -152,9 +198,9 @@ public static class CourierLocalizationSmokeTest
             foreach (var name in names)
                 Require(typeof(SettingPanel).GetField(name, flags).GetValue(panel) != null, "Failed to recover authored control: " + name);
             Require(childCount == languageRow.GetComponentsInChildren<Transform>(true).Length, "Reference recovery generated language UI");
-            var original = CourierLocalization.Language;
+            var original = CourierLocalization.Selection;
             clone.transform.Find("BG/LanguageSelector/NextLanguage").GetComponent<Button>().onClick.Invoke();
-            Require(CourierLocalization.Language != original, "Recovered language control has no listener");
+            Require(CourierLocalization.Selection != original, "Recovered language control has no listener");
             CourierLocalization.SetLanguage(original);
         }
         finally { UnityEngine.Object.DestroyImmediate(parent); }

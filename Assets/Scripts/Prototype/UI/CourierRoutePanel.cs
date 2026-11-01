@@ -55,6 +55,7 @@ namespace NightCourier
         private CourierMapLegend mapLegend;
         public bool LegendHighlightsNode(int node) => mapLegend!=null&&mapLegend.HighlightsNode(node);
         private bool destinationVisible;
+        private bool routeDetailsRequested;
         private CourierMapMotion mapMotion;
         public bool MapReducedMotion => reducedPanelMotion;
         public int HoveredMapNode => hoveredNode;
@@ -267,7 +268,7 @@ namespace NightCourier
             if(destinationTooltip.parent!=page)destinationTooltip.SetParent(page,false);
             if(routeModeButton==null)
             {
-                var go=new GameObject("RouteModeButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button));
+                var go=new GameObject("RouteModeButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button),typeof(ButtonAudioFeedback));
                 go.transform.SetParent(destinationTooltip,false);routeModeButton=go.GetComponent<Button>();
                 var image=go.GetComponent<Image>();image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Panel");image.type=Image.Type.Sliced;image.color=CourierColors.Mint;
                 routeModeButton.targetGraphic=image;
@@ -280,12 +281,14 @@ namespace NightCourier
         private void RefreshDestinationTooltip()
         {
             if(destinationTooltip==null)return;
-            destinationVisible=selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!owner.GuideOpen&&!CargoOpen;
+            destinationVisible=routeDetailsRequested&&selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!owner.GuideOpen&&!CargoOpen;
             if(!destinationVisible)return;
-            float width=Mathf.Min(600,page.rect.width-24);
+            float width=Mathf.Min(520,page.rect.width-24);
+            string warnings = CourierLocalization.Source(riskText);
+            bool hasWarning=warnings.Contains("Will damage:")||warnings.Contains("will exceed target")||warnings.Contains("Vehicle expires")||warnings.Contains("Cargo already damaged")||warnings.Contains("Event risk:")||warnings.Contains("No open route is available");
             riskText.fontSize=24;riskText.resizeTextForBestFit=false;
             riskText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,width-32);
-            float height=Mathf.Min(352,page.rect.height-136);
+            float height=Mathf.Min(hasWarning?280:220,page.rect.height-136);
             var target=selected>=6?mapArtwork.NodeTarget(selected):mapArtwork!=null&&selected<mapArtwork.landmarkImages.Length?mapArtwork.landmarkImages[selected].rectTransform:(RectTransform)stopButtons[selected].transform;
             target.GetWorldCorners(dialogueCorners);
             var lo=page.InverseTransformPoint(dialogueCorners[0]);var hi=page.InverseTransformPoint(dialogueCorners[2]);
@@ -293,36 +296,39 @@ namespace NightCourier
             if(left+width>page.rect.width-12)left=lo.x-page.rect.xMin-width-16;
             float top=page.rect.yMax-hi.y;
             Place(destinationTooltip,Mathf.Clamp(left,12,page.rect.width-width-12),Mathf.Clamp(top,120,Mathf.Max(120,page.rect.height-height-12)),width,height);
-            Place(destinationText.rectTransform,24,20,width-144,76);destinationText.fontSize=34;destinationText.fontStyle=FontStyle.Normal;destinationText.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.28f);
-            Place((RectTransform)departButton.transform,width-100,20,80,80);ResizeIconButton(departButton,80);
-            Place((RectTransform)costGroup.transform,20,112,width-40,56);
-            Place((RectTransform)routeModeButton.transform,20,268,72,64);
+            Place(destinationText.rectTransform,24,16,width-120,56);destinationText.fontSize=30;destinationText.fontStyle=FontStyle.Normal;destinationText.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.28f);
+            Place((RectTransform)departButton.transform,width-84,16,60,60);ResizeIconButton(departButton,60);
+            Place((RectTransform)costGroup.transform,24,80,width-48,48);
+            float modeY=hasWarning?216:156;
+            Place((RectTransform)routeModeButton.transform,20,modeY,52,48);
             Caption(routeModeButton,Run.PreferSafeRoutes?"Safe route  |  Switch to fastest":"Fastest route  |  Switch to safe");
             CourierSymbolUI.Button(routeModeButton,Run.PreferSafeRoutes?CourierIconKind.Check:CourierIconKind.FastForward,Run.PreferSafeRoutes?"Safe route · click for fastest route":"Fastest route · click for safe route");
             routeModeButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen;
-            timeCostText.fontSize=wearCostText.fontSize=32;
+            timeCostText.fontSize=wearCostText.fontSize=28;
             wearCostText.color=Color.Lerp(CourierColors.Night,CourierColors.Gold,.38f);
-            Place(timeCostText.rectTransform,56,0,130,48);Place(wearCostText.rectTransform,256,0,120,48);
+            Place(timeCostText.rectTransform,48,0,130,40);Place(wearCostText.rectTransform,width*.5f+28,0,120,40);
             var timeIcon=costGroup.transform.Find("ClockIcon") as RectTransform;var wearIcon=costGroup.transform.Find("WearIcon") as RectTransform;
-            if(timeIcon!=null)Place(timeIcon,0,4,40,40);if(wearIcon!=null)Place(wearIcon,200,4,40,40);
+            if(timeIcon!=null)Place(timeIcon,0,4,32,32);if(wearIcon!=null){Place(wearIcon,width*.5f-20,4,32,32);wearIcon.gameObject.SetActive(!Run.IsGhost);}
+            wearCostText.gameObject.SetActive(!Run.IsGhost);
             riskText.enabled=false;
-            string warnings = CourierLocalization.Source(riskText);
             // A complete sentence fits the card; the warning icon retains every order's details.
             string summary = warnings.Contains("Will damage:") ? "Cargo may be damaged on this route." :
                 warnings.Contains("will exceed target") ? "Some orders will exceed their target turns." :
                 warnings.Contains("Vehicle expires") ? "The vehicle will expire along this route." :
                 warnings.Contains("Cargo already damaged") ? "Cargo already damaged; damage cannot be repaired" :
+                warnings.Contains("Event risk:") ? warnings.Split('\n').First(line=>line.StartsWith("Event risk:",System.StringComparison.Ordinal)) :
                 warnings.Contains("Cargo intact on this route") ? "Cargo intact on this route" : warnings.Split('\n')[0];
             int sentence=summary.IndexOf(". ",System.StringComparison.Ordinal);if(sentence>=0)summary=summary.Substring(0,sentence+1);
             Color summaryColor=summary.StartsWith("Protect",System.StringComparison.OrdinalIgnoreCase)?Color.Lerp(CourierColors.Night,CourierColors.Mint,.38f):Color.Lerp(CourierColors.Night,CourierColors.Gold,.3f);
             var summaryLabel=MetricLabel("RouteSummary",summary,24,194,summaryColor);
-            summaryLabel.fontSize=23;summaryLabel.fontStyle=FontStyle.Normal;Place(summaryLabel.rectTransform,24,194,width-48,64);
+            summaryLabel.gameObject.SetActive(hasWarning);
+            summaryLabel.fontSize=22;summaryLabel.fontStyle=FontStyle.Normal;Place(summaryLabel.rectTransform,24,154,width-48,52);
             summaryLabel.horizontalOverflow=HorizontalWrapMode.Wrap;summaryLabel.verticalOverflow=VerticalWrapMode.Truncate;
-            MetricLabel("TravelLabel","TURNS",80,164,Color.Lerp(CourierColors.Night,CourierColors.Mint,.32f));
-            MetricLabel("WearLabel","WEAR",280,164,wearCostText.color);
-            MetricLabel("RouteModeLabel",Run.PreferSafeRoutes?"Safer route":"Fastest route",112,280,CourierColors.Night);
-            var warning=CourierSymbolUI.Icon(destinationTooltip,"RouteWarningSymbol",CourierIconKind.Warning,width-68,280,36,CourierColors.Gold,warnings);
-            warning.gameObject.SetActive(!string.IsNullOrWhiteSpace(warnings));
+            MetricLabel("TravelLabel","TURNS",72,120,Color.Lerp(CourierColors.Night,CourierColors.Mint,.32f));
+            MetricLabel("WearLabel","WEAR",width*.5f+52,120,wearCostText.color).gameObject.SetActive(!Run.IsGhost);
+            MetricLabel("RouteModeLabel",Run.PreferSafeRoutes?"Safer route":"Fastest route",84,modeY+6,CourierColors.Night);
+            var warning=CourierSymbolUI.Icon(destinationTooltip,"RouteWarningSymbol",CourierIconKind.Warning,width-54,modeY+8,28,CourierColors.Gold,warnings);
+            warning.gameObject.SetActive(hasWarning);
             destinationTooltip.SetAsLastSibling();
         }
         private Text MetricLabel(string name,string text,float x,float y,Color color)
@@ -374,6 +380,8 @@ namespace NightCourier
             bool pickup=docked&&Run.Parcels.Any(p=>Run.CanLoad(p));
             bool pending=docked&&Run.Story!=null&&Run.Story.HasPending(Run);
             if(!docked||(!pickup&&!pending&&!Run.HasJourney)){nodePromptButton.gameObject.SetActive(false);return;}
+            // An explicitly opened route card already contains the departure action.
+            if(!pickup&&!pending&&routeDetailsRequested&&selected>=0&&selected!=Run.Node){nodePromptButton.gameObject.SetActive(false);return;}
             nodePromptButton.interactable=owner.Active&&!owner.GuideOpen;
             string label=pickup?"Collect parcels  [E]":pending?"Read letter  [E]":"Continue route  [E]";
             // Keep the action readable on the main map, including when several orders are available.
@@ -393,7 +401,7 @@ namespace NightCourier
         {
             if(informationButton==null)
             {
-                var go=new GameObject("InformationButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button));
+                var go=new GameObject("InformationButton",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button),typeof(ButtonAudioFeedback));
                 go.transform.SetParent(page,false);informationButton=go.GetComponent<Button>();
                 var image=go.GetComponent<Image>();image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");image.type=Image.Type.Sliced;image.color=CourierColors.Raised;informationButton.targetGraphic=image;informationButton.onClick.AddListener(()=>owner.ShowGuide());
             }
@@ -452,6 +460,7 @@ namespace NightCourier
             foreach(var row in rows)Destroy(row.gameObject);rows.Clear();
             foreach(var p in prototype.Run.Parcels){var row=Instantiate(rowPrefab,waitingContent);row.Bind(prototype,p);rows.Add(row);}
             hoveredNode=-1;
+            routeDetailsRequested=false;
             selected=prototype.Run.HasJourney?prototype.Run.PlannedDestination:-1;
             if(cargoFeedback==null)cargoFeedback=gameObject.AddComponent<CourierCargoFeedback>();
             var trunkIcon=loadText.transform.parent.Find("LoadIcon") as RectTransform;
@@ -461,16 +470,18 @@ namespace NightCourier
                 loadText,cargoToggleText);
             base.Bind(prototype);
         }
-        public void Select(int node){if(!owner.Active||owner.ConversationActive||owner.GuideOpen||Run.State!=ShiftState.Docked)return;if(node==Run.Node){owner.InteractAtNode();return;}selected=node;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();if(mapMotion!=null)mapMotion.PlaySelection(node);}
+        public void Select(int node){if(!owner.Active||owner.ConversationActive||owner.GuideOpen||Run.State!=ShiftState.Docked)return;if(node==Run.Node){owner.InteractAtNode();return;}selected=node;routeDetailsRequested=true;presentationReady=false;if(Run.DestinationBlockReason(node)=="")owner.Tutorial.ChooseRoute();Refresh();if(mapMotion!=null)mapMotion.PlaySelection(node);}
         public void ClearDestination()
         {
             if(!CanNavigateMap)return;
             selected=hoveredNode=-1;
+            routeDetailsRequested=false;
             var events=UnityEngine.EventSystems.EventSystem.current;if(events!=null)events.SetSelectedGameObject(null);
             Refresh();
         }
         protected override void Refresh()
         {
+            if(Run.State!=ShiftState.Docked)routeDetailsRequested=false;
             if(cargoFeedback!=null)cargoFeedback.Observe(reducedPanelMotion);
             var window=transform.Find("Window") as RectTransform;
             Vector2 size=window!=null?window.rect.size:((RectTransform)transform).rect.size;

@@ -18,6 +18,8 @@ namespace NightCourier
                 string sprite=image.sprite!=null?image.sprite.name:"";
                 string name=image.name;
                 Color color;
+                // Procedural ink colors come from the shared HUD material.
+                if(image.material!=null&&image.material.shader.name=="UI/Courier HUD Pattern")continue;
                 if(IsIllustration(image)){image.color=Color.white;continue;}
                 bool paper=IsPaper(image);
                 var button=image.GetComponent<Button>();

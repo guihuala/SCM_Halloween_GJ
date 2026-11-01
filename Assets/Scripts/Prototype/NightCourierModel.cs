@@ -116,18 +116,18 @@ namespace NightCourier
             new Parcel("Livestock Blood",5,3,1,20,false,false,false,false,0)
         };
         public readonly RoadEvent[] Events={
-            new RoadEvent("Trick-or-Treaters","Children in all sorts of costumes stop Goolie. \"Trick or treat!\"","Share candy with the children",RoadEventEffect.Wait,1),
-            new RoadEvent("A Skeleton Dog","A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.","Find a dog-friendly treat",RoadEventEffect.Wait,1),
-            new RoadEvent("The Hologram Ghost","Teenagers in white bedsheets rush over with a selfie stick. \"Wow! This hologram ghost looks so real!\"","Pose as a plastic decoration",RoadEventEffect.Wait,1),
-            new RoadEvent("A Bat in the Postal Cap","A lost bat, dizzy from the unusually hot October night, crashes into Goolie's postal cap.","Fan the bat to cool it down",RoadEventEffect.Wait,1),
-            new RoadEvent("Halloween Parade","A Halloween parade blocks the road ahead.","Take a side path around the parade",RoadEventEffect.Detour,2),
-            new RoadEvent("Erupting Geyser","A geyser erupts across the path ahead.","Take a path around the geyser",RoadEventEffect.Detour,2),
-            new RoadEvent("Sudden Fog","A sudden bank of thick fog swallows the road.","Follow a clear side path",RoadEventEffect.Detour,2),
-            new RoadEvent("Ghost Hunters","Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.","Detour around the flashlight beams",RoadEventEffect.Detour,2),
-            new RoadEvent("Thawing Hillside","Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.","Take a side path around the mudslide",RoadEventEffect.Detour,2),
-            new RoadEvent("A Sudden Gust","A sudden gust nearly blows the little ghost away!","Fall back to the previous stop",RoadEventEffect.Retreat,0),
-            new RoadEvent("Sulfur Steam","A geyser suddenly blasts scalding steam. The heat leaves light-as-air Goolie unable to keep their eyes open.","Fall back from the hot spring steam",RoadEventEffect.Retreat,0),
-            new RoadEvent("An Unexpected Float","A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.","Fall back from the human parade",RoadEventEffect.Retreat,0)
+            new RoadEvent("Trick-or-Treaters","A troupe of kiddos in quirky costumes blocks the way: \"Trick or treat!\"","Spend 1 turn handing out candy.",RoadEventEffect.Wait,1),
+            new RoadEvent("A Skeleton Dog","A little skeleton pup wants a Halloween treat too, wagging its bony tail!","Spend 1 turn rummaging for dog-safe snacks.",RoadEventEffect.Wait,1),
+            new RoadEvent("The Hologram Ghost","Teenagers in bedsheet costumes come charging over with selfie sticks: \"Whoa! This roadside hologram ghost looks so real!\"","Spend 1 turn holding your breath and pretending to be a plastic prop until they leave.",RoadEventEffect.Wait,1),
+            new RoadEvent("A Bat in the Postal Cap","Splashed by a warm geyser, a dizzy little lost bat tumbles right into Goolie's postman cap!","Spend 1 turn fanning the little bat to cool it down.",RoadEventEffect.Wait,1),
+            new RoadEvent("Halloween Parade","A bustling Halloween parade is marching right across the road ahead!","Wait 1 turn.",RoadEventEffect.Wait,1),
+            new RoadEvent("Erupting Geyser","Whoosh! A roadside geyser suddenly erupts in a tall plume of steam!","Wait 1 turn.",RoadEventEffect.Wait,1),
+            new RoadEvent("Sudden Fog","A thick blanket of fog rolls in out of nowhere, nudging the little ghost back!","Move back 1 node.",RoadEventEffect.Retreat,0),
+            new RoadEvent("Ghost Hunters","Two mischievous kids in cheap werewolf masks are waving bright flashlights at the crossroads ahead, playing \"Ghost Hunters\"!","Wait 1 turn.",RoadEventEffect.Wait,1),
+            new RoadEvent("Thawing Hillside","The thawing permafrost on the hillside comes tumbling down in a warm mudslide!","Move back 1 node.",RoadEventEffect.Retreat,0),
+            new RoadEvent("A Sudden Gust","Whoosh! A sudden gust of wind nearly blows the weightless little ghost away!","Move back 1 node.",RoadEventEffect.Retreat,0),
+            new RoadEvent("Sulfur Steam","A geyser suddenly puffs out a cloud of piping-hot steam, leaving weightless little Goolie too dizzy to open their eyes!","Move back 1 node to dodge the hot steam.",RoadEventEffect.Retreat,0),
+            new RoadEvent("An Unexpected Float","A parade of glowing floats suddenly turns onto the street in a whirlwind of confetti and flashing cameras!","Move back 1 node to duck away from the human crowd.",RoadEventEffect.Retreat,0)
         };
         public readonly float[] Durabilities={5,5,5};
         public readonly bool[] Talked=new bool[6];
@@ -197,9 +197,6 @@ namespace NightCourier
             foreach(int id in new[]{6,10,11}){Parcels[id].Enabled=false;Parcels[id].State=ParcelState.Unavailable;}
             Parcels[2].PickupGroup=Parcels[3].PickupGroup=2;
             Parcels[8].PickupGroup=Parcels[9].PickupGroup=8;
-            foreach(int id in new[]{4,5,7}){Events[id].Effect=RoadEventEffect.Wait;Events[id].SafeMinutes=1;Events[id].Safe="Wait for the road to clear";}
-            foreach(int id in new[]{6,8}){Events[id].Effect=RoadEventEffect.Retreat;Events[id].SafeMinutes=0;Events[id].Safe="Fall back one node";}
-            Events[3].Description="A lost bat is splashed by a geyser and crashes, dizzy, into Goolie's postal cap.";
             foreach(int id in new[]{3,5,8,9,10})Events[id].Illustration="weather";
             Events[6].Illustration="weather";
             Log("Halloween Eve. Choose an order at its sender and plan your route.");

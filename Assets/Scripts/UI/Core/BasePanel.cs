@@ -45,6 +45,7 @@ public class BasePanel : MonoBehaviour
 
     protected virtual void Awake()
     {
+        ButtonAudioFeedback.Install(gameObject);
         NightCourier.CourierTheme.Apply(gameObject);
         canvasGroup = GetComponent<CanvasGroup>();
         background = GetComponent<Graphic>();

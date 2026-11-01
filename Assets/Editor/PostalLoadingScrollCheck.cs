@@ -34,7 +34,11 @@ public static class PostalLoadingScrollCheck
         var screen = UnityEngine.Object.Instantiate(Resources.Load<LoadingScreen>("Panel/LoadingScreen"));
         var second = UnityEngine.Object.Instantiate(screen);
         second.gameObject.SetActive(false);
-        var scroll = screen.GetComponentInChildren<UIInfiniteScroll>();
+        var background = screen.transform.Find("Loading/ScrollingLoadingBackground");
+        Require(background != null && background.GetSiblingIndex() == 0, "Loading background must be behind content");
+        Require(background.GetComponent<Image>().material.shader.name == "UI/Courier HUD Pattern" &&
+            !background.GetComponent<Image>().raycastTarget, "Loading must reuse the game pattern without intercepting input");
+        var scroll = screen.transform.Find("Loading/NightPostalArtwork/Progress/ProgressReveal/Content").GetComponent<UIInfiniteScroll>();
         Require(scroll != null, "Loading prefab is not connected to scroll component");
         // Explicit lifecycle calls also support running this check outside Play mode.
         InvokeLifecycle(scroll, "OnDisable");
@@ -85,7 +89,31 @@ public static class PostalLoadingScrollCheck
         var point = RectTransformUtility.WorldToScreenPoint(camera,
             rect.TransformPoint(new Vector3(rect.rect.xMin + rect.rect.width * 0.9f, 0f, 0f)));
         var outside = a.GetPixel(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y));
-        Require(Mathf.Abs(outside.r - outside.g) < 0.01f, "Scrolling pattern leaked outside progress mask");
+        screen.SetProgress(0f, true);
+        var empty = Capture(camera, target, image, .25f);
+        var emptyTrack = empty.GetPixel(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y));
+        Require(Vector4.Distance(outside, emptyTrack) < .02f, "Scrolling pattern leaked outside progress mask");
+        UnityEngine.Object.DestroyImmediate(empty);
+
+        // Sample the centerline across the actual nine-sliced geometry. The source
+        // sprite's internal alpha pinhole used to leave a dark blot near the left.
+        foreach (float progress in new[] { .01f, .25f, .65f, 1f })
+        {
+            screen.SetProgress(progress, true);
+            foreach (float phase in new[] { 0f, .25f, .5f, .75f, 1f })
+            {
+                var frame = Capture(camera, target, image, phase);
+                for (float y = -.2f; y <= .2f; y += .1f)
+                for (float x = .004f; x < progress - .004f; x += .002f)
+                {
+                    var center = RectTransformUtility.WorldToScreenPoint(camera,
+                        rect.TransformPoint(new Vector3(rect.rect.xMin + rect.rect.width * x, rect.rect.height * y, 0f)));
+                    var pixel = frame.GetPixel(Mathf.RoundToInt(center.x), Mathf.RoundToInt(center.y));
+                    Require(pixel.g > .4f, "Dark blot in progress fill at progress/phase/x " + progress + "/" + phase + "/" + x);
+                }
+                UnityEngine.Object.DestroyImmediate(frame);
+            }
+        }
         File.WriteAllBytes("/private/tmp/postal-loading-scroll-preview.png", b.EncodeToPNG());
         UnityEngine.Object.DestroyImmediate(screen.gameObject);
         UnityEngine.Object.DestroyImmediate(second.gameObject);

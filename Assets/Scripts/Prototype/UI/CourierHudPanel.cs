@@ -21,6 +21,7 @@ namespace NightCourier
         private bool progressReady;
         private int progressLeg = -1;
         private Road progressRoad;
+        private CourierTravelStatus travelStatus;
         private void Show(GameObject target, bool visible, Vector2 offset) { motion.Present(target, visible, offset, reducedMotion); }
         public void ApplyReadableLayout()
         {
@@ -28,9 +29,7 @@ namespace NightCourier
             var clock=status.Find("ClockIcon") as RectTransform;
             if(clock!=null){clock.anchoredPosition=new Vector2(0,-4);clock.sizeDelta=Vector2.one*48;}
             timeText.fontSize=30;timeText.rectTransform.anchoredPosition=new Vector2(64,0);timeText.rectTransform.sizeDelta=new Vector2(276,48);
-            var track=status.Find("ProgressFillBackground") as RectTransform;
-            if(track!=null){track.anchoredPosition=new Vector2(0,-62);track.sizeDelta=new Vector2(340,10);}
-            progressFill.rectTransform.anchoredPosition=new Vector2(0,-62);progressFill.rectTransform.sizeDelta=new Vector2(340,10);
+            if(travelStatus!=null)travelStatus.Layout();
             foreach(var button in new[]{advanceButton,pauseButton})
             {
                 if(button==null)continue;
@@ -112,7 +111,14 @@ namespace NightCourier
             PresentText();
             return subtitleJuice.Complete();
         }
-        protected override void Awake(){base.Awake();advanceButton.onClick.AddListener(()=>owner.AdvanceDialogue());if(skipRideButton!=null)skipRideButton.onClick.AddListener(()=>owner.SkipRide());}
+        protected override void Awake()
+        {
+            base.Awake();
+            var track=roadStatus.transform.Find("ProgressFillBackground").GetComponent<Image>();
+            travelStatus=CourierTravelStatus.Create(transform,progressFill,track);
+            advanceButton.onClick.AddListener(()=>owner.AdvanceDialogue());
+            if(skipRideButton!=null)skipRideButton.onClick.AddListener(()=>owner.SkipRide());
+        }
         protected override void Update(){if(owner!=null&&!hasRemoved)Refresh();}
         public override void Bind(NightCourierPrototype prototype){if(stageGraphic!=null){stageGraphic.gameObject.SetActive(false);stageGraphic.Owner=prototype;}base.Bind(prototype);}
         protected override void Refresh()
@@ -124,8 +130,9 @@ namespace NightCourier
             statusRect.pivot=new Vector2(1,1);statusRect.position=root.TransformPoint(new Vector3(root.rect.xMax-32,root.rect.yMax-112,0));
             bool travelling=driving||Run.State==ShiftState.Encounter;
             Show(roadStatus,travelling&&!Run.Finished,new Vector2(0,32));
-            Show(progressFill.gameObject,travelling,new Vector2(24,0));
-            var track=roadStatus.transform.Find("ProgressFillBackground");if(track!=null)Show(track.gameObject,travelling,new Vector2(24,0));
+            // At a waypoint the map owns the single Continue action. This ribbon
+            // is reserved for movement and road events, so it does not repeat it.
+            Show(travelStatus.gameObject,travelling&&!Run.Finished&&!owner.GuideOpen,new Vector2(0,-16));
             if(skipRideButton!=null)
             {
                 var skipRect=(RectTransform)skipRideButton.transform;
@@ -137,9 +144,10 @@ namespace NightCourier
             // A new journey starts at its own progress rather than draining the previous bar.
             if(!progressReady||!travelling||progressLeg!=Run.PlannedDestination||progressRoad!=Run.ActiveRoad||reducedMotion)
                 progressFill.fillAmount=Run.DisplayProgress;
-            else progressFill.fillAmount=Mathf.Lerp(progressFill.fillAmount,Run.DisplayProgress,1-Mathf.Exp(-12*Time.unscaledDeltaTime));
+            else if(owner.Active)progressFill.fillAmount=Mathf.Lerp(progressFill.fillAmount,Run.DisplayProgress,1-Mathf.Exp(-12*Time.unscaledDeltaTime));
             progressReady=travelling;progressLeg=Run.PlannedDestination;
             progressRoad=Run.ActiveRoad;
+            travelStatus.Refresh(Run,owner.Active,reducedMotion);
             PresentSubtitle();
             advanceButton.GetComponent<CourierIconHint>().message=owner.ConversationActive?"Continue dialogue - E":"Continue to "+(Run.HasJourney?Run.Stops[Run.PlannedDestination].Name:"")+" · E";
         }

@@ -10,10 +10,15 @@ public class TitleUIController : MonoBehaviour
     public Button creditsButton;
     private bool enteringGame;
 
-    private void OnEnable() => enteringGame = false;
+    private void OnEnable()
+    {
+        enteringGame = false;
+        if (Application.isPlaying) MenuAudio.Ensure().ShowMenu();
+    }
 
     private void Awake()
     {
+        ButtonAudioFeedback.Install(gameObject);
         NightCourier.CourierLocalization.Apply(gameObject);
         // Menu illustrations already contain their colors; preserve the original white tint.
         foreach(var image in GetComponentsInChildren<Image>(true))

@@ -121,7 +121,7 @@ namespace NightCourier
             if(drawTravel&&Owner!=null&&run.ActiveRoad!=null&&(run.State==ShiftState.Driving||run.State==ShiftState.Pushing||run.State==ShiftState.Encounter))
             {
                 var position=TravelPoint(run,rectTransform.rect.size);
-                Circle(vh,position,travelHaloRadius,CourierColors.Alpha(CourierColors.Mint,.18f));
+                Circle(vh,position,travelHaloRadius+Mathf.Sin(Owner.VisualTime*3)*1.5f,CourierColors.Alpha(CourierColors.Mint,.18f));
                 if(drawTravelDot)Circle(vh,position,7,CourierColors.Mint);
             }
         }

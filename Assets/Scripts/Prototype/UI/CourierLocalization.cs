@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace NightCourier
 {
-    public enum CourierLanguage { English, SimplifiedChinese, TraditionalChinese }
+    public enum CourierLanguage { SystemDefault = -1, English = 0, SimplifiedChinese = 1, TraditionalChinese = 2 }
 
     // Translate only at the presentation boundary: names and speaker IDs in the
     // simulation remain stable, even when switching in the middle of a shift.
@@ -23,35 +23,56 @@ namespace NightCourier
         private static readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private static readonly Dictionary<Text, string> sources = new Dictionary<Text, string>();
         private static readonly Dictionary<Text, Func<string, string>> formatters = new Dictionary<Text, Func<string, string>>();
-        private static CourierLanguage? language;
+        private static CourierLanguage? selection, language;
+        private static readonly CourierLanguage[] Options =
+        {
+            CourierLanguage.SystemDefault, CourierLanguage.English,
+            CourierLanguage.SimplifiedChinese, CourierLanguage.TraditionalChinese
+        };
         public static event Action Changed;
-        public static CourierLanguage Language
+        // Keep the preference separate from the effective display language.
+        // Values 0, 1 and 2 retain their meaning for existing saves.
+        public static CourierLanguage Selection
         {
             get
             {
-                if (!language.HasValue)
+                if (!selection.HasValue)
                 {
-                    int saved = PlayerPrefs.GetInt(PreferenceKey, -1);
-                    language = saved >= 0 && saved <= 2 ? (CourierLanguage)saved :
-                        Application.systemLanguage == SystemLanguage.ChineseTraditional ? CourierLanguage.TraditionalChinese :
-                        Application.systemLanguage == SystemLanguage.ChineseSimplified || Application.systemLanguage == SystemLanguage.Chinese ? CourierLanguage.SimplifiedChinese : CourierLanguage.English;
+                    int saved = PlayerPrefs.GetInt(PreferenceKey, (int)CourierLanguage.SystemDefault);
+                    selection = Enum.IsDefined(typeof(CourierLanguage), saved) ? (CourierLanguage)saved : CourierLanguage.SystemDefault;
                 }
-                return language.Value;
+                return selection.Value;
             }
         }
+        public static bool FollowsSystem => Selection == CourierLanguage.SystemDefault;
+        public static CourierLanguage ResolveLanguage(CourierLanguage selected, SystemLanguage systemLanguage)
+        {
+            if (!Enum.IsDefined(typeof(CourierLanguage), selected)) throw new ArgumentOutOfRangeException(nameof(selected));
+            if (selected != CourierLanguage.SystemDefault) return selected;
+            switch (systemLanguage)
+            {
+                case SystemLanguage.ChineseTraditional: return CourierLanguage.TraditionalChinese;
+                case SystemLanguage.ChineseSimplified:
+                case SystemLanguage.Chinese: return CourierLanguage.SimplifiedChinese;
+                default: return CourierLanguage.English;
+            }
+        }
+        public static CourierLanguage Language => language ?? (language = ResolveLanguage(Selection, Application.systemLanguage)).Value;
+
         public static bool IsChinese => Language != CourierLanguage.English;
         public static string LanguageName => Language == CourierLanguage.English ? "English" : Language == CourierLanguage.SimplifiedChinese ? "简体中文" : "繁體中文";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()
         {
-            language = null; sources.Clear(); formatters.Clear(); cache.Clear(); Changed = null;
+            selection = language = null; sources.Clear(); formatters.Clear(); cache.Clear(); Changed = null;
             SceneManager.sceneLoaded -= SceneLoaded;
             SceneManager.sceneLoaded += SceneLoaded;
         }
         private static void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
             foreach (var dead in sources.Keys.Where(label => label == null).ToArray()) { sources.Remove(dead); formatters.Remove(dead); }
+            RefreshSystemLanguage();
             foreach (var root in scene.GetRootGameObjects()) Apply(root);
         }
         private static void Load()
@@ -117,12 +138,32 @@ namespace NightCourier
                 else Set(label, original);
             }
         }
-        public static void Cycle(int direction) => SetLanguage((CourierLanguage)(((int)Language + (direction < 0 ? 2 : 1)) % 3));
+        public static void Cycle(int direction)
+        {
+            int index = Array.IndexOf(Options, Selection);
+            SetLanguage(Options[(index + (direction < 0 ? Options.Length - 1 : 1)) % Options.Length]);
+        }
         public static void SetLanguage(CourierLanguage selected)
         {
             if (!Enum.IsDefined(typeof(CourierLanguage), selected)) throw new ArgumentOutOfRangeException(nameof(selected));
-            language = selected; cache.Clear();
-            PlayerPrefs.SetInt(PreferenceKey, (int)selected); PlayerPrefs.Save();
+            selection = selected;
+            language = ResolveLanguage(selected, Application.systemLanguage);
+            if (selected == CourierLanguage.SystemDefault) PlayerPrefs.DeleteKey(PreferenceKey);
+            else PlayerPrefs.SetInt(PreferenceKey, (int)selected);
+            PlayerPrefs.Save();
+            RefreshLabels();
+        }
+        public static void RefreshSystemLanguage()
+        {
+            if (!FollowsSystem) return;
+            var resolved = ResolveLanguage(CourierLanguage.SystemDefault, Application.systemLanguage);
+            if (language.HasValue && language.Value == resolved) return;
+            language = resolved;
+            RefreshLabels();
+        }
+        private static void RefreshLabels()
+        {
+            cache.Clear();
             foreach (var pair in sources.ToArray())
             {
                 if (pair.Key == null) { sources.Remove(pair.Key); formatters.Remove(pair.Key); continue; }

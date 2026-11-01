@@ -43,6 +43,13 @@ namespace NightCourier
             if (owner == null || !owner.Active || string.IsNullOrWhiteSpace(reason) || Time.unscaledTime - lastFailure < .5f) return;
             lastFailure = Time.unscaledTime;
             Show(target, reason, CourierIconKind.Warning, 2.6f, false);
+            Pulse(target);
+        }
+        private void Pulse(RectTransform target)
+        {
+            if (target == null || panel.MapReducedMotion) return;
+            var pulse = target.GetComponent<CourierValuePulse>() ?? target.gameObject.AddComponent<CourierValuePulse>();
+            pulse.Play();
         }
         public void Show(RectTransform target, string text, CourierIconKind icon, float lifetime = 1.2f, bool drift = true)
         {
@@ -93,7 +100,7 @@ namespace NightCourier
                     int current = run.TurnsFor(order), change = current - turns;
                     if (change > 0)
                     {
-                        Show(panel.loadText.rectTransform, "+" + change, CourierIconKind.Clock);
+                        Show(panel.loadText.rectTransform, "+" + change, CourierIconKind.Clock); Pulse(panel.loadText.rectTransform);
                         int remaining = run.TargetTurns(order) - current;
                         if (order.State == ParcelState.Loaded && remaining <= 2 && remaining >= 0 && warned.Add(order))
                             Show(panel.loadText.rectTransform, "Order turns left: " + remaining, CourierIconKind.Warning, 2.4f, false);
@@ -102,7 +109,7 @@ namespace NightCourier
                 if (vehicle >= 0 && vehicle < run.Durabilities.Length && (run.VehicleIndex == vehicle || run.IsGhost))
                 {
                     int change = Mathf.CeilToInt(run.Durabilities[vehicle]) - Mathf.CeilToInt(durability);
-                    if (change != 0) { Show(panel.durabilityText.rectTransform, (change > 0 ? "+" : "") + change, CourierIconKind.Wrench); }
+                    if (change != 0) { Show(panel.durabilityText.rectTransform, (change > 0 ? "+" : "") + change, CourierIconKind.Wrench); Pulse(panel.durabilityText.rectTransform); }
                 }
                 order = run.ActiveOrder; turns = order != null ? run.TurnsFor(order) : 0; vehicle = run.VehicleIndex; durability = run.Durability;
             }

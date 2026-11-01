@@ -53,13 +53,14 @@ public class SettingPanel : BasePanel
 
     private void OnEnable()
     {
+        NightCourier.CourierLocalization.RefreshSystemLanguage();
         NightCourier.CourierLocalization.Changed += RefreshLanguage;
         RefreshLanguage();
     }
 
     private void RefreshLanguage()
     {
-        if (languageValue != null) NightCourier.CourierLocalization.Set(languageValue, NightCourier.CourierLocalization.LanguageName);
+        if (languageValue != null) NightCourier.CourierLocalization.Set(languageValue, NightCourier.CourierLocalization.FollowsSystem ? "Follow system" : NightCourier.CourierLocalization.LanguageName);
     }
 
     private void AddAudioCredits()

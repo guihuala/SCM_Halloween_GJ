@@ -31,7 +31,7 @@ namespace NightCourier
         public void Play()
         {
             if(!button.IsActive()||!button.IsInteractable())return;
-            // Keep semantic hover/focus/pressed state; clicking adds no extra light effect.
+            // Clicks keep the ordinary interaction state without a separate flash.
             if(effect!=null&&!suppressOutline)effect.SetState(hovered||selected,pressed,!button.IsInteractable());
         }
         private void PlayClick(){if(!button.IsActive()||!button.IsInteractable())return;Play();CourierSoundscape.PlayInterface("click");}

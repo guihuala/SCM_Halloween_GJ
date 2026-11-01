@@ -9,6 +9,8 @@ namespace NightCourier
     {
         [Min(1)] public float charactersPerSecond = 42f;
         [Min(.01f)] public float settleDuration = .24f;
+        [Min(0)] public float rise = 8f;
+        [Range(0, .5f)] public float pop = .16f;
         public bool reducedMotion;
         private Text label;
         private string content;
@@ -65,12 +67,15 @@ namespace NightCourier
                     mesh.PopulateUIVertex(ref vertex, i * 4 + corner);
                     center += vertex.position * .25f;
                 }
-                // Reveal dialogue in reading order without moving or bouncing glyphs.
+                // A quick squash/pop, a small overshoot, then an exact rest pose.
+                float scale = 1 + pop * Mathf.Sin(t * Mathf.PI * 2.5f) * (1 - t);
+                float offset = -rise * Mathf.Pow(1 - t, 3) + rise * .18f * Mathf.Sin(t * Mathf.PI * 2) * (1 - t);
                 float alpha = Mathf.Clamp01(t * 4);
                 for (int corner = 0; corner < 4; corner++)
                 {
                     int index = i * 4 + corner;
                     mesh.PopulateUIVertex(ref vertex, index);
+                    vertex.position = center + (vertex.position - center) * scale + Vector3.up * offset;
                     var color = vertex.color;
                     color.a = (byte)(color.a * alpha);
                     vertex.color = color;

@@ -12,6 +12,7 @@ namespace NightCourier
         private CourierRouteGraphic graphic;
         private RectTransform overlay;
         private int signature;
+        private float age = 2;
         private readonly List<CourierIconGraphic> badges = new List<CourierIconGraphic>();
         public int VisibleRiskCount { get; private set; }
         public void Initialize(CourierRoutePanel page, NightCourierPrototype prototype)
@@ -43,7 +44,7 @@ namespace NightCourier
             }
             if (key != signature)
             {
-                signature = key;
+                signature = key; age = 0;
                 graphic.SurfaceRisks = visible ? run.RouteSurfaceRisks(roads) : null;
                 VisibleRiskCount = graphic.SurfaceRisks != null ? graphic.SurfaceRisks.Count : 0;
                 int index = 0;
@@ -58,15 +59,25 @@ namespace NightCourier
                         hint.message = surface + "\nWill damage: " + string.Join(", ", entry.Value.Select(p => p.Name));
                     }
                 for (int i = index; i < badges.Count; i++) badges[i].transform.parent.gameObject.SetActive(false);
+                if (!panel.MapReducedMotion && graphic.SurfaceRisks != null)
+                {
+                    var affected = new HashSet<Parcel>(graphic.SurfaceRisks.Values.SelectMany(p => p));
+                    foreach (var row in panel.GetComponentsInChildren<CourierCargoRow>())
+                        if (affected.Contains(row.Item) && row.cargoArtwork != null)
+                            (row.cargoArtwork.GetComponent<CourierValuePulse>() ?? row.cargoArtwork.gameObject.AddComponent<CourierValuePulse>()).Play();
+                }
                 graphic.SetVerticesDirty();
             }
+            age += Time.unscaledDeltaTime;
+            float emphasis = panel.MapReducedMotion || VisibleRiskCount == 0 ? 0 : Mathf.Sin(Mathf.Clamp01(age / 1.1f) * Mathf.PI);
+            if (Mathf.Abs(graphic.riskEmphasis - emphasis) > .001f) { graphic.riskEmphasis = emphasis; graphic.SetVerticesDirty(); }
             if (graphic.SurfaceRisks == null) return;
             int at = 0;
             foreach (var entry in graphic.SurfaceRisks)
             {
                 var points = entry.Key.Points; var p = CourierRouteGraphic.MapPoint(points[points.Length / 2], graphic.rectTransform.rect.size);
                 var rect = (RectTransform)badges[at++].transform.parent;
-                rect.anchoredPosition = new Vector2(p.x, -p.y - 23); rect.localScale = Vector3.one;
+                rect.anchoredPosition = new Vector2(p.x, -p.y - 23); rect.localScale = Vector3.one * (1 + emphasis * .12f);
             }
             overlay.SetAsLastSibling();
         }

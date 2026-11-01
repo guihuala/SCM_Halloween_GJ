@@ -7,6 +7,7 @@ Shader "UI/Postal Loading Scroll"
         _StripeColor ("Stripe Color", Color) = (0.88,0.94,0.85,1)
         _StripeWidth ("Repeat Width (UI units)", Float) = 48
         _Slant ("Stripe Slant", Range(-2,2)) = 0.6
+        _SpriteBorder ("Solid Interior Insets (sprite pixels L B R T)", Vector) = (6,6,6,6)
         _Speed ("Scroll Speed (cycles/sec; negative reverses)", Float) = 0.6
         [HideInInspector] _ScrollPhase ("Scroll Phase", Float) = 0
         _StencilComp ("Stencil Comparison", Float) = 8
@@ -57,10 +58,11 @@ Shader "UI/Postal Loading Scroll"
                 fixed4 color : COLOR;
                 float2 uv : TEXCOORD0;
                 float2 localPosition : TEXCOORD1;
-                half4 mask : TEXCOORD2;
+                float4 mask : TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
             sampler2D _MainTex;
+            float4 _MainTex_TexelSize, _SpriteBorder;
             fixed4 _Color, _StripeColor, _TextureSampleAdd;
             float4 _ClipRect;
             float _StripeWidth, _Slant, _ScrollPhase;
@@ -77,7 +79,7 @@ Shader "UI/Postal Loading Scroll"
                 float2 pixelSize = o.vertex.w;
                 pixelSize /= abs(mul((float2x2)UNITY_MATRIX_P, _ScreenParams.xy));
                 float4 rect = clamp(_ClipRect, -2e10, 2e10);
-                o.mask = half4(v.vertex.xy * 2 - rect.xy - rect.zw,
+                o.mask = float4(v.vertex.xy * 2 - rect.xy - rect.zw,
                     0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize)));
                 return o;
             }
@@ -88,9 +90,15 @@ Shader "UI/Postal Loading Scroll"
                 float wave = sin(p * 6.2831853);
                 float aa = max(fwidth(wave), 0.001);
                 fixed4 tape = lerp(_Color, _StripeColor, smoothstep(-aa, aa, wave));
-                fixed4 color = (tex2D(_MainTex, i.uv) + _TextureSampleAdd) * i.color * tape;
+                // Nine-slicing magnifies small transparent pinholes in the paper
+                // texture. Keep its outer silhouette but make the interior solid.
+                float2 insetMin = _SpriteBorder.xy * _MainTex_TexelSize.xy;
+                float2 insetMax = 1.0 - _SpriteBorder.zw * _MainTex_TexelSize.xy;
+                float2 inside = step(insetMin, i.uv) * step(i.uv, insetMax);
+                fixed4 color = i.color * tape;
+                color.a *= max(saturate(tex2D(_MainTex, i.uv).a + _TextureSampleAdd.a), inside.x * inside.y);
                 #ifdef UNITY_UI_CLIP_RECT
-                half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(i.mask.xy)) * i.mask.zw);
+                float2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(i.mask.xy)) * i.mask.zw);
                 color.a *= m.x * m.y;
                 #endif
                 #ifdef UNITY_UI_ALPHACLIP

@@ -25,7 +25,7 @@ public static class CourierSettingsPrefabInstaller
             paper.type = Image.Type.Sliced; paper.color = CourierColors.Paper; paper.raycastTarget = false;
             Label(row, "LanguageLabel", "Language", -276, 160);
             var previous = Button(row, "PreviousLanguage", -120, "‹", 80);
-            var current = Button(row, "CurrentLanguage", 88, "English", 280);
+            var current = Button(row, "CurrentLanguage", 88, "Follow system", 280);
             var next = Button(row, "NextLanguage", 296, "›", 80);
             var settings = new SerializedObject(root.GetComponent<SettingPanel>());
             var sfx = settings.FindProperty("sfxVolumeSlider").objectReferenceValue as Slider;

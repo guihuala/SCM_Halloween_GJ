@@ -23,7 +23,7 @@ namespace NightCourier
         public static void PlayInterface(string cue)
         {
             var owner=NightCourierPrototype.Current;
-            if(owner==null||!owner.Active)return;
+            if(owner==null||!owner.Active){MenuAudio.PlayInterface(cue);return;}
             var audio=owner.GetComponent<CourierSoundscape>();
             if(audio==null)return;
             if(cue=="hover")

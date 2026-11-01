@@ -11,11 +11,9 @@ namespace NightCourier
         private readonly Dictionary<RectTransform,Vector3> originalScales=new Dictionary<RectTransform,Vector3>();
         private readonly Dictionary<Image,CourierLandmarkGlow> glows=new Dictionary<Image,CourierLandmarkGlow>();
         private readonly HashSet<Image> legendImages=new HashSet<Image>();
-        private CourierClickBurst burst;
         private int pulseNode=-1,lastSelected=-1,lastHovered=-1;
         private float pulseAge=1,routeArrival=1;
         private StreetEdge[] lastPath;
-        private readonly Vector3[] corners=new Vector3[4];
         private void OnEnable()
         {
             var legacy=transform.Find("MapSelectedOutline");
@@ -34,22 +32,6 @@ namespace NightCourier
             if(panel==null||panel.MapReducedMotion||!panel.CanNavigateMap)return;
             pulseNode=node;pulseAge=0;
             routeArrival=0;panel.mapGraphic.highlightProgress=0;
-            var target=Visual(node)??panel.mapArtwork.NodeTarget(node);
-            if(target==null)return;
-            if(burst==null)
-            {
-                var go=new GameObject("MapSelectionRipple",typeof(RectTransform),typeof(CanvasRenderer),typeof(CourierClickBurst));
-                go.transform.SetParent(transform,false);burst=go.GetComponent<CourierClickBurst>();
-            }
-            Fit(burst.rectTransform,target,16);burst.Play(CourierColors.Gold);
-        }
-        private void Fit(RectTransform rect,RectTransform target,float padding)
-        {
-            target.GetWorldCorners(corners);var parent=(RectTransform)transform;
-            var lo=parent.InverseTransformPoint(corners[0]);var hi=parent.InverseTransformPoint(corners[2]);
-            rect.anchorMin=rect.anchorMax=Vector2.one*.5f;rect.pivot=Vector2.one*.5f;
-            rect.anchoredPosition=(Vector2)((lo+hi)*.5f)-parent.rect.center;
-            rect.sizeDelta=new Vector2(hi.x-lo.x+padding,hi.y-lo.y+padding);
         }
         private void LateUpdate()
         {
@@ -99,13 +81,11 @@ namespace NightCourier
                 panel.mapGraphic.highlightProgress=1-Mathf.Pow(1-routeArrival,2);
                 panel.mapGraphic.SetVerticesDirty();
             }
-            if((!active||reduced)&&burst!=null)burst.enabled=false;
         }
         private void OnDisable()
         {
             foreach(var entry in originalScales)if(entry.Key!=null)entry.Key.localScale=entry.Value;
             foreach(var glow in glows.Values)if(glow!=null)glow.ResetGlow();
-            if(burst!=null)burst.enabled=false;
             pulseAge=1;lastSelected=lastHovered=-1;routeArrival=1;
             if(panel!=null&&panel.mapGraphic!=null){panel.mapGraphic.highlightVisibility=panel.mapGraphic.highlightProgress=1;panel.mapGraphic.SetVerticesDirty();}
         }

@@ -41,7 +41,7 @@ namespace NightCourier
 
         public static CourierMapLegend Create(RectTransform parent,CourierRoutePanel owner,Font font)
         {
-            var root=new GameObject("MapLegend",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button),typeof(CourierMapLegend));
+            var root=new GameObject("MapLegend",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(Button),typeof(ButtonAudioFeedback),typeof(CourierMapLegend));
             root.transform.SetParent(parent,false);
             var view=root.GetComponent<CourierMapLegend>();view.panel=owner;
             var background=root.GetComponent<Image>();background.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");

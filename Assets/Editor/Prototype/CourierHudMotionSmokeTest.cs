@@ -62,14 +62,14 @@ public static class CourierHudMotionSmokeTest
                     var feedback=hud.advanceButton.GetComponent<CourierButtonFeedback>();
                     Require(feedback!=null,"Missing button feedback");feedback.Play();
                     var burst=hud.advanceButton.GetComponentInChildren<CourierClickBurst>(true);
-                    Require(burst!=null&&burst.enabled&&!burst.raycastTarget,"Click burst missing or intercepts pointer");
+                    Require(burst==null,"Decorative click burst was recreated");
                     hud.advanceButton.gameObject.SetActive(false);
-                    Require(!burst.enabled,"Disabling button left a live burst");
+                    Require(hud.advanceButton.GetComponentInChildren<CourierClickBurst>(true)==null,"Disabling button created a click burst");
                     break;
                 case 2:
                     Time.timeScale=1;UnityEngine.Object.Destroy(fixture);
                     SessionState.SetBool(Key,false);
-                    Debug.Log("COURIER_HUD_MOTION PASS: entrance, inert exit, interrupted reversal, fixed home pose, pause, reduced motion, click burst and disable cleanup.");
+                    Debug.Log("COURIER_HUD_MOTION PASS: entrance, inert exit, interrupted reversal, fixed home pose, pause, reduced motion, no decorative click burst and disable cleanup.");
                     EditorApplication.Exit(0);return;
             }
             step++;next=EditorApplication.timeSinceStartup+.1;

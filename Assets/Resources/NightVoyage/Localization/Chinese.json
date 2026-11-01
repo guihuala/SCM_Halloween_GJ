@@ -506,8 +506,8 @@
     },
     {
       "en": "Finish the conversation before departing.",
-      "zhHans": "请先结束对话，再出发。",
-      "zhHant": "請先結束對話，再出發。",
+      "zhHans": "对话还没结束，暂时不能出发。",
+      "zhHant": "對話還沒結束，暫時不能出發。",
       "fragment": true
     },
     {
@@ -1471,76 +1471,76 @@
       "fragment": true
     },
     {
-      "en": "Children in all sorts of costumes stop Goolie. \"Trick or treat!\"",
-      "zhHans": "一群穿着各式装扮的小孩拦住了 Goolie：“不给糖，就捣蛋！”",
-      "zhHant": "一群穿著各式裝扮的小孩攔住了 Goolie：“不給糖，就搗蛋！”",
-      "fragment": true
+      "en": "A troupe of kiddos in quirky costumes blocks the way: \"Trick or treat!\"",
+      "zhHans": "打扮得各式各样的小孩子们拦住了幽灵：“trick or treat!”",
+      "zhHant": "打扮得各式各樣的小孩子們攔住了幽靈：“trick or treat!”",
+      "fragment": false
     },
     {
-      "en": "A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.",
-      "zhHans": "骷髅小狗也想吃糖。Goolie 得找点它能放心吃的零食才行。",
-      "zhHant": "骷髏小狗也想吃糖。Goolie 得找點它能放心吃的零食才行。",
-      "fragment": true
+      "en": "A little skeleton pup wants a Halloween treat too, wagging its bony tail!",
+      "zhHans": "骷髅狗狗也想吃糖果",
+      "zhHant": "骷髏狗狗也想吃糖果",
+      "fragment": false
     },
     {
-      "en": "Teenagers in white bedsheets rush over with a selfie stick. \"Wow! This hologram ghost looks so real!\"",
-      "zhHans": "几个披着白床单的年轻人举着自拍杆围过来：“哇，这个全息幽灵也太真了吧！”",
-      "zhHant": "幾個披著白床單的年輕人舉著自拍桿圍過來：“哇，這個全息幽靈也太真了吧！”",
-      "fragment": true
+      "en": "Teenagers in bedsheet costumes come charging over with selfie sticks: \"Whoa! This roadside hologram ghost looks so real!\"",
+      "zhHans": "套着白床单的 teenagers 举着自拍杆冲过来：“哇！路边这个全息投影幽灵好逼真！”",
+      "zhHant": "套著白床單的 teenagers 舉著自拍桿衝過來：“哇！路邊這個全息投影幽靈好逼真！”",
+      "fragment": false
     },
     {
-      "en": "A lost bat is splashed by a geyser and crashes, dizzy, into Goolie's postal cap.",
-      "zhHans": "一只迷路的小蝙蝠被热泉溅了一身，晕头转向地撞进了 Goolie 的邮差帽。",
-      "zhHant": "一隻迷路的小蝙蝠被熱泉濺了一身，暈頭轉向地撞進了 Goolie 的郵差帽。",
-      "fragment": true
+      "en": "Splashed by a warm geyser, a dizzy little lost bat tumbles right into Goolie's postman cap!",
+      "zhHans": "迷路的小蝙蝠被间歇泉溅到，晕乎乎地一头撞进了 Goolie 的邮差帽里",
+      "zhHant": "迷路的小蝙蝠被間歇泉濺到，暈乎乎地一頭撞進了 Goolie 的郵差帽里",
+      "fragment": false
     },
     {
-      "en": "A Halloween parade blocks the road ahead.",
-      "zhHans": "万圣夜的巡游队伍把前面的路堵住了。",
-      "zhHant": "萬聖夜的巡遊隊伍把前面的路堵住了。",
-      "fragment": true
+      "en": "A bustling Halloween parade is marching right across the road ahead!",
+      "zhHans": "万圣节游行队伍堵住了前面的路径",
+      "zhHant": "萬聖節遊行隊伍堵住了前面的路徑",
+      "fragment": false
     },
     {
-      "en": "A geyser erupts across the path ahead.",
-      "zhHans": "前方的热泉突然喷发，挡住了去路。",
-      "zhHant": "前方的熱泉突然噴發，擋住了去路。",
-      "fragment": true
+      "en": "Whoosh! A roadside geyser suddenly erupts in a tall plume of steam!",
+      "zhHans": "间歇泉喷发",
+      "zhHant": "間歇泉噴發",
+      "fragment": false
     },
     {
-      "en": "A sudden bank of thick fog swallows the road.",
-      "zhHans": "浓雾一下子涌上来，整条路都看不清了。",
-      "zhHant": "濃霧一下子湧上來，整條路都看不清了。",
-      "fragment": true
+      "en": "A thick blanket of fog rolls in out of nowhere, nudging the little ghost back!",
+      "zhHans": "突然出现的浓雾逼退了幽灵",
+      "zhHant": "突然出現的濃霧逼退了幽靈",
+      "fragment": false
     },
     {
-      "en": "Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.",
-      "zhHans": "两个戴着廉价狼人面具的人类小孩，正拿手电筒在路口照来照去，说要捉鬼呢。",
-      "zhHant": "兩個戴著廉價狼人面具的人類小孩，正拿手電筒在路口照來照去，說要捉鬼呢。",
-      "fragment": true
+      "en": "Two mischievous kids in cheap werewolf masks are waving bright flashlights at the crossroads ahead, playing \"Ghost Hunters\"!",
+      "zhHans": "两个戴着劣质狼人面具的人类熊孩子，正举着强光手电筒在前面的路口搞“抓鬼探险”",
+      "zhHant": "兩個戴著劣質狼人面具的人類熊孩子，正舉著強光手電筒在前面的路口搞“抓鬼探險”",
+      "fragment": false
     },
     {
-      "en": "Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.",
-      "zhHans": "地热把冻土烘松了，温热的泥巴裹着枯树滑下山坡，堵住了路。",
-      "zhHant": "地熱把凍土烘松了，溫熱的泥巴裹著枯樹滑下山坡，堵住了路。",
-      "fragment": true
+      "en": "The thawing permafrost on the hillside comes tumbling down in a warm mudslide!",
+      "zhHans": "山坡上的冻土层松动滑坡",
+      "zhHant": "山坡上的凍土層鬆動滑坡",
+      "fragment": false
     },
     {
-      "en": "A sudden gust nearly blows the little ghost away!",
-      "zhHans": "一阵大风，差点把小幽灵吹跑啦！",
-      "zhHant": "一陣大風，差點把小幽靈吹跑啦！",
-      "fragment": true
+      "en": "Whoosh! A sudden gust of wind nearly blows the weightless little ghost away!",
+      "zhHans": "突如其来的大风快把小幽灵吹飞啦",
+      "zhHant": "突如其來的大風快把小幽靈吹飛啦",
+      "fragment": false
     },
     {
-      "en": "A geyser suddenly blasts scalding steam. The heat leaves light-as-air Goolie unable to keep their eyes open.",
-      "zhHans": "热泉突然喷出滚烫的蒸汽。Goolie 轻飘飘的，热得连眼睛都睁不开了。",
-      "zhHant": "熱泉突然噴出滾燙的蒸汽。Goolie 輕飄飄的，熱得連眼睛都睜不開了。",
-      "fragment": true
+      "en": "A geyser suddenly puffs out a cloud of piping-hot steam, leaving weightless little Goolie too dizzy to open their eyes!",
+      "zhHans": "间歇泉突然喷出一股滚烫的蒸汽，热浪把轻飘飘的 Goolie 熏得睁不开眼",
+      "zhHant": "間歇泉突然噴出一股滾燙的蒸汽，熱浪把輕飄飄的 Goolie 熏得睜不開眼",
+      "fragment": false
     },
     {
-      "en": "A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.",
-      "zhHans": "巡游花车拐进了这条街，彩纸和相机闪光一齐朝 Goolie 涌来。",
-      "zhHant": "巡遊花車拐進了這條街，彩紙和相機閃光一齊朝 Goolie 湧來。",
-      "fragment": true
+      "en": "A parade of glowing floats suddenly turns onto the street in a whirlwind of confetti and flashing cameras!",
+      "zhHans": "花车巡游突然拐进了这条街，漫天彩带和闪光灯迎面扑来",
+      "zhHant": "花車巡遊突然拐進了這條街，漫天彩帶和閃光燈迎面撲來",
+      "fragment": false
     },
     {
       "en": "Dear Goolie, The hot springs around Ashpine Vale have been erupting way too often lately. This old ghost really can't take the heat anymore, so I'm heading up the snow peak to cool off for a while. I'm leaving this Halloween in your hands—hang in there, little ghost!",
@@ -1844,8 +1844,8 @@
     },
     {
       "en": "The human parade has finally come to an end—now, the real holiday for monsters begins. With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, we are together. As for tomorrow, tomorrow is another night.",
-      "zhHans": "人类的巡游终于落幕，接下来，就是属于鬼怪们的节日了。有音乐，有蜜酒，苍松谷的大家或许有一天会各奔东西，但此时此刻，我们在一起。至于明天，明天又是一个夜晚。",
-      "zhHant": "人類的巡遊終於落幕，接下來，就是屬於鬼怪們的節日了。有音樂，有蜜酒，蒼松谷的大家或許有一天會各奔東西，但此時此刻，我們在一起。至於明天，明天又是一個夜晚。",
+      "zhHans": "人类的巡游终于落幕，接下来，就是属于鬼怪们的节日了。琴声响起，蜜酒斟满，虽然苍松谷的大家以后可能会分道扬镳，但至少在此刻，我们依然团聚在一起。至于明天，明天又是新的一天了。",
+      "zhHant": "人類的巡遊終於落幕，接下來，就是屬於鬼怪們的節日了。琴聲響起，蜜酒斟滿，雖然蒼松谷的大家以後可能會分道揚鑣，但至少在此刻，我們依然團聚在一起。至於明天，明天又是新的一天了。",
       "fragment": false
     },
     {
@@ -2723,6 +2723,180 @@
       "zhHans": "颠簸路段",
       "zhHant": "顛簸路段",
       "fragment": true
+    },
+    {
+      "en": "Destination · ",
+      "zhHans": "前往 ",
+      "zhHant": "前往 ",
+      "fragment": true
+    },
+    {
+      "en": "Travel paused · continue with E",
+      "zhHans": "途中停靠 · 按 E 继续",
+      "zhHant": "途中停靠 · 按 E 繼續",
+      "fragment": false
+    },
+    {
+      "en": "Road event · travel paused",
+      "zhHans": "路况事件 · 赶路暂停",
+      "zhHant": "路況事件 · 趕路暫停",
+      "fragment": false
+    },
+    {
+      "en": "Travel paused",
+      "zhHans": "赶路暂停",
+      "zhHant": "趕路暫停",
+      "fragment": false
+    },
+    {
+      "en": "Current leg",
+      "zhHans": "本段路程",
+      "zhHant": "本段路程",
+      "fragment": true
+    },
+    {
+      "en": "Follow system",
+      "zhHans": "跟随系统",
+      "zhHant": "跟隨系統",
+      "fragment": false
+    },
+    {
+      "en": "A letter is waiting at Mountain Train Tunnel. Click the tunnel for a route; the green arrow sets you off. Tab opens Orders.",
+      "zhHans": "穿山隧道有封给你的信。点隧道查看路线，绿色箭头出发。Tab 查看订单。",
+      "zhHant": "穿山隧道有封給你的信。點隧道查看路線，綠色箭頭出發。Tab 查看訂單。",
+      "fragment": true
+    },
+    {
+      "en": "Parcels are ready here. The box arrow in Orders [Tab] picks them up. Pickup starts the delivery clock.",
+      "zhHans": "这里有包裹要寄。Tab 打开订单，箱子箭头就是取件。配送回合从取件算起。",
+      "zhHant": "這裡有包裹要寄。Tab 開啟訂單，箱子箭頭就是取件。配送回合從取件算起。",
+      "fragment": true
+    },
+    {
+      "en": "Looking for a delivery? Tab opens Orders. The box arrow collects parcels at your stop.",
+      "zhHans": "找找有什么要送的？Tab 打开订单，箱子箭头可收取本站的包裹。",
+      "zhHant": "找找有什麼要送的？Tab 開啟訂單，箱子箭頭可收取本站的包裹。",
+      "fragment": true
+    },
+    {
+      "en": "Your recipient is marked on the map. Click their stop to see the orange route. The green arrow sets you off.",
+      "zhHans": "收件地点已标在地图上。点地点查看橙色路线，绿色箭头出发。",
+      "zhHant": "收件地點已標在地圖上。點地點查看橙色路線，綠色箭頭出發。",
+      "fragment": true
+    },
+    {
+      "en": "Just a stop along the way. E or the arrow continues the route. Parcels are delivered on arrival.",
+      "zhHans": "这儿只是中途站。E 或箭头继续赶路，到收件地点就会自动送达。",
+      "zhHant": "這兒只是中途站。E 或箭頭繼續趕路，到收件地點就會自動送達。",
+      "fragment": true
+    },
+    {
+      "en": "F skips ahead to the next stop or event. E keeps you moving at waypoints.",
+      "zhHans": "F 快进到下个站点或事件，中途停靠时按 E 继续。",
+      "zhHant": "F 快轉到下個站點或事件，中途停靠時按 E 繼續。",
+      "fragment": true
+    },
+    {
+      "en": "Route ready. The green arrow sets you off; the clock shows how many turns the trip should take.",
+      "zhHans": "路线定好了。绿色箭头出发，时钟旁是预计要走的回合数。",
+      "zhHant": "路線定好了。綠色箭頭出發，時鐘旁是預計要走的回合數。",
+      "fragment": true
+    },
+    {
+      "en": "Something happened on the road. The event card has the details; the green check confirms.",
+      "zhHans": "路上出了点状况。详情写在事件卡上，绿色勾确认。",
+      "zhHant": "路上出了點狀況。詳情寫在事件卡上，綠色勾確認。",
+      "fragment": true
+    },
+    {
+      "en": "First delivery done. More parcels are waiting in Orders [Tab].",
+      "zhHans": "第一单送到了。Tab 看看还有谁需要寄件。",
+      "zhHant": "第一單送到了。Tab 看看還有誰需要寄件。",
+      "fragment": true
+    },
+    {
+      "en": "On the way to a sender",
+      "zhHans": "前往寄件点",
+      "zhHant": "前往寄件點",
+      "fragment": true
+    },
+    {
+      "en": "No parcels on board yet, so the delivery clock is off. F skips travel; E continues at waypoints.",
+      "zhHans": "还没取件，不用赶时间。F 快进路程，中途停靠时按 E 继续。",
+      "zhHant": "還沒取件，不用趕時間。F 快轉路程，中途停靠時按 E 繼續。",
+      "fragment": true
+    },
+    {
+      "en": "Continue to the sender",
+      "zhHans": "继续前往寄件点",
+      "zhHant": "繼續前往寄件點",
+      "fragment": true
+    },
+    {
+      "en": "The sender is further along this route. E or the arrow keeps you going. Tab opens Orders when you arrive.",
+      "zhHans": "寄件人还在前面。E 或箭头继续赶路，到站按 Tab 打开订单取件。",
+      "zhHant": "寄件人還在前面。E 或箭頭繼續趕路，到站按 Tab 開啟訂單取件。",
+      "fragment": true
+    },
+    {
+      "en": "Spend 1 turn handing out candy.",
+      "zhHans": "消耗一回合给他们分糖",
+      "zhHant": "消耗一回合給他們分糖",
+      "fragment": true
+    },
+    {
+      "en": "Spend 1 turn rummaging for dog-safe snacks.",
+      "zhHans": "消耗一回合寻找狗狗能吃的食物",
+      "zhHant": "消耗一回合尋找狗狗能吃的食物",
+      "fragment": true
+    },
+    {
+      "en": "Spend 1 turn holding your breath and pretending to be a plastic prop until they leave.",
+      "zhHans": "消耗一回合屏住呼吸假装自己是塑料挂件，等他们拍完照离开",
+      "zhHant": "消耗一回合屏住呼吸假裝自己是塑料掛件，等他們拍完照離開",
+      "fragment": true
+    },
+    {
+      "en": "Spend 1 turn fanning the little bat to cool it down.",
+      "zhHans": "消耗一回合给小蝙蝠扇风降温",
+      "zhHant": "消耗一回合給小蝙蝠扇風降溫",
+      "fragment": true
+    },
+    {
+      "en": "Wait 1 turn.",
+      "zhHans": "等待一回合",
+      "zhHant": "等待一回合",
+      "fragment": true
+    },
+    {
+      "en": "Move back 1 node.",
+      "zhHans": "倒退一个节点",
+      "zhHant": "倒退一個節點",
+      "fragment": true
+    },
+    {
+      "en": "Move back 1 node to dodge the hot steam.",
+      "zhHans": "倒退一个节点躲避热泉蒸汽",
+      "zhHant": "倒退一個節點躲避熱泉蒸汽",
+      "fragment": true
+    },
+    {
+      "en": "Move back 1 node to duck away from the human crowd.",
+      "zhHans": "倒退一个节点紧急避让人类巡游队",
+      "zhHant": "倒退一個節點緊急避讓人類巡遊隊",
+      "fragment": true
+    },
+    {
+      "en": "Expand task",
+      "zhHans": "展开任务",
+      "zhHant": "展開任務",
+      "fragment": false
+    },
+    {
+      "en": "Collapse task",
+      "zhHans": "收起任务",
+      "zhHant": "收起任務",
+      "fragment": false
     }
   ]
 }

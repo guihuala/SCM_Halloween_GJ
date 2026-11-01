@@ -240,6 +240,9 @@ public static class CourierLanguageAudit
         if (rendered && owner != null && owner.Run.Story != null &&
             (screen.StartsWith("dialogue/") || screen.EndsWith("/SubtitleText")) &&
             owner.Run.Story.Data.scenes.SelectMany(scene => scene.lines).Any(line => CourierLocalization.T(line.text) == value)) return;
+        // The supplied event copy also retains "trick or treat!" and "teenagers".
+        if (rendered && owner != null && screen.StartsWith("event-") &&
+            owner.Run.Events.Any(e => e.Description != value && CourierLocalization.T(e.Description) == value)) return;
         string cleaned = Regex.Replace(translated, "<[^>]*>", "");
         cleaned = Regex.Replace(cleaned, @"(?<![A-Za-z])(Goolie|Gooy|Gigi|Moku|Ally|Melody|Unity|WASD|Tab|Esc|H|W|Q|E|F)(?![A-Za-z])", "");
         if (Regex.IsMatch(cleaned, "[A-Za-z]{2,}"))

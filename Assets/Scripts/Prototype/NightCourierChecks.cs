@@ -133,6 +133,13 @@ namespace NightCourier
             Require(run.Results.Single().OutcomeDetail.Contains("bumps"),"Result lost cargo damage cause");
 
             var guide=new CourierTutorial();run=new CourierRun();run.EventProbability=0;
+            guide.ChooseRoute();guide.Leave();guide.Observe(run);
+            Require(!guide.Departed&&guide.Step(run,false)==1,"Empty travel skipped pickup guidance");
+            guide.AfterLetter();Require(!guide.GuideOpen&&!guide.Finished,"Letter should keep contextual hints active");
+            guide.ShowGuide();guide.CloseGuide();Require(!guide.Finished&&!guide.GuideOpen,"Closing rules dismissed first-delivery hints");
+            run.LoadParcel(run.Parcels[0]);guide.Observe(run);
+            Require(!guide.RouteChosen&&guide.Step(run,false)==3,"Empty route leaked into loaded delivery guidance");
+            guide=new CourierTutorial();run=new CourierRun();run.EventProbability=0;
             guide.OpenMap();run.LoadParcel(run.Parcels[0]);guide.ChooseRoute();run.StartJourney(3);guide.Observe(run);run.FastForwardTravel();guide.Observe(run);
             Require(run.Node!=0&&run.Node!=3&&!guide.Arrived&&guide.Step(run,false)==4,"Waypoint ended first-delivery tutorial");
             guide.Leave();Require(!guide.Finished,"Continuing at waypoint dismissed tutorial");Go(run,3);guide.Observe(run);
