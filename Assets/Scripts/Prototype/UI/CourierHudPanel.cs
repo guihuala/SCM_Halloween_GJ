@@ -16,6 +16,10 @@ namespace NightCourier
         private CourierTextJuice subtitleJuice;
         [Header("Ending Dialogue")]
         public Color endingDialogueColor = CourierColors.Hex(0xDCCBED);
+        private GameObject endingArtwork;
+        private GameObject endingCaptions;
+        private Text endingText, endingHint;
+        private CourierTextJuice endingJuice;
         [Header("HUD Motion")]
         public bool reducedMotion;
         public UIInfiniteScroll backgroundScroll;
@@ -66,7 +70,7 @@ namespace NightCourier
         {
             ApplyReadingColors();
             if(characterCatalog==null)characterCatalog=Resources.Load<CourierCharacterCatalog>("NightVoyage/Characters");
-            bool talking=owner.ConversationActive&&(Run.State==ShiftState.Docked||Run.Finished);
+            bool talking=owner.ConversationActive&&Run.State==ShiftState.Docked;
             var character=talking&&characterCatalog!=null?characterCatalog.ForStop(CourierStory.SpeakerStop(owner.DialogueSpeaker)):null;
             bool goolie=talking&&owner.DialogueSpeaker=="Goolie";
             bool show=(character!=null||goolie)&&speakerPortrait!=null&&speakerName!=null;
@@ -102,7 +106,90 @@ namespace NightCourier
         private void PresentSubtitle()
         {
             RefreshSpeaker();
+            if (Run.Finished) { PresentEndingCaptions(); return; }
+            if (endingCaptions != null) endingCaptions.SetActive(false);
             PresentText();
+        }
+        private void PresentEndingCaptions()
+        {
+            if (endingCaptions == null)
+            {
+                endingCaptions = new GameObject("EndingCaptions", typeof(RectTransform), typeof(CourierEndingGradient));
+                var rect = (RectTransform)endingCaptions.transform;
+                rect.SetParent(transform, false);
+                rect.anchorMin = Vector2.zero; rect.anchorMax = new Vector2(1, 0);
+                rect.pivot = new Vector2(.5f, 0); rect.anchoredPosition = Vector2.zero;
+                rect.sizeDelta = new Vector2(0, 320);
+                endingCaptions.GetComponent<CourierEndingGradient>().raycastTarget = false;
+                endingText = EndingLabel("Epilogue", rect, 34);
+                var body = endingText.rectTransform;
+                body.anchorMin = new Vector2(.12f, 0); body.anchorMax = new Vector2(.88f, 0);
+                body.pivot = new Vector2(.5f, 0); body.anchoredPosition = new Vector2(0, 88);
+                body.sizeDelta = new Vector2(0, 140);
+                endingText.lineSpacing = 1.3f;
+                var shadow = endingText.gameObject.AddComponent<Shadow>();
+                shadow.effectColor = new Color(0, 0, 0, .8f); shadow.effectDistance = new Vector2(1, -2);
+                endingJuice = endingText.gameObject.AddComponent<CourierTextJuice>();
+                endingJuice.rise = 0; endingJuice.pop = 0;
+                endingHint = EndingLabel("Continue", rect, 20);
+                var hint = endingHint.rectTransform;
+                hint.anchorMin = hint.anchorMax = new Vector2(.5f, 0);
+                hint.pivot = new Vector2(.5f, 0); hint.anchoredPosition = new Vector2(0, 25);
+                hint.sizeDelta = new Vector2(360, 52);
+                endingHint.raycastTarget = true;
+                var button = endingHint.gameObject.AddComponent<Button>();
+                button.targetGraphic = endingHint;
+                var colors = button.colors;
+                colors.normalColor = new Color(.8f, .87f, .81f);
+                colors.highlightedColor = Color.white;
+                colors.pressedColor = CourierColors.Gold;
+                colors.selectedColor = Color.white; button.colors = colors;
+                button.onClick.AddListener(() => owner.AdvanceDialogue());
+            }
+            endingCaptions.SetActive(owner.ConversationActive);
+            if (!owner.ConversationActive) return;
+            // Translate before recoloring rich-text emphasis for the dark backdrop.
+            endingJuice.Present(CourierLocalization.T(owner.Subtitle).Replace("#30614F", "#BFE3C6"), !reducedMotion);
+            if (reducedMotion) endingJuice.Complete();
+            endingHint.text = CourierLocalization.IsChinese ? "E / 点击继续  ›" : "E / Click to continue  ›";
+        }
+        private Text EndingLabel(string name, Transform parent, int size)
+        {
+            var label = new GameObject(name, typeof(RectTransform), typeof(Text)).GetComponent<Text>();
+            label.transform.SetParent(parent, false);
+            label.font = subtitleText.font; label.fontSize = size;
+            label.color = new Color(.97f, .96f, .91f);
+            label.alignment = TextAnchor.MiddleCenter;
+            label.raycastTarget = false;
+            return label;
+        }
+        private void PresentEndingArtwork()
+        {
+            if (Run.Finished && endingArtwork == null)
+            {
+                var texture = Resources.Load<Texture2D>("NightVoyage/ending_01");
+                if (texture == null) return;
+                endingArtwork = new GameObject("EndingCG", typeof(RectTransform), typeof(Image));
+                var backdrop = (RectTransform)endingArtwork.transform;
+                backdrop.SetParent(transform, false);
+                backdrop.SetAsFirstSibling();
+                backdrop.anchorMin = Vector2.zero;
+                backdrop.anchorMax = Vector2.one;
+                backdrop.offsetMin = backdrop.offsetMax = Vector2.zero;
+                var matte = endingArtwork.GetComponent<Image>();
+                matte.color = Color.black;
+                matte.raycastTarget = false;
+                var artwork = new GameObject("Artwork", typeof(RectTransform), typeof(RawImage), typeof(AspectRatioFitter));
+                artwork.transform.SetParent(backdrop, false);
+                var image = artwork.GetComponent<RawImage>();
+                image.texture = texture;
+                image.raycastTarget = false;
+                var aspect = artwork.GetComponent<AspectRatioFitter>();
+                aspect.aspectRatio = (float)texture.width / texture.height;
+                aspect.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            }
+            if (endingArtwork != null) endingArtwork.SetActive(Run.Finished);
+            if (backgroundScroll != null) backgroundScroll.gameObject.SetActive(!Run.Finished);
         }
         private void PresentText()
         {
@@ -113,6 +200,11 @@ namespace NightCourier
         }
         public bool CompleteSubtitle()
         {
+            if (Run.Finished)
+            {
+                PresentEndingCaptions();
+                return endingJuice != null && endingJuice.Complete();
+            }
             // Refresh owns layout and motion; completing text must not apply another offset.
             PresentText();
             return subtitleJuice.Complete();
@@ -129,6 +221,7 @@ namespace NightCourier
         public override void Bind(NightCourierPrototype prototype){if(stageGraphic!=null){stageGraphic.gameObject.SetActive(false);stageGraphic.Owner=prototype;}base.Bind(prototype);}
         protected override void Refresh()
         {
+            PresentEndingArtwork();
             if(backgroundScroll!=null)
             {
                 backgroundScroll.reducedMotion=reducedMotion;
@@ -163,6 +256,27 @@ namespace NightCourier
             travelStatus.Refresh(Run,owner.Active,reducedMotion);
             PresentSubtitle();
             advanceButton.GetComponent<CourierIconHint>().message=owner.ConversationActive?"Continue dialogue - E":"Continue to "+(Run.HasJourney?Run.Stops[Run.PlannedDestination].Name:"")+" · E";
+        }
+    }
+    // A soft scrim leaves the illustration visible without a rectangular dialogue panel.
+    public sealed class CourierEndingGradient : MaskableGraphic
+    {
+        protected override void OnPopulateMesh(VertexHelper mesh)
+        {
+            mesh.Clear();
+            var rect = rectTransform.rect;
+            const int bands = 12;
+            for (int i = 0; i <= bands; i++)
+            {
+                float t = (float)i / bands;
+                var tint = new Color(.025f, .04f, .035f, .92f * (1 - t * t));
+                float y = Mathf.Lerp(rect.yMin, rect.yMax, t);
+                mesh.AddVert(new Vector3(rect.xMin, y), tint, Vector2.zero);
+                mesh.AddVert(new Vector3(rect.xMax, y), tint, Vector2.zero);
+                if (i == 0) continue;
+                int v = i * 2;
+                mesh.AddTriangle(v - 2, v, v - 1); mesh.AddTriangle(v, v + 1, v - 1);
+            }
         }
     }
 }
