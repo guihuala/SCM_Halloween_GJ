@@ -102,7 +102,7 @@ public static class CourierVehicleStationSmokeTest
             else
             {
                 Require(!page.possessButton.gameObject.activeSelf,"Swap CTA visible away from station");
-                Finish(true,"All three stations: clear roads, node hit targets, Chinese/English CTA, E/current-station/button interaction, five uses and one order turn cost; HUD and map exchange confirmation, including same-type refill.");return;
+                Finish(true,"All three stations: compact vehicles centered on road nodes, no leader lines, node hit targets, Chinese/English CTA, E/current-station/button interaction, five uses and one order turn cost; HUD and map exchange confirmation, including same-type refill.");return;
             }
             step++;
         }catch(Exception e){Finish(false,e.ToString());}
@@ -125,9 +125,12 @@ public static class CourierVehicleStationSmokeTest
         foreach(var button in page.mapArtwork.stationButtons)
         {
             var rect=(RectTransform)button.transform;var center=new Vector2(rect.anchoredPosition.x,-rect.anchoredPosition.y);
-            var bounds=new Rect(center-rect.sizeDelta*.5f-Vector2.one*8,rect.sizeDelta+Vector2.one*16);
-            foreach(var edge in CourierStreetMap.Edges)foreach(var point in edge.Points)
-                Require(!bounds.Contains(CourierRouteGraphic.MapPoint(point,map.rect.size)),"Station covers road: "+button.name);
+            int target=int.Parse(button.name.Substring("StationButton_".Length));
+            var point=CourierRouteGraphic.NodePoint(new CourierRun().Stops[target],map.rect.size);
+            Require(Vector2.Distance(center,point)<.1f,"Vehicle is detached from its road node: "+button.name);
+            var artwork=rect.Find("StationVehicleArtwork") as RectTransform;
+            Require(artwork!=null&&artwork.anchoredPosition==Vector2.zero&&artwork.sizeDelta.x<=44,"Station vehicle is too large or off-center");
+            var leader=rect.Find("StationLeader");Require(leader==null||!leader.gameObject.activeSelf,"Detached station leader remains visible");
             var hit=rect.Find("NodeHitArea") as RectTransform;
             var canvas=rect.GetComponentInParent<Canvas>().rootCanvas;
             var data=new PointerEventData(EventSystem.current){position=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,hit.TransformPoint(hit.rect.center))};

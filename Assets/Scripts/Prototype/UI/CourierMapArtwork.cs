@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Linq;
-using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace NightCourier
@@ -164,46 +163,7 @@ namespace NightCourier
         public Button[] stationButtons;
         private Text[] streetLabels;
         private Text protectionStatus;
-        private readonly Vector3[] stationCorners=new Vector3[4];
-        private Vector2 stationLayoutSize;
-        private readonly Vector2[] stationCenters=new Vector2[3];
-        private static readonly Vector2 StationSize=new Vector2(80,88);
-        // Cache the search: roads and landmarks stay fixed until the map canvas changes size.
-        private void LayoutStations(CourierRoutePanel panel,Vector2 size)
-        {
-            if(stationLayoutSize==size)return;
-            stationLayoutSize=size;
-            var occupied=new List<Rect>();
-            foreach(var graphic in panel.stopLabels.Cast<Graphic>().Concat(panel.stopCounts.Cast<Graphic>()).Concat(landmarkImages.Cast<Graphic>()).Concat(streetLabels.Cast<Graphic>()))
-            {
-                if(!graphic.gameObject.activeInHierarchy||!graphic.enabled)continue;
-                var text=graphic as Text;if(text!=null&&string.IsNullOrWhiteSpace(text.text))continue;
-                graphic.rectTransform.GetWorldCorners(stationCorners);
-                var lo=transform.InverseTransformPoint(stationCorners[0]);var hi=transform.InverseTransformPoint(stationCorners[2]);var mapRect=((RectTransform)transform).rect;
-                occupied.Add(Rect.MinMaxRect(lo.x-mapRect.xMin,mapRect.yMax-hi.y,hi.x-mapRect.xMin,mapRect.yMax-lo.y));
-            }
-            var roadPoints=CourierStreetMap.Edges.SelectMany(e=>e.Points).Select(p=>CourierRouteGraphic.MapPoint(p,size)).ToArray();
-            for(int station=0;station<3;station++)
-            {
-                var node=CourierRouteGraphic.MapPoint(CourierStreetMap.Nodes.First(n=>n.StopId==station+6).Point,size);
-                float best=float.PositiveInfinity;Vector2 chosen=node;
-                // Prefer nearby empty space; include every road, not just this station's incident edges.
-                for(int radius=80;radius<=288;radius+=16)for(int direction=0;direction<24;direction++)
-                {
-                    float angle=direction*Mathf.PI/12;
-                    var center=node+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*radius;
-                    var bounds=new Rect(center-StationSize*.5f-Vector2.one*10,StationSize+Vector2.one*20);
-                    if(bounds.xMin<8||bounds.yMin<8||bounds.xMax>size.x-8||bounds.yMax>size.y-8)continue;
-                    if(roadPoints.Any(point=>bounds.Contains(point)))continue;
-                    float score=radius+direction*.01f;
-                    foreach(var other in occupied)if(bounds.Overlaps(other))score+=400;
-
-                    if(score<best){best=score;chosen=center;}
-                }
-                stationCenters[station]=chosen;
-                occupied.Add(new Rect(chosen-StationSize*.5f,StationSize));
-            }
-        }
+        private static readonly Vector2 StationSize=Vector2.one*52;
         private void RefreshStreetLabels(CourierRoutePanel panel,Vector2 size)
         {
             if(streetLabels==null)
@@ -269,21 +229,15 @@ namespace NightCourier
                 var statusRect=CreateRect(transform,"ProtectionStatus");protectionStatus=GetOrAdd<Text>(statusRect.gameObject);
                 protectionStatus.font=CourierTypography.Body;protectionStatus.fontSize=24;protectionStatus.color=CourierColors.Muted;protectionStatus.raycastTarget=false;
             }
-            LayoutStations(panel,size);
             for(int i=0;i<3;i++)
             {
                 var button=stationButtons[i];int target=6+i;
                 var point=CourierRouteGraphic.NodePoint(run.Stops[target],size);var rect=(RectTransform)button.transform;
                 rect.anchorMin=rect.anchorMax=new Vector2(0,1);rect.pivot=new Vector2(.5f,.5f);
-                var center=stationCenters[i];rect.anchoredPosition=new Vector2(center.x,-center.y);rect.sizeDelta=StationSize;
-                // A thin, non-interactive leader links the displaced facility to its exact road node.
-                var leader=CreateRect(rect,"StationLeader");leader.SetAsFirstSibling();
-                var line=GetOrAdd<Image>(leader.gameObject);line.color=CourierColors.Alpha(CourierColors.Muted,.28f);line.raycastTarget=false;
-                var delta=new Vector2(point.x-center.x,center.y-point.y);
-                leader.anchorMin=leader.anchorMax=Vector2.one*.5f;leader.pivot=new Vector2(0,.5f);
-                leader.anchoredPosition=Vector2.zero;leader.sizeDelta=new Vector2(delta.magnitude,2);
-                leader.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(delta.y,delta.x)*Mathf.Rad2Deg);
-                EnsureNodeHit(rect,new Vector2(point.x,-point.y)-rect.anchoredPosition);
+                // The vehicle and its click target share the exact road junction.
+                rect.anchoredPosition=new Vector2(point.x,-point.y);rect.sizeDelta=StationSize;
+                var leader=rect.Find("StationLeader");if(leader!=null)leader.gameObject.SetActive(false);
+                EnsureNodeHit(rect,Vector2.zero);
                 button.interactable=usable;
                 string title=i==0?"H · Heat shield":i==1?"W · Waterproof":"Q · Suspension";
                 var stationLabel=button.GetComponentInChildren<Text>();
@@ -292,12 +246,17 @@ namespace NightCourier
                 stationLabel.enabled=true;stationLabel.fontSize=20;stationLabel.alignment=TextAnchor.LowerCenter;
                 CourierLocalization.Set(stationLabel,run.Node==target?"Swap · E":i==0?"H":i==1?"W":"Q");
                 var oldSymbol=button.transform.Find("ActionSymbol");if(oldSymbol!=null)oldSymbol.GetComponent<CourierIconGraphic>().enabled=false;
-                var vehicle=CourierVehicleIconView.Ensure(button.transform,"StationVehicleArtwork",Vector2.zero,Vector2.one*56);
-                vehicle.SetVehicle(i);var vehicleRect=(RectTransform)vehicle.transform;vehicleRect.anchorMin=vehicleRect.anchorMax=vehicleRect.pivot=Vector2.one*.5f;vehicleRect.anchoredPosition=new Vector2(0,12);
+                var vehicle=CourierVehicleIconView.Ensure(button.transform,"StationVehicleArtwork",Vector2.zero,Vector2.one*40);
+                vehicle.SetVehicle(i);var vehicleRect=(RectTransform)vehicle.transform;vehicleRect.anchorMin=vehicleRect.anchorMax=vehicleRect.pivot=Vector2.one*.5f;vehicleRect.anchoredPosition=Vector2.zero;
                 var background=button.targetGraphic as Image;
                 if(background!=null){background.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");background.type=Image.Type.Sliced;background.color=CourierColors.Paper;}
                 foreach(var border in button.GetComponents<Outline>())border.enabled=false;
-                stationLabel.rectTransform.offsetMin=new Vector2(2,4);stationLabel.rectTransform.offsetMax=new Vector2(-2,-62);
+                var labelRect=stationLabel.rectTransform;
+                labelRect.anchorMin=labelRect.anchorMax=Vector2.one*.5f;labelRect.pivot=new Vector2(.5f,1);
+                labelRect.anchoredPosition=new Vector2(0,-29);labelRect.sizeDelta=new Vector2(112,28);
+                stationLabel.alignment=TextAnchor.UpperCenter;stationLabel.color=CourierColors.Paper;
+                var labelOutline=GetOrAdd<Outline>(stationLabel.gameObject);
+                labelOutline.effectColor=CourierColors.Night;labelOutline.effectDistance=new Vector2(1,-1);
                 var colors=button.colors;colors.normalColor=run.HasProtection(target)?CourierColors.Mint:Color.white;colors.highlightedColor=CourierColors.Hover;button.colors=colors;
                 var stationHint=button.GetComponent<CourierIconHint>();if(stationHint!=null)stationHint.showOnClick=false;
             }
