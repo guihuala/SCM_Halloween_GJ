@@ -159,13 +159,11 @@ namespace NightCourier
             var size=((RectTransform)transform).rect.size;
             float width=Mathf.Min(1440,size.x-80),height=Mathf.Min(880,size.y-64);
             strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.one*.5f;strip.anchoredPosition=Vector2.zero;strip.sizeDelta=new Vector2(width,height);
-            heading.enabled=instruction.enabled=true;
+            heading.enabled=true;instruction.enabled=false;
+            var background=strip.GetComponent<Image>();if(background!=null)background.raycastTarget=true;
             NightCourier.CourierLocalization.Set(heading, "YOUR HALLOWEEN DELIVERY GUIDE");heading.alignment=TextAnchor.UpperLeft;heading.resizeTextForBestFit=false;heading.fontSize=34;
             heading.rectTransform.anchoredPosition=new Vector2(40,-32);heading.rectTransform.sizeDelta=new Vector2(width-160,64);
-            NightCourier.CourierLocalization.Set(instruction, CourierInformation.Rules(owner.Run).Replace("DELIVERY GUIDE\n","").Replace("\n","\n\n"));
-            instruction.fontSize=28;instruction.alignment=TextAnchor.UpperLeft;
-            instruction.rectTransform.anchoredPosition=new Vector2(40,-112);instruction.rectTransform.sizeDelta=new Vector2(width-80,height-144);
-            instruction.resizeTextForBestFit=true;instruction.resizeTextMinSize=20;instruction.resizeTextMaxSize=28;
+            LayoutGuide(width,height);
             foreach(var name in new[]{"TaskToggleHorizontal","TaskToggleVertical"})
             {var mark=skipButton.transform.Find(name);if(mark!=null)mark.gameObject.SetActive(false);}
             var compact=strip.Find("GuideSymbol");if(compact!=null)compact.gameObject.SetActive(false);
@@ -175,8 +173,67 @@ namespace NightCourier
             skipButton.transform.Find("ActionSymbol").gameObject.SetActive(true);
             var image=skipButton.targetGraphic as Image;if(image!=null){image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");image.type=Image.Type.Sliced;image.color=CourierColors.Mint;}
         }
+        // Separate short reading blocks keep the rules scannable without shrinking one long paragraph.
+        private void LayoutGuide(float width,float height)
+        {
+            var content=GuideRect(strip,"GuideContent",0,104,width,height-104);
+            content.gameObject.SetActive(true);
+            float margin=36,gap=16,column=(width-margin*2-gap)/2;
+            float row=(height-244-gap*2)/3;
+            GuideCard(content,"Pickup",margin,0,column,row,CourierIconKind.Box,
+                "01  Collect orders",
+                "<b>Tab</b> opens Orders. Visit the sender to collect.\nHoney + Flower Jam: collect together, deliver separately.\nCarry multiple orders; each clock starts at pickup.");
+            GuideCard(content,"Delivery",margin+column+gap,0,column,row,CourierIconKind.Pin,
+                "02  Deliver & watch the clock",
+                "Reach the recipient pin to <b>deliver automatically</b>.\nClock = <b>used / target turns</b>.\nEmpty travel does not advance any order clock.");
+            GuideCard(content,"Protection",margin,row+gap,column,row,CourierIconKind.Heat,
+                "03  Protect your cargo",
+                "<b>H</b>  Heat protection · flame / heat-sensitive\n<b>W</b>  Water protection · umbrella / keep dry\n<b>Q</b>  Bump protection · glass / fragile");
+            GuideCard(content,"Vehicles",margin+column+gap,row+gap,column,row,CourierIconKind.Ghost,
+                "04  Vehicles & ghost form",
+                "Vehicle: <b>up to 2 edges/turn</b>, lasts <b>5 turns</b>.\nExchange: <b>+1 order turn</b>. Expires to ghost.\nGhost: <b>1 edge/turn</b>, unlimited use.");
+            GuideCard(content,"Events",margin,(row+gap)*2,column,row,CourierIconKind.Warning,
+                "05  Road events",
+                "<b>"+System.Math.Round(owner.Run.EventProbability*100)+"%</b> at marked stops, only while carrying cargo.\nAt most <b>1 event/order</b>: wait +1 turn or retreat 1 node.\nRoute estimates exclude events.");
+            GuideCard(content,"Rating",margin+column+gap,(row+gap)*2,column,row,CourierIconKind.Check,
+                "06  Every parcel can arrive",
+                "<b>Late or damaged = failed rating.</b>\nYou can still deliver the parcel to its recipient.");
+            float footerY=(row+gap)*3+4;
+            GuideLabel(content,"ControlsHeading",margin,footerY,width-margin*2,32,24,"QUICK CONTROLS",true);
+            GuideLabel(content,"Controls",margin,footerY+38,width-margin*2,64,24,
+                "<b>WASD / arrows</b>  Move     <b>E</b>  Collect / continue     <b>F</b>  Skip travel     <b>Esc</b>  Pause\nHover map and cargo icons for details.");
+        }
+        private RectTransform GuideRect(Transform parent,string name,float x,float y,float width,float height)
+        {
+            var child=parent.Find(name) as RectTransform;
+            if(child==null){child=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();child.SetParent(parent,false);}
+            child.anchorMin=child.anchorMax=child.pivot=new Vector2(0,1);
+            child.anchoredPosition=new Vector2(x,-y);child.sizeDelta=new Vector2(width,height);
+            return child;
+        }
+        private void GuideCard(Transform parent,string name,float x,float y,float width,float height,CourierIconKind icon,string title,string body)
+        {
+            var card=GuideRect(parent,name,x,y,width,height);
+            var paper=card.GetComponent<Image>()??card.gameObject.AddComponent<Image>();
+            paper.color=Color.Lerp(CourierColors.Paper,CourierColors.Mint,.16f);paper.raycastTarget=false;
+            CourierSymbolUI.Icon(card,"Icon",icon,18,16,32,CourierColors.Night);
+            GuideLabel(card,"Heading",62,14,width-80,40,30,title,true);
+            GuideLabel(card,"Body",18,62,width-36,height-74,CourierLocalization.IsChinese?28:24,body);
+        }
+        private void GuideLabel(Transform parent,string name,float x,float y,float width,float height,int fontSize,string source,bool title=false)
+        {
+            var rect=GuideRect(parent,name,x,y,width,height);
+            var label=rect.GetComponent<Text>()??rect.gameObject.AddComponent<Text>();
+            CourierLocalization.Set(label,source);
+            label.color=title?Color.Lerp(CourierColors.Night,CourierColors.Mint,.18f):CourierColors.Night;
+            label.supportRichText=true;label.fontSize=fontSize;label.alignment=TextAnchor.UpperLeft;
+            label.lineSpacing=1.12f;label.raycastTarget=false;
+            label.horizontalOverflow=HorizontalWrapMode.Wrap;label.verticalOverflow=VerticalWrapMode.Truncate;
+            label.resizeTextForBestFit=true;label.resizeTextMinSize=20;label.resizeTextMaxSize=fontSize;
+        }
         private void CompactGuide(int step,string title,string body)
         {
+            var fullContent=strip.Find("GuideContent");if(fullContent!=null)fullContent.gameObject.SetActive(false);
             // Put the next action in the initial reading path, below the top HUD.
             float width = Mathf.Min(600, ((RectTransform)transform).rect.width - 48);
             strip.anchorMin=strip.anchorMax=strip.pivot=new Vector2(0,1);

@@ -134,7 +134,7 @@ Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels 
 
 ## 本轮反馈修正
 
-- Gooy 的信仍在 subway（节点0，Mountain Train Tunnel）首次到达时播放，快递站开局不播放。读完信弹出大屏配送指引；关闭后可点右上角信息按钮重看。
+- Gooy 的信在快递站开局自动播放，重开后重新播放；到达 subway（节点0，Mountain Train Tunnel）不会重复触发。配送指引可通过右上角信息按钮查看。
 - 英文剧情逐段采用《文案最新版.docx》，使用 Ashpine Vale、Ghost Express、Shadow Society、Code of Silence；地图名称和货物名称同步。蜂蜜／花酱一次接取两件，播放一次文档中的完整共用对白，再分别配送到 Brewing Cellar 和 Museum Ruins。
 - 到达地点不再播放尚未接取货物的寄件对白。点击主屏 Collect parcels 或按 E 打开订单；每次接取播放对应对白，结束后可在原地继续接取。文档未包含专属剧情的订单显示领取确认。
 - Orders 中逐项列出所有已接订单、目的地、货物要求和各自回合。多单时扩大 On board 区域，列表可滚动；主屏显示携带订单数，计时优先显示最紧迫订单，路线预览列出各单预测。

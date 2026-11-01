@@ -46,6 +46,15 @@ public static class CourierOnboardingSmokeTest
             {
                 case 0:
                     Debug.Log(CourierChecks.RunAll());
+                    Check(owner.Run.Node == CourierStreetMap.Node("S").StopId && owner.ConversationActive && owner.DialogueSpeaker == "Gooy", "Opening letter missing at depot");
+                    Check(!owner.DepartTo(0), "Opening letter allowed departure");
+                    int dialogueGuard = 0;
+                    while (owner.ConversationActive)
+                    {
+                        owner.AdvanceDialogue();
+                        Check(++dialogueGuard < 500, "Opening letter stuck");
+                    }
+                    Check(owner.Run.Story.WasPlayed("gooy_letter") && !owner.Run.Story.HasPending(owner.Run), "Opening letter repeated");
                     owner.enabled = false;
                     typeof(CourierLocalization).GetField("language", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, CourierLanguage.TraditionalChinese);
                     view.Refresh();

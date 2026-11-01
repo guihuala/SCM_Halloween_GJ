@@ -275,7 +275,9 @@ namespace NightCourier
         }
         public string[] TalkToNpc()
         {
-            if((State!=ShiftState.Docked&&!Finished)||Node>=6)return new string[0];
+            if(State!=ShiftState.Docked&&!Finished)return new string[0];
+            // The depot can host the opening letter without being an NPC stop.
+            if(Node>=6)return Story != null ? Story.Read(this) : new string[0];
             Talked[Node]=true;
             CheckEnding();
             return Story != null ? Story.Read(this) : new[] { Stops[Node].Voice };

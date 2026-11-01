@@ -27,8 +27,10 @@ public static class CourierFeedbackRevisionSmokeTest
             Debug.Log(CourierChecks.RunAll());
             CheckTaskTable();
             var r=Configured();r.EventProbability=0;r.Node=CourierStreetMap.Node("S").StopId;
-            Check(!r.Story.HasPending(r),"Intro started at depot");r.Node=0;
-            Check(r.Story.Read(r)[0].Contains("Ashpine Vale"),"Source letter missing");
+            Check(r.Story.HasPending(r),"Intro missing at depot");
+            Check(r.TalkToNpc()[0].Contains("Ashpine Vale"),"Source letter missing at depot");
+            Check(r.Story.WasPlayed("gooy_letter")&&!r.Story.HasPending(r),"Depot letter repeated");
+            r.Node=0;
             Check(!r.Story.HasPending(r)&&r.Story.Read(r).Length==0,"Uncollected outgoing dialogue played");
             r.Node=1;Check(!r.Story.HasPending(r),"Arrival played send dialogue");
             Check(r.LoadParcel(r.Parcels[1]),"Rosin pickup failed");var rosin=r.Story.ReadPickup(r,r.Parcels[1]);
@@ -148,10 +150,13 @@ public static class CourierFeedbackRevisionSmokeTest
             switch(phase++)
             {
                 case 0:
-                    Check(!owner.ConversationActive&&!owner.GuideOpen,"Depot starts with letter or full guide");
-                    r.Node=0;owner.BeginConversation();Check(owner.DialogueSpeaker=="Gooy","Letter not at subway");
-                    Drain(owner);Check(owner.GuideOpen&&!owner.ConversationActive,"Guide not after letter");break;
+                    Check(r.Node==CourierStreetMap.Node("S").StopId&&owner.ConversationActive&&!owner.GuideOpen,"Depot opening letter missing");
+                    Check(owner.DialogueSpeaker=="Gooy","Wrong opening speaker");
+                    Check(!owner.DepartTo(0),"Departure interrupted opening letter");
+                    Drain(owner);Check(!owner.ConversationActive,"Opening letter did not finish");
+                    r.Node=0;owner.BeginConversation();Check(!owner.ConversationActive,"Letter repeated at subway");break;
                 case 1:
+                    owner.ShowGuide();guide.view.Refresh();
                     Check(guide.view.instruction.enabled&&guide.view.strip.rect.width>1000,"Guide not large and readable");
                     Check(!owner.DepartTo(1)&&!owner.AcceptParcel(r.Parcels[0]),"Guide did not block input");
                     Canvas.ForceUpdateCanvases();Check(guide.view.instruction.preferredHeight<=guide.view.instruction.rectTransform.rect.height,"Full guide clipped");
@@ -199,7 +204,7 @@ public static class CourierFeedbackRevisionSmokeTest
                         hud.subtitleText.text=line.text;hud.subtitleText.rectTransform.sizeDelta=new Vector2(1224,1000);
                         Check(hud.subtitleText.preferredHeight<600,"Source dialogue exceeds screen: "+scene.id);
                     }
-                    owner.RestartShift();Check(!owner.GuideOpen&&!owner.ConversationActive,"Restart did not reset intro/guide");
+                    owner.RestartShift();Check(!owner.GuideOpen&&owner.ConversationActive&&owner.DialogueSpeaker=="Gooy","Restart did not replay opening letter");
                     Finish(true,"Rules and UI passed: exact source task table, seven pickup groups, eight deliveries, nine items, combined Woods pickup/dialogue, separate destination rows, independent receipts/clocks, source English and full runs.");return;
             }
         }

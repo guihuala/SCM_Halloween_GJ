@@ -69,8 +69,24 @@ namespace NightCourier
         public Dictionary<StreetEdge,List<Parcel>> RouteSurfaceRisks(IEnumerable<Road> route)
         {
             var risks=new Dictionary<StreetEdge,List<Parcel>>();
+            VisitRouteSurfaces(route,(edge,cargo,vehicle)=>
+            {
+                var affected=cargo.Where(p=>SurfaceDamages(edge.Surface,ParcelRiskMask(p),vehicle)).ToList();
+                if(affected.Count>0)risks[edge]=affected;
+            });
+            return risks;
+        }
+        private static int ParcelRiskMask(Parcel p)
+        {return (p.HeatSensitive?1:0)|(p.Dry?2:0)|(p.Fragile?4:0);}
+        public static string SurfaceLabel(StreetSurface surface)
+        {return surface==StreetSurface.Heat?"Heat":surface==StreetSurface.Water?"Water":surface==StreetSurface.Bumpy?"Bumps":"Normal road";}
+        public static string SurfaceRule(StreetSurface surface)
+        {return surface==StreetSurface.Heat?"Damages heat-sensitive cargo without heat protection.":surface==StreetSurface.Water?"Damages dry cargo without waterproofing.":"Damages fragile cargo without suspension.";}
+        // Shared traversal keeps both the visible forecast and map warnings aligned with
+        // movement turns, deliveries en route, and protection on the last vehicle turn.
+        private void VisitRouteSurfaces(IEnumerable<Road> route,Action<StreetEdge,List<Parcel>,int> visit)
+        {
             var cargo=Parcels.Where(p=>p.State==ParcelState.Loaded&&!p.Damaged).ToList();
-            if(cargo.Count==0)return risks;
             var node=CourierStreetMap.Nodes.First(n=>n.StopId==Node);
             int fuel=IsGhost?0:(int)Durability,used=0;bool protectedTurn=false;
             foreach(var road in route)
@@ -80,14 +96,37 @@ namespace NightCourier
                 foreach(var edge in edges)
                 {
                     if(used==0){protectedTurn=!IsGhost&&fuel>0;if(protectedTurn)fuel--;}
-                    var affected=cargo.Where(p=>SurfaceDamages(edge.Surface,(p.HeatSensitive?1:0)|(p.Dry?2:0)|(p.Fragile?4:0),protectedTurn?VehicleIndex:-1)).ToList();
-                    if(affected.Count>0)risks[edge]=affected;
+                    visit(edge,cargo,protectedTurn?VehicleIndex:-1);
                     node=edge.Other(node);used++;
                     cargo.RemoveAll(p=>p.Destination==node.StopId);
                     if(used>=(protectedTurn?(int)Car.Speed:1)||node.StopId<9)used=0;
                 }
             }
-            return risks;
+        }
+        public string RouteSurfaceDetails(IEnumerable<Road> route)
+        {
+            var surfaces=new List<StreetSurface>();
+            var damaged=new Dictionary<StreetSurface,HashSet<Parcel>>();
+            var protectedCargo=new Dictionary<StreetSurface,HashSet<Parcel>>();
+            VisitRouteSurfaces(route,(edge,cargo,vehicle)=>
+            {
+                var surface=edge.Surface;if(surface==StreetSurface.Normal)return;
+                if(!surfaces.Contains(surface))
+                {surfaces.Add(surface);damaged[surface]=new HashSet<Parcel>();protectedCargo[surface]=new HashSet<Parcel>();}
+                foreach(var parcel in cargo.Where(p=>SurfaceDamages(surface,ParcelRiskMask(p),-1)))
+                    (SurfaceDamages(surface,ParcelRiskMask(parcel),vehicle)?damaged[surface]:protectedCargo[surface]).Add(parcel);
+            });
+            if(surfaces.Count==0)return "Road conditions: Normal road";
+            var lines=new List<string>{"Road conditions: "+string.Join(" / ",surfaces.Select(SurfaceLabel))};
+            foreach(var surface in surfaces)
+            {
+                if(damaged[surface].Count>0)lines.Add(SurfaceLabel(surface)+" — Will damage: "+string.Join(", ",Parcels.Where(p=>damaged[surface].Contains(p)).Select(p=>p.Name)));
+                // Do not claim protection for a parcel that later loses it on this surface.
+                var safe=Parcels.Where(p=>protectedCargo[surface].Contains(p)&&!damaged[surface].Contains(p)).ToArray();
+                if(safe.Length>0)lines.Add(SurfaceLabel(surface)+" — Vehicle protects: "+string.Join(", ",safe.Select(p=>p.Name)));
+                if(damaged[surface].Count==0&&safe.Length==0)lines.Add(SurfaceLabel(surface)+" — No vulnerable cargo on board");
+            }
+            return string.Join("\n",lines);
         }
         public string RouteWarnings(IEnumerable<Road> route)
         {

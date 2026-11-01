@@ -1549,9 +1549,9 @@
       "fragment": false
     },
     {
-      "en": "\"Wait, I only got transferred to the Ashpine Vale station a week ago! What am I supposed to do?!\"",
-      "zhHans": "可是我才刚刚到苍松谷快递站一周诶，这可怎么办",
-      "zhHant": "可是我才剛剛到蒼松谷快遞站一周誒，這可怎麼辦",
+      "en": "\"Wait, I only got transferred to the <color=#30614F><b>Ashpine Vale station</b></color> a week ago! What am I supposed to do?!\"",
+      "zhHans": "可是我才刚刚到<color=#30614F><b>苍松谷快递站</b></color>一周诶，这可怎么办",
+      "zhHant": "可是我才剛剛到<color=#30614F><b>蒼松谷快遞站</b></color>一周誒，這可怎麼辦",
       "fragment": false
     },
     {
@@ -1573,9 +1573,9 @@
       "fragment": false
     },
     {
-      "en": "\"You're very welcome! Say, why is it dripping so much inside this mountain tunnel? Even the gravel under the railroad ties is pooling with water!\"",
-      "zhHans": "不客气！不过这穿山隧道里怎么滴答滴答的，连铁轨枕木底下都积水啦？",
-      "zhHant": "不客氣！不過這穿山隧道里怎麼滴答滴答的，連鐵軌枕木底下都積水啦？",
+      "en": "\"You're very welcome! Say, why is it dripping so much inside this mountain tunnel? Even the gravel under the railroad ties is <color=#376774><b>pooling with water</b></color>!\"",
+      "zhHans": "不客气！不过这穿山隧道里怎么滴答滴答的，连铁轨枕木底下都<color=#376774><b>积水</b></color>啦？",
+      "zhHant": "不客氣！不過這穿山隧道里怎麼滴答滴答的，連鐵軌枕木底下都<color=#376774><b>積水</b></color>啦？",
       "fragment": false
     },
     {
@@ -1591,9 +1591,9 @@
       "fragment": false
     },
     {
-      "en": "(Says nothing, simply holding out a cassette tape with both hands.)",
-      "zhHans": "（不说话，只是递过录音带）",
-      "zhHant": "（不說話，只是遞過錄音帶）",
+      "en": "(Says nothing, simply holding out a <color=#805B2C><b>cassette tape</b></color> with both hands.)",
+      "zhHans": "（不说话，只是递过<color=#805B2C><b>录音带</b></color>）",
+      "zhHant": "（不說話，只是遞過<color=#805B2C><b>錄音帶</b></color>）",
       "fragment": false
     },
     {
@@ -1615,15 +1615,15 @@
       "fragment": false
     },
     {
-      "en": "\"Right on time! Here's the block of rosin for our great artist, Miss Drow. Give her my best, will ya?\"",
-      "zhHans": "来得正好！这是我们的伟大艺术家，Miss.Drow的松香块，请代我向她问好",
-      "zhHant": "來得正好！這是我們的偉大藝術家，Miss.Drow的松香塊，請代我向她問好",
+      "en": "\"Right on time! Here's the <color=#805B2C><b>block of rosin</b></color> for our great artist, <color=#30614F><b>Miss Drow</b></color>. Give her my best, will ya?\"",
+      "zhHans": "来得正好！这是我们的伟大艺术家，<color=#30614F><b>Miss.Drow</b></color>的<color=#805B2C><b>松香块</b></color>，请代我向她问好",
+      "zhHant": "來得正好！這是我們的偉大藝術家，<color=#30614F><b>Miss.Drow</b></color>的<color=#805B2C><b>松香塊</b></color>，請代我向她問好",
       "fragment": false
     },
     {
-      "en": "\"I heard she plays the violin! Rosin is used for maintaining the bow, right?\"",
-      "zhHans": "我听说这位艺术家会拉小提琴，松香是用于养护小提琴的吧",
-      "zhHant": "我聽說這位藝術家會拉小提琴，松香是用於養護小提琴的吧",
+      "en": "\"I heard she plays the violin! <color=#805B2C><b>Rosin</b></color> is used for maintaining the bow, right?\"",
+      "zhHans": "我听说这位艺术家会拉小提琴，<color=#805B2C><b>松香</b></color>是用于养护小提琴的吧",
+      "zhHant": "我聽說這位藝術家會拉小提琴，<color=#805B2C><b>松香</b></color>是用於養護小提琴的吧",
       "fragment": false
     },
     {
@@ -1633,9 +1633,9 @@
       "fragment": false
     },
     {
-      "en": "\"Oh, Goolie! That rich, fresh scent of blood—must be Miss Vampire's signature Spicy Blood Stew, huh?\"",
-      "zhHans": "哦，Goolie，这新鲜的血的气息，想必是Vampire女士的拿手好菜毛血旺吧",
-      "zhHant": "哦，Goolie，這新鮮的血的氣息，想必是Vampire女士的拿手好菜毛血旺吧",
+      "en": "\"Oh, Goolie! That rich, fresh scent of blood—must be Miss Vampire's signature <color=#805B2C><b>Spicy Blood Stew</b></color>, huh?\"",
+      "zhHans": "哦，Goolie，这新鲜的血的气息，想必是Vampire女士的拿手好菜<color=#805B2C><b>毛血旺</b></color>吧",
+      "zhHant": "哦，Goolie，這新鮮的血的氣息，想必是Vampire女士的拿手好菜<color=#805B2C><b>毛血旺</b></color>吧",
       "fragment": false
     },
     {
@@ -1657,9 +1657,9 @@
       "fragment": false
     },
     {
-      "en": "\"Totally agree! I heard about Mrs. Jiangshi's rose pastries even before I moved to Ashpine Vale. I'd love to try one!\"",
-      "zhHans": "我赞同，我还没来灰松谷就听说过IJ太太的鲜花饼呢，真想试一试呀。",
-      "zhHant": "我贊同，我還沒來灰松谷就聽說過IJ太太的鮮花餅呢，真想試一試呀。",
+      "en": "\"Totally agree! I heard about Mrs. Jiangshi's <color=#805B2C><b>rose pastries</b></color> even before I moved to Ashpine Vale. I'd love to try one!\"",
+      "zhHans": "我赞同，我还没来灰松谷就听说过IJ太太的<color=#805B2C><b>鲜花饼</b></color>呢，真想试一试呀。",
+      "zhHant": "我贊同，我還沒來灰松谷就聽說過IJ太太的<color=#805B2C><b>鮮花餅</b></color>呢，真想試一試呀。",
       "fragment": false
     },
     {
@@ -1711,9 +1711,9 @@
       "fragment": false
     },
     {
-      "en": "\"Yeah... It's definitely going to be a warm winter this year. I think I'm going to have insomnia.\"",
-      "zhHans": "会呀……今年一定会有个暖冬，我可能要失眠了。",
-      "zhHant": "會呀……今年一定會有個暖冬，我可能要失眠了。",
+      "en": "\"Yeah... It's definitely going to be a <color=#944B43><b>warm winter</b></color> this year. I think I'm going to have insomnia.\"",
+      "zhHans": "会呀……今年一定会有个<color=#944B43><b>暖冬</b></color>，我可能要失眠了。",
+      "zhHant": "會呀……今年一定會有個<color=#944B43><b>暖冬</b></color>，我可能要失眠了。",
       "fragment": false
     },
     {
@@ -1729,9 +1729,9 @@
       "fragment": false
     },
     {
-      "en": "\"Miss Vampire, here's the cooling unit and the fresh livestock blood you asked Miss Witch to pick up.\"",
-      "zhHans": "Vampire女士，这是您托Witch女士购买的散热装置还有禽畜的新鲜血液。",
-      "zhHant": "Vampire女士，這是您托Witch女士購買的散熱裝置還有禽畜的新鮮血液。",
+      "en": "\"Miss Vampire, here's the <color=#805B2C><b>cooling unit</b></color> and the <color=#805B2C><b>fresh livestock blood</b></color> you asked Miss Witch to pick up.\"",
+      "zhHans": "Vampire女士，这是您托Witch女士购买的<color=#805B2C><b>散热装置</b></color>还有<color=#805B2C><b>禽畜的新鲜血液</b></color>。",
+      "zhHant": "Vampire女士，這是您托Witch女士購買的<color=#805B2C><b>散熱裝置</b></color>還有<color=#805B2C><b>禽畜的新鮮血液</b></color>。",
       "fragment": false
     },
     {
@@ -1789,15 +1789,15 @@
       "fragment": false
     },
     {
-      "en": "\"Hard to say, dear. Maybe I'll pack up and move further north? This endless warming certainly doesn't bode well for us.\"",
-      "zhHans": "我可说不好，或许迁去更北的地方？这样的持续变暖可真不是好事呀。",
-      "zhHant": "我可說不好，或許遷去更北的地方？這樣的持續變暖可真不是好事呀。",
+      "en": "\"Hard to say, dear. Maybe I'll pack up and move <color=#376774><b>further north</b></color>? This <color=#944B43><b>endless warming</b></color> certainly doesn't bode well for us.\"",
+      "zhHans": "我可说不好，或许迁去<color=#376774><b>更北的地方</b></color>？这样的<color=#944B43><b>持续变暖</b></color>可真不是好事呀。",
+      "zhHant": "我可說不好，或許遷去<color=#376774><b>更北的地方</b></color>？這樣的<color=#944B43><b>持續變暖</b></color>可真不是好事呀。",
       "fragment": false
     },
     {
-      "en": "\"Hello, Miss Witch! Here's the mead sent over by Little Bear.\"",
-      "zhHans": "Witch女士您好，这是小熊送来的蜜酒。",
-      "zhHant": "Witch女士您好，這是小熊送來的蜜酒。",
+      "en": "\"Hello, Miss Witch! Here's the <color=#805B2C><b>mead</b></color> sent over by <color=#30614F><b>Little Bear</b></color>.\"",
+      "zhHans": "Witch女士您好，这是<color=#30614F><b>小熊</b></color>送来的<color=#805B2C><b>蜜酒</b></color>。",
+      "zhHant": "Witch女士您好，這是<color=#30614F><b>小熊</b></color>送來的<color=#805B2C><b>蜜酒</b></color>。",
       "fragment": false
     },
     {
@@ -2899,33 +2899,33 @@
       "fragment": false
     },
     {
-      "en": "Dear Goolie, The hot springs around Ashpine Vale have been erupting way too often lately.",
-      "zhHans": "Dear Goolie\n\n苍松谷最近的热泉喷发越来越频繁啦。",
-      "zhHant": "Dear Goolie\n\n蒼松谷最近的熱泉噴發越來越頻繁啦。",
+      "en": "Dear Goolie, The hot springs around Ashpine Vale have been <color=#944B43><b>erupting way too often</b></color> lately.",
+      "zhHans": "Dear Goolie\n\n苍松谷最近的<color=#944B43><b>热泉喷发越来越频繁</b></color>啦。",
+      "zhHant": "Dear Goolie\n\n蒼松谷最近的<color=#944B43><b>熱泉噴發越來越頻繁</b></color>啦。",
       "fragment": false
     },
     {
-      "en": "This old ghost really can't take the heat anymore, so I'm heading up the snow peak to cool off for a while.",
-      "zhHans": "我这个老幽灵有点受不住了，得去雪山上休息一段时间。",
-      "zhHant": "我這個老幽靈有點受不住了，得去雪山上休息一段時間。",
+      "en": "This old ghost really can't take the heat anymore, so I'm heading up the <color=#376774><b>snow peak</b></color> to cool off for a while.",
+      "zhHans": "我这个老幽灵有点受不住了，得去<color=#376774><b>雪山</b></color>上休息一段时间。",
+      "zhHant": "我這個老幽靈有點受不住了，得去<color=#376774><b>雪山</b></color>上休息一段時間。",
       "fragment": false
     },
     {
-      "en": "I'm leaving this Halloween in your hands—hang in there, little ghost!",
-      "zhHans": "这次的万圣节就交给你吧，加油吧小幽灵",
-      "zhHant": "這次的萬聖節就交給你吧，加油吧小幽靈",
+      "en": "I'm leaving this <color=#30614F><b>Halloween</b></color> in your hands—hang in there, little ghost!",
+      "zhHans": "这次的<color=#30614F><b>万圣节</b></color>就交给你吧，加油吧小幽灵",
+      "zhHant": "這次的<color=#30614F><b>萬聖節</b></color>就交給你吧，加油吧小幽靈",
       "fragment": false
     },
     {
-      "en": "\"I've never worked a Halloween shift before!\"",
-      "zhHans": "我从来没有经历过万圣节。",
-      "zhHant": "我從來沒有經歷過萬聖節。",
+      "en": "\"I've never worked a <color=#30614F><b>Halloween shift</b></color> before!\"",
+      "zhHans": "我从来没有经历过<color=#30614F><b>万圣节</b></color>。",
+      "zhHant": "我從來沒有經歷過<color=#30614F><b>萬聖節</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"All the seniors say it's the biggest night of the year for the Shadow Society.\"",
-      "zhHans": "前辈都说这是暗影社会的大事件。",
-      "zhHant": "前輩都說這是暗影社會的大事件。",
+      "en": "\"All the seniors say it's the biggest night of the year for the <color=#30614F><b>Shadow Society</b></color>.\"",
+      "zhHans": "前辈都说这是<color=#30614F><b>暗影社会</b></color>的大事件。",
+      "zhHant": "前輩都說這是<color=#30614F><b>暗影社會</b></color>的大事件。",
       "fragment": false
     },
     {
@@ -2941,21 +2941,21 @@
       "fragment": false
     },
     {
-      "en": "\"...The rock walls keep seeping water lately. My strings got slippery... A little rosin... will fix it.\"",
-      "zhHans": "……最近岩壁总在渗水，弦有点滑。擦了松香……就好了。",
-      "zhHant": "……最近岩壁總在滲水，弦有點滑。擦了松香……就好了。",
+      "en": "\"...The rock walls keep <color=#376774><b>seeping water</b></color> lately. My strings got slippery... A little <color=#805B2C><b>rosin</b></color>... will fix it.\"",
+      "zhHans": "……最近岩壁总在<color=#376774><b>渗水</b></color>，弦有点滑。擦了<color=#805B2C><b>松香</b></color>……就好了。",
+      "zhHant": "……最近岩壁總在<color=#376774><b>滲水</b></color>，弦有點滑。擦了<color=#805B2C><b>松香</b></color>……就好了。",
       "fragment": false
     },
     {
-      "en": "\"Got it, got it! This must be the tape Miss Vampire asked for.\"",
-      "zhHans": "好的好的，这是Vampire姐姐需要的录音带吧。",
-      "zhHant": "好的好的，這是Vampire姐姐需要的錄音帶吧。",
+      "en": "\"Got it, got it! This must be the <color=#805B2C><b>tape</b></color> <color=#30614F><b>Miss Vampire</b></color> asked for.\"",
+      "zhHans": "好的好的，这是<color=#30614F><b>Vampire姐姐</b></color>需要的<color=#805B2C><b>录音带</b></color>吧。",
+      "zhHant": "好的好的，這是<color=#30614F><b>Vampire姐姐</b></color>需要的<color=#805B2C><b>錄音帶</b></color>吧。",
       "fragment": false
     },
     {
-      "en": "\"The boss told me you're debuting a new song at tomorrow's party—I'm so curious!\"",
-      "zhHans": "听店长说，明天的party会有你的新歌，我太好奇了。",
-      "zhHant": "聽店長說，明天的party會有你的新歌，我太好奇了。",
+      "en": "\"The boss told me you're debuting a <color=#30614F><b>new song</b></color> at tomorrow's party—I'm so curious!\"",
+      "zhHans": "听店长说，明天的party会有你的<color=#30614F><b>新歌</b></color>，我太好奇了。",
+      "zhHant": "聽店長說，明天的party會有你的<color=#30614F><b>新歌</b></color>，我太好奇了。",
       "fragment": false
     },
     {
@@ -2977,21 +2977,21 @@
       "fragment": false
     },
     {
-      "en": "\"These jars of Ashpine autumn honey are for Little Bear.\"",
-      "zhHans": "这些是给小熊的灰松秋蜜。",
-      "zhHant": "這些是給小熊的灰松秋蜜。",
+      "en": "\"These jars of <color=#805B2C><b>Ashpine autumn honey</b></color> are for <color=#30614F><b>Little Bear</b></color>.\"",
+      "zhHans": "这些是给<color=#30614F><b>小熊</b></color>的<color=#805B2C><b>灰松秋蜜</b></color>。",
+      "zhHant": "這些是給<color=#30614F><b>小熊</b></color>的<color=#805B2C><b>灰松秋蜜</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"but lately some wild roses have been blooming out of season.\"",
-      "zhHans": "可是最近还有一些反季重开的玫瑰花。",
-      "zhHant": "可是最近還有一些反季重開的玫瑰花。",
+      "en": "\"but lately some wild roses have been <color=#944B43><b>blooming out of season</b></color>.\"",
+      "zhHans": "可是最近还有一些<color=#944B43><b>反季重开的玫瑰花</b></color>。",
+      "zhHant": "可是最近還有一些<color=#944B43><b>反季重開的玫瑰花</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"Didn't feel like using 'em for honey, so I boiled 'em into jam for Grandma Jiangshi to bake flower cakes.\"",
-      "zhHans": "不过我没打算用来酿蜜，还是熬成酱交给 Jiangshi 老太太做鲜花饼吃吧。",
-      "zhHant": "不過我沒打算用來釀蜜，還是熬成醬交給 Jiangshi 老太太做鮮花餅吃吧。",
+      "en": "\"Didn't feel like using 'em for honey, so I boiled 'em into <color=#805B2C><b>jam</b></color> for <color=#30614F><b>Grandma Jiangshi</b></color> to bake flower cakes.\"",
+      "zhHans": "不过我没打算用来酿蜜，还是熬成<color=#805B2C><b>酱</b></color>交给 <color=#30614F><b>Jiangshi 老太太</b></color>做鲜花饼吃吧。",
+      "zhHant": "不過我沒打算用來釀蜜，還是熬成<color=#805B2C><b>醬</b></color>交給 <color=#30614F><b>Jiangshi 老太太</b></color>做鮮花餅吃吧。",
       "fragment": false
     },
     {
@@ -3001,21 +3001,21 @@
       "fragment": false
     },
     {
-      "en": "\"Hello there, little ghost. This is a light spring mead I started brewing back in April and May, aged right up until now.\"",
-      "zhHans": "你好呀小幽灵，这些是今年四五月春天就开始酿造、一直陈酿到现在的轻度蜂蜜酒。",
-      "zhHant": "你好呀小幽靈，這些是今年四五月春天就開始釀造、一直陳釀到現在的輕度蜂蜜酒。",
+      "en": "\"Hello there, little ghost. This is a <color=#805B2C><b>light spring mead</b></color> I started brewing back in April and May, aged right up until now.\"",
+      "zhHans": "你好呀小幽灵，这些是今年四五月春天就开始酿造、一直陈酿到现在的<color=#805B2C><b>轻度蜂蜜酒</b></color>。",
+      "zhHant": "你好呀小幽靈，這些是今年四五月春天就開始釀造、一直陳釀到現在的<color=#805B2C><b>輕度蜂蜜酒</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"Could you please take it to Miss Witch for me?\"",
-      "zhHans": "请你帮我送给女巫女士。",
-      "zhHant": "請你幫我送給女巫女士。",
+      "en": "\"Could you please take it to <color=#30614F><b>Miss Witch</b></color> for me?\"",
+      "zhHans": "请你帮我送给<color=#30614F><b>女巫女士</b></color>。",
+      "zhHant": "請你幫我送給<color=#30614F><b>女巫女士</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"Mhm! Spring honey comes from wildflowers, while autumn honey comes from pine honeydew, which looks more like deep amber.\"",
-      "zhHans": "对哦，春蜜一般是花蜜，而秋蜜是松树甘露蜜，会更像琥珀一些。",
-      "zhHant": "對哦，春蜜一般是花蜜，而秋蜜是松樹甘露蜜，會更像琥珀一些。",
+      "en": "\"Mhm! <color=#805B2C><b>Spring honey</b></color> comes from wildflowers, while <color=#805B2C><b>autumn honey</b></color> comes from pine honeydew, which looks more like deep amber.\"",
+      "zhHans": "对哦，<color=#805B2C><b>春蜜</b></color>一般是花蜜，而<color=#805B2C><b>秋蜜</b></color>是松树甘露蜜，会更像琥珀一些。",
+      "zhHant": "對哦，<color=#805B2C><b>春蜜</b></color>一般是花蜜，而<color=#805B2C><b>秋蜜</b></color>是松樹甘露蜜，會更像琥珀一些。",
       "fragment": false
     },
     {
@@ -3025,21 +3025,21 @@
       "fragment": false
     },
     {
-      "en": "\"This year, I had to push all the barrels into the deepest corner just to keep them cool.\"",
-      "zhHans": "今年我却得把酒桶挪到最深处的墙角才行呢。",
-      "zhHant": "今年我卻得把酒桶挪到最深處的牆角才行呢。",
+      "en": "\"This year, I had to push all the barrels into the <color=#944B43><b>deepest corner</b></color> just to keep them cool.\"",
+      "zhHans": "今年我却得把酒桶挪到<color=#944B43><b>最深处的墙角</b></color>才行呢。",
+      "zhHant": "今年我卻得把酒桶挪到<color=#944B43><b>最深處的牆角</b></color>才行呢。",
       "fragment": false
     },
     {
-      "en": "\"Look! Big Sis Wolfwoman sent over this autumn honey—it smells so fresh and piney!\"",
-      "zhHans": "请看，这些是狼人姐姐给的秋蜜，闻起来很清新呢。",
-      "zhHant": "請看，這些是狼人姐姐給的秋蜜，聞起來很清新呢。",
+      "en": "\"Look! Big Sis Wolfwoman sent over this <color=#805B2C><b>autumn honey</b></color>—it smells so fresh and piney!\"",
+      "zhHans": "请看，这些是狼人姐姐给的<color=#805B2C><b>秋蜜</b></color>，闻起来很清新呢。",
+      "zhHant": "請看，這些是狼人姐姐給的<color=#805B2C><b>秋蜜</b></color>，聞起來很清新呢。",
       "fragment": false
     },
     {
-      "en": "\"and asked me to bring some flower jam to Mrs. Jiangshi.\"",
-      "zhHans": "托我给 Jiangshi 太太送过去。",
-      "zhHant": "托我給 Jiangshi 太太送過去。",
+      "en": "\"and asked me to bring some flower jam to <color=#30614F><b>Mrs. Jiangshi</b></color>.\"",
+      "zhHans": "托我给 <color=#30614F><b>Jiangshi 太太</b></color>送过去。",
+      "zhHant": "托我給 <color=#30614F><b>Jiangshi 太太</b></color>送過去。",
       "fragment": false
     },
     {
@@ -3049,15 +3049,15 @@
       "fragment": false
     },
     {
-      "en": "\"No wonder I've been hearing water trickling underneath the cellar floor these past few days... Even the soil feels warm.\"",
-      "zhHans": "难怪这两天总听到地窖底下有淅淅沥沥的流水声，连土都是温的。",
-      "zhHant": "難怪這兩天總聽到地窖底下有淅淅瀝瀝的流水聲，連土都是溫的。",
+      "en": "\"No wonder I've been hearing <color=#376774><b>water trickling underneath the cellar floor</b></color> these past few days... Even the <color=#944B43><b>soil feels warm</b></color>.\"",
+      "zhHans": "难怪这两天总听到<color=#376774><b>地窖底下有淅淅沥沥的流水声</b></color>，连<color=#944B43><b>土都是温的</b></color>。",
+      "zhHant": "難怪這兩天總聽到<color=#376774><b>地窖底下有淅淅瀝瀝的流水聲</b></color>，連<color=#944B43><b>土都是溫的</b></color>。",
       "fragment": false
     },
     {
-      "en": "(Pops the cassette into the deck for a quick listen, her fingers tapping the desk to the melody)",
-      "zhHans": "（将磁带放进机器试听了一下，手指随着旋律轻敲桌面）",
-      "zhHant": "（將磁帶放進機器試聽了一下，手指隨著旋律輕敲桌面）",
+      "en": "(Pops the <color=#805B2C><b>cassette</b></color> into the deck for a quick listen, her fingers tapping the desk to the melody)",
+      "zhHans": "（将<color=#805B2C><b>磁带</b></color>放进机器试听了一下，手指随着旋律轻敲桌面）",
+      "zhHant": "（將<color=#805B2C><b>磁帶</b></color>放進機器試聽了一下，手指隨著旋律輕敲桌面）",
       "fragment": false
     },
     {
@@ -3067,9 +3067,9 @@
       "fragment": false
     },
     {
-      "en": "\"Miss Drow must have woven the sound of melting glaciers into the melody—it's so ethereal and lovely.\"",
-      "zhHans": "Drow 小姐肯定融入了冰川融水的声音，这实在是空灵而美妙。",
-      "zhHant": "Drow 小姐肯定融入了冰川融水的聲音，這實在是空靈而美妙。",
+      "en": "\"Miss Drow must have woven the sound of <color=#376774><b>melting glaciers</b></color> into the melody—it's so ethereal and lovely.\"",
+      "zhHans": "Drow 小姐肯定融入了<color=#376774><b>冰川融水</b></color>的声音，这实在是空灵而美妙。",
+      "zhHant": "Drow 小姐肯定融入了<color=#376774><b>冰川融水</b></color>的聲音，這實在是空靈而美妙。",
       "fragment": false
     },
     {
@@ -3085,9 +3085,9 @@
       "fragment": false
     },
     {
-      "en": "\"My old radiator suddenly overloaded and quit while I was testing the gear earlier, forcing my late-night broadcast off the air.\"",
-      "zhHans": "刚才调试设备的时候，老散热器突然过载罢工，害得我的夜间电台都停播了。",
-      "zhHant": "剛才調試設備的時候，老散熱器突然過載罷工，害得我的夜間電台都停播了。",
+      "en": "\"My old radiator suddenly <color=#944B43><b>overloaded and quit</b></color> while I was testing the gear earlier, forcing my late-night broadcast off the air.\"",
+      "zhHans": "刚才调试设备的时候，老散热器突然<color=#944B43><b>过载罢工</b></color>，害得我的夜间电台都停播了。",
+      "zhHant": "剛才調試設備的時候，老散熱器突然<color=#944B43><b>過載罷工</b></color>，害得我的夜間電台都停播了。",
       "fragment": false
     },
     {
@@ -3103,15 +3103,15 @@
       "fragment": false
     },
     {
-      "en": "\"Here you go, darling—a fresh batch of Spicy Blood Stew I just whipped up.\"",
-      "zhHans": "喏，这是我刚刚做好的毛血旺哟。",
-      "zhHant": "喏，這是我剛剛做好的毛血旺喲。",
+      "en": "\"Here you go, darling—a fresh batch of <color=#805B2C><b>Spicy Blood Stew</b></color> I just whipped up.\"",
+      "zhHans": "喏，这是我刚刚做好的<color=#805B2C><b>毛血旺</b></color>哟。",
+      "zhHant": "喏，這是我剛剛做好的<color=#805B2C><b>毛血旺</b></color>喲。",
       "fragment": false
     },
     {
-      "en": "\"Hurry and take it to Sister Wolfwoman before the studio cools down; she must be starving after patrolling the woods all day.\"",
-      "zhHans": "趁着播音室里还没凉下来，小幽灵快去送给狼人姐姐吃吧，她巡林肯定饿坏了。",
-      "zhHant": "趁著播音室里還沒涼下來，小幽靈快去送給狼人姐姐吃吧，她巡林肯定餓壞了。",
+      "en": "\"Hurry and take it to <color=#30614F><b>Sister Wolfwoman</b></color> before the studio cools down; she must be starving after patrolling the woods all day.\"",
+      "zhHans": "趁着播音室里还没凉下来，小幽灵快去送给<color=#30614F><b>狼人姐姐</b></color>吃吧，她巡林肯定饿坏了。",
+      "zhHant": "趁著播音室里還沒涼下來，小幽靈快去送給<color=#30614F><b>狼人姐姐</b></color>吃吧，她巡林肯定餓壞了。",
       "fragment": false
     },
     {
@@ -3121,27 +3121,27 @@
       "fragment": false
     },
     {
-      "en": "\"Oh my? Out-of-season roses? I've lived here for over a century, and I've never seen anything like it.\"",
-      "zhHans": "哦？反季花，我在这里生活上百年了，以前哪有这样的事哦。",
-      "zhHant": "哦？反季花，我在這裡生活上百年了，以前哪有這樣的事哦。",
+      "en": "\"Oh my? <color=#944B43><b>Out-of-season roses</b></color>? I've lived here for over a century, and I've never seen anything like it.\"",
+      "zhHans": "哦？<color=#944B43><b>反季花</b></color>，我在这里生活上百年了，以前哪有这样的事哦。",
+      "zhHant": "哦？<color=#944B43><b>反季花</b></color>，我在這裡生活上百年了，以前哪有這樣的事哦。",
       "fragment": false
     },
     {
-      "en": "\"It keeps getting warmer and warmer...\"",
-      "zhHans": "现在越来越暖和了。",
-      "zhHant": "現在越來越暖和了。",
+      "en": "\"It keeps getting <color=#944B43><b>warmer and warmer</b></color>...\"",
+      "zhHans": "现在<color=#944B43><b>越来越暖和</b></color>了。",
+      "zhHant": "現在<color=#944B43><b>越來越暖和</b></color>了。",
       "fragment": false
     },
     {
-      "en": "\"When I got up this evening for my skincare routine and looked up at the peaks, even the snowcap had shrunk...\"",
-      "zhHans": "我傍晚起来做保养的时候往山上看，连雪山的雪顶都变少了……",
-      "zhHant": "我傍晚起來做保養的時候往山上看，連雪山的雪頂都變少了……",
+      "en": "\"When I got up this evening for my skincare routine and looked up at the peaks, even the <color=#376774><b>snowcap had shrunk</b></color>...\"",
+      "zhHans": "我傍晚起来做保养的时候往山上看，连雪山的<color=#376774><b>雪顶都变少</b></color>了……",
+      "zhHant": "我傍晚起來做保養的時候往山上看，連雪山的<color=#376774><b>雪頂都變少</b></color>了……",
       "fragment": false
     },
     {
-      "en": "\"Who knows, maybe this whole valley will flood one day...\"",
-      "zhHans": "说不定以后这片山谷会被淹没……",
-      "zhHant": "說不定以後這片山谷會被淹沒……",
+      "en": "\"Who knows, maybe this <color=#376774><b>whole valley will flood</b></color> one day...\"",
+      "zhHans": "说不定以后这片<color=#376774><b>山谷会被淹没</b></color>……",
+      "zhHant": "說不定以後這片<color=#376774><b>山谷會被淹沒</b></color>……",
       "fragment": false
     },
     {
@@ -3151,9 +3151,9 @@
       "fragment": false
     },
     {
-      "en": "\"Come, lend an old lady a hand lighting the stove—I'll bake a fresh batch of flower cakes tonight!\"",
-      "zhHans": "来，帮我搭把手生个炉子，老太太我今晚就把鲜花饼烤出来！",
-      "zhHant": "來，幫我搭把手生個爐子，老太太我今晚就把鮮花餅烤出來！",
+      "en": "\"Come, lend an old lady a hand lighting the stove—I'll bake a fresh batch of <color=#805B2C><b>flower cakes</b></color> tonight!\"",
+      "zhHans": "来，帮我搭把手生个炉子，老太太我今晚就把<color=#805B2C><b>鲜花饼</b></color>烤出来！",
+      "zhHant": "來，幫我搭把手生個爐子，老太太我今晚就把<color=#805B2C><b>鮮花餅</b></color>烤出來！",
       "fragment": false
     },
     {
@@ -3169,9 +3169,9 @@
       "fragment": false
     },
     {
-      "en": "\"Alas, dampness keeps seeping up between the floor tiles lately, and the old machines just can't keep up.\"",
-      "zhHans": "可惜最近地砖缝里总往外返潮气，老机器也不中用啦。",
-      "zhHant": "可惜最近地磚縫里總往外返潮氣，老機器也不中用啦。",
+      "en": "\"Alas, <color=#376774><b>dampness keeps seeping up</b></color> between the floor tiles lately, and the old machines just can't keep up.\"",
+      "zhHans": "可惜最近地砖缝里总往外<color=#376774><b>返潮气</b></color>，老机器也不中用啦。",
+      "zhHant": "可惜最近地磚縫里總往外<color=#376774><b>返潮氣</b></color>，老機器也不中用啦。",
       "fragment": false
     },
     {
@@ -3181,9 +3181,9 @@
       "fragment": false
     },
     {
-      "en": "\"I have to slather on two extra layers of desiccant like body lotion during my daily routine!\"",
-      "zhHans": "我每天做日常护理都得把防潮剂当身体乳往身上多刷两层呢！",
-      "zhHant": "我每天做日常護理都得把防潮劑當身體乳往身上多刷兩層呢！",
+      "en": "\"I have to slather on two extra layers of <color=#805B2C><b>desiccant</b></color> like body lotion during my daily routine!\"",
+      "zhHans": "我每天做日常护理都得把<color=#805B2C><b>防潮剂</b></color>当身体乳往身上多刷两层呢！",
+      "zhHant": "我每天做日常護理都得把<color=#805B2C><b>防潮劑</b></color>當身體乳往身上多刷兩層呢！",
       "fragment": false
     },
     {
@@ -3193,27 +3193,27 @@
       "fragment": false
     },
     {
-      "en": "\"Good wine truly is a journal of the seasons.\"",
-      "zhHans": "这些酒是季节的记事本。",
-      "zhHant": "這些酒是季節的記事本。",
+      "en": "\"Good wine truly is a <color=#30614F><b>journal of the seasons</b></color>.\"",
+      "zhHans": "这些酒是<color=#30614F><b>季节的记事本</b></color>。",
+      "zhHant": "這些酒是<color=#30614F><b>季節的記事本</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"Tuck this away safely, dear—it's the moisture absorber for Mrs. Jiangshi.\"",
-      "zhHans": "收好哦，这是给IJ太太的防潮剂。",
-      "zhHant": "收好哦，這是給IJ太太的防潮劑。",
+      "en": "\"Tuck this away safely, dear—it's the <color=#805B2C><b>moisture absorber</b></color> for <color=#30614F><b>Mrs. Jiangshi</b></color>.\"",
+      "zhHans": "收好哦，这是给<color=#30614F><b>IJ太太</b></color>的<color=#805B2C><b>防潮剂</b></color>。",
+      "zhHant": "收好哦，這是給<color=#30614F><b>IJ太太</b></color>的<color=#805B2C><b>防潮劑</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"I heard groundwater has started seeping into her basement. I do hope she's holding up alright.\"",
-      "zhHans": "听说她那里地下水渗入地下室了，希望她一切平安",
-      "zhHant": "聽說她那裡地下水滲入地下室了，希望她一切平安",
+      "en": "\"I heard <color=#376774><b>groundwater has started seeping into her basement</b></color>. I do hope she's holding up alright.\"",
+      "zhHans": "听说她那里<color=#376774><b>地下水渗入地下室</b></color>了，希望她一切平安",
+      "zhHant": "聽說她那裡<color=#376774><b>地下水滲入地下室</b></color>了，希望她一切平安",
       "fragment": false
     },
     {
-      "en": "\"And here's the radiator for Miss Vampire.\"",
-      "zhHans": "这是给Vampire女士的散热器。",
-      "zhHant": "這是給Vampire女士的散熱器。",
+      "en": "\"And here's the <color=#805B2C><b>radiator</b></color> for <color=#30614F><b>Miss Vampire</b></color>.\"",
+      "zhHans": "这是给<color=#30614F><b>Vampire女士</b></color>的<color=#805B2C><b>散热器</b></color>。",
+      "zhHant": "這是給<color=#30614F><b>Vampire女士</b></color>的<color=#805B2C><b>散熱器</b></color>。",
       "fragment": false
     },
     {
@@ -3223,27 +3223,27 @@
       "fragment": false
     },
     {
-      "en": "\"Plus some fresh livestock blood—tell her to enjoy her meal.\"",
-      "zhHans": "还有这些禽畜血，祝她吃得开心",
-      "zhHant": "還有這些禽畜血，祝她吃得開心",
+      "en": "\"Plus some <color=#805B2C><b>fresh livestock blood</b></color>—tell her to enjoy her meal.\"",
+      "zhHans": "还有这些<color=#805B2C><b>禽畜血</b></color>，祝她吃得开心",
+      "zhHant": "還有這些<color=#805B2C><b>禽畜血</b></color>，祝她吃得開心",
       "fragment": false
     },
     {
-      "en": "The human parade has finally come to an end—now, the real holiday for monsters begins.",
-      "zhHans": "人类的巡游终于落幕，接下来，就是属于鬼怪们的节日了。",
-      "zhHant": "人類的巡遊終於落幕，接下來，就是屬於鬼怪們的節日了。",
+      "en": "The human parade has finally come to an end—now, the <color=#30614F><b>real holiday for monsters</b></color> begins.",
+      "zhHans": "人类的巡游终于落幕，接下来，就是<color=#30614F><b>属于鬼怪们的节日</b></color>了。",
+      "zhHant": "人類的巡遊終於落幕，接下來，就是<color=#30614F><b>屬於鬼怪們的節日</b></color>了。",
       "fragment": false
     },
     {
-      "en": "\"It's the only night humans can actually see us.\"",
-      "zhHans": "这是人类唯一能看到我们的机会。",
-      "zhHant": "這是人類唯一能看到我們的機會。",
+      "en": "\"It's the <color=#944B43><b>only night humans can actually see us</b></color>.\"",
+      "zhHans": "这是<color=#944B43><b>人类唯一能看到我们的机会</b></color>。",
+      "zhHant": "這是<color=#944B43><b>人類唯一能看到我們的機會</b></color>。",
       "fragment": false
     },
     {
-      "en": "\"And we have to strictly follow the Code of Silence so we don't blow our cover... Talk about tough!\"",
-      "zhHans": "还得遵守缄默法则，不被人类发现，这可真难！",
-      "zhHant": "還得遵守緘默法則，不被人類發現，這可真難！",
+      "en": "\"And we have to strictly follow the <color=#944B43><b>Code of Silence</b></color> so we don't blow our cover... Talk about tough!\"",
+      "zhHans": "还得遵守<color=#944B43><b>缄默法则</b></color>，不被人类发现，这可真难！",
+      "zhHant": "還得遵守<color=#944B43><b>緘默法則</b></color>，不被人類發現，這可真難！",
       "fragment": false
     },
     {
@@ -3253,15 +3253,15 @@
       "fragment": false
     },
     {
-      "en": "\"Even kids running down the street in short sleeves and plastic capes...\"",
-      "zhHans": "连穿短袖套塑料披风的小孩都在街上跑……",
-      "zhHant": "連穿短袖套塑料披風的小孩都在街上跑……",
+      "en": "\"Even kids running down the street in <color=#944B43><b>short sleeves</b></color> and plastic capes...\"",
+      "zhHans": "连穿<color=#944B43><b>短袖</b></color>套塑料披风的小孩都在街上跑……",
+      "zhHant": "連穿<color=#944B43><b>短袖</b></color>套塑料披風的小孩都在街上跑……",
       "fragment": false
     },
     {
-      "en": "\"Awesome! I spent the whole day chasing off human brats who wandered into the woods just 'cause the weather's warm.\"",
-      "zhHans": "太棒了，今天我在林子里撵了一整天趁着天暖和乱跑的人类小孩。",
-      "zhHant": "太棒了，今天我在林子里攆了一整天趁著天暖和亂跑的人類小孩。",
+      "en": "\"Awesome! I spent the whole day chasing off human brats who wandered into the woods just 'cause the <color=#944B43><b>weather's warm</b></color>.\"",
+      "zhHans": "太棒了，今天我在林子里撵了一整天趁着<color=#944B43><b>天暖和</b></color>乱跑的人类小孩。",
+      "zhHant": "太棒了，今天我在林子里攆了一整天趁著<color=#944B43><b>天暖和</b></color>亂跑的人類小孩。",
       "fragment": false
     },
     {
@@ -3277,9 +3277,9 @@
       "fragment": false
     },
     {
-      "en": "\"She also said it's gotten so warm that flowers are blooming out of season.\"",
-      "zhHans": "她还说，现在太热了，已经有反季花盛开了。",
-      "zhHant": "她還說，現在太熱了，已經有反季花盛開了。",
+      "en": "\"She also said it's gotten so warm that <color=#944B43><b>flowers are blooming out of season</b></color>.\"",
+      "zhHans": "她还说，现在太热了，已经有<color=#944B43><b>反季花盛开</b></color>了。",
+      "zhHant": "她還說，現在太熱了，已經有<color=#944B43><b>反季花盛開</b></color>了。",
       "fragment": false
     },
     {
@@ -3295,22 +3295,154 @@
       "fragment": false
     },
     {
-      "en": "\"The whole reason I settled down in these museum ruins was for the leftover climate-control machines.\"",
-      "zhHans": "我当年选择住在博物馆遗迹里，就是因为这里还有剩余的环境调节器。",
-      "zhHant": "我當年選擇住在博物館遺跡里，就是因為這裡還有剩餘的環境調節器。",
+      "en": "\"The whole reason I settled down in these museum ruins was for the leftover <color=#805B2C><b>climate-control machines</b></color>.\"",
+      "zhHans": "我当年选择住在博物馆遗迹里，就是因为这里还有剩余的<color=#805B2C><b>环境调节器</b></color>。",
+      "zhHant": "我當年選擇住在博物館遺跡里，就是因為這裡還有剩餘的<color=#805B2C><b>環境調節器</b></color>。",
       "fragment": false
     },
     {
-      "en": "With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, we are together.",
-      "zhHans": "琴声响起，蜜酒斟满，虽然苍松谷的大家以后可能会分道扬镳，但至少在此刻，我们依然团聚在一起。",
-      "zhHant": "琴聲響起，蜜酒斟滿，雖然蒼松谷的大家以後可能會分道揚鑣，但至少在此刻，我們依然團聚在一起。",
+      "en": "With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, <color=#30614F><b>we are together</b></color>.",
+      "zhHans": "琴声响起，蜜酒斟满，虽然苍松谷的大家以后可能会分道扬镳，但至少在此刻，<color=#30614F><b>我们依然团聚在一起</b></color>。",
+      "zhHant": "琴聲響起，蜜酒斟滿，雖然蒼松谷的大家以後可能會分道揚鑣，但至少在此刻，<color=#30614F><b>我們依然團聚在一起</b></color>。",
       "fragment": false
     },
     {
-      "en": "As for tomorrow, tomorrow is another night.",
-      "zhHans": "至于明天，明天又是新的一天了。",
-      "zhHant": "至於明天，明天又是新的一天了。",
+      "en": "As for tomorrow, <color=#30614F><b>tomorrow is another night</b></color>.",
+      "zhHans": "至于明天，<color=#30614F><b>明天又是新的一天</b></color>了。",
+      "zhHant": "至於明天，<color=#30614F><b>明天又是新的一天</b></color>了。",
       "fragment": false
+    },
+    {
+      "en": "01  Collect orders",
+      "zhHans": "01  领取订单",
+      "zhHant": "01  領取訂單",
+      "fragment": false
+    },
+    {
+      "en": "02  Deliver & watch the clock",
+      "zhHans": "02  送达与计时",
+      "zhHant": "02  送達與計時",
+      "fragment": false
+    },
+    {
+      "en": "03  Protect your cargo",
+      "zhHans": "03  保护货物",
+      "zhHant": "03  保護貨物",
+      "fragment": false
+    },
+    {
+      "en": "04  Vehicles & ghost form",
+      "zhHans": "04  车辆与幽灵",
+      "zhHant": "04  車輛與幽靈",
+      "fragment": false
+    },
+    {
+      "en": "05  Road events",
+      "zhHans": "05  途中事件",
+      "zhHant": "05  途中事件",
+      "fragment": false
+    },
+    {
+      "en": "06  Every parcel can arrive",
+      "zhHans": "06  失败后仍可交件",
+      "zhHant": "06  失敗後仍可交件",
+      "fragment": false
+    },
+    {
+      "en": "<b>Tab</b> opens Orders. Visit the sender to collect.\nHoney + Flower Jam: collect together, deliver separately.\nCarry multiple orders; each clock starts at pickup.",
+      "zhHans": "按 <b>Tab</b> 查看订单，到寄件人处取件。\n秋蜜与鲜花酱一起取，再分别送达。\n可同时带多单；每单从取件开始计时。",
+      "zhHant": "按 <b>Tab</b> 查看訂單，到寄件人處取件。\n秋蜜與鮮花醬一起取，再分別送達。\n可同時帶多單；每單從取件開始計時。",
+      "fragment": false
+    },
+    {
+      "en": "Reach the recipient pin to <b>deliver automatically</b>.\nClock = <b>used / target turns</b>.\nEmpty travel does not advance any order clock.",
+      "zhHans": "到达收件人图钉处，<b>自动交件</b>。\n时钟显示：<b>已用 / 目标回合</b>。\n空手赶路不计订单回合。",
+      "zhHant": "到達收件人圖釘處，<b>自動交件</b>。\n時鐘顯示：<b>已用 / 目標回合</b>。\n空手趕路不計訂單回合。",
+      "fragment": false
+    },
+    {
+      "en": "<b>H</b>  Heat protection · flame / heat-sensitive\n<b>W</b>  Water protection · umbrella / keep dry\n<b>Q</b>  Bump protection · glass / fragile",
+      "zhHans": "<b>H</b>  防热车辆　火焰图标 / 怕热\n<b>W</b>  防水车辆　雨伞图标 / 怕水\n<b>Q</b>  防颠车辆　玻璃杯图标 / 怕颠",
+      "zhHant": "<b>H</b>  防熱車輛　火焰圖標 / 怕熱\n<b>W</b>  防水車輛　雨傘圖標 / 怕水\n<b>Q</b>  防顛車輛　玻璃杯圖標 / 怕顛",
+      "fragment": false
+    },
+    {
+      "en": "Vehicle: <b>up to 2 edges/turn</b>, lasts <b>5 turns</b>.\nExchange: <b>+1 order turn</b>. Expires to ghost.\nGhost: <b>1 edge/turn</b>, unlimited use.",
+      "zhHans": "车辆：每回合<b>最多走 2 段路</b>，可用 <b>5 回合</b>。\n换车：订单 <b>+1 回合</b>；耗尽后变回幽灵。\n幽灵：每回合走 <b>1 段路</b>，不限回合。",
+      "zhHant": "車輛：每回合<b>最多走 2 段路</b>，可用 <b>5 回合</b>。\n換車：訂單 <b>+1 回合</b>；耗盡後變回幽靈。\n幽靈：每回合走 <b>1 段路</b>，不限回合。",
+      "fragment": false
+    },
+    {
+      "en": "<b>Late or damaged = failed rating.</b>\nYou can still deliver the parcel to its recipient.",
+      "zhHans": "<b>超时或破损，会判为送件失败。</b>\n仍可将货物送到收件人手中，完成交件。",
+      "zhHant": "<b>超時或破損，會判為送件失敗。</b>\n仍可將貨物送到收件人手中，完成交件。",
+      "fragment": false
+    },
+    {
+      "en": "QUICK CONTROLS",
+      "zhHans": "常用按键",
+      "zhHant": "常用按鍵",
+      "fragment": false
+    },
+    {
+      "en": "<b>WASD / arrows</b>  Move     <b>E</b>  Collect / continue     <b>F</b>  Skip travel     <b>Esc</b>  Pause\nHover map and cargo icons for details.",
+      "zhHans": "<b>WASD / 方向键</b>  移动     <b>E</b>  取件 / 继续     <b>F</b>  跳过行驶     <b>Esc</b>  暂停\n悬停地图与货物图标，可查看详情。",
+      "zhHant": "<b>WASD / 方向鍵</b>  移動     <b>E</b>  取件 / 繼續     <b>F</b>  跳過行駛     <b>Esc</b>  暫停\n懸停地圖與貨物圖標，可查看詳情。",
+      "fragment": false
+    },
+    {
+      "en": "<b>{0}%</b> at marked stops, only while carrying cargo.\nAt most <b>1 event/order</b>: wait +1 turn or retreat 1 node.\nRoute estimates exclude events.",
+      "zhHans": "只在带件经过标记路口时触发，概率 <b>{0}%</b>。\n每单最多 <b>1 次</b>：等候 +1 回合，或退回一个路口。\n路线预估不含事件。",
+      "zhHant": "只在帶件經過標記路口時觸發，機率 <b>{0}%</b>。\n每單最多 <b>1 次</b>：等候 +1 回合，或退回一個路口。\n路線預估不含事件。",
+      "fragment": false
+    },
+    {
+      "en": "Road conditions: ",
+      "zhHans": "路况：",
+      "zhHant": "路況：",
+      "fragment": true
+    },
+    {
+      "en": "Normal road",
+      "zhHans": "普通道路",
+      "zhHant": "普通道路",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle protects: ",
+      "zhHans": "车辆已保护：",
+      "zhHant": "車輛已保護：",
+      "fragment": true
+    },
+    {
+      "en": "No vulnerable cargo on board",
+      "zhHans": "当前没有受此路况影响的货物",
+      "zhHant": "目前沒有受此路況影響的貨物",
+      "fragment": true
+    },
+    {
+      "en": "Damages heat-sensitive cargo without heat protection.",
+      "zhHans": "缺少防热保护时，怕热货物会受损。",
+      "zhHant": "缺少防熱保護時，怕熱貨物會受損。",
+      "fragment": true
+    },
+    {
+      "en": "Damages dry cargo without waterproofing.",
+      "zhHans": "缺少防水保护时，怕水货物会受损。",
+      "zhHant": "缺少防水保護時，怕水貨物會受損。",
+      "fragment": true
+    },
+    {
+      "en": "Damages fragile cargo without suspension.",
+      "zhHans": "缺少减震保护时，易碎货物会受损。",
+      "zhHant": "缺少減震保護時，易碎貨物會受損。",
+      "fragment": true
+    },
+    {
+      "en": "Scroll for details",
+      "zhHans": "滚动查看详情",
+      "zhHant": "捲動查看詳情",
+      "fragment": true
     }
   ]
 }

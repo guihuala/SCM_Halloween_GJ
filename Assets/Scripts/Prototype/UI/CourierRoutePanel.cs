@@ -54,6 +54,8 @@ namespace NightCourier
         private Text mapCanvasHelp;
         private CourierMapLegend mapLegend;
         public bool LegendHighlightsNode(int node) => mapLegend!=null&&mapLegend.HighlightsNode(node);
+        private ScrollRect routeDetailsScroll;
+        private string routeDetailsSource;
         private bool destinationVisible;
         private bool routeDetailsRequested;
         private CourierMapMotion mapMotion;
@@ -284,11 +286,30 @@ namespace NightCourier
             destinationVisible=routeDetailsRequested&&selected>=0&&selected!=Run.Node&&Run.State==ShiftState.Docked&&!Run.Finished&&!owner.ConversationActive&&!owner.GuideOpen&&!CargoOpen;
             if(!destinationVisible)return;
             float width=Mathf.Min(520,page.rect.width-24);
-            string warnings = CourierLocalization.Source(riskText);
+            string blocked=Run.DestinationBlockReason(selected);
+            string warnings = blocked!=""?blocked:Run.RouteWarnings(route);
+            if(selected>=6&&selected<=8)warnings=Run.StationDescription(selected)+"\n"+warnings;
             bool hasWarning=warnings.Contains("Will damage:")||warnings.Contains("will exceed target")||warnings.Contains("Vehicle expires")||warnings.Contains("Cargo already damaged")||warnings.Contains("Event risk:")||warnings.Contains("No open route is available");
             riskText.fontSize=24;riskText.resizeTextForBestFit=false;
             riskText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,width-32);
-            float height=Mathf.Min(hasWarning?280:220,page.rect.height-136);
+            var details = Run.RouteSurfaceDetails(route).Split('\n').ToList();
+            var extra = warnings.Split('\n').Where(line=>line.Length>0 && !line.Contains("Will damage:") &&
+                !line.Contains("Cargo intact on this route") && !line.Contains("no order clock") &&
+                !line.Contains("Estimate excludes random events")).ToArray();
+            // Protection loss must be visible before the individual cargo consequences.
+            details.InsertRange(1,extra.Where(line=>line.Contains("Vehicle expires")));
+            details.AddRange(extra.Where(line=>!line.Contains("Vehicle expires")));
+            string detailSource=string.Join("\n",details);
+            PrepareRouteDetails();
+            bool changed=routeDetailsSource!=detailSource;routeDetailsSource=detailSource;
+            CourierLocalization.Set(riskText,detailSource);
+            riskText.enabled=true;riskText.fontSize=22;riskText.color=CourierColors.Night;
+            riskText.alignment=TextAnchor.UpperLeft;riskText.horizontalOverflow=HorizontalWrapMode.Wrap;
+            riskText.verticalOverflow=VerticalWrapMode.Overflow;
+            riskText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,width-56);
+            float contentHeight=Mathf.Ceil(riskText.preferredHeight)+8;
+            float height=Mathf.Min(220+contentHeight,page.rect.height-136);
+            float detailHeight=Mathf.Max(28,height-220);
             var target=selected>=6?mapArtwork.NodeTarget(selected):mapArtwork!=null&&selected<mapArtwork.landmarkImages.Length?mapArtwork.landmarkImages[selected].rectTransform:(RectTransform)stopButtons[selected].transform;
             target.GetWorldCorners(dialogueCorners);
             var lo=page.InverseTransformPoint(dialogueCorners[0]);var hi=page.InverseTransformPoint(dialogueCorners[2]);
@@ -299,7 +320,7 @@ namespace NightCourier
             Place(destinationText.rectTransform,24,16,width-120,56);destinationText.fontSize=30;destinationText.fontStyle=FontStyle.Normal;destinationText.color=Color.Lerp(CourierColors.Night,CourierColors.Mint,.28f);
             Place((RectTransform)departButton.transform,width-84,16,60,60);ResizeIconButton(departButton,60);
             Place((RectTransform)costGroup.transform,24,80,width-48,48);
-            float modeY=hasWarning?216:156;
+            float modeY=height-64;
             Place((RectTransform)routeModeButton.transform,20,modeY,52,48);
             Caption(routeModeButton,Run.PreferSafeRoutes?"Safe route  |  Switch to fastest":"Fastest route  |  Switch to safe");
             CourierSymbolUI.Button(routeModeButton,Run.PreferSafeRoutes?CourierIconKind.Check:CourierIconKind.FastForward,Run.PreferSafeRoutes?"Safe route · click for fastest route":"Fastest route · click for safe route");
@@ -310,26 +331,33 @@ namespace NightCourier
             var timeIcon=costGroup.transform.Find("ClockIcon") as RectTransform;var wearIcon=costGroup.transform.Find("WearIcon") as RectTransform;
             if(timeIcon!=null)Place(timeIcon,0,4,32,32);if(wearIcon!=null){Place(wearIcon,width*.5f-20,4,32,32);wearIcon.gameObject.SetActive(!Run.IsGhost);}
             wearCostText.gameObject.SetActive(!Run.IsGhost);
-            riskText.enabled=false;
-            // A complete sentence fits the card; the warning icon retains every order's details.
-            string summary = warnings.Contains("Will damage:") ? "Cargo may be damaged on this route." :
-                warnings.Contains("will exceed target") ? "Some orders will exceed their target turns." :
-                warnings.Contains("Vehicle expires") ? "The vehicle will expire along this route." :
-                warnings.Contains("Cargo already damaged") ? "Cargo already damaged; damage cannot be repaired" :
-                warnings.Contains("Event risk:") ? warnings.Split('\n').First(line=>line.StartsWith("Event risk:",System.StringComparison.Ordinal)) :
-                warnings.Contains("Cargo intact on this route") ? "Cargo intact on this route" : warnings.Split('\n')[0];
-            int sentence=summary.IndexOf(". ",System.StringComparison.Ordinal);if(sentence>=0)summary=summary.Substring(0,sentence+1);
-            Color summaryColor=summary.StartsWith("Protect",System.StringComparison.OrdinalIgnoreCase)?Color.Lerp(CourierColors.Night,CourierColors.Mint,.38f):Color.Lerp(CourierColors.Night,CourierColors.Gold,.3f);
-            var summaryLabel=MetricLabel("RouteSummary",summary,24,194,summaryColor);
-            summaryLabel.gameObject.SetActive(hasWarning);
-            summaryLabel.fontSize=22;summaryLabel.fontStyle=FontStyle.Normal;Place(summaryLabel.rectTransform,24,154,width-48,52);
-            summaryLabel.horizontalOverflow=HorizontalWrapMode.Wrap;summaryLabel.verticalOverflow=VerticalWrapMode.Truncate;
+            var viewport=(RectTransform)routeDetailsScroll.transform;
+            Place(viewport,24,148,width-48,detailHeight);
+            riskText.rectTransform.anchorMin=riskText.rectTransform.anchorMax=riskText.rectTransform.pivot=new Vector2(0,1);
+            riskText.rectTransform.sizeDelta=new Vector2(width-56,contentHeight);
+            if(changed){routeDetailsScroll.StopMovement();riskText.rectTransform.anchoredPosition=Vector2.zero;}
+            routeDetailsScroll.vertical=contentHeight>detailHeight+1;
+            var scrollHint=MetricLabel("RouteScrollHint","Scroll for details",24,height-91,CourierColors.Night);
+            scrollHint.fontSize=16;scrollHint.gameObject.SetActive(routeDetailsScroll.vertical);
+            var oldSummary=destinationTooltip.Find("RouteSummary");if(oldSummary!=null)oldSummary.gameObject.SetActive(false);
             MetricLabel("TravelLabel","TURNS",72,120,Color.Lerp(CourierColors.Night,CourierColors.Mint,.32f));
             MetricLabel("WearLabel","WEAR",width*.5f+52,120,wearCostText.color).gameObject.SetActive(!Run.IsGhost);
             MetricLabel("RouteModeLabel",Run.PreferSafeRoutes?"Safer route":"Fastest route",84,modeY+6,CourierColors.Night);
             var warning=CourierSymbolUI.Icon(destinationTooltip,"RouteWarningSymbol",CourierIconKind.Warning,width-54,modeY+8,28,CourierColors.Gold,warnings);
             warning.gameObject.SetActive(hasWarning);
             destinationTooltip.SetAsLastSibling();
+        }
+        private void PrepareRouteDetails()
+        {
+            if(routeDetailsScroll!=null)return;
+            var go=new GameObject("RouteDetailsViewport",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image),typeof(RectMask2D),typeof(ScrollRect));
+            go.transform.SetParent(destinationTooltip,false);
+            // A clear hit area lets the wheel/drag scroll long forecasts without panning the map.
+            go.GetComponent<Image>().color=Color.clear;
+            routeDetailsScroll=go.GetComponent<ScrollRect>();routeDetailsScroll.viewport=(RectTransform)go.transform;
+            riskText.transform.SetParent(go.transform,false);riskText.raycastTarget=false;
+            routeDetailsScroll.content=riskText.rectTransform;routeDetailsScroll.horizontal=false;
+            routeDetailsScroll.movementType=ScrollRect.MovementType.Clamped;routeDetailsScroll.scrollSensitivity=28;
         }
         private Text MetricLabel(string name,string text,float x,float y,Color color)
         {

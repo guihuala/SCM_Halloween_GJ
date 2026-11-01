@@ -14,6 +14,8 @@ namespace NightCourier
         public Image speakerPortrait, portraitFrame;
         public Text speakerName;
         private CourierTextJuice subtitleJuice;
+        [Header("Ending Dialogue")]
+        public Color endingDialogueColor = CourierColors.Hex(0xDCCBED);
         [Header("HUD Motion")]
         public bool reducedMotion;
         public UIInfiniteScroll backgroundScroll;
@@ -50,13 +52,14 @@ namespace NightCourier
         }
         public void ApplyReadingColors()
         {
+            bool ending = owner != null && Run.Finished;
             var bar=subtitleText.transform.parent.Find("SubtitleBar");
             var image=bar!=null?bar.GetComponent<Image>():null;
-            if(image!=null)image.color=CourierColors.Alpha(CourierColors.Paper,1);
+            if(image!=null)image.color=CourierColors.Alpha(ending?endingDialogueColor:CourierColors.Paper,1);
             subtitleText.color=CourierColors.Night;
             foreach(var outline in subtitleText.GetComponents<Outline>())outline.enabled=false;
             if(speakerName!=null)speakerName.color=CourierColors.Night;
-            var buttonImage=advanceButton.targetGraphic as Image;if(buttonImage!=null)buttonImage.color=CourierColors.Mint;
+            var buttonImage=advanceButton.targetGraphic as Image;if(buttonImage!=null)buttonImage.color=ending?CourierColors.Gold:CourierColors.Mint;
             var icon=advanceButton.GetComponentInChildren<CourierIconGraphic>(true);if(icon!=null)icon.color=CourierColors.Night;
         }
         private void RefreshSpeaker()

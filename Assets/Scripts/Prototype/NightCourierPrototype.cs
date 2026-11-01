@@ -28,6 +28,7 @@ namespace NightCourier
         private string[] dialogue = new string[0];
         private int dialogueIndex;
         private int dialogueNode=-1;
+        private bool openingConversationPending = true;
         public bool GuideOpen { get { return Tutorial.GuideOpen; } }
         public void RejectAction(string reason, RectTransform target=null)
         {
@@ -75,7 +76,7 @@ namespace NightCourier
         }
         public void BeginConversation()
         {
-            if ((Run.State != ShiftState.Docked && !Run.Finished) || !Active || GuideOpen || Run.Node>=6 || Run.Story==null || !Run.Story.HasPending(Run)) return;
+            if ((Run.State != ShiftState.Docked && !Run.Finished) || !Active || GuideOpen || Run.Story==null || !Run.Story.HasPending(Run)) return;
             if(ConversationActive&&dialogueNode==Run.Node)return;
             dialogueNode=Run.Node;
             dialogue = Run.TalkToNpc(); dialogueIndex = 0;
@@ -86,6 +87,12 @@ namespace NightCourier
             if(ConversationActive&&hud!=null&&hud.CompleteSubtitle())return;
             if (ConversationActive) { dialogueIndex++; CourierSoundscape.PlayInterface("dialogue"); if(!ConversationActive){if(Run.Story!=null&&Run.Story.HasPending(Run))BeginConversation();else {Tutorial.OpenMap();if(Run.Story!=null&&Run.Story.WasPlayed("gooy_letter"))Tutorial.AfterLetter();}} }
             else if(Run.State==ShiftState.Docked&&Run.HasJourney&&Active)DepartTo(Run.PlannedDestination);
+        }
+        private void BeginOpeningConversation()
+        {
+            if (!openingConversationPending || !Active || GuideOpen) return;
+            BeginConversation();
+            openingConversationPending = false;
         }
         public float VisualTime { get { return visualTime; } }
         public bool Active { get { return (entrance == null || !entrance.IsRevealing) && (GameManager.Instance == null || GameManager.Instance.CurrentState == GameManager.GameState.Playing); } }
@@ -102,7 +109,7 @@ namespace NightCourier
             planner = Open<CourierPanel>("CourierRoutePanel", UIPanelLayer.Bottom);
             hud = Open<CourierHudPanel>("CourierHudPanel", UIPanelLayer.Normal);
             lastState = Run.State;
-            BeginConversation();
+            BeginOpeningConversation();
             SyncTutorialPanel();
             gameObject.AddComponent<CourierSoundscape>().Initialize(this, radioMusic);
             var route = planner as CourierRoutePanel;
@@ -197,12 +204,15 @@ namespace NightCourier
             if (hud != null) hud.Bind(this);
             if (planner != null) planner.Bind(this);
             dialogue=new string[0];dialogueIndex=0;
-            BeginConversation();
+            openingConversationPending = true;
+            BeginOpeningConversation();
         }
         private void Update()
         {
             SyncTutorialPanel();
             if (!Active || GuideOpen) return;
+            // Retry once gameplay and its entrance transition are ready.
+            BeginOpeningConversation();
             visualTime += Time.deltaTime;
             bool moving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
             DriveBlend=Mathf.MoveTowards(DriveBlend,moving?1:0,Time.deltaTime*3);
