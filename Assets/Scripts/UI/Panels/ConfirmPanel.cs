@@ -17,6 +17,14 @@ public class ConfirmPanel : BasePanel
     private Action _onConfirm;
     private Action _onCancel;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        // These labels are siblings of the paper card, so ancestor tinting misses them.
+        if (titleText != null) titleText.color = NightCourier.CourierColors.Night;
+        if (messageText != null) messageText.color = NightCourier.CourierColors.Night;
+    }
+
     private void Start()
     {
         if (confirmButton != null) confirmButton.onClick.AddListener(OnConfirmClicked);
@@ -64,7 +72,7 @@ public class ConfirmPanel : BasePanel
     {
         if (targetText != null)
         {
-            targetText.text = content;
+            NightCourier.CourierLocalization.Set(targetText, content);
         }
     }
 }

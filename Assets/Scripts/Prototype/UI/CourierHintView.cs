@@ -22,14 +22,15 @@ namespace NightCourier
             string amber=ColorUtility.ToHtmlStringRGB(Color.Lerp(CourierColors.Night,CourierColors.Gold,.42f));
             string red=ColorUtility.ToHtmlStringRGB(Color.Lerp(CourierColors.Night,CourierColors.Heat,.52f));
             var lines=message.Replace("<","‹").Replace(">","›").Split('\n');
-            if(lines.Length<2)return lines[0];
-            lines[0]="<size=34><b><color=#"+green+">"+lines[0]+"</color></b></size>\n";
+            if(lines.Length<2)return CourierLocalization.T(lines[0]);
+            lines[0]="<size=34><b><color=#"+green+">"+CourierLocalization.T(lines[0])+"</color></b></size>\n";
             for(int i=1;i<lines.Length;i++)
             {
                 string text=lines[i];string lower=text.ToLowerInvariant();
                 string tint=lower.Contains("damaged")||lower.Contains("failed")||lower.Contains("late")?red:
                     lower.Contains("expires")||lower.Contains("ends")||lower.Contains("exchange")||lower.Contains("cost")?amber:
                     lower.Contains("protect")||lower.Contains("keep dry")||lower.Contains("unlimited")?green:null;
+                text=CourierLocalization.T(text);
                 text=Regex.Replace(text,@"(?<!\w)[+\-]?\d+(?:[./]\d+)?%?",m=>"<b>"+m.Value+"</b>");
                 if(tint!=null)text="<color=#"+tint+">"+text+"</color>";
                 lines[i]=text;

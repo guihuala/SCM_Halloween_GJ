@@ -21,6 +21,8 @@ namespace NightCourier
         [Range(0,1)] public float highlightVisibility=1;
         [Range(0,1)] public float highlightProgress=1;
         public System.Collections.Generic.List<Road> PreviewRoute=new System.Collections.Generic.List<Road>();
+        public System.Collections.Generic.Dictionary<StreetEdge,System.Collections.Generic.List<Parcel>> SurfaceRisks;
+        public float riskEmphasis;
         private static readonly CourierRun Preview = new CourierRun();
         public static readonly Vector2 MapCanvasSize=new Vector2(1200,820);
         public static Rect MapBounds(Vector2 size)
@@ -70,6 +72,20 @@ namespace NightCourier
                 }
                 if(run.State==ShiftState.Docked)
                     DrawRoute(vh,run,PreviewRoute.Count>0?PreviewRoute:SelectedRoute,PreviewRoute.Count>0?previewRoadColor:selectedRoadColor);
+                if(run.State==ShiftState.Docked&&SurfaceRisks!=null)
+                    foreach(var entry in SurfaceRisks)
+                    {
+                        var edge=entry.Key;
+                        Color ink=edge.Surface==StreetSurface.Heat?CourierColors.Heat:edge.Surface==StreetSurface.Water?CourierColors.Water:CourierColors.Rough;
+                        for(int i=1;i<edge.Points.Length;i++)
+                        {
+                            var a=MapPoint(edge.Points[i-1],rectTransform.rect.size);var b=MapPoint(edge.Points[i],rectTransform.rect.size);
+                            // Broken ink strokes distinguish danger without relying on color alone.
+                            if(i%2==1)Segment(vh,a,b,ink,2.4f+riskEmphasis*1.5f);
+                            var side=new Vector2(-(b-a).y,(b-a).x).normalized;
+                            if(i%3==1)Segment(vh,(a+b)*.5f+side*5,(a+b)*.5f+side*11,ink,1.1f);
+                        }
+                    }
                 foreach(var node in CourierStreetMap.Nodes)
                 {
                     var point=MapPoint(node.Point,rectTransform.rect.size);
@@ -105,7 +121,7 @@ namespace NightCourier
             if(drawTravel&&Owner!=null&&run.ActiveRoad!=null&&(run.State==ShiftState.Driving||run.State==ShiftState.Pushing||run.State==ShiftState.Encounter))
             {
                 var position=TravelPoint(run,rectTransform.rect.size);
-                Circle(vh,position,travelHaloRadius+Mathf.Sin(Owner.VisualTime*3)*1.5f,CourierColors.Alpha(CourierColors.Mint,.18f));
+                Circle(vh,position,travelHaloRadius,CourierColors.Alpha(CourierColors.Mint,.18f));
                 if(drawTravelDot)Circle(vh,position,7,CourierColors.Mint);
             }
         }

@@ -51,7 +51,7 @@ public static class CourierFeedbackSmokeTest
                     Require(tip.label.text.Contains("Select a stop")&&tip.bubble.GetComponent<CanvasGroup>().alpha>.9f,"Disabled action explanation missing");
                     Require(button.transform.localScale==buttonScale,"Feedback changed button layout");
                     foreach(var image in feedback.Effect.edges)Require(!image.raycastTarget,"Effect intercepts pointer");
-                    Require(!feedback.Effect.group.blocksRaycasts&&!tip.bubble.GetComponent<CanvasGroup>().blocksRaycasts,"Overlay intercepts input");
+                    Require(!feedback.Effect.group.blocksRaycasts&&tip.bubble.GetComponent<CanvasGroup>().blocksRaycasts,"Visible tooltip must capture input while decorative feedback stays passive");
                     hint.message="Updated condition\nThis condition changed while the same button stayed hovered. The hint should resize without clipping or requiring the pointer to leave.";break;
                 case 3:
                     // The planner refreshes its own hints every frame, so use a tag hint to test live text updates.
@@ -70,7 +70,7 @@ public static class CourierFeedbackSmokeTest
                 case 5:
                     Require(tip.bubble.gameObject.activeSelf&&feedback.Effect.group.alpha>.9f,"Pointer exit hid keyboard focus");
                     ExecuteEvents.Execute(button.gameObject,new BaseEventData(EventSystem.current),ExecuteEvents.deselectHandler);
-                    Require(!tip.bubble.gameObject.activeSelf,"Deselect left stale tooltip");
+                    Require(!hint.KeepsTooltipOpen,"Deselect retained keyboard ownership");
                     panel.stopButtons[3].onClick.Invoke();Time.timeScale=0;
                     ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerEnterHandler);
                     ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerDownHandler);break;
@@ -80,7 +80,7 @@ public static class CourierFeedbackSmokeTest
                     ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerUpHandler);
                     feedback.Play();break;
                 case 7:
-                    button.gameObject.SetActive(false);Require(!tip.bubble.gameObject.activeSelf&&feedback.Effect.group.alpha==0,"Disabled button left stale feedback");
+                    button.gameObject.SetActive(false);Require(!tip.bubble.GetComponent<CanvasGroup>().blocksRaycasts&&feedback.Effect.group.alpha==0,"Disabled button left stale pointer capture or feedback");
                     button.gameObject.SetActive(true);Time.timeScale=1;lastBubble=tip.bubble.gameObject;owner.ClosePlanner();break;
             }
             Debug.Log("COURIER_FEEDBACK_UI step "+step+" passed");step++;next=EditorApplication.timeSinceStartup+.5;

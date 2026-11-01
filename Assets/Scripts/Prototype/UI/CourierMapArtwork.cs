@@ -170,7 +170,7 @@ namespace NightCourier
                 if(run.RetreatEventNodes.Contains(node.Id))name+=" <";
                 var nodeButton=label.GetComponent<Button>();
                 if(nodeButton!=null)nodeButton.interactable=primary.Owner!=null&&primary.Owner.Active&&!primary.Owner.ConversationActive&&run.State==ShiftState.Docked;
-                label.text=name;var rect=label.rectTransform;rect.anchorMin=rect.anchorMax=new Vector2(0,1);rect.pivot=new Vector2(.5f,1);
+                NightCourier.CourierLocalization.Set(label, name);var rect=label.rectTransform;rect.anchorMin=rect.anchorMax=new Vector2(0,1);rect.pivot=new Vector2(.5f,1);
                 var p=CourierRouteGraphic.MapPoint(node.Point,size);rect.anchoredPosition=new Vector2(p.x,-p.y-7);rect.sizeDelta=new Vector2(name.Length>3?144:64,44);
                 EnsureNodeHit(rect,new Vector2(0,7));
             }
@@ -229,7 +229,7 @@ namespace NightCourier
                 button.interactable=usable;
                 string title=i==0?"H · Heat shield":i==1?"W · Waterproof":"Q · Suspension";
                 var stationLabel=button.GetComponentInChildren<Text>();
-                stationLabel.text=title+"\n"+"Swap · +1 turn";
+                NightCourier.CourierLocalization.Set(stationLabel, title+"\n"+"Swap · +1 turn");
                 CourierSymbolUI.Button(button,i==0?CourierIconKind.Heat:i==1?CourierIconKind.Dry:CourierIconKind.Fragile,CourierInformation.Station(run,target));
                 var oldSymbol=button.transform.Find("ActionSymbol");if(oldSymbol!=null)oldSymbol.GetComponent<CourierIconGraphic>().enabled=false;
                 var vehicle=CourierVehicleIconView.Ensure(button.transform,"StationVehicleArtwork",Vector2.zero,Vector2.one*56);

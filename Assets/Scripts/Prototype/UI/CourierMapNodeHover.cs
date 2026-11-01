@@ -8,7 +8,7 @@ namespace NightCourier
     {
         public CourierRoutePanel panel;
         public int node;
-        public void OnPointerEnter(PointerEventData data) { if(panel!=null)panel.PreviewRoute(node); }
+        public void OnPointerEnter(PointerEventData data) { if(panel!=null&&!CourierTooltip.BlocksMapPointer(data.position))panel.PreviewRoute(node); }
         public void OnPointerExit(PointerEventData data) { if(panel!=null)panel.ClearRoutePreview(node); }
         // Longer labels must never steal clicks from a neighbouring drawn junction.
         public bool IsRaycastLocationValid(Vector2 screenPoint,Camera eventCamera)

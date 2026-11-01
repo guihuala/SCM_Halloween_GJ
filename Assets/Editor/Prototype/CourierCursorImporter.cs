@@ -1,6 +1,6 @@
 using UnityEditor;
 
-// Keep exported SVG cursors readable and uncompressed on every platform.
+// Keep atlas-derived cursors readable and uncompressed on every platform.
 public sealed class CourierCursorImporter : AssetPostprocessor
 {
     private void OnPreprocessTexture()

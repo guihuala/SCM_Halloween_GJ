@@ -82,8 +82,10 @@ namespace NightCourier
             if (applied == (int)state) return;
             applied = (int)state;
             var texture = textures[applied];
-            Vector2 hotspot = state == State.Pointer || state == State.Pressed ? new Vector2(20, 7) :
-                state == State.Grab || state == State.Grabbing ? new Vector2(24, 24) : new Vector2(6, 4);
+            // Match the tips in the redrawn 192px atlas cells, scaled down to 48px.
+            Vector2 hotspot = state == State.Pointer || state == State.Pressed ? new Vector2(20, 6) :
+                state == State.Grab || state == State.Grabbing ? new Vector2(24, 24) :
+                state == State.Default ? new Vector2(8, 6) : new Vector2(8, 7);
             Cursor.SetCursor(texture, texture != null ? hotspot : Vector2.zero, CursorMode.Auto);
         }
         private void OnApplicationFocus(bool value)

@@ -13,12 +13,12 @@ namespace NightCourier
         [SerializeField] private Font uiFont;
         [SerializeField] private AudioClip radioMusic;
         [SerializeField,Range(1,8)] private float cruisePlaybackSpeed=4f;
-        [SerializeField, Min(0)] private float gameplayEntranceDuration = 2.8f;
+        [SerializeField, Min(0)] private float gameplayEntranceDuration = 1.6f;
         private CourierGameplayEntrance entrance;
         public float DriveBlend {get;private set;}
         public float RoadMotionTime {get;private set;}
         public float PossessionGlow {get;private set;}
-        public Font UIFont { get { return uiFont; } }
+        public Font UIFont { get { return CourierTypography.Body; } }
         public bool HasPlanner { get { return planner != null; } }
         private CourierPanel planner, forcedPanel;
         private CourierHudPanel hud;
@@ -29,10 +29,18 @@ namespace NightCourier
         private int dialogueIndex;
         private int dialogueNode=-1;
         public bool GuideOpen { get { return Tutorial.GuideOpen; } }
+        public void RejectAction(string reason, RectTransform target=null)
+        {
+            var route=planner as CourierRoutePanel;
+            if(route!=null&&route.FriendlyFeedback!=null)
+                route.FriendlyFeedback.Reject(target!=null?target:route.loadText.rectTransform,reason);
+        }
         public void ShowGuide() { Tutorial.ShowGuide(); SyncTutorialPanel(); }
         public bool AcceptParcel(Parcel parcel)
         {
-            if(!Active||ConversationActive||GuideOpen||!Run.LoadParcel(parcel))return false;
+            if(!Active)return false;
+            if(ConversationActive||GuideOpen){RejectAction(ConversationActive?"Finish the conversation first.":"Close the guide first.");return false;}
+            if(!Run.LoadParcel(parcel)){RejectAction(parcel!=null&&parcel.Origin!=Run.Node?"Visit the sender to collect this order.":"This order cannot be collected now.");return false;}
             var route=planner as CourierRoutePanel;if(route!=null)route.SetCargoOpen(false);
             dialogueNode=Run.Node;dialogue=Run.Story!=null?Run.Story.ReadPickup(Run,parcel):new string[0];dialogueIndex=0;
             if(dialogue.Length==0)dialogue=new[]{"Narrator: Collected "+string.Join(" + ",System.Linq.Enumerable.Select(Run.Batch(parcel),p=>p.Name))+". Deliver to "+Run.Stops[parcel.Destination].Name+"."};
@@ -146,7 +154,9 @@ namespace NightCourier
         }
         public bool DepartTo(int destination)
         {
-            if(ConversationActive||GuideOpen||!Active||!Run.StartJourney(destination))return false;
+            if(!Active)return false;
+            if(ConversationActive||GuideOpen){RejectAction(ConversationActive?"Finish the conversation first.":"Close the guide first.");return false;}
+            if(!Run.StartJourney(destination)){RejectAction(Run.State!=ShiftState.Docked?"Wait until you arrive.":Run.DestinationBlockReason(destination));return false;}
             Tutorial.Observe(Run); Tutorial.Leave();
             InCar=!Run.IsGhost;ClosePlanner();return true;
         }

@@ -27,7 +27,7 @@ namespace NightCourier
             if(pauseButton!=null)pauseButton.gameObject.SetActive(owner.Active&&!Run.Finished&&(!(this is CourierHudPanel)||(!owner.HasPlanner&&Run.State!=ShiftState.Encounter)));
             Refresh(); } }
         protected abstract void Refresh();
-        protected static void Caption(Button button, string text) { button.GetComponentInChildren<Text>().text = text; }
+        protected static void Caption(Button button, string text) { NightCourier.CourierLocalization.Set(button.GetComponentInChildren<Text>(), text); }
         public override void OpenPanel(string name)
         {
             base.OpenPanel(name);

@@ -567,3 +567,4 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   uiFont: {fileID: 12800000, guid: e4623d9b0d9943038644dc2857e4bf0d, type: 3}
+  gameplayEntranceDuration: 1.6

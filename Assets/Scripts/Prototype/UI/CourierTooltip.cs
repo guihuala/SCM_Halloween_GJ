@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 namespace NightCourier
 {
     public sealed class CourierTooltip : MonoBehaviour
@@ -9,8 +10,15 @@ namespace NightCourier
         public Text label;
         private CourierHintView view;
         private CourierIconHint source;
+        private static readonly HashSet<CourierTooltip> activeTooltips=new HashSet<CourierTooltip>();
+        private CanvasGroup bubbleGroup;
+        private Graphic hitSurface;
+        private bool hideRequested;
+        private float hideAfter;
+        private const float ExitGrace=.16f;
         private float showAt;
         private string shownMessage;
+        private CourierLanguage shownLanguage;
         private Vector2 homePosition;
         private Vector2 measuredSize;
         private float measuredPixelsPerUnit;
@@ -23,22 +31,54 @@ namespace NightCourier
                 if(bubble!=null)Destroy(bubble.gameObject);
                 view=Instantiate(viewPrefab,transform,false);bubble=(RectTransform)view.transform;label=view.label;
             }
-            if(bubble!=null)bubble.gameObject.SetActive(false);
+            if(bubble!=null)
+            {
+                bubbleGroup=bubble.GetComponent<CanvasGroup>()??bubble.gameObject.AddComponent<CanvasGroup>();
+                hitSurface=bubble.GetComponent<Graphic>();
+                if(hitSurface==null){hitSurface=bubble.gameObject.AddComponent<Image>();hitSurface.color=Color.clear;}
+                if(label!=null)label.raycastTarget=false;
+                SetPointerCapture(false);bubble.gameObject.SetActive(false);
+            }
+        }
+        private void OnEnable(){activeTooltips.Add(this);}
+        public static bool BlocksMapPointer(Vector2 screenPoint)
+        {
+            foreach(var tooltip in activeTooltips)
+                if(tooltip!=null&&tooltip.ContainsVisiblePointer(screenPoint))return true;
+            return false;
+        }
+        private bool ContainsVisiblePointer(Vector2 screenPoint)
+        {
+            if(bubble==null||!bubble.gameObject.activeInHierarchy||source==null||!source.isActiveAndEnabled||
+                (bubbleGroup!=null&&bubbleGroup.alpha<=.05f))return false;
+            var canvas=bubble.GetComponentInParent<Canvas>();
+            var camera=canvas!=null&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null;
+            return RectTransformUtility.RectangleContainsScreenPoint(bubble,screenPoint,camera);
+        }
+        private void SetPointerCapture(bool capture)
+        {
+            if(hitSurface!=null)hitSurface.raycastTarget=capture;
+            if(bubbleGroup!=null){bubbleGroup.blocksRaycasts=capture;bubbleGroup.interactable=false;}
         }
         public void Show(CourierIconHint hint,bool immediate=false)
         {
             if(hint==null||string.IsNullOrWhiteSpace(hint.message)||bubble==null)return;
+            // A visible reading surface owns the pointer over nodes underneath it.
+            // Explicit keyboard focus may still select a different explanation.
+            if(source!=hint&&!immediate&&ContainsVisiblePointer(Input.mousePosition))return;
+            hideRequested=false;
             if(source==hint){if(immediate)showAt=Time.unscaledTime;return;}
             source=hint;shownMessage=null;showAt=Time.unscaledTime+(immediate||view==null?0:view.hoverDelay);
             if(view!=null)view.group.alpha=0;
+            SetPointerCapture(view==null);
             bubble.gameObject.SetActive(true);bubble.SetAsLastSibling();RefreshContent();Position();
         }
         private void RefreshContent()
         {
             var parent=(RectTransform)bubble.parent;
-            if(shownMessage==source.message&&measuredSize==parent.rect.size&&Mathf.Approximately(measuredPixelsPerUnit,label.pixelsPerUnit))return;
+            if(shownMessage==source.message&&shownLanguage==CourierLocalization.Language&&measuredSize==parent.rect.size&&Mathf.Approximately(measuredPixelsPerUnit,label.pixelsPerUnit))return;
             measuredSize=parent.rect.size;measuredPixelsPerUnit=label.pixelsPerUnit;
-            shownMessage=source.message;label.text=view!=null?view.FormatMessage(shownMessage):shownMessage;
+            shownMessage=source.message;shownLanguage=CourierLocalization.Language;if(view!=null)CourierLocalization.SetFormatted(label, shownMessage, view.FormatMessage);else CourierLocalization.Set(label, shownMessage);
             float padding=view!=null?view.padding:16;
             float width=Mathf.Min(view!=null?view.maxWidth:440,Mathf.Max(80,parent.rect.width-24));
             label.rectTransform.anchorMin=label.rectTransform.anchorMax=new Vector2(0,1);
@@ -74,7 +114,9 @@ namespace NightCourier
         private void LateUpdate()
         {
             if(bubble==null||!bubble.gameObject.activeSelf)return;
-            if(source!=null&&(!source.isActiveAndEnabled||string.IsNullOrWhiteSpace(source.message)))Hide(source);
+            if(source!=null&&(!source.isActiveAndEnabled||string.IsNullOrWhiteSpace(source.message)))ReleaseSource();
+            if(source!=null&&hideRequested&&!source.KeepsTooltipOpen&&Time.unscaledTime>=hideAfter&&
+                !ContainsVisiblePointer(Input.mousePosition))ReleaseSource();
             if(source!=null){RefreshContent();Position();bubble.SetAsLastSibling();}
             if(view!=null)
             {
@@ -85,8 +127,25 @@ namespace NightCourier
                 bubble.anchoredPosition=homePosition+new Vector2(0,-8*(1-eased));
                 if(source==null&&view.group.alpha<=0)bubble.gameObject.SetActive(false);
             }
+            // Invisible delays and outgoing fades must not create dead click areas.
+            SetPointerCapture(source!=null&&(bubbleGroup==null||bubbleGroup.alpha>.05f));
         }
-        public void Hide(CourierIconHint hint){if(source!=hint)return;source=null;if(bubble!=null&&view==null)bubble.gameObject.SetActive(false);}
-        private void OnDisable(){if(bubble!=null){bubble.gameObject.SetActive(false);bubble.localScale=Vector3.one;}source=null;}
+        public void Hide(CourierIconHint hint)
+        {
+            if(source!=hint)return;
+            if(hint==null||!hint.isActiveAndEnabled){ReleaseSource();return;}
+            hideRequested=true;hideAfter=Time.unscaledTime+ExitGrace;
+        }
+        public void Dismiss(CourierIconHint hint){if(source==hint)ReleaseSource();}
+        private void ReleaseSource()
+        {
+            source=null;hideRequested=false;SetPointerCapture(false);
+            if(bubble!=null&&view==null)bubble.gameObject.SetActive(false);
+        }
+        private void OnDisable()
+        {
+            activeTooltips.Remove(this);ReleaseSource();
+            if(bubble!=null){bubble.gameObject.SetActive(false);bubble.localScale=Vector3.one;}
+        }
     }
 }

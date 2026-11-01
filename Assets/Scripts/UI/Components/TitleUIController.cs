@@ -14,6 +14,7 @@ public class TitleUIController : MonoBehaviour
 
     private void Awake()
     {
+        NightCourier.CourierLocalization.Apply(gameObject);
         // Menu illustrations already contain their colors; preserve the original white tint.
         foreach(var image in GetComponentsInChildren<Image>(true))
             if(image.sprite!=null)image.color=new Color(1,1,1,image.color.a);

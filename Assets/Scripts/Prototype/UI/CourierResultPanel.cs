@@ -26,8 +26,8 @@ namespace NightCourier
             if(orderHistory==null)PrepareHistory();
             if(displayedRun==Run&&displayedCount==Run.Results.Count)return;
             displayedRun=Run;displayedCount=Run.Results.Count;
-            titleText.text="Deliveries complete";
-            summaryText.text=Run.Results.Count(r=>!r.Late&&!r.Damaged)+"/"+Run.BatchCount;
+            NightCourier.CourierLocalization.Set(titleText, "Deliveries complete");
+            NightCourier.CourierLocalization.Set(summaryText, Run.Results.Count(r=>!r.Late&&!r.Damaged)+"/"+Run.BatchCount);
             foreach(Transform child in orderCards){child.gameObject.SetActive(false);Destroy(child.gameObject);}
             for(int i=0;i<Run.Results.Count;i++)BuildCard(Run.Results[i],i);
             orderCards.sizeDelta=new Vector2(contentWidth,Mathf.Max(orderHistory.viewport.rect.height,Mathf.Ceil(Run.Results.Count/2f)*180));
@@ -46,7 +46,7 @@ namespace NightCourier
         private Text Label(string name,Transform parent,string text,float x,float y,float width,float height,int size=24)
         {
             var rect=Rect(name,parent,x,y,width,height);var label=rect.gameObject.AddComponent<Text>();
-            label.font=owner.UIFont;label.fontSize=size;label.text=text;label.color=CourierColors.Night;
+            label.font=owner.UIFont;label.fontSize=size;NightCourier.CourierLocalization.Set(label, text);label.color=CourierColors.Night;
             label.alignment=TextAnchor.UpperLeft;label.raycastTarget=false;label.horizontalOverflow=HorizontalWrapMode.Wrap;
             return label;
         }

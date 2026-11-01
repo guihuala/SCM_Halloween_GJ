@@ -65,19 +65,42 @@ namespace NightCourier
             }
             return turns+(used>0?1:0);
         }
+        // Same turn/protection rules as the route forecast, including vehicle exhaustion.
+        public Dictionary<StreetEdge,List<Parcel>> RouteSurfaceRisks(IEnumerable<Road> route)
+        {
+            var risks=new Dictionary<StreetEdge,List<Parcel>>();
+            var cargo=Parcels.Where(p=>p.State==ParcelState.Loaded&&!p.Damaged).ToList();
+            if(cargo.Count==0)return risks;
+            var node=CourierStreetMap.Nodes.First(n=>n.StopId==Node);
+            int fuel=IsGhost?0:(int)Durability,used=0;bool protectedTurn=false;
+            foreach(var road in route)
+            {
+                if(road.StreetPath==null)continue;
+                var edges=node.StopId==road.A?road.StreetPath:road.StreetPath.Reverse();
+                foreach(var edge in edges)
+                {
+                    if(used==0){protectedTurn=!IsGhost&&fuel>0;if(protectedTurn)fuel--;}
+                    var affected=cargo.Where(p=>SurfaceDamages(edge.Surface,(p.HeatSensitive?1:0)|(p.Dry?2:0)|(p.Fragile?4:0),protectedTurn?VehicleIndex:-1)).ToList();
+                    if(affected.Count>0)risks[edge]=affected;
+                    node=edge.Other(node);used++;
+                    cargo.RemoveAll(p=>p.Destination==node.StopId);
+                    if(used>=(protectedTurn?(int)Car.Speed:1)||node.StopId<9)used=0;
+                }
+            }
+            return risks;
+        }
         public string RouteWarnings(IEnumerable<Road> route)
         {
             var roads=route.ToArray();var edges=roads.Where(r=>r.StreetPath!=null).SelectMany(r=>r.A==Node?r.StreetPath:r.StreetPath.Reverse()).ToArray();
             if(edges.Length==0)return "";
             var warnings=new List<string>();var cargo=Parcels.Where(p=>p.State==ParcelState.Loaded).ToArray();
             var damage=new HashSet<string>();var node=CourierStreetMap.Nodes.First(n=>n.StopId==Node);
+            foreach(var entry in RouteSurfaceRisks(roads))
+                foreach(var parcel in entry.Value)damage.Add(parcel.Name+" ("+SurfaceReason(entry.Key.Surface)+")");
             int fuel=IsGhost?0:(int)Durability,used=0,turns=0,eventStops=0;bool vehicleTurn=false;
             foreach(var edge in edges)
             {
                 if(used==0){vehicleTurn=!IsGhost&&fuel>0;if(vehicleTurn)fuel--;turns++;}
-                foreach(var p in cargo)
-                    if(!p.Damaged&&SurfaceDamages(edge.Surface,(p.HeatSensitive?1:0)|(p.Dry?2:0)|(p.Fragile?4:0),vehicleTurn?VehicleIndex:-1))
-                        damage.Add(p.Name+" ("+SurfaceReason(edge.Surface)+")");
                 node=edge.Other(node);used++;
                 if(used>=(vehicleTurn?(int)Car.Speed:1)||node.StopId<9){used=0;if(DelayEventNodes.Contains(node.Id)||RetreatEventNodes.Contains(node.Id))eventStops++;}
             }

@@ -71,7 +71,7 @@ namespace NightCourier
             var mapPage=UIManager.Instance.GetPanel("CourierRoutePanel") as CourierRoutePanel;
             if(step>=3&&step<=5&&(mapPage==null||!mapPage.CargoOpen))strip.anchoredPosition=new Vector2(0,-Mathf.Max(192,((RectTransform)transform).rect.height-220));
             var skipLabel=skipButton.GetComponentInChildren<Text>(true);
-            if(skipLabel!=null)skipLabel.text = step == 6 ? "Done" : "Skip";
+            if(skipLabel!=null)NightCourier.CourierLocalization.Set(skipLabel, step == 6 ? "Done" : "Skip");
             string title, body; RectTransform first = null, second = null;
             var ui=UIManager.Instance;
             var hud=ui.GetPanel("CourierHudPanel") as CourierHudPanel;
@@ -125,8 +125,8 @@ namespace NightCourier
             if (run.State == ShiftState.Pushing) body = "Your ghost carries the full order at a slower pace. Late or damaged orders are still accepted.";
             if (!owner.HasPlanner && run.State == ShiftState.Docked && step >= 2 && step <= 4)
             { body = "Choose a stop on the map and manage your cargo on the right. You can explore freely or skip this guide."; first = null; }
-            heading.text = "FIRST SHIFT  " + Mathf.Max(1,step) + "/6  -  " + title;
-            instruction.text = body;
+            NightCourier.CourierLocalization.Set(heading, "FIRST SHIFT  " + Mathf.Max(1,step) + "/6  -  " + title);
+            NightCourier.CourierLocalization.Set(instruction, body);
             if(guide.GuideOpen)FullGuide();else CompactGuide(step,title,body);
             Focus(0, first); Focus(1, second);
         }
@@ -136,9 +136,9 @@ namespace NightCourier
             float width=Mathf.Min(1440,size.x-80),height=Mathf.Min(880,size.y-64);
             strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.one*.5f;strip.anchoredPosition=Vector2.zero;strip.sizeDelta=new Vector2(width,height);
             heading.enabled=instruction.enabled=true;
-            heading.text="YOUR HALLOWEEN DELIVERY GUIDE";heading.alignment=TextAnchor.UpperLeft;heading.fontSize=34;
+            NightCourier.CourierLocalization.Set(heading, "YOUR HALLOWEEN DELIVERY GUIDE");heading.alignment=TextAnchor.UpperLeft;heading.fontSize=34;
             heading.rectTransform.anchoredPosition=new Vector2(40,-32);heading.rectTransform.sizeDelta=new Vector2(width-160,64);
-            instruction.text=CourierInformation.Rules(owner.Run).Replace("DELIVERY GUIDE\n","").Replace("\n","\n\n");
+            NightCourier.CourierLocalization.Set(instruction, CourierInformation.Rules(owner.Run).Replace("DELIVERY GUIDE\n","").Replace("\n","\n\n"));
             instruction.fontSize=28;instruction.alignment=TextAnchor.UpperLeft;
             instruction.rectTransform.anchoredPosition=new Vector2(40,-112);instruction.rectTransform.sizeDelta=new Vector2(width-80,height-144);
             instruction.resizeTextForBestFit=true;instruction.resizeTextMinSize=20;instruction.resizeTextMaxSize=28;
@@ -146,13 +146,13 @@ namespace NightCourier
             var close=(RectTransform)skipButton.transform;close.anchorMin=close.anchorMax=close.pivot=new Vector2(0,1);
             close.anchoredPosition=new Vector2(width-96,-24);close.sizeDelta=Vector2.one*64;
             CourierSymbolUI.Button(skipButton,CourierIconKind.Close,"Close guide · reopen with the information button");
-            var image=skipButton.targetGraphic as Image;if(image!=null)image.color=CourierColors.Mint;
+            var image=skipButton.targetGraphic as Image;if(image!=null){image.sprite=Resources.Load<Sprite>("NightVoyage/HUD/Button");image.type=Image.Type.Sliced;image.color=CourierColors.Mint;}
         }
         private void CompactGuide(int step,string title,string body)
         {
             strip.anchorMin=strip.anchorMax=strip.pivot=Vector2.zero;
             strip.anchoredPosition=new Vector2(24,32);strip.sizeDelta=new Vector2(248,80);
-            instruction.resizeTextForBestFit=false;instruction.enabled=false;heading.enabled=true;heading.text=Mathf.Max(1,step)+"/6";
+            instruction.resizeTextForBestFit=false;instruction.enabled=false;heading.enabled=true;NightCourier.CourierLocalization.Set(heading, Mathf.Max(1,step)+"/6");
             heading.rectTransform.anchoredPosition=new Vector2(80,-16);heading.rectTransform.sizeDelta=new Vector2(72,48);heading.alignment=TextAnchor.MiddleCenter;
             var kind=step==0?CourierIconKind.Talk:step<=2?CourierIconKind.Box:step==3?CourierIconKind.Route:step==5?CourierIconKind.Warning:step==6?CourierIconKind.Check:CourierIconKind.Arrow;
             CourierSymbolUI.Icon(strip,"GuideSymbol",kind,16,16,48,CourierColors.Night,title+"\n"+body);

@@ -16,7 +16,7 @@ public class GameResultPanel : BasePanel
 
     public void Configure(bool won)
     {
-        titleText.text = won ? "Delivery Complete" : "Shift Over";
+        NightCourier.CourierLocalization.Set(titleText, won ? "Delivery Complete" : "Shift Over");
         restartButton.Select();
     }
 }

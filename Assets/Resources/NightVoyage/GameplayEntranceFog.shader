@@ -73,7 +73,7 @@ Shader "UI/Courier Gameplay Entrance Fog"
                 float2 uv = i.screen.xy / i.screen.w;
                 fixed3 scene = tex2D(_CourierEntranceBackground, uv).rgb;
                 if (_ReducedMotion > .5)
-                    return fixed4(lerp(float3(.2,.29,.29), scene, _Progress), 1);
+                    return fixed4(lerp(float3(.12,.19,.19), scene, _Progress), 1);
 
                 float aspect = _ScreenParams.x / _ScreenParams.y;
                 float2 p = (i.uv - .5) * float2(aspect, 1);
@@ -101,7 +101,7 @@ Shader "UI/Courier Gameplay Entrance Fog"
                 soft += tex2D(_CourierEntranceBackground, uv - blur).rgb * .1;
                 soft += tex2D(_CourierEntranceBackground, uv + float2(blur.x,-blur.y)).rgb * .1;
                 soft += tex2D(_CourierEntranceBackground, uv + float2(-blur.x,blur.y)).rgb * .1;
-                fixed3 fog = lerp(float3(.14,.23,.25), float3(.63,.71,.65),
+                fixed3 fog = lerp(float3(.08,.14,.16), float3(.36,.45,.40),
                     smoothstep(.18,.82,n * .75 + detail * .25));
                 return fixed4(lerp(soft, fog, opacity), 1);
             }

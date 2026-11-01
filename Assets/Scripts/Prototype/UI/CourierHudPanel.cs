@@ -70,17 +70,17 @@ namespace NightCourier
                 if(show){speakerPortrait.sprite=goolie?Resources.Load<Sprite>("NightVoyage/GooliePortrait"):characterCatalog.PortraitFor(character);speakerPortrait.enabled=speakerPortrait.sprite!=null;}
             }
             if(portraitFrame!=null){if(show)portraitFrame.color=goolie?CourierColors.Mint:character.accent;}
-            if(speakerName!=null){if(talking){speakerName.text=owner.DialogueSpeaker;speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
+            if(speakerName!=null){if(talking){NightCourier.CourierLocalization.Set(speakerName, owner.DialogueSpeaker);speakerName.color=character!=null?Color.Lerp(CourierColors.Night,character.accent,.23f):CourierColors.Night;}}
             var bar=subtitleText.transform.parent.Find("SubtitleBar") as RectTransform;
-            subtitleText.fontSize=36;subtitleText.lineSpacing=1.08f;
+            subtitleText.fontSize=CourierLocalization.IsChinese?32:36;subtitleText.lineSpacing=CourierLocalization.IsChinese?1.25f:1.08f;
             subtitleText.rectTransform.sizeDelta=new Vector2(show?1224:1580,1000);
-            subtitleText.text=owner.Subtitle;
+            NightCourier.CourierLocalization.Set(subtitleText, owner.Subtitle);
             float bodyHeight=Mathf.Max(152,subtitleText.preferredHeight+16);
             float extra=Mathf.Max(0,bodyHeight-152);
             if(bar!=null){bar.anchoredPosition=new Vector2(-20,-740+extra);bar.sizeDelta=new Vector2(1840,260+extra);}
             subtitleText.rectTransform.anchoredPosition=new Vector2(show?416:48,-824+extra);
             subtitleText.rectTransform.sizeDelta=new Vector2(show?1224:1580,bodyHeight);
-            subtitleText.fontSize=36;subtitleText.lineSpacing=1.08f;subtitleText.alignment=TextAnchor.UpperLeft;
+            subtitleText.fontSize=CourierLocalization.IsChinese?32:36;subtitleText.lineSpacing=CourierLocalization.IsChinese?1.25f:1.08f;subtitleText.alignment=TextAnchor.UpperLeft;
             var advanceRect=(RectTransform)advanceButton.transform;
             advanceRect.anchoredPosition=new Vector2(advanceRect.anchoredPosition.x,-840);advanceRect.sizeDelta=Vector2.one*96;
             var advanceIcon=advanceButton.GetComponentInChildren<CourierIconGraphic>(true);if(advanceIcon!=null)advanceIcon.rectTransform.sizeDelta=Vector2.one*60;
@@ -133,7 +133,7 @@ namespace NightCourier
                 Show(skipRideButton.gameObject,driving&&owner.Active,new Vector2(0,32));
             }
             if(pauseButton!=null)Show(pauseButton.gameObject,owner.Active&&!Run.Finished&&!owner.HasPlanner&&Run.State!=ShiftState.Encounter,new Vector2(0,32));
-            timeText.text=Run.ActiveOrder==null?"—":Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder);
+            NightCourier.CourierLocalization.Set(timeText, Run.ActiveOrder==null?"—":Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder));
             // A new journey starts at its own progress rather than draining the previous bar.
             if(!progressReady||!travelling||progressLeg!=Run.PlannedDestination||progressRoad!=Run.ActiveRoad||reducedMotion)
                 progressFill.fillAmount=Run.DisplayProgress;

@@ -48,11 +48,11 @@ public class LoadingScreen : MonoBehaviour
                 Mathf.Max(0f, progressMask.canvasRect.width) * (1f - displayedProgress), 0f);
             if (progressMask.padding != padding) progressMask.padding = padding;
         }
-        if (progressText != null) progressText.text = $"{displayedProgress * 100:0}%";
+        if (progressText != null) NightCourier.CourierLocalization.Set(progressText, $"{displayedProgress * 100:0}%");
         if (statusText != null)
         {
             string status = displayedProgress >= 1f ? "Your next stop is ready." : "Preparing your next stop...";
-            if (statusText.text != status) statusText.text = status;
+            if (statusText.text != status) NightCourier.CourierLocalization.Set(statusText, status);
         }
     }
 }

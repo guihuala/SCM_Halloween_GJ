@@ -153,7 +153,7 @@ namespace NightCourier
         {
             var label=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer),typeof(Text)).GetComponent<Text>();
             label.transform.SetParent(parent,false);Place(label.rectTransform,x,y,width,height);
-            label.font=font;label.text=value;label.fontSize=size;label.color=color;label.alignment=TextAnchor.MiddleLeft;label.raycastTarget=false;
+            label.font=font;NightCourier.CourierLocalization.Set(label, value);label.fontSize=size;label.color=color;label.alignment=TextAnchor.MiddleLeft;label.raycastTarget=false;
             return label;
         }
         private static void Place(RectTransform rect,float x,float y,float width,float height)

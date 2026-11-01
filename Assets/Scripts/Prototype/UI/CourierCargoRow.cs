@@ -57,6 +57,7 @@ namespace NightCourier
             owner=prototype;parcel=item;DropFeedbackOrigin=null;PrepareArtwork();RefreshArtwork();
             CourierTypography.Apply(gameObject);
             actionButton.onClick.AddListener(()=>{if(parcel.State==ParcelState.Loaded)owner.Run.Unload(parcel);else owner.AcceptParcel(parcel);});
+            CourierDeniedAction.Attach(actionButton,prototype,()=>owner.ConversationActive?"Finish the conversation first.":owner.GuideOpen?"Close the guide first.":owner.Run.State!=ShiftState.Docked?"Wait until you arrive.":parcel.Origin!=owner.Run.Node?"Visit the sender to collect this order.":"This order cannot be collected now.");
         }
         public bool LoadByDrop()
         {
@@ -69,10 +70,10 @@ namespace NightCourier
             var run=owner.Run;bool loaded=parcel.State==ParcelState.Loaded;
             timeText.rectTransform.sizeDelta=new Vector2(108,48);
             ((RectTransform)timeGroup.transform).sizeDelta=new Vector2(132,48);
-            nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=1.08f;nameText.alignment=TextAnchor.UpperLeft;
-            destinationText.resizeTextForBestFit=false;destinationText.fontSize=26;destinationText.lineSpacing=1.12f;destinationText.alignment=TextAnchor.UpperLeft;
-            nameText.text=string.Join(" + ",run.CargoRowItems(parcel).Select(p=>p.Name));
-            destinationText.text=run.Stops[parcel.Origin].Name+" > "+string.Join(" / ",run.CargoRowItems(parcel).Select(p=>run.Stops[p.Destination].Name).Distinct());weightText.gameObject.SetActive(false);
+            nameText.resizeTextForBestFit=false;nameText.fontSize=28;nameText.lineSpacing=CourierLocalization.IsChinese?1.22f:1.08f;nameText.alignment=TextAnchor.UpperLeft;
+            destinationText.resizeTextForBestFit=false;destinationText.fontSize=26;destinationText.lineSpacing=CourierLocalization.IsChinese?1.24f:1.12f;destinationText.alignment=TextAnchor.UpperLeft;
+            NightCourier.CourierLocalization.Set(nameText, string.Join(" + ",run.CargoRowItems(parcel).Select(p=>p.Name)));
+            NightCourier.CourierLocalization.Set(destinationText, run.Stops[parcel.Origin].Name+" > "+string.Join(" / ",run.CargoRowItems(parcel).Select(p=>run.Stops[p.Destination].Name).Distinct()));weightText.gameObject.SetActive(false);
             var oldWeight=transform.Find("WeightIcon");if(oldWeight!=null)oldWeight.gameObject.SetActive(false);
             var batch=run.CargoRowItems(parcel).ToArray();
             storyIcon.gameObject.SetActive(parcel.Critical);damagedIcon.gameObject.SetActive(batch.Any(p=>p.Damaged));
@@ -112,7 +113,7 @@ namespace NightCourier
             }
             int target=run.TargetTurns(parcel);
             bool splitPickup=!loaded&&batch.Select(p=>p.Destination).Distinct().Count()>1;
-            timeText.text=splitPickup?"2 stops":(loaded?run.TurnsFor(parcel):0)+"/"+target;
+            NightCourier.CourierLocalization.Set(timeText, splitPickup?"2 stops":(loaded?run.TurnsFor(parcel):0)+"/"+target);
             timeHint.message=splitPickup?CourierInformation.Order(run,parcel):"Order turns / target: "+timeText.text+". Late or damaged cargo is always accepted, rated Delivery failed.";
             actionButton.gameObject.SetActive(!loaded);actionButton.interactable=owner.Active&&!owner.ConversationActive&&!owner.GuideOpen&&run.CanLoad(parcel);
             actionIcon.SetKind(CourierIconKind.Load);
@@ -131,7 +132,7 @@ namespace NightCourier
             var icon=iconObject.GetComponent<Image>();icon.sprite=cargoArtwork.sprite;icon.preserveAspect=true;icon.raycastTarget=false;
             var iconRect=icon.rectTransform;iconRect.anchorMin=iconRect.anchorMax=iconRect.pivot=new Vector2(0,.5f);iconRect.anchoredPosition=new Vector2(8,0);iconRect.sizeDelta=new Vector2(48,48);
             var label=new GameObject("Name",typeof(RectTransform),typeof(CanvasRenderer),typeof(Text));label.transform.SetParent(rt,false);
-            var text=label.GetComponent<Text>();text.font=owner.UIFont;text.fontSize=23;text.text=parcel.Name;text.color=CourierColors.Night;text.alignment=TextAnchor.MiddleCenter;text.raycastTarget=false;
+            var text=label.GetComponent<Text>();text.font=owner.UIFont;text.fontSize=23;NightCourier.CourierLocalization.Set(text, parcel.Name);text.color=CourierColors.Night;text.alignment=TextAnchor.MiddleCenter;text.raycastTarget=false;
             var labelRect=label.GetComponent<RectTransform>();labelRect.anchorMin=Vector2.zero;labelRect.anchorMax=Vector2.one;labelRect.offsetMin=new Vector2(64,0);labelRect.offsetMax=new Vector2(-8,0);
             OnDrag(data);
         }

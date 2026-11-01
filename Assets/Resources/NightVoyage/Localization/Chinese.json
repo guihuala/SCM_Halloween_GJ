@@ -1,0 +1,2728 @@
+{
+  "entries": [
+    {
+      "en": "Audio Settings",
+      "zhHans": "设置",
+      "zhHant": "設定",
+      "fragment": true
+    },
+    {
+      "en": "Settings",
+      "zhHans": "设置",
+      "zhHant": "設定",
+      "fragment": true
+    },
+    {
+      "en": "Language",
+      "zhHans": "语言",
+      "zhHant": "語言",
+      "fragment": true
+    },
+    {
+      "en": "Music",
+      "zhHans": "音乐",
+      "zhHant": "音樂",
+      "fragment": true
+    },
+    {
+      "en": "Sound effects",
+      "zhHans": "音效",
+      "zhHant": "音效",
+      "fragment": true
+    },
+    {
+      "en": "Start Game",
+      "zhHans": "开始送件",
+      "zhHant": "開始送件",
+      "fragment": true
+    },
+    {
+      "en": "Quit",
+      "zhHans": "退出",
+      "zhHant": "退出",
+      "fragment": true
+    },
+    {
+      "en": "Credits",
+      "zhHans": "制作名单",
+      "zhHant": "製作名單",
+      "fragment": true
+    },
+    {
+      "en": "Resume",
+      "zhHans": "继续",
+      "zhHant": "繼續",
+      "fragment": true
+    },
+    {
+      "en": "Main Menu",
+      "zhHans": "返回主菜单",
+      "zhHant": "返回主菜單",
+      "fragment": true
+    },
+    {
+      "en": "Restart",
+      "zhHans": "重新开始",
+      "zhHant": "重新開始",
+      "fragment": true
+    },
+    {
+      "en": "Confirm",
+      "zhHans": "确定",
+      "zhHant": "確定",
+      "fragment": true
+    },
+    {
+      "en": "Cancel",
+      "zhHans": "取消",
+      "zhHant": "取消",
+      "fragment": true
+    },
+    {
+      "en": "Are you sure?",
+      "zhHans": "确定吗？",
+      "zhHant": "確定嗎？",
+      "fragment": true
+    },
+    {
+      "en": "Game Over",
+      "zhHans": "本次夜班结束",
+      "zhHant": "本次夜班結束",
+      "fragment": true
+    },
+    {
+      "en": "Shift Over",
+      "zhHans": "夜班结束",
+      "zhHant": "夜班結束",
+      "fragment": true
+    },
+    {
+      "en": "Delivery Complete",
+      "zhHans": "送件完成",
+      "zhHant": "送件完成",
+      "fragment": true
+    },
+    {
+      "en": "Deliveries complete",
+      "zhHans": "今晚的包裹都送到了",
+      "zhHant": "今晚的包裹都送到了",
+      "fragment": true
+    },
+    {
+      "en": "Shift Complete",
+      "zhHans": "夜班结束",
+      "zhHant": "夜班結束",
+      "fragment": true
+    },
+    {
+      "en": "Another shift",
+      "zhHans": "再跑一趟",
+      "zhHant": "再跑一趟",
+      "fragment": true
+    },
+    {
+      "en": "Back home",
+      "zhHans": "回家",
+      "zhHant": "回家",
+      "fragment": true
+    },
+    {
+      "en": "Pick Up",
+      "zhHans": "待取件",
+      "zhHant": "待取件",
+      "fragment": true
+    },
+    {
+      "en": "On Board",
+      "zhHans": "已装车",
+      "zhHant": "已裝車",
+      "fragment": true
+    },
+    {
+      "en": "Choose a destination",
+      "zhHans": "选择目的地",
+      "zhHant": "選擇目的地",
+      "fragment": true
+    },
+    {
+      "en": "Available orders · visit the sender to collect",
+      "zhHans": "待取订单，请前往寄件人处取件",
+      "zhHant": "待取訂單，請前往寄件人處取件",
+      "fragment": true
+    },
+    {
+      "en": "On board · each order has its own clock",
+      "zhHans": "已装车，每单分别计时",
+      "zhHant": "已裝車，每單分別計時",
+      "fragment": true
+    },
+    {
+      "en": "Orders · Tab",
+      "zhHans": "订单（Tab）",
+      "zhHant": "訂單（Tab）",
+      "fragment": true
+    },
+    {
+      "en": "Close orders · Tab",
+      "zhHans": "收起订单（Tab）",
+      "zhHant": "收起訂單（Tab）",
+      "fragment": true
+    },
+    {
+      "en": "No active order",
+      "zhHans": "暂无订单",
+      "zhHant": "暫無訂單",
+      "fragment": true
+    },
+    {
+      "en": "All orders collected",
+      "zhHans": "全部包裹已取走",
+      "zhHant": "全部包裹已取走",
+      "fragment": true
+    },
+    {
+      "en": "No active order · visit a sender and accept a batch in Orders (Tab)",
+      "zhHans": "暂无订单，请到寄件人处按 Tab 取件",
+      "zhHant": "暫無訂單，請到寄件人處按 Tab 取件",
+      "fragment": true
+    },
+    {
+      "en": "Safe route · click for fastest route",
+      "zhHans": "稳妥路线，点击切换为最快路线",
+      "zhHant": "穩妥路線，點擊切換為最快路線",
+      "fragment": true
+    },
+    {
+      "en": "Fastest route · click for safe route",
+      "zhHans": "最快路线，点击切换为稳妥路线",
+      "zhHant": "最快路線，點擊切換為穩妥路線",
+      "fragment": true
+    },
+    {
+      "en": "Safer route",
+      "zhHans": "稳妥路线",
+      "zhHant": "穩妥路線",
+      "fragment": true
+    },
+    {
+      "en": "Fastest route",
+      "zhHans": "最快路线",
+      "zhHant": "最快路線",
+      "fragment": true
+    },
+    {
+      "en": "TURNS",
+      "zhHans": "回合",
+      "zhHant": "回合",
+      "fragment": true
+    },
+    {
+      "en": "WEAR",
+      "zhHans": "车辆消耗",
+      "zhHant": "車輛消耗",
+      "fragment": true
+    },
+    {
+      "en": "Collect parcels  [E]",
+      "zhHans": "收下包裹  [E]",
+      "zhHant": "收下包裹  [E]",
+      "fragment": true
+    },
+    {
+      "en": "Read letter  [E]",
+      "zhHans": "读信  [E]",
+      "zhHant": "讀信  [E]",
+      "fragment": true
+    },
+    {
+      "en": "Continue route  [E]",
+      "zhHans": "继续赶路  [E]",
+      "zhHant": "繼續趕路  [E]",
+      "fragment": true
+    },
+    {
+      "en": "Continue dialogue - E",
+      "zhHans": "继续对话（E）",
+      "zhHant": "繼續對話（E）",
+      "fragment": true
+    },
+    {
+      "en": "Skip travel animation · F",
+      "zhHans": "跳过行驶动画（F）",
+      "zhHant": "跳過行駛動畫（F）",
+      "fragment": true
+    },
+    {
+      "en": "No special cargo requirements",
+      "zhHans": "无需特别保护",
+      "zhHant": "無需特別保護",
+      "fragment": true
+    },
+    {
+      "en": "Flame: heat-sensitive · use H",
+      "zhHans": "火焰：怕热，使用 H 隔热车保护",
+      "zhHant": "火焰：怕熱，使用 H 隔熱車保護",
+      "fragment": true
+    },
+    {
+      "en": "Umbrella: keep dry · use W",
+      "zhHans": "雨伞：怕水，使用 W 防水车保护",
+      "zhHant": "雨傘：怕水，使用 W 防水車保護",
+      "fragment": true
+    },
+    {
+      "en": "Glass: fragile · use Q",
+      "zhHans": "玻璃杯：易碎，使用 Q 避震车保护",
+      "zhHant": "玻璃杯：易碎，使用 Q 避震車保護",
+      "fragment": true
+    },
+    {
+      "en": "Damaged · delivery failed; still accepted",
+      "zhHans": "包裹破损，仍可交件",
+      "zhHant": "包裹破損，仍可交件",
+      "fragment": true
+    },
+    {
+      "en": "Late · delivery failed; still accepted",
+      "zhHans": "订单超时，仍可交件",
+      "zhHant": "訂單超時，仍可交件",
+      "fragment": true
+    },
+    {
+      "en": "Damage cannot be repaired. Late or damaged orders can still be delivered.",
+      "zhHans": "损坏无法修复，超时或破损的包裹仍可交件。",
+      "zhHant": "損壞無法修復，超時或破損的包裹仍可交件。",
+      "fragment": true
+    },
+    {
+      "en": "Every on-board order has its own delivery timer.",
+      "zhHans": "每单从取件开始，分别计时。",
+      "zhHant": "每單從取件開始，分別計時。",
+      "fragment": true
+    },
+    {
+      "en": "1 edge per turn · unlimited use",
+      "zhHans": "每回合走 1 段路，不限回合",
+      "zhHant": "每回合走 1 段路，不限回合",
+      "fragment": true
+    },
+    {
+      "en": "Expires to ghost; protection ends",
+      "zhHans": "车辆耗尽后改为幽灵运送，包裹保护失效",
+      "zhHant": "車輛耗盡後改為幽靈運送，包裹保護失效",
+      "fragment": true
+    },
+    {
+      "en": "Empty travel does not advance the order clock.",
+      "zhHans": "空手赶路不计入订单回合。",
+      "zhHant": "空手趕路不計入訂單回合。",
+      "fragment": true
+    },
+    {
+      "en": "Protection ends when the vehicle expires.",
+      "zhHans": "车辆耗尽后，包裹保护随之失效。",
+      "zhHant": "車輛耗盡後，包裹保護隨之失效。",
+      "fragment": true
+    },
+    {
+      "en": "Ghost · unlimited movement",
+      "zhHans": "幽灵运送，不限回合",
+      "zhHant": "幽靈運送，不限回合",
+      "fragment": true
+    },
+    {
+      "en": "Ghost · no protection",
+      "zhHans": "幽灵运送，无包裹保护",
+      "zhHant": "幽靈運送，無包裹保護",
+      "fragment": true
+    },
+    {
+      "en": "Protects heat-sensitive cargo",
+      "zhHans": "保护怕热的包裹",
+      "zhHant": "保護怕熱的包裹",
+      "fragment": true
+    },
+    {
+      "en": "Protects cargo from water",
+      "zhHans": "保护怕水的包裹",
+      "zhHant": "保護怕水的包裹",
+      "fragment": true
+    },
+    {
+      "en": "Protects fragile cargo",
+      "zhHans": "保护怕颠的包裹",
+      "zhHant": "保護怕顛的包裹",
+      "fragment": true
+    },
+    {
+      "en": "Carries any order; slower travel; no vehicle turns consumed",
+      "zhHans": "可携带全部包裹，速度较慢，不消耗车辆回合",
+      "zhHant": "可攜帶全部包裹，速度較慢，不消耗車輛回合",
+      "fragment": true
+    },
+    {
+      "en": "Choose a connected node or continue your planned journey.",
+      "zhHans": "选择相邻路口，或沿着原路线继续走。",
+      "zhHant": "選擇相鄰路口，或沿著原路線繼續走。",
+      "fragment": true
+    },
+    {
+      "en": "Choose a connected stop",
+      "zhHans": "请选择相连的地点",
+      "zhHant": "請選擇相連的地點",
+      "fragment": true
+    },
+    {
+      "en": "You are already here",
+      "zhHans": "已在此处",
+      "zhHant": "已在此處",
+      "fragment": true
+    },
+    {
+      "en": "No open route is available",
+      "zhHans": "暂时没有能走的路",
+      "zhHant": "暫時沒有能走的路",
+      "fragment": true
+    },
+    {
+      "en": "Fall back one node; no extra turn or vehicle use",
+      "zhHans": "退回一个路口；不额外消耗订单或车辆回合",
+      "zhHant": "退回一個路口；不額外消耗訂單或車輛回合",
+      "fragment": true
+    },
+    {
+      "en": "+1 order turn; no vehicle use",
+      "zhHans": "订单多用 1 回合；不消耗车辆回合",
+      "zhHant": "訂單多用 1 回合；不消耗車輛回合",
+      "fragment": true
+    },
+    {
+      "en": "Cargo already damaged; damage cannot be repaired",
+      "zhHans": "包裹已经损坏，无法修复",
+      "zhHant": "包裹已經損壞，無法修復",
+      "fragment": true
+    },
+    {
+      "en": "Cargo intact on this route",
+      "zhHans": "此路线不会损坏包裹",
+      "zhHant": "此路線不會損壞包裹",
+      "fragment": true
+    },
+    {
+      "en": "Estimate excludes random events",
+      "zhHans": "预估不含途中突发事件",
+      "zhHant": "預估不含途中突發事件",
+      "fragment": true
+    },
+    {
+      "en": "On time & intact",
+      "zhHans": "准时送达，包裹完好",
+      "zhHant": "準時送達，包裹完好",
+      "fragment": true
+    },
+    {
+      "en": "On time; cargo intact",
+      "zhHans": "准时送达，包裹完好",
+      "zhHant": "準時送達，包裹完好",
+      "fragment": true
+    },
+    {
+      "en": "Late + damaged",
+      "zhHans": "订单超时，包裹破损",
+      "zhHant": "訂單超時，包裹破損",
+      "fragment": true
+    },
+    {
+      "en": "Late delivery",
+      "zhHans": "订单超时",
+      "zhHant": "訂單超時",
+      "fragment": true
+    },
+    {
+      "en": "Damaged",
+      "zhHans": "包裹破损",
+      "zhHant": "包裹破損",
+      "fragment": true
+    },
+    {
+      "en": "Delivered successfully",
+      "zhHans": "顺利送达",
+      "zhHant": "順利送達",
+      "fragment": true
+    },
+    {
+      "en": "Delivery failed",
+      "zhHans": "送件失败",
+      "zhHant": "送件失敗",
+      "fragment": true
+    },
+    {
+      "en": "All deliveries complete",
+      "zhHans": "包裹都送到了",
+      "zhHant": "包裹都送到了",
+      "fragment": true
+    },
+    {
+      "en": "On time and intact / total orders",
+      "zhHans": "准时且完好送达 / 全部订单",
+      "zhHant": "準時且完好送達 / 全部訂單",
+      "fragment": true
+    },
+    {
+      "en": "Preparing your next stop...",
+      "zhHans": "正在加载……",
+      "zhHant": "正在加載……",
+      "fragment": true
+    },
+    {
+      "en": "Your next stop is ready.",
+      "zhHans": "加载完成",
+      "zhHant": "加載完成",
+      "fragment": true
+    },
+    {
+      "en": "Click this stop or press E to talk.",
+      "zhHans": "点击当前地点或按 E 交谈。",
+      "zhHant": "點擊當前地點或按 E 交談。",
+      "fragment": true
+    },
+    {
+      "en": "Broken down. You are pushing to the next stop. The journey continues.",
+      "zhHans": "车辆已耗尽，改为幽灵运送，前往下一站。",
+      "zhHant": "車輛已耗盡，改為幽靈運送，前往下一站。",
+      "fragment": true
+    },
+    {
+      "en": "Repair vehicle",
+      "zhHans": "修车",
+      "zhHant": "修車",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle unavailable at this stop.",
+      "zhHans": "此处暂无可用车辆。",
+      "zhHant": "此處暫無可用車輛。",
+      "fragment": true
+    },
+    {
+      "en": "Finish the conversation before departing.",
+      "zhHans": "请先结束对话，再出发。",
+      "zhHant": "請先結束對話，再出發。",
+      "fragment": true
+    },
+    {
+      "en": "Select a stop on the map first.",
+      "zhHans": "请先在地图上选择地点。",
+      "zhHant": "請先在地圖上選擇地點。",
+      "fragment": true
+    },
+    {
+      "en": "Travel turns · no order clock while empty",
+      "zhHans": "行程回合，空载时订单不计时",
+      "zhHant": "行程回合，空載時訂單不計時",
+      "fragment": true
+    },
+    {
+      "en": "Projected order turns / target (current + travel). Excludes random events.",
+      "zhHans": "预计订单回合 / 目标回合（已用＋行程），不含突发事件。",
+      "zhHant": "預計訂單回合 / 目標回合（已用＋行程），不含突發事件。",
+      "fragment": true
+    },
+    {
+      "en": "F: skip animation to the next event or stop",
+      "zhHans": "F：跳到下一次事件或停靠",
+      "zhHant": "F：跳到下一次事件或停靠",
+      "fragment": true
+    },
+    {
+      "en": "YOUR HALLOWEEN DELIVERY GUIDE",
+      "zhHans": "万圣夜送件指南",
+      "zhHant": "萬聖夜送件指南",
+      "fragment": true
+    },
+    {
+      "en": "DELIVERY GUIDE",
+      "zhHans": "送件指南",
+      "zhHant": "送件指南",
+      "fragment": true
+    },
+    {
+      "en": "Done",
+      "zhHans": "完成",
+      "zhHant": "完成",
+      "fragment": true
+    },
+    {
+      "en": "Skip",
+      "zhHans": "跳过",
+      "zhHant": "跳過",
+      "fragment": true
+    },
+    {
+      "en": "Welcome, Goolie",
+      "zhHans": "新手指引",
+      "zhHant": "新手指引",
+      "fragment": true
+    },
+    {
+      "en": "Visit the Mountain Train Tunnel",
+      "zhHans": "前往穿山隧道",
+      "zhHant": "前往穿山隧道",
+      "fragment": true
+    },
+    {
+      "en": "Choose your first order",
+      "zhHans": "选择第一单",
+      "zhHant": "選擇第一單",
+      "fragment": true
+    },
+    {
+      "en": "On the road",
+      "zhHans": "赶路中",
+      "zhHant": "趕路中",
+      "fragment": true
+    },
+    {
+      "en": "Ready to depart",
+      "zhHans": "准备出发",
+      "zhHant": "準備出發",
+      "fragment": true
+    },
+    {
+      "en": "Handle a road event",
+      "zhHans": "处理途中事件",
+      "zhHant": "處理途中事件",
+      "fragment": true
+    },
+    {
+      "en": "First stop reached",
+      "zhHans": "已到站",
+      "zhHant": "已到站",
+      "fragment": true
+    },
+    {
+      "en": "Continue with E. Choose your own delivery order from the map.",
+      "zhHans": "按 E 继续对话，在地图上选择送件顺序。",
+      "zhHant": "按 E 繼續對話，在地圖上選擇送件順序。",
+      "fragment": true
+    },
+    {
+      "en": "Visit the Mountain Train Tunnel to read Gooy's letter. Open Orders [Tab] to compare deliveries. Empty travel has no order timer.",
+      "zhHans": "前往穿山隧道阅读 Gooy 的信。按 Tab 查看订单，空载赶路不计时。",
+      "zhHant": "前往穿山隧道閱讀 Gooy 的信。按 Tab 查看訂單，空載趕路不計時。",
+      "fragment": true
+    },
+    {
+      "en": "Visit any sender shown in Orders. At their stop, accept a batch with the box arrow or drag it into On Board. Collect more orders here after each conversation. Every order has its own clock.",
+      "zhHans": "到寄件人处，点击箱子箭头或把包裹拖入「已装车」。对话后可继续取件，每单分别计时。",
+      "zhHant": "到寄件人處，點擊箱子箭頭或把包裹拖入「已裝車」。對話後可繼續取件，每單分別計時。",
+      "fragment": true
+    },
+    {
+      "en": "Open Orders [Tab] to compare senders and destinations. Travel to any sender to accept their order.",
+      "zhHans": "按 Tab 查看寄件人和收件地址，再去取件。",
+      "zhHant": "按 Tab 查看寄件人和收件地址，再去取件。",
+      "fragment": true
+    },
+    {
+      "en": ". Orange lines show the route. Compare Safe and Fastest before departing.",
+      "zhHans": "。橙线表示路线，出发前可比较稳妥路线和最快路线。",
+      "zhHant": "。橙線表示路線，出發前可比較穩妥路線和最快路線。",
+      "fragment": true
+    },
+    {
+      "en": "This is a waypoint, not your delivery stop. Press E or Continue to follow the route to your chosen recipient. You can also change direction here.",
+      "zhHans": "此处为途经点。按 E 或继续按钮沿原路线前进，也可在此更改方向。",
+      "zhHant": "此處為途經點。按 E 或繼續按鈕沿原路線前進，也可在此更改方向。",
+      "fragment": true
+    },
+    {
+      "en": "Moving uses whole order turns and vehicle turns. Press F to skip to the next event or stop; choices remain yours.",
+      "zhHans": "赶路会消耗订单和车辆回合。按 F 跳到下一个事件或停靠点。",
+      "zhHant": "趕路會消耗訂單和車輛回合。按 F 跳到下一個事件或停靠點。",
+      "fragment": true
+    },
+    {
+      "en": "Check the turn costs, then press the green arrow. Exhausted vehicles switch to ghost transport.",
+      "zhHans": "查看回合消耗后，点击绿色箭头出发。车辆耗尽后改为幽灵运送。",
+      "zhHant": "查看回合消耗後，點擊綠色箭頭出發。車輛耗盡後改為幽靈運送。",
+      "fragment": true
+    },
+    {
+      "en": "% chance while carrying cargo. At most one event per order: wait +1 turn or fall back one node. Confirm to continue.",
+      "zhHans": "% 的概率遇到事件，每单最多一次：等候多用 1 回合，或退回一个路口。确认后继续。",
+      "zhHant": "% 的概率遇到事件，每單最多一次：等候多用 1 回合，或退回一個路口。確認後繼續。",
+      "fragment": true
+    },
+    {
+      "en": "Press E at each waypoint to continue toward your recipient. Delivery happens automatically.",
+      "zhHans": "在途经点按 E 继续走，到收件人那里就会自动交件。",
+      "zhHant": "在途經點按 E 繼續走，到收件人那裡就會自動交件。",
+      "fragment": true
+    },
+    {
+      "en": "Deliveries happen automatically. Click your current stop to talk, load more cargo, or choose a new route. You're ready!",
+      "zhHans": "到站后自动交件。点击当前地点可交谈或取件，也可选择下一处目的地。",
+      "zhHant": "到站後自動交件。點擊當前地點可交談或取件，也可選擇下一處目的地。",
+      "fragment": true
+    },
+    {
+      "en": "Your ghost carries the full order at a slower pace. Late or damaged orders are still accepted.",
+      "zhHans": "幽灵可携带全部包裹，每回合走 1 段路。超时或破损仍可交件。",
+      "zhHant": "幽靈可攜帶全部包裹，每回合走 1 段路。超時或破損仍可交件。",
+      "fragment": true
+    },
+    {
+      "en": "Choose a stop on the map and manage your cargo on the right. You can explore freely or skip this guide.",
+      "zhHans": "在地图上选择地点，在右侧管理包裹。不需要指引时可关闭指南。",
+      "zhHant": "在地圖上選擇地點，在右側管理包裹。不需要指引時可關閉指南。",
+      "fragment": true
+    },
+    {
+      "en": "Close guide · reopen with the information button",
+      "zhHans": "关闭指南，点击信息按钮可重新打开",
+      "zhHant": "關閉指南，點擊信息按鈕可重新打開",
+      "fragment": true
+    },
+    {
+      "en": "Finish guide",
+      "zhHans": "完成指引",
+      "zhHant": "完成指引",
+      "fragment": true
+    },
+    {
+      "en": "Dismiss guide",
+      "zhHans": "收起指引",
+      "zhHant": "收起指引",
+      "fragment": true
+    },
+    {
+      "en": "Box: Orders · Tab. Visit the sender and collect a batch. Honey + Flower Jam are collected together, with one conversation, then delivered separately. Carry multiple orders; each clock starts at pickup.",
+      "zhHans": "箱子：按 Tab 查看订单，到寄件人那里取件。秋蜜和鲜花酱一起取，再分别送。可同时带多单，每单从取件开始计时。",
+      "zhHant": "箱子：按 Tab 查看訂單，到寄件人那裡取件。秋蜜和鮮花醬一起取，再分別送。可同時帶多單，每單從取件開始計時。",
+      "fragment": true
+    },
+    {
+      "en": "Pin: recipient · automatic delivery on arrival.",
+      "zhHans": "图钉：收件人，到站后自动交件。",
+      "zhHant": "圖釘：收件人，到站後自動交件。",
+      "fragment": true
+    },
+    {
+      "en": "Clock: used / target turns. Empty travel has no order clock.",
+      "zhHans": "时钟：已用 / 目标回合。空手赶路不计订单回合。",
+      "zhHant": "時鐘：已用 / 目標回合。空手趕路不計訂單回合。",
+      "fragment": true
+    },
+    {
+      "en": "Flame / umbrella / glass: heat / water / bumps; H / W / Q protect matching cargo.",
+      "zhHans": "火焰 / 雨伞 / 玻璃杯：怕热 / 怕水 / 怕颠；分别用 H / W / Q 车辆保护。",
+      "zhHant": "火焰 / 雨傘 / 玻璃杯：怕熱 / 怕水 / 怕顛；分別用 H / W / Q 車輛保護。",
+      "fragment": true
+    },
+    {
+      "en": "Vehicles: up to 2 edges/turn, 5 turns. Exchange costs +1 order turn; expires to ghost. Ghost: 1 edge/turn, unlimited.",
+      "zhHans": "车辆：每回合最多走 2 段路，可用 5 回合。换车加 1 订单回合；耗尽后变回幽灵，每回合走 1 段，不限回合。",
+      "zhHant": "車輛：每回合最多走 2 段路，可用 5 回合。換車加 1 訂單回合；耗盡後變回幽靈，每回合走 1 段，不限回合。",
+      "fragment": true
+    },
+    {
+      "en": "% at marked stops, carrying cargo only; max 1/order. +1 wait or retreat 1 node. Route estimates exclude events.",
+      "zhHans": "%，只在带件经过标记路口时触发，每单最多一次。等候加 1 回合，或退回一个路口。路线预估不含事件。",
+      "zhHant": "%，只在帶件經過標記路口時觸發，每單最多一次。等候加 1 回合，或退回一個路口。路線預估不含事件。",
+      "fragment": true
+    },
+    {
+      "en": "Late or damaged: failed rating, still deliverable.",
+      "zhHans": "超时或破损会判为送件失败，但仍可交件。",
+      "zhHant": "超時或破損會判為送件失敗，但仍可交件。",
+      "fragment": true
+    },
+    {
+      "en": "WASD/arrows: move. E: collect/continue. F: skip travel. Esc: pause. Hover icons for details.",
+      "zhHans": "WASD / 方向键：移动。E：取件 / 继续。F：跳过行驶。Esc：暂停。悬停图标可看详情。",
+      "zhHant": "WASD / 方向鍵：移動。E：取件 / 繼續。F：跳過行駛。Esc：暫停。懸停圖標可看詳情。",
+      "fragment": true
+    },
+    {
+      "en": "Mountain Train Tunnel",
+      "zhHans": "穿山隧道",
+      "zhHant": "穿山隧道",
+      "fragment": true
+    },
+    {
+      "en": "Foggy Woods",
+      "zhHans": "浓雾森林",
+      "zhHant": "濃霧森林",
+      "fragment": true
+    },
+    {
+      "en": "Brewing Cellar",
+      "zhHans": "酿酒地窖",
+      "zhHant": "釀酒地窖",
+      "fragment": true
+    },
+    {
+      "en": "Abandoned TV Tower",
+      "zhHans": "废弃电视塔",
+      "zhHant": "廢棄電視塔",
+      "fragment": true
+    },
+    {
+      "en": "Museum Ruins",
+      "zhHans": "博物馆遗迹",
+      "zhHant": "博物館遺跡",
+      "fragment": true
+    },
+    {
+      "en": "The Tavern",
+      "zhHans": "酒馆",
+      "zhHant": "酒館",
+      "fragment": true
+    },
+    {
+      "en": "Heat Shield Station",
+      "zhHans": "隔热车站",
+      "zhHant": "隔熱車站",
+      "fragment": true
+    },
+    {
+      "en": "Waterproofing Station",
+      "zhHans": "防水车站",
+      "zhHant": "防水車站",
+      "fragment": true
+    },
+    {
+      "en": "Suspension Station",
+      "zhHans": "避震车站",
+      "zhHant": "避震車站",
+      "fragment": true
+    },
+    {
+      "en": "Parcel Depot",
+      "zhHans": "快递站",
+      "zhHant": "快遞站",
+      "fragment": true
+    },
+    {
+      "en": "DEPOT",
+      "zhHans": "快递站",
+      "zhHant": "快遞站",
+      "fragment": true
+    },
+    {
+      "en": "JUNCTION",
+      "zhHans": "路口",
+      "zhHant": "路口",
+      "fragment": true
+    },
+    {
+      "en": "H Heatproof",
+      "zhHans": "H 隔热车",
+      "zhHant": "H 隔熱車",
+      "fragment": true
+    },
+    {
+      "en": "W Amphibious",
+      "zhHans": "W 防水车",
+      "zhHant": "W 防水車",
+      "fragment": true
+    },
+    {
+      "en": "Q Suspension",
+      "zhHans": "Q 避震车",
+      "zhHant": "Q 避震車",
+      "fragment": true
+    },
+    {
+      "en": "Ghost",
+      "zhHans": "幽灵",
+      "zhHant": "幽靈",
+      "fragment": true
+    },
+    {
+      "en": "Cassette Tape",
+      "zhHans": "录音带",
+      "zhHant": "錄音帶",
+      "fragment": true
+    },
+    {
+      "en": "Party Theme Tape",
+      "zhHans": "派对主题曲录音带",
+      "zhHant": "派對主題曲錄音帶",
+      "fragment": true
+    },
+    {
+      "en": "Violin Rosin",
+      "zhHans": "松香",
+      "zhHant": "松香",
+      "fragment": true
+    },
+    {
+      "en": "Ashpine Autumn Honey",
+      "zhHans": "灰松秋蜜",
+      "zhHant": "灰松秋蜜",
+      "fragment": true
+    },
+    {
+      "en": "Gray-Pine Autumn Honey",
+      "zhHans": "灰松秋蜜",
+      "zhHant": "灰松秋蜜",
+      "fragment": true
+    },
+    {
+      "en": "Flower Jam",
+      "zhHans": "鲜花酱",
+      "zhHant": "鮮花醬",
+      "fragment": true
+    },
+    {
+      "en": "Spring Mead",
+      "zhHans": "春蜜酒",
+      "zhHant": "春蜜酒",
+      "fragment": true
+    },
+    {
+      "en": "Spicy Blood Stew",
+      "zhHans": "毛血旺",
+      "zhHant": "毛血旺",
+      "fragment": true
+    },
+    {
+      "en": "Flower Cakes",
+      "zhHans": "鲜花饼",
+      "zhHant": "鮮花餅",
+      "fragment": true
+    },
+    {
+      "en": "Moisture Absorber",
+      "zhHans": "防潮剂",
+      "zhHant": "防潮劑",
+      "fragment": true
+    },
+    {
+      "en": "Moisture Repellent",
+      "zhHans": "防潮剂",
+      "zhHant": "防潮劑",
+      "fragment": true
+    },
+    {
+      "en": "Cooling Repair Kit",
+      "zhHans": "散热维修包",
+      "zhHant": "散熱維修包",
+      "fragment": true
+    },
+    {
+      "en": "Cooling Unit",
+      "zhHans": "散热装置",
+      "zhHant": "散熱裝置",
+      "fragment": true
+    },
+    {
+      "en": "Livestock Blood",
+      "zhHans": "禽畜血液",
+      "zhHant": "禽畜血液",
+      "fragment": true
+    },
+    {
+      "en": "Desiccant, Labels and Sundries",
+      "zhHans": "防潮剂、标签和杂物",
+      "zhHant": "防潮劑、標籤和雜物",
+      "fragment": true
+    },
+    {
+      "en": "Late-night Snack",
+      "zhHans": "夜宵",
+      "zhHant": "夜宵",
+      "fragment": true
+    },
+    {
+      "en": "Little Werebear",
+      "zhHans": "小熊精",
+      "zhHant": "小熊精",
+      "fragment": true
+    },
+    {
+      "en": "Immigrant Jiangshi",
+      "zhHans": "僵尸老太太",
+      "zhHant": "僵屍老太太",
+      "fragment": true
+    },
+    {
+      "en": "Wolfwoman",
+      "zhHans": "狼人姐姐",
+      "zhHant": "狼人姐姐",
+      "fragment": true
+    },
+    {
+      "en": "Vampire",
+      "zhHans": "吸血鬼",
+      "zhHant": "吸血鬼",
+      "fragment": true
+    },
+    {
+      "en": "Witch",
+      "zhHans": "女巫",
+      "zhHant": "女巫",
+      "fragment": true
+    },
+    {
+      "en": "Drow",
+      "zhHans": "黑暗精灵",
+      "zhHant": "黑暗精靈",
+      "fragment": true
+    },
+    {
+      "en": "Narrator",
+      "zhHans": "旁白",
+      "zhHant": "旁白",
+      "fragment": true
+    },
+    {
+      "en": "Trick-or-Treaters",
+      "zhHans": "不给糖就捣蛋",
+      "zhHant": "不給糖就搗蛋",
+      "fragment": true
+    },
+    {
+      "en": "A Skeleton Dog",
+      "zhHans": "骷髅小狗",
+      "zhHant": "骷髏小狗",
+      "fragment": true
+    },
+    {
+      "en": "The Hologram Ghost",
+      "zhHans": "全息小幽灵？",
+      "zhHant": "全息小幽靈？",
+      "fragment": true
+    },
+    {
+      "en": "A Bat in the Postal Cap",
+      "zhHans": "邮差帽里的蝙蝠",
+      "zhHant": "郵差帽里的蝙蝠",
+      "fragment": true
+    },
+    {
+      "en": "Halloween Parade",
+      "zhHans": "万圣夜巡游",
+      "zhHant": "萬聖夜巡遊",
+      "fragment": true
+    },
+    {
+      "en": "Erupting Geyser",
+      "zhHans": "热泉喷发",
+      "zhHant": "熱泉噴發",
+      "fragment": true
+    },
+    {
+      "en": "Sudden Fog",
+      "zhHans": "忽然起雾了",
+      "zhHant": "忽然起霧了",
+      "fragment": true
+    },
+    {
+      "en": "Ghost Hunters",
+      "zhHans": "捉鬼小队",
+      "zhHant": "捉鬼小隊",
+      "fragment": true
+    },
+    {
+      "en": "Thawing Hillside",
+      "zhHans": "松动的山坡",
+      "zhHant": "鬆動的山坡",
+      "fragment": true
+    },
+    {
+      "en": "A Sudden Gust",
+      "zhHans": "一阵大风",
+      "zhHant": "一陣大風",
+      "fragment": true
+    },
+    {
+      "en": "Sulfur Steam",
+      "zhHans": "硫磺蒸汽",
+      "zhHant": "硫磺蒸汽",
+      "fragment": true
+    },
+    {
+      "en": "An Unexpected Float",
+      "zhHans": "迎面来的花车",
+      "zhHant": "迎面來的花車",
+      "fragment": true
+    },
+    {
+      "en": "Share candy with the children",
+      "zhHans": "给孩子们分点糖",
+      "zhHant": "給孩子們分點糖",
+      "fragment": true
+    },
+    {
+      "en": "Find a dog-friendly treat",
+      "zhHans": "找点小狗能吃的零食",
+      "zhHant": "找點小狗能吃的零食",
+      "fragment": true
+    },
+    {
+      "en": "Pose as a plastic decoration",
+      "zhHans": "假装自己是塑料摆件",
+      "zhHant": "假裝自己是塑料擺件",
+      "fragment": true
+    },
+    {
+      "en": "Fan the bat to cool it down",
+      "zhHans": "给小蝙蝠扇扇风",
+      "zhHant": "給小蝙蝠扇扇風",
+      "fragment": true
+    },
+    {
+      "en": "Wait for the road to clear",
+      "zhHans": "等路通了再走",
+      "zhHant": "等路通了再走",
+      "fragment": true
+    },
+    {
+      "en": "Fall back one node",
+      "zhHans": "退回一个路口",
+      "zhHant": "退回一個路口",
+      "fragment": true
+    },
+    {
+      "en": "Road event",
+      "zhHans": "路上遇到点事",
+      "zhHant": "路上遇到點事",
+      "fragment": true
+    },
+    {
+      "en": "In transit",
+      "zhHans": "赶路中",
+      "zhHant": "趕路中",
+      "fragment": true
+    },
+    {
+      "en": "Returning to previous stop",
+      "zhHans": "返回上一个地点",
+      "zhHant": "返回上一個地點",
+      "fragment": true
+    },
+    {
+      "en": "Pushing to next stop",
+      "zhHans": "推着车去下一站",
+      "zhHant": "推著車去下一站",
+      "fragment": true
+    },
+    {
+      "en": "Waypoint stop - Destination: ",
+      "zhHans": "途经停靠，目的地：",
+      "zhHant": "途經停靠，目的地：",
+      "fragment": true
+    },
+    {
+      "en": "Continue to ",
+      "zhHans": "继续前往",
+      "zhHant": "繼續前往",
+      "fragment": true
+    },
+    {
+      "en": "Heading to ",
+      "zhHans": "正在前往",
+      "zhHant": "正在前往",
+      "fragment": true
+    },
+    {
+      "en": "Returning to ",
+      "zhHans": "正在返回",
+      "zhHant": "正在返回",
+      "fragment": true
+    },
+    {
+      "en": " - Next stop: ",
+      "zhHans": "，下一站：",
+      "zhHant": "，下一站：",
+      "fragment": true
+    },
+    {
+      "en": "[E: Continue]",
+      "zhHans": "[E：继续]",
+      "zhHant": "[E：繼續]",
+      "fragment": true
+    },
+    {
+      "en": "Deliver to ",
+      "zhHans": "送往",
+      "zhHant": "送往",
+      "fragment": true
+    },
+    {
+      "en": "Deliver ",
+      "zhHans": "送件：",
+      "zhHant": "送件：",
+      "fragment": true
+    },
+    {
+      "en": " to ",
+      "zhHans": " → ",
+      "zhHant": " → ",
+      "fragment": true
+    },
+    {
+      "en": "your recipient",
+      "zhHans": "收件人",
+      "zhHant": "收件人",
+      "fragment": true
+    },
+    {
+      "en": "Available · ",
+      "zhHans": "待取件：",
+      "zhHant": "待取件：",
+      "fragment": true
+    },
+    {
+      "en": "On board · ",
+      "zhHans": "已装车：",
+      "zhHant": "已裝車：",
+      "fragment": true
+    },
+    {
+      "en": " orders on board · Tab",
+      "zhHans": " 单已装车（Tab）",
+      "zhHant": " 單已裝車（Tab）",
+      "fragment": true
+    },
+    {
+      "en": " - You are here",
+      "zhHans": "（当前位置）",
+      "zhHant": "（當前位置）",
+      "fragment": true
+    },
+    {
+      "en": " - Story locked",
+      "zhHans": "（剧情未解锁）",
+      "zhHant": "（劇情未解鎖）",
+      "fragment": true
+    },
+    {
+      "en": "Deliveries: ",
+      "zhHans": "待送包裹：",
+      "zhHant": "待送包裹：",
+      "fragment": true
+    },
+    {
+      "en": "Pick up: ",
+      "zhHans": "待取件：",
+      "zhHant": "待取件：",
+      "fragment": true
+    },
+    {
+      "en": "Next: ",
+      "zhHans": "下一站：",
+      "zhHant": "下一站：",
+      "fragment": true
+    },
+    {
+      "en": "Last order: ",
+      "zhHans": "上一单：",
+      "zhHant": "上一單：",
+      "fragment": true
+    },
+    {
+      "en": "Ghost transport - ",
+      "zhHans": "幽灵运送：",
+      "zhHant": "幽靈運送：",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle turns remaining: ",
+      "zhHans": "车辆剩余回合：",
+      "zhHant": "車輛剩餘回合：",
+      "fragment": true
+    },
+    {
+      "en": "Possess ",
+      "zhHans": "附身",
+      "zhHant": "附身",
+      "fragment": true
+    },
+    {
+      "en": "Orders ",
+      "zhHans": "订单 ",
+      "zhHant": "訂單 ",
+      "fragment": true
+    },
+    {
+      "en": "Order turns / target: ",
+      "zhHans": "订单已用 / 目标回合：",
+      "zhHant": "訂單已用 / 目標回合：",
+      "fragment": true
+    },
+    {
+      "en": ". Late or damaged cargo is always accepted, rated Delivery failed.",
+      "zhHans": "。超时或破损仍可交件，但会判为送件失败。",
+      "zhHant": "。超時或破損仍可交件，但會判為送件失敗。",
+      "fragment": true
+    },
+    {
+      "en": "2 stops",
+      "zhHans": "送两处",
+      "zhHant": "送兩處",
+      "fragment": true
+    },
+    {
+      "en": " turns left",
+      "zhHans": " 回合可用",
+      "zhHant": " 回合可用",
+      "fragment": true
+    },
+    {
+      "en": " edges per turn · ",
+      "zhHans": " 段路 / 回合，",
+      "zhHant": " 段路 / 回合，",
+      "fragment": true
+    },
+    {
+      "en": " edges per turn.",
+      "zhHans": " 段路 / 回合。",
+      "zhHant": " 段路 / 回合。",
+      "fragment": true
+    },
+    {
+      "en": "Up to ",
+      "zhHans": "最多 ",
+      "zhHant": "最多 ",
+      "fragment": true
+    },
+    {
+      "en": " turns",
+      "zhHans": " 回合",
+      "zhHant": " 回合",
+      "fragment": true
+    },
+    {
+      "en": " turn(s)",
+      "zhHans": " 回合",
+      "zhHant": " 回合",
+      "fragment": true
+    },
+    {
+      "en": " travel turns; no order clock",
+      "zhHans": " 行程回合；空手不计时",
+      "zhHant": " 行程回合；空手不計時",
+      "fragment": true
+    },
+    {
+      "en": " at delivery",
+      "zhHans": "（到收件人时）",
+      "zhHant": "（到收件人時）",
+      "fragment": true
+    },
+    {
+      "en": " at waypoint",
+      "zhHans": "（到途经点时）",
+      "zhHant": "（到途經點時）",
+      "fragment": true
+    },
+    {
+      "en": " · will exceed target",
+      "zhHans": "，将超过目标回合",
+      "zhHant": "，將超過目標回合",
+      "fragment": true
+    },
+    {
+      "en": "No intact route available. ",
+      "zhHans": "没有能保证包裹完好的路线。",
+      "zhHant": "沒有能保證包裹完好的路線。",
+      "fragment": true
+    },
+    {
+      "en": "Will damage: ",
+      "zhHans": "将损坏：",
+      "zhHant": "將損壞：",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle expires after ",
+      "zhHans": "车辆还能用 ",
+      "zhHant": "車輛還能用 ",
+      "fragment": true
+    },
+    {
+      "en": "; then ghost, without protection",
+      "zhHans": "；之后变回幽灵，不再保护包裹",
+      "zhHant": "；之後變回幽靈，不再保護包裹",
+      "fragment": true
+    },
+    {
+      "en": "Event risk: ",
+      "zhHans": "途中事件：",
+      "zhHant": "途中事件：",
+      "fragment": true
+    },
+    {
+      "en": "% per eligible stop; may add turns",
+      "zhHans": "% / 标记路口；可能增加回合",
+      "zhHant": "% / 標記路口；可能增加回合",
+      "fragment": true
+    },
+    {
+      "en": "Late by ",
+      "zhHans": "超时 ",
+      "zhHant": "超時 ",
+      "fragment": true
+    },
+    {
+      "en": "Damaged: ",
+      "zhHans": "破损：",
+      "zhHant": "破損：",
+      "fragment": true
+    },
+    {
+      "en": "cargo conditions violated",
+      "zhHans": "未满足包裹保护要求",
+      "zhHant": "未滿足包裹保護要求",
+      "fragment": true
+    },
+    {
+      "en": "heat",
+      "zhHans": "高温",
+      "zhHant": "高溫",
+      "fragment": true
+    },
+    {
+      "en": "water",
+      "zhHans": "涉水",
+      "zhHant": "涉水",
+      "fragment": true
+    },
+    {
+      "en": "bumps",
+      "zhHans": "颠簸",
+      "zhHant": "顛簸",
+      "fragment": true
+    },
+    {
+      "en": ". Exchange here: +1 order turn, fresh 5 vehicle turns. Replaces the old vehicle.",
+      "zhHans": "。换车增加 1 订单回合，新车可用 5 回合，旧车会被替换。",
+      "zhHant": "。換車增加 1 訂單回合，新車可用 5 回合，舊車會被替換。",
+      "fragment": true
+    },
+    {
+      "en": "FIRST SHIFT  ",
+      "zhHans": "第一晚送件  ",
+      "zhHant": "第一晚送件  ",
+      "fragment": true
+    },
+    {
+      "en": "Marked junctions roll a ",
+      "zhHans": "带件经过标记路口时，有 ",
+      "zhHant": "帶件經過標記路口時，有 ",
+      "fragment": true
+    },
+    {
+      "en": "Events: ",
+      "zhHans": "途中事件：",
+      "zhHant": "途中事件：",
+      "fragment": true
+    },
+    {
+      "en": "Depart > ",
+      "zhHans": "出发 → ",
+      "zhHant": "出發 → ",
+      "fragment": true
+    },
+    {
+      "en": "Depart",
+      "zhHans": "出发",
+      "zhHant": "出發",
+      "fragment": true
+    },
+    {
+      "en": "Move one turn (1 edge as ghost, up to 2 by vehicle). Stops at junctions let you change direction. E continues the route.",
+      "zhHans": "走一回合：幽灵 1 段路，车辆最多 2 段。到路口可以换方向，按 E 沿原路线继续。",
+      "zhHant": "走一回合：幽靈 1 段路，車輛最多 2 段。到路口可以換方向，按 E 沿原路線繼續。",
+      "fragment": true
+    },
+    {
+      "en": "Asphalt Road",
+      "zhHans": "柏油路",
+      "zhHant": "柏油路",
+      "fragment": true
+    },
+    {
+      "en": "Gravel Shortcut",
+      "zhHans": "碎石近路",
+      "zhHant": "碎石近路",
+      "fragment": true
+    },
+    {
+      "en": "Foggy Forest",
+      "zhHans": "雾林小径",
+      "zhHant": "霧林小徑",
+      "fragment": true
+    },
+    {
+      "en": "River Crossing",
+      "zhHans": "涉水路段",
+      "zhHant": "涉水路段",
+      "fragment": true
+    },
+    {
+      "en": "Storm Road",
+      "zhHans": "风雨路段",
+      "zhHant": "風雨路段",
+      "fragment": true
+    },
+    {
+      "en": "Children in all sorts of costumes stop Goolie. \"Trick or treat!\"",
+      "zhHans": "一群穿着各式装扮的小孩拦住了 Goolie：“不给糖，就捣蛋！”",
+      "zhHant": "一群穿著各式裝扮的小孩攔住了 Goolie：“不給糖，就搗蛋！”",
+      "fragment": true
+    },
+    {
+      "en": "A skeleton dog wants some candy too. Goolie needs to find a treat it can safely eat.",
+      "zhHans": "骷髅小狗也想吃糖。Goolie 得找点它能放心吃的零食才行。",
+      "zhHant": "骷髏小狗也想吃糖。Goolie 得找點它能放心吃的零食才行。",
+      "fragment": true
+    },
+    {
+      "en": "Teenagers in white bedsheets rush over with a selfie stick. \"Wow! This hologram ghost looks so real!\"",
+      "zhHans": "几个披着白床单的年轻人举着自拍杆围过来：“哇，这个全息幽灵也太真了吧！”",
+      "zhHant": "幾個披著白床單的年輕人舉著自拍桿圍過來：“哇，這個全息幽靈也太真了吧！”",
+      "fragment": true
+    },
+    {
+      "en": "A lost bat is splashed by a geyser and crashes, dizzy, into Goolie's postal cap.",
+      "zhHans": "一只迷路的小蝙蝠被热泉溅了一身，晕头转向地撞进了 Goolie 的邮差帽。",
+      "zhHant": "一隻迷路的小蝙蝠被熱泉濺了一身，暈頭轉向地撞進了 Goolie 的郵差帽。",
+      "fragment": true
+    },
+    {
+      "en": "A Halloween parade blocks the road ahead.",
+      "zhHans": "万圣夜的巡游队伍把前面的路堵住了。",
+      "zhHant": "萬聖夜的巡遊隊伍把前面的路堵住了。",
+      "fragment": true
+    },
+    {
+      "en": "A geyser erupts across the path ahead.",
+      "zhHans": "前方的热泉突然喷发，挡住了去路。",
+      "zhHant": "前方的熱泉突然噴發，擋住了去路。",
+      "fragment": true
+    },
+    {
+      "en": "A sudden bank of thick fog swallows the road.",
+      "zhHans": "浓雾一下子涌上来，整条路都看不清了。",
+      "zhHant": "濃霧一下子湧上來，整條路都看不清了。",
+      "fragment": true
+    },
+    {
+      "en": "Two human kids in cheap werewolf masks sweep the junction with bright flashlights on a ghost hunt.",
+      "zhHans": "两个戴着廉价狼人面具的人类小孩，正拿手电筒在路口照来照去，说要捉鬼呢。",
+      "zhHant": "兩個戴著廉價狼人面具的人類小孩，正拿手電筒在路口照來照去，說要捉鬼呢。",
+      "fragment": true
+    },
+    {
+      "en": "Geothermal heat loosens the frozen hillside. Warm mud and dead trees slide down and block the road.",
+      "zhHans": "地热把冻土烘松了，温热的泥巴裹着枯树滑下山坡，堵住了路。",
+      "zhHant": "地熱把凍土烘松了，溫熱的泥巴裹著枯樹滑下山坡，堵住了路。",
+      "fragment": true
+    },
+    {
+      "en": "A sudden gust nearly blows the little ghost away!",
+      "zhHans": "一阵大风，差点把小幽灵吹跑啦！",
+      "zhHant": "一陣大風，差點把小幽靈吹跑啦！",
+      "fragment": true
+    },
+    {
+      "en": "A geyser suddenly blasts scalding steam. The heat leaves light-as-air Goolie unable to keep their eyes open.",
+      "zhHans": "热泉突然喷出滚烫的蒸汽。Goolie 轻飘飘的，热得连眼睛都睁不开了。",
+      "zhHant": "熱泉突然噴出滾燙的蒸汽。Goolie 輕飄飄的，熱得連眼睛都睜不開了。",
+      "fragment": true
+    },
+    {
+      "en": "A parade float turns into the street. Confetti and camera flashes rush straight at Goolie.",
+      "zhHans": "巡游花车拐进了这条街，彩纸和相机闪光一齐朝 Goolie 涌来。",
+      "zhHant": "巡遊花車拐進了這條街，彩紙和相機閃光一齊朝 Goolie 湧來。",
+      "fragment": true
+    },
+    {
+      "en": "Dear Goolie, The hot springs around Ashpine Vale have been erupting way too often lately. This old ghost really can't take the heat anymore, so I'm heading up the snow peak to cool off for a while. I'm leaving this Halloween in your hands—hang in there, little ghost!",
+      "zhHans": "Dear Goolie\n\n苍松谷最近的热泉喷发越来越频繁啦，我这个老幽灵有点受不住了，得去雪山上休息一段时间。这次的万圣节就交给你吧，加油吧小幽灵",
+      "zhHant": "Dear Goolie\n\n蒼松谷最近的熱泉噴發越來越頻繁啦，我這個老幽靈有點受不住了，得去雪山上休息一段時間。這次的萬聖節就交給你吧，加油吧小幽靈",
+      "fragment": false
+    },
+    {
+      "en": "\"Wait, I only got transferred to the Ashpine Vale station a week ago! What am I supposed to do?!\"",
+      "zhHans": "可是我才刚刚到苍松谷快递站一周诶，这可怎么办",
+      "zhHant": "可是我才剛剛到蒼松谷快遞站一周誒，這可怎麼辦",
+      "fragment": false
+    },
+    {
+      "en": "The rookie courier ghost stares at their postman cap and lets out a helpless sigh.",
+      "zhHans": "新人快递幽灵看了看自己的邮差帽，不由得叹气",
+      "zhHant": "新人快遞幽靈看了看自己的郵差帽，不由得嘆氣",
+      "fragment": false
+    },
+    {
+      "en": "\"I've never worked a Halloween shift before! All the seniors say it's the biggest night of the year for the Shadow Society. It's the only night humans can actually see us, AND we have to strictly follow the Code of Silence so we don't blow our cover... Talk about tough! Plus, there are way too many humans wandering around town tonight—even kids running down the street in short sleeves and plastic capes... Ugh, whatever! Time to hit the road!\"",
+      "zhHans": "我从来没有经历过万圣节，前辈都说这是暗影社会的大事件，这是人类唯一能看到我们的机会，还得遵守缄默法则，不被人类发现，这可真难！而且今晚镇上晃荡的人类好像格外多，连穿短袖套塑料披风的小孩都在街上跑……不管了，先出发吧！",
+      "zhHant": "我從來沒有經歷過萬聖節，前輩都說這是暗影社會的大事件，這是人類唯一能看到我們的機會，還得遵守緘默法則，不被人類發現，這可真難！而且今晚鎮上晃蕩的人類好像格外多，連穿短袖套塑料披風的小孩都在街上跑……不管了，先出發吧！",
+      "fragment": false
+    },
+    {
+      "en": "(Tilts her head toward Goolie, whispering) \"...Thank you.\"",
+      "zhHans": "（歪头看向Goolie&小声）……谢谢",
+      "zhHant": "（歪頭看向Goolie&小聲）……謝謝",
+      "fragment": false
+    },
+    {
+      "en": "\"You're very welcome! Say, why is it dripping so much inside this mountain tunnel? Even the gravel under the railroad ties is pooling with water!\"",
+      "zhHans": "不客气！不过这穿山隧道里怎么滴答滴答的，连铁轨枕木底下都积水啦？",
+      "zhHant": "不客氣！不過這穿山隧道里怎麼滴答滴答的，連鐵軌枕木底下都積水啦？",
+      "fragment": false
+    },
+    {
+      "en": "(Gently rubs her damp violin bow with her fingertips, lowering her crimson eyes) \"...The rock walls keep seeping water lately. My strings got slippery... A little rosin... will fix it.\"",
+      "zhHans": "（用指尖轻轻蹭了蹭有些发潮的琴弓，垂下红眼睛低声说）……最近岩壁总在渗水，弦有点滑。擦了松香……就好了。",
+      "zhHant": "（用指尖輕輕蹭了蹭有些發潮的琴弓，垂下紅眼睛低聲說）……最近岩壁總在滲水，弦有點滑。擦了松香……就好了。",
+      "fragment": false
+    },
+    {
+      "en": "\"Oh, I see! Well, thank you for using Ghost Express! Hope to serve you again soon—bye now!\"",
+      "zhHans": "原来是这样，也谢谢你对幽灵快递的支持，希望以后继续选择我们，再见！",
+      "zhHant": "原來是這樣，也謝謝你對幽靈快遞的支持，希望以後繼續選擇我們，再見！",
+      "fragment": false
+    },
+    {
+      "en": "(Says nothing, simply holding out a cassette tape with both hands.)",
+      "zhHans": "（不说话，只是递过录音带）",
+      "zhHant": "（不說話，只是遞過錄音帶）",
+      "fragment": false
+    },
+    {
+      "en": "\"Got it, got it! This must be the tape Miss Vampire asked for. The boss told me you're debuting a new song at tomorrow's party—I'm so curious! Thank you for everything you do for Ashpine Vale's night community!\"",
+      "zhHans": "好的好的，这是Vampire姐姐需要的录音带吧。听店长说，明天的party会有你的新歌，我太好奇了，谢谢你为苍松谷暗夜社会作出的贡献！",
+      "zhHant": "好的好的，這是Vampire姐姐需要的錄音帶吧。聽店長說，明天的party會有你的新歌，我太好奇了，謝謝你為蒼松谷暗夜社會作出的貢獻！",
+      "fragment": false
+    },
+    {
+      "en": "(The tips of her ears twitch slightly as she offers a shy smile.)",
+      "zhHans": "（耳朵尖微微动了一下，微笑。）",
+      "zhHant": "（耳朵尖微微動了一下，微笑。）",
+      "fragment": false
+    },
+    {
+      "en": "\"I'll leave you to your practice then. Bye, Miss Artist!\"",
+      "zhHans": "那我不打扰你练琴啦，艺术家再见！",
+      "zhHant": "那我不打擾你練琴啦，藝術家再見！",
+      "fragment": false
+    },
+    {
+      "en": "\"Right on time! Here's the block of rosin for our great artist, Miss Drow. Give her my best, will ya?\"",
+      "zhHans": "来得正好！这是我们的伟大艺术家，Miss.Drow的松香块，请代我向她问好",
+      "zhHant": "來得正好！這是我們的偉大藝術家，Miss.Drow的松香塊，請代我向她問好",
+      "fragment": false
+    },
+    {
+      "en": "\"I heard she plays the violin! Rosin is used for maintaining the bow, right?\"",
+      "zhHans": "我听说这位艺术家会拉小提琴，松香是用于养护小提琴的吧",
+      "zhHant": "我聽說這位藝術家會拉小提琴，松香是用於養護小提琴的吧",
+      "fragment": false
+    },
+    {
+      "en": "\"Aren't you a sharp little ghost! Catch ya later!\"",
+      "zhHans": "真是位博学的小幽灵，回见！",
+      "zhHant": "真是位博學的小幽靈，回見！",
+      "fragment": false
+    },
+    {
+      "en": "\"Oh, Goolie! That rich, fresh scent of blood—must be Miss Vampire's signature Spicy Blood Stew, huh?\"",
+      "zhHans": "哦，Goolie，这新鲜的血的气息，想必是Vampire女士的拿手好菜毛血旺吧",
+      "zhHant": "哦，Goolie，這新鮮的血的氣息，想必是Vampire女士的拿手好菜毛血旺吧",
+      "fragment": false
+    },
+    {
+      "en": "\"Yep! Still piping hot. Ghost Express never lets you down!\"",
+      "zhHans": "是的，还是滚烫的，幽灵快递您放心！",
+      "zhHant": "是的，還是滾燙的，幽靈快遞您放心！",
+      "fragment": false
+    },
+    {
+      "en": "\"Awesome! I spent the whole day chasing off human brats who wandered into the woods just 'cause the weather's warm—my bones are practically falling apart. I really can't stand dealing with humans; no idea how Witch puts up with 'em. Still, getting a bite of this on a chaotic Halloween Eve instantly turns my mood around!\"",
+      "zhHans": "太棒了，今天我在林子里撵了一整天趁着天暖和乱跑的人类小孩，骨头都快散架了。我是真不爱跟人类打交道，不知道女巫怎么忍受的了。不过万圣夜这种糟心时间能吃上这一口，心情瞬间好起来了！",
+      "zhHant": "太棒了，今天我在林子里攆了一整天趁著天暖和亂跑的人類小孩，骨頭都快散架了。我是真不愛跟人類打交道，不知道女巫怎麼忍受的了。不過萬聖夜這種糟心時間能吃上這一口，心情瞬間好起來了！",
+      "fragment": false
+    },
+    {
+      "en": "\"These jars of Ashpine autumn honey are for Little Bear. Normally this time of year, the bees only gather honeydew seeping from the pines, but lately some wild roses have been blooming out of season. Didn't feel like using 'em for honey, so I boiled 'em into jam for Grandma Jiangshi to bake flower cakes. We've got a party to throw tomorrow, after all!\"",
+      "zhHans": "这些是给小熊的灰松秋蜜，本来这个季节的蜜蜂只能找到灰松上渗出的甘露酿蜜，可是最近还有一些反季重开的玫瑰花。不过我没打算用来酿蜜，还是熬成酱交给 Jiangshi 老太太做鲜花饼吃吧，毕竟明天我们要开派对了",
+      "zhHant": "這些是給小熊的灰松秋蜜，本來這個季節的蜜蜂只能找到灰松上滲出的甘露釀蜜，可是最近還有一些反季重開的玫瑰花。不過我沒打算用來釀蜜，還是熬成醬交給 Jiangshi 老太太做鮮花餅吃吧，畢竟明天我們要開派對了",
+      "fragment": false
+    },
+    {
+      "en": "\"Totally agree! I heard about Mrs. Jiangshi's rose pastries even before I moved to Ashpine Vale. I'd love to try one!\"",
+      "zhHans": "我赞同，我还没来灰松谷就听说过IJ太太的鲜花饼呢，真想试一试呀。",
+      "zhHant": "我贊同，我還沒來灰松谷就聽說過IJ太太的鮮花餅呢，真想試一試呀。",
+      "fragment": false
+    },
+    {
+      "en": "\"That old lady's got magic hands in the kitchen. Eat your fill tomorrow!\"",
+      "zhHans": "那老太太手艺好着呢，明天尽情享受吧！",
+      "zhHant": "那老太太手藝好著呢，明天盡情享受吧！",
+      "fragment": false
+    },
+    {
+      "en": "\"Hello there, little ghost. This is a light spring mead I started brewing back in April and May, aged right up until now. Could you please take it to Miss Witch for me?\"",
+      "zhHans": "你好呀小幽灵，这些是今年四五月春天就开始酿造、一直陈酿到现在的轻度蜂蜜酒，请你帮我送给女巫女士。",
+      "zhHant": "你好呀小幽靈，這些是今年四五月春天就開始釀造、一直陳釀到現在的輕度蜂蜜酒，請你幫我送給女巫女士。",
+      "fragment": false
+    },
+    {
+      "en": "\"Hi, Little Bear! Wow, this mead looks so golden and bright—even the water droplets on the bottles are glowing!\"",
+      "zhHans": "小熊你好，这些酒看起来像金灿灿的，连瓶身上的水珠都在发光呢",
+      "zhHant": "小熊你好，這些酒看起來像金燦燦的，連瓶身上的水珠都在發光呢",
+      "fragment": false
+    },
+    {
+      "en": "\"Mhm! Spring honey comes from wildflowers, while autumn honey comes from pine honeydew, which looks more like deep amber. Though... usually the cellar is nice and chilly by late October, just right for storing wine. This year, I had to push all the barrels into the deepest corner just to keep them cool.\"",
+      "zhHans": "对哦，春蜜一般是花蜜，而秋蜜是松树甘露蜜，会更像琥珀一些。说起来，往年这时候地窖里冷飕飕的正好存酒，今年我却得把酒桶挪到最深处的墙角才行呢。",
+      "zhHant": "對哦，春蜜一般是花蜜，而秋蜜是松樹甘露蜜，會更像琥珀一些。說起來，往年這時候地窖里冷颼颼的正好存酒，今年我卻得把酒桶挪到最深處的牆角才行呢。",
+      "fragment": false
+    },
+    {
+      "en": "\"Thanks for your hard work! I'll deliver them safe and sound. Have fun tomorrow!\"",
+      "zhHans": "辛苦你啦，我一定稳稳当当地送到，祝你明天玩得开心！",
+      "zhHant": "辛苦你啦，我一定穩穩當當地送到，祝你明天玩得開心！",
+      "fragment": false
+    },
+    {
+      "en": "\"Look! Big Sis Wolfwoman sent over this autumn honey—it smells so fresh and piney! She also said it's gotten so warm that flowers are blooming out of season, and asked me to bring some flower jam to Mrs. Jiangshi.\"",
+      "zhHans": "请看，这些是狼人姐姐给的秋蜜，闻起来很清新呢。她还说，现在太热了，已经有反季花盛开了，托我给 Jiangshi 太太送过去。",
+      "zhHant": "請看，這些是狼人姐姐給的秋蜜，聞起來很清新呢。她還說，現在太熱了，已經有反季花盛開了，托我給 Jiangshi 太太送過去。",
+      "fragment": false
+    },
+    {
+      "en": "(Hugs the honey jar tightly, letting out a tiny yawn before rubbing her eyes) \"No wonder I've been hearing water trickling underneath the cellar floor these past few days... Even the soil feels warm.\"",
+      "zhHans": "（抱紧蜜罐，打了个小小的哈欠却又揉了揉眼睛）难怪这两天总听到地窖底下有淅淅沥沥的流水声，连土都是温的。",
+      "zhHant": "（抱緊蜜罐，打了個小小的哈欠卻又揉了揉眼睛）難怪這兩天總聽到地窖底下有淅淅瀝瀝的流水聲，連土都是溫的。",
+      "fragment": false
+    },
+    {
+      "en": "\"Huh? Is that gonna mess with your hibernation?\"",
+      "zhHans": "诶？那会影响你冬眠吗？",
+      "zhHant": "誒？那會影響你冬眠嗎？",
+      "fragment": false
+    },
+    {
+      "en": "\"Yeah... It's definitely going to be a warm winter this year. I think I'm going to have insomnia.\"",
+      "zhHans": "会呀……今年一定会有个暖冬，我可能要失眠了。",
+      "zhHant": "會呀……今年一定會有個暖冬，我可能要失眠了。",
+      "fragment": false
+    },
+    {
+      "en": "(Pops the cassette into the deck for a quick listen, her fingers tapping the desk to the melody) \"Hmm, I can feel the emotion pouring through this track. Miss Drow must have woven the sound of melting glaciers into the melody—it's so ethereal and lovely. She truly has a gift for storytelling through music; even before we met, she was recording the sights and sounds of all the places she wandered... Little ghost, our ears are in for a real treat at the party.\"",
+      "zhHans": "（将磁带放进机器试听了一下，手指随着旋律轻敲桌面）我大概能领会到这首曲子的感情，Drow 小姐肯定融入了冰川融水的声音，这实在是空灵而美妙。她真的很擅长用音乐讲故事呢，在我认识她以前，她就用音乐记录过许多地方的风物……小幽灵，这次派对要大饱耳福啦。",
+      "zhHant": "（將磁帶放進機器試聽了一下，手指隨著旋律輕敲桌面）我大概能領會到這首曲子的感情，Drow 小姐肯定融入了冰川融水的聲音，這實在是空靈而美妙。她真的很擅長用音樂講故事呢，在我認識她以前，她就用音樂記錄過許多地方的風物……小幽靈，這次派對要大飽耳福啦。",
+      "fragment": false
+    },
+    {
+      "en": "\"Hooray! I can't wait!\"",
+      "zhHans": "太好了！真期待呢",
+      "zhHant": "太好了！真期待呢",
+      "fragment": false
+    },
+    {
+      "en": "\"Miss Vampire, here's the cooling unit and the fresh livestock blood you asked Miss Witch to pick up.\"",
+      "zhHans": "Vampire女士，这是您托Witch女士购买的散热装置还有禽畜的新鲜血液。",
+      "zhHant": "Vampire女士，這是您托Witch女士購買的散熱裝置還有禽畜的新鮮血液。",
+      "fragment": false
+    },
+    {
+      "en": "\"Always so conscientious, little ghost! My old radiator suddenly overloaded and quit while I was testing the gear earlier, forcing my late-night broadcast off the air. Now I can finally get the studio back to a comfortable temperature.\" (She leans in and plants a gentle kiss on the little ghost's cheek.)",
+      "zhHans": "真是尽职呢小幽灵！刚才调试设备的时候，老散热器突然过载罢工，害得我的夜间电台都停播了，这下又可以恢复到舒适的温度啦。（说完亲了小幽灵一口。）",
+      "zhHant": "真是盡職呢小幽靈！剛才調試設備的時候，老散熱器突然過載罷工，害得我的夜間電台都停播了，這下又可以恢復到舒適的溫度啦。（說完親了小幽靈一口。）",
+      "fragment": false
+    },
+    {
+      "en": "(Instantly turns bright pink) \"W-Whoa! Miss Vampire... please don't tease me!\"",
+      "zhHans": "（一下子脸红）Vampire女士……不要戏弄我啦",
+      "zhHant": "（一下子臉紅）Vampire女士……不要戲弄我啦",
+      "fragment": false
+    },
+    {
+      "en": "\"Here you go, darling—a fresh batch of Spicy Blood Stew I just whipped up. Hurry and take it to Sister Wolfwoman before the studio cools down; she must be starving after patrolling the woods all day.\"",
+      "zhHans": "喏，这是我刚刚做好的毛血旺哟，趁着播音室里还没凉下来，小幽灵快去送给狼人姐姐吃吧，她巡林肯定饿坏了。",
+      "zhHant": "喏，這是我剛剛做好的毛血旺喲，趁著播音室里還沒涼下來，小幽靈快去送給狼人姐姐吃吧，她巡林肯定餓壞了。",
+      "fragment": false
+    },
+    {
+      "en": "\"Mission accepted!\"",
+      "zhHans": "使命必达！",
+      "zhHant": "使命必達！",
+      "fragment": false
+    },
+    {
+      "en": "(Takes the jar and gives it a sniff, her eyes crinkling into a warm smile) \"Oh my? Out-of-season roses? I've lived here for over a century, and I've never seen anything like it. It keeps getting warmer and warmer... When I got up this evening for my skincare routine and looked up at the peaks, even the snowcap had shrunk...\"",
+      "zhHans": "（接过罐子闻了闻，眯起眼睛笑起来）哦？反季花，我在这里生活上百年了，以前哪有这样的事哦。现在越来越暖和了，我傍晚起来做保养的时候往山上看，连雪山的雪顶都变少了……",
+      "zhHant": "（接過罐子聞了聞，眯起眼睛笑起來）哦？反季花，我在這裡生活上百年了，以前哪有這樣的事哦。現在越來越暖和了，我傍晚起來做保養的時候往山上看，連雪山的雪頂都變少了……",
+      "fragment": false
+    },
+    {
+      "en": "\"Oh no, what are we gonna do?\"",
+      "zhHans": "那可怎么办呀",
+      "zhHant": "那可怎麼辦呀",
+      "fragment": false
+    },
+    {
+      "en": "\"Who knows, maybe this whole valley will flood one day... My room full of antiques certainly can't handle a soaking, and I'd hate to leave this place behind. Come, lend an old lady a hand lighting the stove—I'll bake a fresh batch of flower cakes tonight!\"",
+      "zhHans": "说不定以后这片山谷会被淹没……我这一屋子的老古董可经不起泡水，真是舍不得这里呀。来，帮我搭把手生个炉子，老太太我今晚就把鲜花饼烤出来！",
+      "zhHant": "說不定以後這片山谷會被淹沒……我這一屋子的老古董可經不起泡水，真是捨不得這裡呀。來，幫我搭把手生個爐子，老太太我今晚就把鮮花餅烤出來！",
+      "fragment": false
+    },
+    {
+      "en": "\"You're such a sweetheart, little ghost—you've saved these old bones of mine! The whole reason I settled down in these museum ruins was for the leftover climate-control machines; the temperature and humidity suited me wonderfully. Alas, dampness keeps seeping up between the floor tiles lately, and the old machines just can't keep up. It's even muggier than when I crossed the ocean all those years ago! I have to slather on two extra layers of desiccant like body lotion during my daily routine!\"",
+      "zhHans": "你真是个贴心的小幽灵，拯救了我这把老骨头。我当年选择住在博物馆遗迹里，就是因为这里还有剩余的环境调节器，温度和湿度都很适合我。可惜最近地砖缝里总往外返潮气，老机器也不中用啦，简直比我以前远渡重洋的时候还潮呢，我每天做日常护理都得把防潮剂当身体乳往身上多刷两层呢！",
+      "zhHant": "你真是個貼心的小幽靈，拯救了我這把老骨頭。我當年選擇住在博物館遺跡里，就是因為這裡還有剩餘的環境調節器，溫度和濕度都很適合我。可惜最近地磚縫里總往外返潮氣，老機器也不中用啦，簡直比我以前遠渡重洋的時候還潮呢，我每天做日常護理都得把防潮劑當身體乳往身上多刷兩層呢！",
+      "fragment": false
+    },
+    {
+      "en": "\"Mrs. Jiangshi, will you keep living here in the future?\"",
+      "zhHans": "IJ太太，您以后会继续住在这里吗",
+      "zhHant": "IJ太太，您以後會繼續住在這裡嗎",
+      "fragment": false
+    },
+    {
+      "en": "\"Hard to say, dear. Maybe I'll pack up and move further north? This endless warming certainly doesn't bode well for us.\"",
+      "zhHans": "我可说不好，或许迁去更北的地方？这样的持续变暖可真不是好事呀。",
+      "zhHant": "我可說不好，或許遷去更北的地方？這樣的持續變暖可真不是好事呀。",
+      "fragment": false
+    },
+    {
+      "en": "\"Hello, Miss Witch! Here's the mead sent over by Little Bear.\"",
+      "zhHans": "Witch女士您好，这是小熊送来的蜜酒。",
+      "zhHant": "Witch女士您好，這是小熊送來的蜜酒。",
+      "fragment": false
+    },
+    {
+      "en": "\"Just looking at this mead, I can almost see spring blossoms blanketing the woods and smell the rich aroma of wildflowers. Good wine truly is a journal of the seasons.\"",
+      "zhHans": "只是看着这些蜜酒，我仿佛能看到春花开遍森林，嗅到馥郁的花草香，这些酒是季节的记事本。",
+      "zhHant": "只是看著這些蜜酒，我彷彿能看到春花開遍森林，嗅到馥郁的花草香，這些酒是季節的記事本。",
+      "fragment": false
+    },
+    {
+      "en": "\"Wow, Miss Witch, you talk just like a poet!\"",
+      "zhHans": "Witch女士您实在是太有文化了",
+      "zhHant": "Witch女士您實在是太有文化了",
+      "fragment": false
+    },
+    {
+      "en": "(Chuckles softly) \"Perhaps that's what happens when you live among humans for so long.\"",
+      "zhHans": "（咯咯笑）或许因为我一直和人类生活在一起吧",
+      "zhHant": "（咯咯笑）或許因為我一直和人類生活在一起吧",
+      "fragment": false
+    },
+    {
+      "en": "\"Tuck this away safely, dear—it's the moisture absorber for Mrs. Jiangshi. I heard groundwater has started seeping into her basement. I do hope she's holding up alright.\"",
+      "zhHans": "收好哦，这是给IJ太太的防潮剂。听说她那里地下水渗入地下室了，希望她一切平安",
+      "zhHant": "收好哦，這是給IJ太太的防潮劑。聽說她那裡地下水滲入地下室了，希望她一切平安",
+      "fragment": false
+    },
+    {
+      "en": "\"Got it, ma'am!\"",
+      "zhHans": "好的女士",
+      "zhHant": "好的女士",
+      "fragment": false
+    },
+    {
+      "en": "\"And here's the cooling repair kit for Miss Vampire. I truly cannot picture such an elegant lady rolling up her sleeves to fix heavy machinery... Plus some fresh livestock blood—tell her to enjoy her meal.\"",
+      "zhHans": "这些是给Vampire女士的维修装置，我无法想象她这样的优雅鬼士是如何维修那些大型机械的；还有这些禽畜血，祝她吃得开心",
+      "zhHant": "這些是給Vampire女士的維修裝置，我無法想象她這樣的優雅鬼士是如何維修那些大型機械的；還有這些禽畜血，祝她吃得開心",
+      "fragment": false
+    },
+    {
+      "en": "\"I'm sure Big Sis Vampire will handle it without a hitch!\"",
+      "zhHans": "我相信Vampire大姐姐肯定可以完美解决的。",
+      "zhHant": "我相信Vampire大姐姐肯定可以完美解決的。",
+      "fragment": false
+    },
+    {
+      "en": "The human parade has finally come to an end—now, the real holiday for monsters begins. With music playing and mead flowing, though the folks of Ashpine Vale may one day part ways, right here, right now, we are together. As for tomorrow, tomorrow is another night.",
+      "zhHans": "人类的巡游终于落幕，接下来，就是属于鬼怪们的节日了。有音乐，有蜜酒，苍松谷的大家或许有一天会各奔东西，但此时此刻，我们在一起。至于明天，明天又是一个夜晚。",
+      "zhHant": "人類的巡遊終於落幕，接下來，就是屬於鬼怪們的節日了。有音樂，有蜜酒，蒼松谷的大家或許有一天會各奔東西，但此時此刻，我們在一起。至於明天，明天又是一個夜晚。",
+      "fragment": false
+    },
+    {
+      "en": "Safe route  |  Switch to fastest",
+      "zhHans": "稳妥路线  |  切换最快路线",
+      "zhHant": "穩妥路線  |  切換最快路線",
+      "fragment": true
+    },
+    {
+      "en": "Fastest route  |  Switch to safe",
+      "zhHans": "最快路线  |  切换稳妥路线",
+      "zhHant": "最快路線  |  切換穩妥路線",
+      "fragment": true
+    },
+    {
+      "en": "Keep cool · heatproof vehicle H",
+      "zhHans": "怕热，使用 H 隔热车保护",
+      "zhHant": "怕熱，使用 H 隔熱車保護",
+      "fragment": true
+    },
+    {
+      "en": "Damaged · delivery failed, but still accepted. Damage cannot be repaired.",
+      "zhHans": "包裹破损，无法修复，但仍可交给收件人。",
+      "zhHant": "包裹破損，無法修復，但仍可交給收件人。",
+      "fragment": true
+    },
+    {
+      "en": "On board · visit the recipient to deliver",
+      "zhHans": "已装车，请前往收件人处交件",
+      "zhHant": "已裝車，請前往收件人處交件",
+      "fragment": true
+    },
+    {
+      "en": "Accept orders after arrival",
+      "zhHans": "到站后可以取件",
+      "zhHant": "到站後可以取件",
+      "fragment": true
+    },
+    {
+      "en": "Collect this batch at ",
+      "zhHans": "在这里取件：",
+      "zhHant": "在這裡取件：",
+      "fragment": true
+    },
+    {
+      "en": "Collect together: ",
+      "zhHans": "一起取件：",
+      "zhHant": "一起取件：",
+      "fragment": true
+    },
+    {
+      "en": ". Click or drag into On Board.",
+      "zhHans": "。点击或拖进「已装车」。",
+      "zhHant": "。點擊或拖進「已裝車」。",
+      "fragment": true
+    },
+    {
+      "en": "Facilities & junctions",
+      "zhHans": "设施与路口",
+      "zhHant": "設施與路口",
+      "fragment": true
+    },
+    {
+      "en": "S · Parcel depot",
+      "zhHans": "S 快递站",
+      "zhHant": "S 快遞站",
+      "fragment": true
+    },
+    {
+      "en": "1a, 1b… · Road junction",
+      "zhHans": "1a、1b 等标记代表路口",
+      "zhHant": "1a、1b 等標記代表路口",
+      "fragment": true
+    },
+    {
+      "en": "<  Retreat event",
+      "zhHans": "<  退回事件",
+      "zhHant": "<  退回事件",
+      "fragment": true
+    },
+    {
+      "en": "Map legend",
+      "zhHans": "地图图例",
+      "zhHant": "地圖圖例",
+      "fragment": true
+    },
+    {
+      "en": "MAP LEGEND",
+      "zhHans": "地图图例",
+      "zhHant": "地圖圖例",
+      "fragment": true
+    },
+    {
+      "en": "Delivery stops · collect / deliver / talk",
+      "zhHans": "送件地点，可取件、交件或交谈",
+      "zhHant": "送件地點，可取件、交件或交談",
+      "fragment": true
+    },
+    {
+      "en": "H · Heat shield",
+      "zhHans": "H 隔热",
+      "zhHant": "H 隔熱",
+      "fragment": true
+    },
+    {
+      "en": "W · Waterproof",
+      "zhHans": "W 防水",
+      "zhHant": "W 防水",
+      "fragment": true
+    },
+    {
+      "en": "Q · Suspension",
+      "zhHans": "Q 避震",
+      "zhHant": "Q 避震",
+      "fragment": true
+    },
+    {
+      "en": "Swap · +1 turn",
+      "zhHans": "换车，+1 回合",
+      "zhHant": "換車，+1 回合",
+      "fragment": true
+    },
+    {
+      "en": "Wait event",
+      "zhHans": "等候事件",
+      "zhHant": "等候事件",
+      "fragment": true
+    },
+    {
+      "en": "Retreat event",
+      "zhHans": "退回事件",
+      "zhHant": "退回事件",
+      "fragment": true
+    },
+    {
+      "en": "Click vehicle to plan a route",
+      "zhHans": "点击车辆规划路线",
+      "zhHant": "點擊車輛規劃路線",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle unavailable at this stop",
+      "zhHans": "此处暂无可用车辆",
+      "zhHant": "此處暫無可用車輛",
+      "fragment": true
+    },
+    {
+      "en": "No vehicle available",
+      "zhHans": "这里没有车辆",
+      "zhHant": "這裡沒有車輛",
+      "fragment": true
+    },
+    {
+      "en": "Exchange at H, W or Q: +1 order turn; fresh 5 vehicle turns",
+      "zhHans": "在 H、W 或 Q 站换车：加 1 订单回合，新车可用 5 回合",
+      "zhHant": "在 H、W 或 Q 站換車：加 1 訂單回合，新車可用 5 回合",
+      "fragment": true
+    },
+    {
+      "en": "All order batches can be carried. ",
+      "zhHans": "所有订单都能一起带走。",
+      "zhHant": "所有訂單都能一起帶走。",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle turns ",
+      "zhHans": "车辆回合 ",
+      "zhHant": "車輛回合 ",
+      "fragment": true
+    },
+    {
+      "en": "Possessed",
+      "zhHans": "附身成功",
+      "zhHant": "附身成功",
+      "fragment": true
+    },
+    {
+      "en": "Repaired",
+      "zhHans": "修理完成",
+      "zhHant": "修理完成",
+      "fragment": true
+    },
+    {
+      "en": "Halloween Eve. Choose an order at its sender and plan your route.",
+      "zhHans": "万圣夜送件开始。到寄件人处接单，再规划路线。",
+      "zhHant": "萬聖夜送件開始。到寄件人處接單，再規劃路線。",
+      "fragment": true
+    },
+    {
+      "en": "Orders available here. Open Orders [Tab] to choose a batch.",
+      "zhHans": "这里有待取包裹，按 Tab 选一单。",
+      "zhHant": "這裡有待取包裹，按 Tab 選一單。",
+      "fragment": true
+    },
+    {
+      "en": "Choose any order in Orders [Tab], then visit its sender.",
+      "zhHans": "按 Tab 选一单，再去寄件人那里取件。",
+      "zhHant": "按 Tab 選一單，再去寄件人那裡取件。",
+      "fragment": true
+    },
+    {
+      "en": "Speak to the locals. The Halloween party is almost ready.",
+      "zhHans": "派对快开始了，可与居民交谈。",
+      "zhHant": "派對快開始了，可與居民交談。",
+      "fragment": true
+    },
+    {
+      "en": "Order accepted: ",
+      "zhHans": "接下订单：",
+      "zhHant": "接下訂單：",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle exchanged: ",
+      "zhHans": "已换车：",
+      "zhHant": "已換車：",
+      "fragment": true
+    },
+    {
+      "en": ". 5 vehicle turns; exchange costs 1 order turn.",
+      "zhHans": "。可用 5 车辆回合；换车消耗 1 订单回合。",
+      "zhHant": "。可用 5 車輛回合；換車消耗 1 訂單回合。",
+      "fragment": true
+    },
+    {
+      "en": "Ghost transport: all cargo can still be delivered.",
+      "zhHans": "已改为幽灵运送，可继续送件。",
+      "zhHant": "已改為幽靈運送，可繼續送件。",
+      "fragment": true
+    },
+    {
+      "en": " orders delivered. Halloween deliveries complete!",
+      "zhHans": " 单已送达，本次送件完成。",
+      "zhHant": " 單已送達，本次送件完成。",
+      "fragment": true
+    },
+    {
+      "en": "Vehicle exhausted. Continue carrying the complete order as a ghost.",
+      "zhHans": "车辆已耗尽，改为幽灵运送。",
+      "zhHant": "車輛已耗盡，改為幽靈運送。",
+      "fragment": true
+    },
+    {
+      "en": "Order delivered: ",
+      "zhHans": "订单已送到：",
+      "zhHant": "訂單已送到：",
+      "fragment": true
+    },
+    {
+      "en": "Departing for ",
+      "zhHans": "出发去",
+      "zhHant": "出發去",
+      "fragment": true
+    },
+    {
+      "en": "Target: ",
+      "zhHans": "目标：",
+      "zhHant": "目標：",
+      "fragment": true
+    },
+    {
+      "en": "Delivered ×",
+      "zhHans": "已送达 ×",
+      "zhHant": "已送達 ×",
+      "fragment": true
+    },
+    {
+      "en": " on board",
+      "zhHans": " 件已装车",
+      "zhHant": " 件已裝車",
+      "fragment": true
+    },
+    {
+      "en": "Orders available",
+      "zhHans": "可接订单",
+      "zhHant": "可接訂單",
+      "fragment": true
+    },
+    {
+      "en": " -  ",
+      "zhHans": " ",
+      "zhHant": " ",
+      "fragment": true
+    },
+    {
+      "en": "heat-sensitive",
+      "zhHans": "怕热",
+      "zhHant": "怕熱",
+      "fragment": true
+    },
+    {
+      "en": "Keep dry",
+      "zhHans": "怕水",
+      "zhHant": "怕水",
+      "fragment": true
+    },
+    {
+      "en": "Fragile",
+      "zhHans": "怕颠",
+      "zhHant": "怕顛",
+      "fragment": true
+    },
+    {
+      "en": "Free",
+      "zhHans": "免费",
+      "zhHant": "免費",
+      "fragment": true
+    },
+    {
+      "en": "Repair",
+      "zhHans": "修理",
+      "zhHant": "修理",
+      "fragment": true
+    },
+    {
+      "en": "Keep cool",
+      "zhHans": "怕热",
+      "zhHant": "怕熱",
+      "fragment": true
+    },
+    {
+      "en": "Story",
+      "zhHans": "剧情",
+      "zhHant": "劇情",
+      "fragment": true
+    },
+    {
+      "en": "Timed",
+      "zhHans": "限时",
+      "zhHant": "限時",
+      "fragment": true
+    },
+    {
+      "en": "Heavy",
+      "zhHans": "较重",
+      "zhHant": "較重",
+      "fragment": true
+    },
+    {
+      "en": " station",
+      "zhHans": "站",
+      "zhHant": "站",
+      "fragment": true
+    },
+    {
+      "en": "+1  Delay event",
+      "zhHans": "+1  等候事件",
+      "zhHant": "+1  等候事件",
+      "fragment": true
+    },
+    {
+      "en": ". Deliver to ",
+      "zhHans": "。送往",
+      "zhHant": "。送往",
+      "fragment": true
+    },
+    {
+      "en": "No active orders",
+      "zhHans": "暂无订单",
+      "zhHant": "暫無訂單",
+      "fragment": true
+    },
+    {
+      "en": "Order clock",
+      "zhHans": "订单回合",
+      "zhHant": "訂單回合",
+      "fragment": true
+    },
+    {
+      "en": "Continue",
+      "zhHans": "继续",
+      "zhHant": "繼續",
+      "fragment": true
+    },
+    {
+      "en": "Choose a Save Slot",
+      "zhHans": "选择存档位置",
+      "zhHant": "選擇存檔位置",
+      "fragment": true
+    },
+    {
+      "en": "Save Game",
+      "zhHans": "保存游戏",
+      "zhHant": "保存遊戲",
+      "fragment": true
+    },
+    {
+      "en": "Save loaded.",
+      "zhHans": "读取成功。",
+      "zhHant": "讀取成功。",
+      "fragment": true
+    },
+    {
+      "en": "Game saved.",
+      "zhHans": "保存成功。",
+      "zhHant": "保存成功。",
+      "fragment": true
+    },
+    {
+      "en": "Save failed.",
+      "zhHans": "保存失败。",
+      "zhHant": "保存失敗。",
+      "fragment": true
+    },
+    {
+      "en": "Save manager is unavailable.",
+      "zhHans": "暂时无法读取存档。",
+      "zhHant": "暫時無法讀取存檔。",
+      "fragment": true
+    },
+    {
+      "en": "Selection unavailable",
+      "zhHans": "暂时无法选择",
+      "zhHant": "暫時無法選擇",
+      "fragment": true
+    },
+    {
+      "en": "No metadata",
+      "zhHans": "没有存档信息",
+      "zhHant": "沒有存檔信息",
+      "fragment": true
+    },
+    {
+      "en": "This save is invalid. Loading will create new data.",
+      "zhHans": "这份存档无法读取，加载后会重新开始。",
+      "zhHant": "這份存檔無法讀取，加載後會重新開始。",
+      "fragment": true
+    },
+    {
+      "en": "This slot is empty.",
+      "zhHans": "这里还没有存档。",
+      "zhHant": "這裡還沒有存檔。",
+      "fragment": true
+    },
+    {
+      "en": "No save found. New data created.",
+      "zhHans": "还没有存档，已重新开始。",
+      "zhHant": "還沒有存檔，已重新開始。",
+      "fragment": true
+    },
+    {
+      "en": "Invalid save. New data created.",
+      "zhHans": "存档无法读取，已重新开始。",
+      "zhHant": "存檔無法讀取，已重新開始。",
+      "fragment": true
+    },
+    {
+      "en": "New save data created.",
+      "zhHans": "已创建新存档。",
+      "zhHant": "已創建新存檔。",
+      "fragment": true
+    },
+    {
+      "en": "Delete Save",
+      "zhHans": "删除存档",
+      "zhHant": "刪除存檔",
+      "fragment": true
+    },
+    {
+      "en": "Save deleted.",
+      "zhHans": "存档已删除。",
+      "zhHant": "存檔已刪除。",
+      "fragment": true
+    },
+    {
+      "en": "Delete failed.",
+      "zhHans": "删除失败。",
+      "zhHant": "刪除失敗。",
+      "fragment": true
+    },
+    {
+      "en": "Empty Slot",
+      "zhHans": "空存档位",
+      "zhHant": "空存檔位",
+      "fragment": true
+    },
+    {
+      "en": "Save exists",
+      "zhHans": "已有存档",
+      "zhHant": "已有存檔",
+      "fragment": true
+    },
+    {
+      "en": "Invalid save",
+      "zhHans": "存档无法读取",
+      "zhHant": "存檔無法讀取",
+      "fragment": true
+    },
+    {
+      "en": "Selected slot: ",
+      "zhHans": "所选存档：",
+      "zhHant": "所選存檔：",
+      "fragment": true
+    },
+    {
+      "en": "Slot ",
+      "zhHans": "存档 ",
+      "zhHant": "存檔 ",
+      "fragment": true
+    },
+    {
+      "en": " has a save. Overwrite it and start a new game?",
+      "zhHans": " 已有进度，要覆盖存档、重新开始吗？",
+      "zhHant": " 已有進度，要覆蓋存檔、重新開始嗎？",
+      "fragment": true
+    },
+    {
+      "en": "Delete the save in slot ",
+      "zhHans": "删除此处的存档：",
+      "zhHant": "刪除此處的存檔：",
+      "fragment": true
+    },
+    {
+      "en": "New Game",
+      "zhHans": "重新开始",
+      "zhHant": "重新開始",
+      "fragment": true
+    },
+    {
+      "en": "Name: ",
+      "zhHans": "名称：",
+      "zhHant": "名稱：",
+      "fragment": true
+    },
+    {
+      "en": "Scene: ",
+      "zhHans": "场景：",
+      "zhHant": "場景：",
+      "fragment": true
+    },
+    {
+      "en": "Saved: ",
+      "zhHans": "保存时间：",
+      "zhHant": "保存時間：",
+      "fragment": true
+    },
+    {
+      "en": "Created: ",
+      "zhHans": "创建时间：",
+      "zhHant": "創建時間：",
+      "fragment": true
+    },
+    {
+      "en": "Play time: ",
+      "zhHans": "游玩时间：",
+      "zhHant": "遊玩時間：",
+      "fragment": true
+    },
+    {
+      "en": "Empty",
+      "zhHans": "空",
+      "zhHant": "空",
+      "fragment": true
+    },
+    {
+      "en": "Invalid",
+      "zhHans": "无法读取",
+      "zhHant": "無法讀取",
+      "fragment": true
+    },
+    {
+      "en": "Click to talk",
+      "zhHans": "点击交谈",
+      "zhHant": "點擊交談",
+      "fragment": true
+    },
+    {
+      "en": "Tab: Map  /  E: Interact",
+      "zhHans": "Tab：地图 / E：互动",
+      "zhHant": "Tab：地圖 / E：互動",
+      "fragment": true
+    },
+    {
+      "en": "Finish the conversation first.",
+      "zhHans": "请先结束对话。",
+      "zhHant": "請先結束對話。",
+      "fragment": true
+    },
+    {
+      "en": "Close the guide first.",
+      "zhHans": "请先关闭指南。",
+      "zhHant": "請先關閉指南。",
+      "fragment": true
+    },
+    {
+      "en": "Visit the sender to collect this order.",
+      "zhHans": "先到寄件人那里取件。",
+      "zhHant": "先到寄件人那裡取件。",
+      "fragment": true
+    },
+    {
+      "en": "This order cannot be collected now.",
+      "zhHans": "这单暂时不能取件。",
+      "zhHant": "這單暫時不能取件。",
+      "fragment": true
+    },
+    {
+      "en": "Wait until you arrive.",
+      "zhHans": "请到站后再操作。",
+      "zhHant": "請到站後再操作。",
+      "fragment": true
+    },
+    {
+      "en": "Order turns left: ",
+      "zhHans": "剩余回合：",
+      "zhHant": "剩餘回合：",
+      "fragment": true
+    },
+    {
+      "en": "Plan Route",
+      "fragment": true,
+      "zhHans": "规划路线",
+      "zhHant": "規劃路線"
+    },
+    {
+      "en": "Depart Empty",
+      "fragment": true,
+      "zhHans": "空手出发",
+      "zhHant": "空手出發"
+    },
+    {
+      "en": "No parcels here",
+      "fragment": true,
+      "zhHans": "这里没有待取包裹",
+      "zhHant": "這裡沒有待取包裹"
+    },
+    {
+      "en": "Trunk is empty",
+      "fragment": true,
+      "zhHans": "还没装包裹",
+      "zhHant": "還沒裝包裹"
+    },
+    {
+      "en": "Loaded",
+      "fragment": true,
+      "zhHans": "已装车",
+      "zhHant": "已裝車"
+    },
+    {
+      "en": "Cargo",
+      "fragment": true,
+      "zhHans": "包裹",
+      "zhHant": "包裹"
+    },
+    {
+      "en": "Load ",
+      "fragment": true,
+      "zhHans": "装载 ",
+      "zhHant": "裝載 "
+    },
+    {
+      "en": "Full load: slower travel, increased wear",
+      "fragment": true,
+      "zhHans": "满载会降低速度并增加车辆消耗",
+      "zhHant": "滿載會降低速度並增加車輛消耗"
+    },
+    {
+      "en": "H · Heat",
+      "fragment": true,
+      "zhHans": "H 隔热",
+      "zhHant": "H 隔熱"
+    },
+    {
+      "en": "W · Water",
+      "fragment": true,
+      "zhHans": "W 防水",
+      "zhHant": "W 防水"
+    },
+    {
+      "en": "S · Depot",
+      "fragment": true,
+      "zhHans": "S 快递站",
+      "zhHant": "S 快遞站"
+    },
+    {
+      "en": "Destination Tooltip",
+      "fragment": true,
+      "zhHans": "路线详情",
+      "zhHant": "路線詳情"
+    },
+    {
+      "en": "Old pickup locked",
+      "fragment": true,
+      "zhHans": "车辆未解锁",
+      "zhHant": "車輛未解鎖"
+    },
+    {
+      "en": "Deliver the Cooling Unit from Settlement Bar to the vampire DJ.",
+      "fragment": true,
+      "zhHans": "先把酒馆的散热装置送给吸血鬼。",
+      "zhHant": "先把酒館的散熱裝置送給吸血鬼。"
+    },
+    {
+      "en": "Destination reached",
+      "fragment": true,
+      "zhHans": "到站了",
+      "zhHant": "到站了"
+    },
+    {
+      "en": "Collected ",
+      "fragment": true,
+      "zhHans": "取到包裹：",
+      "zhHant": "取到包裹："
+    },
+    {
+      "en": ": damaged by ",
+      "fragment": true,
+      "zhHans": "：损坏原因——",
+      "zhHant": "：損壞原因——"
+    },
+    {
+      "en": "All ",
+      "fragment": true,
+      "zhHans": "共 ",
+      "zhHant": "共 "
+    },
+    {
+      "en": "Vehicles",
+      "fragment": true,
+      "zhHans": "车辆",
+      "zhHant": "車輛"
+    },
+    {
+      "en": "Vehicle",
+      "fragment": true,
+      "zhHans": "车辆",
+      "zhHant": "車輛"
+    },
+    {
+      "en": "No orders",
+      "fragment": true,
+      "zhHans": "暂无订单",
+      "zhHant": "暫無訂單"
+    },
+    {
+      "en": "Route",
+      "fragment": true,
+      "zhHans": "路线",
+      "zhHant": "路線"
+    },
+    {
+      "en": "Load Game",
+      "fragment": true,
+      "zhHans": "读取存档",
+      "zhHant": "讀取存檔"
+    },
+    {
+      "en": "Save",
+      "fragment": true,
+      "zhHans": "保存",
+      "zhHant": "保存"
+    },
+    {
+      "en": "Delete",
+      "fragment": true,
+      "zhHans": "删除",
+      "zhHant": "刪除"
+    },
+    {
+      "en": "Back",
+      "fragment": true,
+      "zhHans": "返回",
+      "zhHant": "返回"
+    },
+    {
+      "en": "Close",
+      "fragment": true,
+      "zhHans": "关闭",
+      "zhHant": "關閉"
+    },
+    {
+      "en": "Remaining vehicle turns",
+      "fragment": true,
+      "zhHans": "车辆剩余回合",
+      "zhHant": "車輛剩餘回合"
+    },
+    {
+      "en": "Estimated vehicle turns consumed",
+      "fragment": true,
+      "zhHans": "预计消耗的车辆回合",
+      "zhHant": "預計消耗的車輛回合"
+    },
+    {
+      "en": "Pause game",
+      "fragment": true,
+      "zhHans": "暂停",
+      "zhHant": "暫停"
+    },
+    {
+      "en": "Keep dry - protect it during river crossings",
+      "fragment": true,
+      "zhHans": "怕水，涉水时需用 W 防水车保护",
+      "zhHant": "怕水，涉水時需用 W 防水車保護"
+    },
+    {
+      "en": "Fragile - damaged by rough roads or risky choices",
+      "fragment": true,
+      "zhHans": "易碎，经过颠簸路段时需用 Q 避震车保护",
+      "zhHant": "易碎，經過顛簸路段時需用 Q 避震車保護"
+    },
+    {
+      "en": "Exchange here: +1 order turn, fresh 5 vehicle turns.",
+      "fragment": true,
+      "zhHans": "换车：+1 订单回合，新车可用 5 回合。",
+      "zhHant": "換車：+1 訂單回合，新車可用 5 回合。"
+    },
+    {
+      "en": "Replaces the old vehicle.",
+      "fragment": true,
+      "zhHans": "会替换旧车。",
+      "zhHant": "會替換舊車。"
+    },
+    {
+      "en": "Cargo may be damaged on this route.",
+      "fragment": true,
+      "zhHans": "这条路线可能损坏包裹。",
+      "zhHant": "這條路線可能損壞包裹。"
+    },
+    {
+      "en": "Some orders will exceed their target turns.",
+      "fragment": true,
+      "zhHans": "部分订单会超过目标回合。",
+      "zhHant": "部分訂單會超過目標回合。"
+    },
+    {
+      "en": "The vehicle will expire along this route.",
+      "fragment": true,
+      "zhHans": "车辆会在途中耗尽。",
+      "zhHant": "車輛會在途中耗盡。"
+    },
+    {
+      "en": "Order turns left: {0}",
+      "zhHans": "还剩 {0} 回合",
+      "zhHant": "還剩 {0} 回合",
+      "fragment": false
+    },
+    {
+      "en": "Delete the save in slot {0}?",
+      "zhHans": "要删除第 {0} 个存档吗？",
+      "zhHant": "要刪除第 {0} 個存檔嗎？",
+      "fragment": false
+    },
+    {
+      "en": "Slot {0} has a save. Overwrite it and start a new game?",
+      "zhHans": "第 {0} 个位置已有存档，要覆盖并重新开始吗？",
+      "zhHant": "第 {0} 個位置已有存檔，要覆蓋並重新開始嗎？",
+      "fragment": false
+    },
+    {
+      "en": "Made with Unity",
+      "zhHans": "使用 Unity 制作",
+      "zhHant": "使用 Unity 製作",
+      "fragment": true
+    },
+    {
+      "en": "Thank you for playing!",
+      "zhHans": "感谢游玩！",
+      "zhHant": "感謝遊玩！",
+      "fragment": true
+    },
+    {
+      "en": "Heat",
+      "zhHans": "高温路段",
+      "zhHant": "高溫路段",
+      "fragment": true
+    },
+    {
+      "en": "Water",
+      "zhHans": "涉水路段",
+      "zhHant": "涉水路段",
+      "fragment": true
+    },
+    {
+      "en": "Bumps",
+      "zhHans": "颠簸路段",
+      "zhHant": "顛簸路段",
+      "fragment": true
+    }
+  ]
+}

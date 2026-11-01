@@ -17,7 +17,7 @@ public static class CourierCursorSmokeTest
         if (!File.Exists(Flag) || EditorApplication.isCompiling || EditorApplication.isUpdating) return;
         File.Delete(Flag); Run();
     }
-    [MenuItem("Tools/Night Courier/Checks/SVG Cursors")]
+    [MenuItem("Tools/Night Courier/Checks/Cursors")]
     public static void Run()
     {
         GameObject root = null;
@@ -58,8 +58,8 @@ public static class CourierCursorSmokeTest
             var cargoObject = new GameObject("Cargo", typeof(RectTransform), typeof(CourierCargoRow)); cargoObject.transform.SetParent(root.transform);
             Require(!cargoObject.GetComponent<CourierCargoRow>().CanDrag && !cargoObject.GetComponent<CourierCargoRow>().IsDragging, "Unbound cargo suggests dragging");
             Require(CourierCursor.Resolve(root) == CourierCursor.State.Default && CourierCursor.Resolve(null) == CourierCursor.State.Default, "Background not default");
-            File.WriteAllText(Result, "PASS: 7 SVG-derived transparent cursor textures; button and child, disabled button, CanvasGroup, hover/click hints, inactive map/cargo, background.\n");
-            Debug.Log("Courier SVG cursor checks passed.");
+            File.WriteAllText(Result, "PASS: 7 atlas-derived transparent cursor textures; button and child, disabled button, CanvasGroup, hover/click hints, inactive map/cargo, background.\n");
+            Debug.Log("Courier cursor checks passed.");
         }
         catch (Exception exception) { File.WriteAllText(Result, "FAIL: " + exception); Debug.LogException(exception); }
         finally { if (root != null) UnityEngine.Object.DestroyImmediate(root); }

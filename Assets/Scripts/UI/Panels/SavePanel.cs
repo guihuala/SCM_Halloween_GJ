@@ -167,9 +167,9 @@ public class SavePanel : BasePanel
     {
         if (titleText != null)
         {
-            titleText.text = _mode == SavePanelMode.NewGameSelection
+            NightCourier.CourierLocalization.Set(titleText, _mode == SavePanelMode.NewGameSelection
                 ? "Choose a Save Slot"
-                : "Save Game";
+                : "Save Game");
         }
 
         if (SaveManager.Instance == null)
@@ -235,7 +235,7 @@ public class SavePanel : BasePanel
     {
         if (targetText != null)
         {
-            targetText.text = content;
+            NightCourier.CourierLocalization.Set(targetText, content);
         }
     }
 

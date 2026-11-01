@@ -7,6 +7,39 @@ public class SettingPanel : BasePanel
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Button backButton;
 
+    [Header("Language — authored in SettingPanel.prefab")]
+    [SerializeField] private Button previousLanguageButton;
+    [SerializeField] private Button currentLanguageButton;
+    [SerializeField] private Button nextLanguageButton;
+    [SerializeField] private Text languageValue;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        BindExistingLanguageControls();
+        if (previousLanguageButton != null)
+            previousLanguageButton.onClick.AddListener(() => NightCourier.CourierLocalization.Cycle(-1));
+        if (currentLanguageButton != null)
+            currentLanguageButton.onClick.AddListener(() => NightCourier.CourierLocalization.Cycle(1));
+        if (nextLanguageButton != null)
+            nextLanguageButton.onClick.AddListener(() => NightCourier.CourierLocalization.Cycle(1));
+    }
+
+    // Recover references to authored controls without creating or changing the UI.
+    [ContextMenu("Bind Existing Language Controls")]
+    private void BindExistingLanguageControls()
+    {
+        var row = transform.Find("BG/LanguageSelector");
+        if (row == null) return;
+        if (previousLanguageButton == null) previousLanguageButton = row.Find("PreviousLanguage")?.GetComponent<Button>();
+        if (currentLanguageButton == null) currentLanguageButton = row.Find("CurrentLanguage")?.GetComponent<Button>();
+        if (nextLanguageButton == null) nextLanguageButton = row.Find("NextLanguage")?.GetComponent<Button>();
+        if (languageValue == null && currentLanguageButton != null)
+            languageValue = currentLanguageButton.GetComponentInChildren<Text>(true);
+    }
+
+    private void OnValidate() => BindExistingLanguageControls();
+
     private void Start()
     {
         bgmVolumeSlider.SetValueWithoutNotify(AudioManager.Instance.bgmVolumeFactor);
@@ -16,6 +49,17 @@ public class SettingPanel : BasePanel
         backButton.onClick.AddListener(Back);
         AddAudioCredits();
         bgmVolumeSlider.Select();
+    }
+
+    private void OnEnable()
+    {
+        NightCourier.CourierLocalization.Changed += RefreshLanguage;
+        RefreshLanguage();
+    }
+
+    private void RefreshLanguage()
+    {
+        if (languageValue != null) NightCourier.CourierLocalization.Set(languageValue, NightCourier.CourierLocalization.LanguageName);
     }
 
     private void AddAudioCredits()
@@ -43,5 +87,9 @@ public class SettingPanel : BasePanel
         UIManager.Instance.ClosePanel(panelName);
     }
 
-    private void OnDisable() => PlayerPrefs.Save();
+    private void OnDisable()
+    {
+        NightCourier.CourierLocalization.Changed -= RefreshLanguage;
+        PlayerPrefs.Save();
+    }
 }

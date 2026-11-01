@@ -32,9 +32,9 @@ namespace NightCourier
         protected override void Refresh()
         {
             if(cargoFeedback!=null)cargoFeedback.Observe(reducedPanelMotion);
-            capacityText.text = "Orders " + Run.CompletedBatches + " / " + Run.BatchCount;
+            NightCourier.CourierLocalization.Set(capacityText, "Orders " + Run.CompletedBatches + " / " + Run.BatchCount);
             adviceText.gameObject.SetActive(Run.Overloaded);
-            adviceText.text = "Every on-board order has its own delivery timer.";
+            NightCourier.CourierLocalization.Set(adviceText, "Every on-board order has its own delivery timer.");
             int waiting = 0, loaded = 0;
             for (int i = 0; i < rows.Count; i++)
             {

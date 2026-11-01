@@ -125,11 +125,12 @@ Orders 使用右侧竖栏，待领取与已装载上下排列；Collect parcels 
 
 菜单和游戏共用七种指针：默认箭头、可点击手指、按下、可拖拽手掌、拖拽握手、禁用标记、说明查看。地图空白可拖动时显示手掌，订单可领取时显示可拖拽状态；弹窗使用最上层命中结果，避免穿透到地图。拖拽状态跟随实际地图／订单拖拽，松开或窗口失焦后恢复。
 
-- SVG 源文件：`Assets/Art/Cursors/`，48×48 透明画布。
-- Unity 运行纹理：`Assets/Resources/NightVoyage/Cursors/`，由 SVG 导出；导入器自动设置为可读、无压缩 Cursor 纹理。
-- 修改 SVG 后，在项目根目录运行 `node Tools/RenderCourierCursors.js`（需要 `sharp`，可通过 `NODE_PATH` 指定其所在目录），更新全部 PNG 与 `ArtPreviews/Cursors/cursor-states.png` 预览。
-- `CourierCursor` 自动跨场景启动，无须修改场景或预制体。热点位于箭头尖端、食指尖或手掌中心。
-- 验证入口：`Tools > Night Courier > Checks > SVG Cursors`。
+- 当前图集：`Assets/Art/Cursors/Atlas/cursor-atlas.png`，使用用户重绘版本，768×384、4列×2行，每格192×192，最后一格留空。
+- Unity 运行纹理：`Assets/Resources/NightVoyage/Cursors/`，由图集切分为七张48×48透明PNG，保留原资源绑定。
+- `cursor-atlas.json` 记录状态、切片位置与热点；热点已按新图的箭头／手指尖校准。
+- `CourierCursor` 自动跨场景启动，无须修改场景或预制体。
+- 验证入口：`Tools > Night Courier > Checks > Cursors`。
+- 旧指针 SVG 源文件已清理；图集规格与更新说明见同目录 `重绘说明.txt`。
 
 ## 本轮反馈修正
 

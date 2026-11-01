@@ -170,26 +170,27 @@ public static class CourierFeedbackRevisionSmokeTest
                     Check(!owner.AcceptParcel(r.Parcels[2]),"Second pickup interrupted conversation");Drain(owner);break;
                 case 5:
                     Check(!owner.ConversationActive,"Uncollected item dialogue auto-started");
-                    owner.InteractAtNode();Check(page.CargoOpen,"Cannot collect again at same stop");
+                    owner.InteractAtNode();Check(page.CargoOpen,"Cannot collect again at same stop");break;
+                case 6:
                     var waitingRows=page.waitingContent.GetComponentsInChildren<CourierCargoRow>().Where(row=>row.gameObject.activeInHierarchy).ToArray();
                     Check(waitingRows.Count(row=>row.Item==r.Parcels[2])==1&&!waitingRows.Any(row=>row.Item==r.Parcels[3]),"Woods pickup should have one row");
                     var combinedRow=waitingRows.Single(row=>row.Item==r.Parcels[2]);
                     Check(combinedRow.nameText.text.Contains("Honey")&&combinedRow.nameText.text.Contains("Jam")&&combinedRow.secondaryArtwork.gameObject.activeSelf,"Combined pickup artwork/title missing");
                     Check(combinedRow.destinationText.text.Contains("Brewing Cellar")&&combinedRow.destinationText.text.Contains("Museum Ruins"),"Pickup omitted one destination");
                     ScreenCapture.CaptureScreenshot("/tmp/courier-task-flow-pickup.png");break;
-                case 6:
+                case 7:
                     var pickupRow=page.waitingContent.GetComponentsInChildren<CourierCargoRow>().Single(row=>row.Item==r.Parcels[2]);
                     Check(pickupRow.LoadByDrop(),"Combined pickup drop failed");
                     Check(owner.ConversationActive&&r.Parcels[2].State==ParcelState.Loaded&&r.Parcels[3].State==ParcelState.Loaded,"Drop was not atomic");
                     Drain(owner);Check(!owner.ConversationActive&&!owner.AcceptParcel(r.Parcels[3]),"Duplicate pickup/dialogue after group collection");
                     page.SetCargoOpen(true);break;
-                case 7:
+                case 8:
                     Check(r.ActiveOrders.Count()==3,"On-board orders missing");
                     var onboard=page.loadedContent.GetComponentsInChildren<CourierCargoRow>().Where(row=>row.gameObject.activeInHierarchy).ToArray();
                     Check(onboard.Length==3,"UI omitted on-board orders");
                     foreach(var label in page.stopLabels)Check(label.preferredHeight<=label.rectTransform.rect.height+.5f,"Map label clipped: "+label.text);
                     ScreenCapture.CaptureScreenshot("/tmp/courier-feedback-orders.png");break;
-                case 8:
+                case 9:
                     page.SetCargoOpen(false);
                     // Verify the longest source lines in the real dialogue layout.
                     var hud=UIManager.Instance.GetPanel("CourierHudPanel") as CourierHudPanel;

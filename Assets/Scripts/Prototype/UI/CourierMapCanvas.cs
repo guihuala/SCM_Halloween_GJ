@@ -63,7 +63,7 @@ namespace NightCourier
         }
         public void OnScroll(PointerEventData data)
         {
-            if(panel==null||!panel.CanNavigateMap)return;
+            if(panel==null||!panel.CanNavigateMap||CourierTooltip.BlocksMapPointer(data.position))return;
             if(!initialized)ApplyLayout();
             if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(Viewport,data.position,data.pressEventCamera,out var point))return;
             velocity=Vector2.zero;
@@ -76,7 +76,7 @@ namespace NightCourier
         }
         public void OnBeginDrag(PointerEventData data)
         {
-            dragging=panel!=null&&panel.CanNavigateMap&&(data.button==PointerEventData.InputButton.Left||data.button==PointerEventData.InputButton.Middle);
+            dragging=panel!=null&&panel.CanNavigateMap&&!CourierTooltip.BlocksMapPointer(data.position)&&(data.button==PointerEventData.InputButton.Left||data.button==PointerEventData.InputButton.Middle);
             if(!dragging)return;
             if(!initialized)ApplyLayout();
             zoom=renderedZoom;pan=renderedPan;velocity=Vector2.zero;
@@ -97,6 +97,7 @@ namespace NightCourier
         public void OnPointerClick(PointerEventData data)
         {
             if(panel==null||!panel.CanNavigateMap||data.button!=PointerEventData.InputButton.Left||
+                CourierTooltip.BlocksMapPointer(data.position)||
                 (data.position-data.pressPosition).sqrMagnitude>36)return;
             velocity=Vector2.zero;panel.ClearDestination();
         }

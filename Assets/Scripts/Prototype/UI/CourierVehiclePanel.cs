@@ -18,20 +18,20 @@ namespace NightCourier
         protected override void Awake()
         {
             base.Awake();PrepareVehicleArtwork();
-            possessButton.onClick.AddListener(() => feedbackText.text = owner.PossessParkedVehicle() ? "Possessed" : "Vehicle unavailable at this stop");
-            repairButton.onClick.AddListener(() => { if (Run.Repair()) feedbackText.text = "Repaired"; });
+            possessButton.onClick.AddListener(() => CourierLocalization.Set(feedbackText, owner.PossessParkedVehicle() ? "Possessed" : "Vehicle unavailable at this stop"));
+            repairButton.onClick.AddListener(() => { if (Run.Repair()) CourierLocalization.Set(feedbackText, "Repaired"); });
         }
         protected override void Refresh()
         {
             if(currentArtwork==null||parkedArtwork==null)PrepareVehicleArtwork();
             currentArtwork.SetVehicle(Run.VehicleIndex);
-            currentText.text = Run.Car.Name;
-            currentStatsText.text = Run.IsGhost ? Run.Car.Ability : Stats(Run.VehicleIndex);
+            CourierLocalization.Set(currentText, Run.Car.Name);
+            CourierLocalization.Set(currentStatsText, Run.IsGhost ? Run.Car.Ability : Stats(Run.VehicleIndex));
             int v = Run.Stops[Run.Node].Vehicle;
             bool available = v >= 0;
             parkedArtwork.gameObject.SetActive(available);if(available)parkedArtwork.SetVehicle(v);
-            parkedText.text = available ? Run.Vehicles[v].Name : "No vehicle available";
-            parkedStatsText.text = available ? Stats(v) : "";
+            CourierLocalization.Set(parkedText, available ? Run.Vehicles[v].Name : "No vehicle available");
+            CourierLocalization.Set(parkedStatsText, available ? Stats(v) : "");
             possessButton.gameObject.SetActive(available);
             possessButton.interactable = available && Run.CanPossess(v);
             Caption(possessButton, "Possess ");
@@ -39,7 +39,7 @@ namespace NightCourier
             repairButton.gameObject.SetActive(repair);
             repairButton.interactable = repair && Run.Durability < Run.Car.MaxDurability;
             repairText.gameObject.SetActive(!repair);
-            repairText.text = "Exchange at H, W or Q: +1 order turn; fresh 5 vehicle turns";
+            CourierLocalization.Set(repairText, "Exchange at H, W or Q: +1 order turn; fresh 5 vehicle turns");
             feedbackText.gameObject.SetActive(!string.IsNullOrEmpty(feedbackText.text));
         }
         private string Stats(int index)
