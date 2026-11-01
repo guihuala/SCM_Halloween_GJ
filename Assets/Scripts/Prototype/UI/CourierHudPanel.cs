@@ -25,10 +25,13 @@ namespace NightCourier
         private void Show(GameObject target, bool visible, Vector2 offset) { motion.Present(target, visible, offset, reducedMotion); }
         public void ApplyReadableLayout()
         {
-            var status=(RectTransform)roadStatus.transform;status.sizeDelta=new Vector2(340,76);
+            float timerWidth=Mathf.Clamp(timeText.preferredWidth+8,64,136);
+            var status=(RectTransform)roadStatus.transform;status.sizeDelta=new Vector2(60+timerWidth,72);
             var clock=status.Find("ClockIcon") as RectTransform;
-            if(clock!=null){clock.anchoredPosition=new Vector2(0,-4);clock.sizeDelta=Vector2.one*48;}
-            timeText.fontSize=30;timeText.rectTransform.anchoredPosition=new Vector2(64,0);timeText.rectTransform.sizeDelta=new Vector2(276,48);
+            if(clock!=null){clock.anchorMin=clock.anchorMax=clock.pivot=new Vector2(0,1);clock.anchoredPosition=new Vector2(0,-14);clock.sizeDelta=Vector2.one*44;}
+            timeText.fontSize=30;timeText.alignment=TextAnchor.MiddleLeft;
+            timeText.rectTransform.anchorMin=timeText.rectTransform.anchorMax=timeText.rectTransform.pivot=new Vector2(0,1);
+            timeText.rectTransform.anchoredPosition=new Vector2(60,0);timeText.rectTransform.sizeDelta=new Vector2(timerWidth,72);
             if(travelStatus!=null)travelStatus.Layout();
             foreach(var button in new[]{advanceButton,pauseButton})
             {
@@ -124,23 +127,25 @@ namespace NightCourier
         protected override void Refresh()
         {
             if(backgroundScroll!=null)backgroundScroll.reducedMotion=reducedMotion;
+            NightCourier.CourierLocalization.Set(timeText, Run.ActiveOrder==null?"—":Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder));
             motion.RestoreLayout();ApplyReadableLayout();
             bool driving=Run.State==ShiftState.Driving||Run.State==ShiftState.Pushing;
             var statusRect=(RectTransform)roadStatus.transform;var root=(RectTransform)transform;
-            statusRect.pivot=new Vector2(1,1);statusRect.position=root.TransformPoint(new Vector3(root.rect.xMax-32,root.rect.yMax-112,0));
+            // A compact right-aligned row: order clock, then fast-forward below Pause.
+            statusRect.pivot=new Vector2(1,1);statusRect.position=root.TransformPoint(new Vector3(root.rect.xMax-128,root.rect.yMax-112,0));
             bool travelling=driving||Run.State==ShiftState.Encounter;
-            Show(roadStatus,travelling&&!Run.Finished,new Vector2(0,32));
+            Show(roadStatus,travelling&&Run.ActiveOrder!=null&&!Run.Finished&&!owner.GuideOpen,new Vector2(0,32));
             // At a waypoint the map owns the single Continue action. This ribbon
             // is reserved for movement and road events, so it does not repeat it.
             Show(travelStatus.gameObject,travelling&&!Run.Finished&&!owner.GuideOpen,new Vector2(0,-16));
             if(skipRideButton!=null)
             {
                 var skipRect=(RectTransform)skipRideButton.transform;
-                skipRect.position=root.TransformPoint(new Vector3(root.rect.xMax-464,root.rect.yMax-112,0));
+                skipRect.pivot=new Vector2(1,1);
+                skipRect.position=root.TransformPoint(new Vector3(root.rect.xMax-32,root.rect.yMax-112,0));
                 Show(skipRideButton.gameObject,driving&&owner.Active,new Vector2(0,32));
             }
             if(pauseButton!=null)Show(pauseButton.gameObject,owner.Active&&!Run.Finished&&!owner.HasPlanner&&Run.State!=ShiftState.Encounter,new Vector2(0,32));
-            NightCourier.CourierLocalization.Set(timeText, Run.ActiveOrder==null?"—":Run.OrderTurns+"/"+Run.TargetTurns(Run.ActiveOrder));
             // A new journey starts at its own progress rather than draining the previous bar.
             if(!progressReady||!travelling||progressLeg!=Run.PlannedDestination||progressRoad!=Run.ActiveRoad||reducedMotion)
                 progressFill.fillAmount=Run.DisplayProgress;

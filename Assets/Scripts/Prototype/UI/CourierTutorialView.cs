@@ -13,7 +13,7 @@ namespace NightCourier
         private NightCourierPrototype owner;
         private Image guideBackdrop;
         public bool IsCollapsed { get; private set; }
-        private readonly Vector3[] corners = new Vector3[4];
+        private CourierMapMotion focusMotion;
         public void Bind(NightCourierPrototype prototype)
         {
             owner = prototype;
@@ -52,6 +52,7 @@ namespace NightCourier
         public void Refresh()
         {
             if (owner == null) return;
+            ClearFocus();
             ApplyReadingColors();
             var run = owner.Run; var guide = owner.Tutorial;
             int step = guide.Step(run, owner.ConversationActive);
@@ -89,29 +90,29 @@ namespace NightCourier
                     if (hud != null) first = (RectTransform)hud.advanceButton.transform;
                     break;
                 case 1:
-                    title = "Visit the Mountain Train Tunnel";
-                    body = "A letter is waiting at Mountain Train Tunnel. Click the tunnel for a route; the green arrow sets you off. Tab opens Orders.";
-                    if (planner != null) first = planner.stopLabels[0].rectTransform;
+                    title = "Click the glowing tunnel";
+                    body = "A letter is waiting for you there. Click the glowing tunnel to see your route.";
+                    if (planner != null && planner.mapArtwork != null) first = planner.mapArtwork.landmarkImages[0].rectTransform;
                     break;
                 case 2:
                     title = "Choose your first order";
-                    body = "Parcels are ready here. The box arrow in Orders [Tab] picks them up. Pickup starts the delivery clock.";
+                    body = "Parcels are ready here. Click the box arrow in Orders to collect them. Pickup starts the delivery clock.";
                     if (planner != null)
                     {
                         var row = planner.GetComponentsInChildren<CourierCargoRow>().FirstOrDefault(r => r.Item.Origin == run.Node && r.Item.State == ParcelState.Waiting);
-                        if(!planner.CargoOpen){first=planner.cargoToggleButton.transform as RectTransform;body="Looking for a delivery? Tab opens Orders. The box arrow collects parcels at your stop.";}
+                        if(!planner.CargoOpen){first=planner.cargoToggleButton.transform as RectTransform;body="Click the glowing box to see the orders. The box arrow collects parcels at your stop.";}
                         else if (row != null) first = (RectTransform)row.actionButton.transform;
                     }
                     break;
                 case 3:
                     title = run.ActiveOrder != null ? run.Stops[run.ActiveOrder.Destination].Name : "Choose a destination";
                     body = "Your recipient is marked on the map. Click their stop to see the orange route. The green arrow sets you off.";
-                    if (planner != null) first = planner.stopLabels[run.ActiveOrder!=null?run.ActiveOrder.Destination:0].rectTransform;
+                    if (planner != null && planner.mapArtwork != null) first = planner.mapArtwork.landmarkImages[run.ActiveOrder!=null?run.ActiveOrder.Destination:0].rectTransform;
                     break;
                 case 4:
                     title = guide.Departed ? "On the road" : "Ready to depart";
                     body = guide.Departed ? (run.State==ShiftState.Docked ? "Just a stop along the way. E or the arrow continues the route. Parcels are delivered on arrival." : "F skips ahead to the next stop or event. E keeps you moving at waypoints.")
-                        : "Route ready. The green arrow sets you off; the clock shows how many turns the trip should take.";
+                        : "Click the glowing green arrow to depart. The clock shows the estimated turns.";
                     if (!guide.Departed && planner != null) first = (RectTransform)planner.departButton.transform;
                     else if (run.State==ShiftState.Docked&&planner!=null) first=planner.nodePromptButton.transform as RectTransform;
                     break;
@@ -123,7 +124,7 @@ namespace NightCourier
                     break;
                 default:
                     title = "First stop reached";
-                    body = "First delivery done. More parcels are waiting in Orders [Tab].";
+                    body = "First delivery done. More parcels are waiting in Orders.";
                     if (hud != null && owner.ConversationActive) first = (RectTransform)hud.advanceButton.transform;
                     break;
             }
@@ -136,13 +137,13 @@ namespace NightCourier
             else if (!guide.CargoLoaded && run.HasJourney && run.State == ShiftState.Docked)
             {
                 title = "Continue to the sender";
-                body = "The sender is further along this route. E or the arrow keeps you going. Tab opens Orders when you arrive.";
+                body = "The sender is further along this route. E or the arrow keeps you going.";
                 if (planner != null) first = planner.nodePromptButton.transform as RectTransform;
             }
             else if (!guide.CargoLoaded && planner != null && planner.departButton.gameObject.activeInHierarchy && guide.RouteChosen)
             {
                 title = "Ready to depart";
-                body = "Route ready. The green arrow sets you off; the clock shows how many turns the trip should take.";
+                body = "Click the glowing green arrow to depart. The clock shows the estimated turns.";
                 first = planner.departButton.transform as RectTransform;
             }
             if (run.State == ShiftState.Pushing) body = "Your ghost carries the full order at a slower pace. Late or damaged orders are still accepted.";
@@ -176,22 +177,22 @@ namespace NightCourier
         }
         private void CompactGuide(int step,string title,string body)
         {
-            // Keep the next action readable without hover, clear of the central travel ribbon.
+            // Put the next action in the initial reading path, below the top HUD.
             float width = Mathf.Min(600, ((RectTransform)transform).rect.width - 48);
-            strip.anchorMin=strip.anchorMax=strip.pivot=new Vector2(0,0);
-            strip.anchoredPosition=new Vector2(24,24);strip.sizeDelta=new Vector2(width,IsCollapsed ? 76 : 196);
+            strip.anchorMin=strip.anchorMax=strip.pivot=new Vector2(0,1);
+            strip.anchoredPosition=new Vector2(24,-112);strip.sizeDelta=new Vector2(width,IsCollapsed ? 76 : 220);
             heading.enabled=true;instruction.enabled=!IsCollapsed;
             NightCourier.CourierLocalization.Set(heading, title);
             heading.rectTransform.anchoredPosition=new Vector2(76,-18);heading.rectTransform.sizeDelta=new Vector2(width-144,40);
-            heading.alignment=TextAnchor.MiddleLeft;heading.fontSize=26;
-            heading.resizeTextForBestFit=true;heading.resizeTextMinSize=20;heading.resizeTextMaxSize=26;
+            heading.alignment=TextAnchor.MiddleLeft;heading.fontSize=32;
+            heading.resizeTextForBestFit=true;heading.resizeTextMinSize=24;heading.resizeTextMaxSize=32;
             NightCourier.CourierLocalization.Set(instruction, body);
-            instruction.rectTransform.anchoredPosition=new Vector2(24,-72);instruction.rectTransform.sizeDelta=new Vector2(width-48,108);
-            instruction.alignment=TextAnchor.UpperLeft;instruction.fontSize=24;
-            instruction.resizeTextForBestFit=true;instruction.resizeTextMinSize=20;instruction.resizeTextMaxSize=24;
+            instruction.rectTransform.anchoredPosition=new Vector2(24,-72);instruction.rectTransform.sizeDelta=new Vector2(width-48,132);
+            instruction.alignment=TextAnchor.UpperLeft;instruction.fontSize=30;
+            instruction.resizeTextForBestFit=true;instruction.resizeTextMinSize=24;instruction.resizeTextMaxSize=30;
             heading.raycastTarget=instruction.raycastTarget=false;
             var background=strip.GetComponent<Image>();if(background!=null)background.raycastTarget=false;
-            var kind=step==0?CourierIconKind.Talk:step<=2?CourierIconKind.Box:step==3?CourierIconKind.Route:step==5?CourierIconKind.Warning:step==6?CourierIconKind.Check:CourierIconKind.Arrow;
+            var kind=step==0?CourierIconKind.Talk:step==1?CourierIconKind.Arrow:step==2?CourierIconKind.Box:step==3?CourierIconKind.Route:step==5?CourierIconKind.Warning:step==6?CourierIconKind.Check:CourierIconKind.Arrow;
             CourierSymbolUI.Icon(strip,"GuideSymbol",kind,20,18,40,CourierColors.Night,title+"\n"+body).gameObject.SetActive(true);
             var close=(RectTransform)skipButton.transform;close.anchorMin=close.anchorMax=close.pivot=new Vector2(0,1);close.anchoredPosition=new Vector2(width-64,-10);close.sizeDelta=Vector2.one*56;
             // A collapsed task stays available and follows progress without reopening itself.
@@ -217,19 +218,22 @@ namespace NightCourier
             var rect=image.rectTransform;rect.anchorMin=rect.anchorMax=rect.pivot=Vector2.one*.5f;
             rect.anchoredPosition=Vector2.zero;rect.sizeDelta=size;child.gameObject.SetActive(visible);
         }
+        private void ClearFocus()
+        {
+            if(focusMotion!=null)focusMotion.TutorialTarget=null;
+        }
+        private void OnDisable() { ClearFocus(); }
         private void Focus(int index, RectTransform target)
         {
-            if (target == null || !target.gameObject.activeInHierarchy) return;
-            target.GetWorldCorners(corners);
-            var parent = (RectTransform)transform;
-            var min = parent.InverseTransformPoint(corners[0]); var max = parent.InverseTransformPoint(corners[2]);
-            var frame = focusFrames[index];
-            frame.anchorMin=frame.anchorMax=new Vector2(0,1);
-            frame.pivot=new Vector2(0,1);
-            min-=new Vector3(parent.rect.xMin,parent.rect.yMax,0);max-=new Vector3(parent.rect.xMin,parent.rect.yMax,0);
-            frame.anchoredPosition = new Vector2(min.x - 6, max.y + 6);
-            frame.sizeDelta = new Vector2(max.x - min.x + 12, max.y - min.y + 12);
-            frame.gameObject.SetActive(true);
+            if(target==null||!target.gameObject.activeInHierarchy)return;
+            var image=target.GetComponent<Image>();
+            if(image==null||image.sprite==null)return;
+            if(focusMotion==null)
+            {
+                var planner=UIManager.Instance.GetPanel("CourierRoutePanel") as CourierRoutePanel;
+                if(planner!=null)focusMotion=planner.GetComponentInChildren<CourierMapMotion>(true);
+            }
+            if(focusMotion!=null)focusMotion.TutorialTarget=image;
         }
     }
 }

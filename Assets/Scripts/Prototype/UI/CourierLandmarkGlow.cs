@@ -12,7 +12,8 @@ namespace NightCourier
         private Sprite lastSprite;
         private Vector4 lastUV;
         private Vector2 lastSize;
-        private bool selected,reduced;
+        private bool selected,reduced,tutorial;
+        public bool TutorialHighlighted => tutorial && selected;
         private float visibility,arrival=1;
         private static readonly int BoundsId=Shader.PropertyToID("_SpriteUVRect");
         private static readonly int RadiusId=Shader.PropertyToID("_GlowRadius");
@@ -31,8 +32,8 @@ namespace NightCourier
             else glow.enabled=false;
             return glow;
         }
-        public void SetSelected(bool value,bool reducedMotion)
-        {if(value&&!selected)arrival=0;selected=value;reduced=reducedMotion;}
+        public void SetSelected(bool value,bool reducedMotion,bool guided=false)
+        {if(value&&!selected)arrival=0;selected=value;reduced=reducedMotion;tutorial=guided;}
         private Rect DrawingRect()
         {
             Rect rect=rectTransform.rect;var sprite=Artwork;
@@ -56,13 +57,15 @@ namespace NightCourier
             visibility=reduced?(selected?1:0):Mathf.MoveTowards(visibility,selected?1:0,Time.unscaledDeltaTime/.18f);
             arrival=Mathf.Min(1,arrival+Time.unscaledDeltaTime/.32f);
             float entrance=reduced?0:Mathf.Sin(arrival*Mathf.PI)*(1-arrival)*.18f;
-            color=CourierColors.Alpha(CourierColors.Gold,visibility*.85f*(1+entrance));
+            float pulse=tutorial&&!reduced?.88f+.12f*Mathf.Sin(Time.unscaledTime*3):1;
+            color=CourierColors.Alpha(CourierColors.Gold,visibility*(tutorial?1:.85f)*(1+entrance)*pulse);
+            float glowRadius=tutorial?radius*1.8f:radius;
             var sprite=Artwork;var uv=UnityEngine.Sprites.DataUtility.GetOuterUV(sprite);var bounds=DrawingRect();
             if(sprite!=lastSprite||uv!=lastUV||bounds.size!=lastSize)
             {lastSprite=sprite;lastUV=uv;lastSize=bounds.size;SetAllDirty();}
             if(instance!=null)
             {
-                var step=new Vector4((uv.z-uv.x)*radius/Mathf.Max(1,bounds.width),(uv.w-uv.y)*radius/Mathf.Max(1,bounds.height),0,0);
+                var step=new Vector4((uv.z-uv.x)*glowRadius/Mathf.Max(1,bounds.width),(uv.w-uv.y)*glowRadius/Mathf.Max(1,bounds.height),0,0);
                 instance.SetVector(BoundsId,uv);instance.SetVector(RadiusId,step);
                 var rendered=materialForRendering;
                 if(rendered!=null&&rendered!=instance){rendered.SetVector(BoundsId,uv);rendered.SetVector(RadiusId,step);}
@@ -73,14 +76,15 @@ namespace NightCourier
         {
             mesh.Clear();var sprite=Artwork;if(sprite==null||instance==null)return;
             Rect rect=DrawingRect();var uv=UnityEngine.Sprites.DataUtility.GetOuterUV(sprite);
-            float u=radius*(uv.z-uv.x)/Mathf.Max(1,rect.width),v=radius*(uv.w-uv.y)/Mathf.Max(1,rect.height);
-            mesh.AddVert(new Vector3(rect.xMin-radius,rect.yMin-radius),color,new Vector2(uv.x-u,uv.y-v));
-            mesh.AddVert(new Vector3(rect.xMin-radius,rect.yMax+radius),color,new Vector2(uv.x-u,uv.w+v));
-            mesh.AddVert(new Vector3(rect.xMax+radius,rect.yMax+radius),color,new Vector2(uv.z+u,uv.w+v));
-            mesh.AddVert(new Vector3(rect.xMax+radius,rect.yMin-radius),color,new Vector2(uv.z+u,uv.y-v));
+            float glowRadius=radius*1.8f;
+            float u=glowRadius*(uv.z-uv.x)/Mathf.Max(1,rect.width),v=glowRadius*(uv.w-uv.y)/Mathf.Max(1,rect.height);
+            mesh.AddVert(new Vector3(rect.xMin-glowRadius,rect.yMin-glowRadius),color,new Vector2(uv.x-u,uv.y-v));
+            mesh.AddVert(new Vector3(rect.xMin-glowRadius,rect.yMax+glowRadius),color,new Vector2(uv.x-u,uv.w+v));
+            mesh.AddVert(new Vector3(rect.xMax+glowRadius,rect.yMax+glowRadius),color,new Vector2(uv.z+u,uv.w+v));
+            mesh.AddVert(new Vector3(rect.xMax+glowRadius,rect.yMin-glowRadius),color,new Vector2(uv.z+u,uv.y-v));
             mesh.AddTriangle(0,1,2);mesh.AddTriangle(2,3,0);
         }
-        public void ResetGlow(){selected=false;visibility=0;arrival=1;color=CourierColors.Alpha(CourierColors.Gold,0);canvasRenderer.cull=true;}
+        public void ResetGlow(){selected=false;tutorial=false;visibility=0;arrival=1;color=CourierColors.Alpha(CourierColors.Gold,0);canvasRenderer.cull=true;}
         protected override void OnDisable(){ResetGlow();base.OnDisable();}
         protected override void OnDestroy(){if(instance!=null){if(Application.isPlaying)Destroy(instance);else DestroyImmediate(instance);}base.OnDestroy();}
     }

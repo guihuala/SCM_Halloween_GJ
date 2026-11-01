@@ -8,6 +8,7 @@ namespace NightCourier
     public sealed class CourierMapMotion : MonoBehaviour
     {
         public CourierRoutePanel panel;
+        public Image TutorialTarget { get; set; }
         private readonly Dictionary<RectTransform,Vector3> originalScales=new Dictionary<RectTransform,Vector3>();
         private readonly Dictionary<Image,CourierLandmarkGlow> glows=new Dictionary<Image,CourierLandmarkGlow>();
         private readonly HashSet<Image> legendImages=new HashSet<Image>();
@@ -64,7 +65,10 @@ namespace NightCourier
             var selectedTarget=Visual(selected)??(selected>=9?panel.mapArtwork.NodeTarget(selected):null);
             var selectedImage=selectedTarget!=null?selectedTarget.GetComponent<Image>():null;
             if(selectedImage!=null&&selectedImage.sprite!=null&&!glows.ContainsKey(selectedImage))glows.Add(selectedImage,CourierLandmarkGlow.Create(selectedImage));
-            foreach(var entry in glows)if(entry.Value!=null)entry.Value.SetSelected(entry.Key==selectedImage||legendImages.Contains(entry.Key),reduced);
+            var tutorialImage=active&&TutorialTarget!=null&&TutorialTarget.isActiveAndEnabled?TutorialTarget:null;
+            if(tutorialImage!=null&&tutorialImage.sprite!=null&&!glows.ContainsKey(tutorialImage))glows.Add(tutorialImage,CourierLandmarkGlow.Create(tutorialImage));
+            foreach(var entry in glows)if(entry.Value!=null)
+                entry.Value.SetSelected(entry.Key==selectedImage||legendImages.Contains(entry.Key)||entry.Key==tutorialImage,reduced,entry.Key==tutorialImage);
             var roads=panel.mapGraphic.PreviewRoute.Count>0?panel.mapGraphic.PreviewRoute:panel.mapGraphic.SelectedRoute;
             var path=roads.Count>0?roads[0].StreetPath:null;
             if(selected!=lastSelected||hovered!=lastHovered||path!=lastPath){routeArrival=reduced?1:0;lastSelected=selected;lastHovered=hovered;lastPath=path;}

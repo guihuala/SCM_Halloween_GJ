@@ -52,10 +52,10 @@ public static class CourierUsabilitySmokeTest
                     Check(!owner.ConversationActive&&run.Stops[run.Node].Name=="Parcel Depot","Depot opening blocked");
                     Check(run.Stops[1].Sign=="FOREST","Forest label missing");
                     var guide=UIManager.Instance.GetPanel("CourierTutorialPanel") as CourierTutorialPanel;
-                    Check(guide!=null&&guide.view.instruction.text.Contains("Orders"),"Tutorial did not initialize");
+                    Check(guide!=null&&guide.view.instruction.text.Contains("tunnel"),"Tutorial did not initialize");
                     var guideHint=guide.view.strip.Find("GuideSymbol").GetComponent<CourierIconHint>();
                     var guideTooltip=guide.GetComponent<CourierTooltip>();Check(guideTooltip!=null,"Guide has no tooltip host");
-                    guideTooltip.Show(guideHint,true);Check(guideTooltip.bubble.gameObject.activeSelf&&guideTooltip.label.text.Contains("Orders"),"Guide explanation unreachable");
+                    guideTooltip.Show(guideHint,true);Check(guideTooltip.bubble.gameObject.activeSelf&&guideTooltip.label.text.Contains("tunnel"),"Guide explanation unreachable");
                     owner.Tutorial.Dismiss();break;
                 case 1:
                     foreach(var n in CourierStreetMap.Nodes){var parent=n.StopId<6?page.stopButtons[n.StopId].transform:page.mapArtwork.NodeTarget(n.StopId);Hit(parent.Find("NodeHitArea") as RectTransform,parent.GetComponent<Button>());}

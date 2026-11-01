@@ -6,6 +6,9 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using System.Linq;
 
 [InitializeOnLoad]
 public static class CourierOnboardingSmokeTest
@@ -46,12 +49,29 @@ public static class CourierOnboardingSmokeTest
                     owner.enabled = false;
                     typeof(CourierLocalization).GetField("language", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, CourierLanguage.TraditionalChinese);
                     view.Refresh();
-                    Check(view.instruction.enabled && view.instruction.text.Contains("Tab"), "Next action hidden");
+                    Check(view.instruction.enabled && !view.instruction.text.Contains("Tab"), "Next action hidden");
                     Check(!owner.GuideOpen, "Start blocked by rules");
                     Capture("/tmp/courier-onboarding-start.png", view);
                     break;
                 case 1:
                     Check(view.instruction.preferredHeight <= view.instruction.rectTransform.rect.height + 1, "Opening text clipped");
+                    var mapPage=UIManager.Instance.GetPanel("CourierRoutePanel") as CourierRoutePanel;
+                    var motion=mapPage.GetComponentInChildren<CourierMapMotion>(true);
+                    Check(motion.TutorialTarget==mapPage.mapArtwork.landmarkImages[0],"Tunnel is not the tutorial target");
+                    Check(System.Array.TrueForAll(view.focusFrames,f=>!f.gameObject.activeSelf),"Legacy focus rectangle visible");
+                    var glow=mapPage.mapArtwork.landmarkImages[0].transform.parent.GetComponentsInChildren<CourierLandmarkGlow>();
+                    Check(System.Array.Exists(glow,g=>g.TutorialHighlighted&&g.source==motion.TutorialTarget&&g.material.shader.name=="UI/Courier Landmark Glow"),"Tunnel material highlight missing");
+                    Canvas.ForceUpdateCanvases();
+                    var hit=mapPage.mapArtwork.landmarkHitAreas[0].rectTransform;
+                    var canvas=hit.GetComponentInParent<Canvas>().rootCanvas;
+                    var data=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left,
+                        position=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,hit.TransformPoint(hit.rect.center))};
+                    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);
+                    Check(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Button>()==mapPage.stopButtons[0],
+                        "Tunnel pointer blocked: "+string.Join(", ",hits.Select(h=>h.gameObject.name)));
+                    ExecuteEvents.ExecuteHierarchy(hits[0].gameObject,data,ExecuteEvents.pointerClickHandler);view.Refresh();
+                    Capture("/tmp/courier-onboarding-depart.png",view);
+                    Check(motion.TutorialTarget==mapPage.departButton.targetGraphic,"Departure action not highlighted");
                     view.skipButton.onClick.Invoke();view.Refresh();
                     Check(view.IsCollapsed && !view.instruction.enabled && view.strip.rect.height == 76, "Task did not collapse");
                     Check(!owner.Tutorial.Finished, "Collapse dismissed task");
@@ -63,7 +83,7 @@ public static class CourierOnboardingSmokeTest
                     Check(owner.Tutorial.Step(owner.Run, false) == 3, "Pickup did not advance hint");
                     Check(view.IsCollapsed && !view.instruction.enabled, "Progress reopened collapsed task");
                     view.skipButton.onClick.Invoke();view.Refresh();
-                    Check(!view.IsCollapsed && view.instruction.enabled && view.strip.rect.height == 196,"Task did not expand");
+                    Check(!view.IsCollapsed && view.instruction.enabled && view.strip.rect.height == 220,"Task did not expand");
                     Capture("/tmp/courier-onboarding-recipient.png", view);
                     break;
                 case 2:
@@ -74,7 +94,7 @@ public static class CourierOnboardingSmokeTest
                 case 3:
                     view.skipButton.onClick.Invoke(); view.Refresh();
                     Check(!owner.Tutorial.Finished && view.IsCollapsed && view.strip.gameObject.activeSelf, "Minimized task was lost");
-                    Finish(true, "Rules, empty travel, pickup, departure, visible Traditional Chinese prompts, collapse/expand, progress while collapsed.");
+                    Finish(true, "Rules, empty travel, pickup, departure, material target highlights, no focus rectangles or Tab prompts, collapse/expand, progress while collapsed.");
                     break;
             }
         }
@@ -103,7 +123,10 @@ public static class CourierOnboardingSmokeTest
         Canvas.ForceUpdateCanvases();
         var page = UIManager.Instance.GetPanel("CourierRoutePanel") as CourierRoutePanel;
         page.SendMessage("Refresh"); page.SendMessage("LateUpdate");
-        view.Refresh(); Canvas.ForceUpdateCanvases(); camera.Render();
+        view.Refresh();
+        var motion=page.GetComponentInChildren<CourierMapMotion>(true);motion.SendMessage("LateUpdate");
+        foreach(var glow in UnityEngine.Object.FindObjectsOfType<CourierLandmarkGlow>())glow.SendMessage("LateUpdate");
+        Canvas.ForceUpdateCanvases(); camera.Render();
         var previous = RenderTexture.active; RenderTexture.active = target;
         var texture = new Texture2D(1280, 720, TextureFormat.RGB24, false);
         texture.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0); texture.Apply();

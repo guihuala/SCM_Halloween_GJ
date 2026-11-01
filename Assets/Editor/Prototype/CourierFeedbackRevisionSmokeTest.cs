@@ -37,7 +37,7 @@ public static class CourierFeedbackRevisionSmokeTest
             Check(r.LoadParcel(r.Parcels[2]),"Second pickup rejected");
             Check(r.Parcels[2].State==ParcelState.Loaded&&r.Parcels[3].State==ParcelState.Loaded,"Woods pickup must include both items");
             var woodsDialogue=r.Story.ReadPickup(r,r.Parcels[2]);
-            Check(woodsDialogue.Length==3&&woodsDialogue[0].Contains("Normally this time of year")&&woodsDialogue[0].Contains("jam"),"Combined source dialogue missing");
+            Check(woodsDialogue.SequenceEqual(r.Story.Data.scenes.Single(s=>s.id=="wolf_honey_jam").lines.Select(l=>l.Render(false))),"Combined source dialogue missing");
             Check(!r.LoadParcel(r.Parcels[3]),"Jam can be collected separately after combined pickup");
             Check(r.Story.ReadPickup(r,r.Parcels[3]).Length==0,"Combined dialogue played twice");
             Check(r.ActiveOrders.Count()==3,"Multiple orders missing");
@@ -120,7 +120,7 @@ public static class CourierFeedbackRevisionSmokeTest
             Check(r.Story.ReadPickup(r,r.Parcels[first]).Length==0,"Pickup dialogue before collection");
             Check(r.LoadParcel(r.Parcels[first]),"Cannot collect combined group by either item ID");
             Check(r.Parcels[2].State==ParcelState.Loaded&&r.Parcels[3].State==ParcelState.Loaded,"Pickup loaded only one Woods item");
-            var dialogue=r.Story.ReadPickup(r,r.Parcels[first]);Check(dialogue.Length==3&&dialogue[0].Contains("jam"),"Combined dialogue incomplete");
+            var dialogue=r.Story.ReadPickup(r,r.Parcels[first]);Check(dialogue.SequenceEqual(r.Story.Data.scenes.Single(s=>s.id=="wolf_honey_jam").lines.Select(l=>l.Render(false))),"Combined dialogue incomplete");
             Check(r.Story.ReadPickup(r,r.Parcels[first==2?3:2]).Length==0,"Combined dialogue repeated");
             CourierChecks.Go(r,2);Check(r.Parcels[2].State==ParcelState.Delivered&&r.Parcels[3].State==ParcelState.Loaded,"Cellar accepted jam");
             Check(r.TalkToNpc().Any(line=>line.Contains("piney")),"Cellar receipt missing");

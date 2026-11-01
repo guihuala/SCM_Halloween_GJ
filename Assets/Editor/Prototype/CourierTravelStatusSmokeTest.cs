@@ -7,6 +7,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 [InitializeOnLoad]
 public static class CourierTravelStatusSmokeTest
@@ -68,7 +70,11 @@ public static class CourierTravelStatusSmokeTest
                         !view.GetComponent<CanvasGroup>().blocksRaycasts, "Travel ribbon intercepts map input");
                     Require(view.transform.Find("TravelPercent").GetComponent<Text>().text.EndsWith("%"), "Travel percentage missing");
                     Require(view.transform.Find("TravelDash0").gameObject.activeSelf, "Moving feedback missing");
+                    Require(!hud.roadStatus.activeSelf,"Empty travel shows a meaningless clock");
                     Capture("/private/tmp/courier-travel-ribbon.png", 1280, 720);
+                    HitSkip(hud,false);
+                    var hudRoot=(RectTransform)hud.transform;var skip=(RectTransform)hud.skipRideButton.transform;
+                    Require(Mathf.Abs(hudRoot.InverseTransformPoint(skip.position).x-(hudRoot.rect.xMax-32))<1,"Skip is not right-aligned");
                     pausedPhase = Phase(view); GameManager.Instance.PauseGame();
                     break;
                 case 3:
@@ -110,8 +116,14 @@ public static class CourierTravelStatusSmokeTest
                         page.destinationTooltip.Find("RouteSummary").gameObject.activeSelf &&
                         page.destinationTooltip.Find("RouteWarningSymbol").gameObject.activeSelf && page.wearCostText.gameObject.activeSelf,
                         "Compact route card removed meaningful risk or vehicle-wear information");
+                    Require(owner.Run.StartJourney(2),"Cannot start loaded control fixture");
+                    Capture("/private/tmp/courier-travel-controls-loaded.png",1280,720);
+                    Require(hud.roadStatus.activeSelf&&hud.timeText.text.Contains("/"),"Loaded order clock hidden");
+                    var status=(RectTransform)hud.roadStatus.transform;var skipButton=(RectTransform)hud.skipRideButton.transform;
+                    Require(Mathf.Abs(status.position.y-skipButton.position.y)<1,"Travel controls are not vertically aligned");
+                    HitSkip(hud,true);
                     SessionState.SetBool(Key, false);
-                    Debug.Log("COURIER_TRAVEL_STATUS PASS: single waypoint action, explicit compact route preview, ghost wear hidden, real risks retained, travel motion, pause, event, reduced motion, resize, arrival and Chinese text.");
+                    Debug.Log("COURIER_TRAVEL_STATUS PASS: actual pointer hit and fast-forward, single waypoint action, explicit compact route preview, ghost wear hidden, real risks retained, travel motion, pause, event, reduced motion, resize, arrival and Chinese text.");
                     EditorApplication.Exit(0); return;
             }
             step++; next = EditorApplication.timeSinceStartup + .65;
@@ -120,6 +132,24 @@ public static class CourierTravelStatusSmokeTest
         { SessionState.SetBool(Key, false); Debug.LogException(error); EditorApplication.Exit(1); }
     }
 
+    private static void HitSkip(CourierHudPanel hud,bool click)
+    {
+        Canvas.ForceUpdateCanvases();
+        var rect=(RectTransform)hud.skipRideButton.transform;
+        var canvas=rect.GetComponentInParent<Canvas>().rootCanvas;
+        var data=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left,
+            position=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.TransformPoint(rect.rect.center))};
+        var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);
+        Require(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Button>()==hud.skipRideButton,
+            "Skip pointer blocked: "+string.Join(", ",hits.Select(h=>h.gameObject.name+"/"+h.gameObject.transform.parent.name)));
+        Require(hud.skipRideButton.IsInteractable(),"Skip button not interactable");
+        if(click)
+        {
+            var run=NightCourierPrototype.Current.Run;var before=run.Node;var progress=run.DisplayProgress;
+            ExecuteEvents.Execute(hits[0].gameObject,data,ExecuteEvents.pointerClickHandler);
+            Require(run.Node!=before||run.State!=ShiftState.Driving||run.DisplayProgress!=progress,"Pointer click did not skip travel");
+        }
+    }
     private static void Capture(string path, int width, int height)
     {
         var camera = UnityEngine.Object.FindObjectOfType<Camera>();
